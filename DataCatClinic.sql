@@ -1,6 +1,7 @@
-﻿CREATE DATABASE Cat_Clinic;
-GO
+﻿
 
+CREATE DATABASE Cat_Clinic;
+GO
 
 USE Cat_Clinic;
 GO
@@ -159,24 +160,26 @@ CREATE TABLE MedicalRecords (
 CREATE TABLE Prescription (
     PrescriptionID INT IDENTITY PRIMARY KEY,
     MedicalRecordID INT,
-    Quantity INT,
+    
     Instruction NVARCHAR(MAX),
     FOREIGN KEY (MedicalRecordID) REFERENCES MedicalRecords(MedicalRecordID)
 );
+
 
 -- Thuốc
 CREATE TABLE Drug (
     DrugID INT IDENTITY PRIMARY KEY,
     Price DECIMAL(10,2),
     Description NVARCHAR(MAX),
-    Unit NVARCHAR(50),
-    Quantity INT
+    Unit NVARCHAR(50)
+    
 );
 
 -- Chi tiết thuốc trong đơn
 CREATE TABLE Prescription_Drug (
     DrugID INT,
     PrescriptionID INT,
+	Quantity INT,
     PRIMARY KEY (DrugID, PrescriptionID),
     FOREIGN KEY (DrugID) REFERENCES Drug(DrugID),
     FOREIGN KEY (PrescriptionID) REFERENCES Prescription(PrescriptionID)
@@ -312,22 +315,22 @@ VALUES
 
 
 INSERT INTO Prescription
-(MedicalRecordID, Quantity, Instruction)
+(MedicalRecordID, Instruction)
 VALUES
-(1, 2, N'Uống sau ăn'),
-(2, 5, N'Uống sáng và tối');
+(1, N'Uống sau ăn'),
+(2, N'Uống sáng và tối');
 
 
 INSERT INTO Drug
-(Price, Description, Unit, Quantity)
+(Price, Description, Unit )
 VALUES
-(50000, N'Thuốc hạ sốt', N'Viên', 100),
-(80000, N'Thuốc kháng sinh', N'Viên', 200);
+(50000, N'Thuốc hạ sốt', N'Viên' ),
+(80000, N'Thuốc kháng sinh', N'Viên');
 
 
-INSERT INTO Prescription_Drug (DrugID, PrescriptionID) VALUES
-(1, 1),
-(2, 2);
+INSERT INTO Prescription_Drug (DrugID, PrescriptionID,Quantity) VALUES
+(1, 1,5),
+(2, 2,10);
 
 INSERT INTO TestOrders
 (MedicalRecordID, OrderType, OrderDateTime, Instruction, Status, TechnicianID)
