@@ -18,7 +18,6 @@ body {
     margin-top: 30px;
 }
 
-/* HEADER */
 .header {
     display: flex;
     justify-content: space-between;
@@ -49,7 +48,7 @@ body {
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
 }
 
-/* FILTER SECTION */
+
 .filter {
     display: grid;
     grid-template-columns: 1fr 1fr 1.5fr 1.5fr auto;
@@ -112,7 +111,7 @@ td {
     transition: background 0.2s ease;
 }
 
-/* Hiệu ứng hover dòng giống Medical History */
+
 tr:hover td {
     background-color: #fffaf5;
 }
@@ -127,7 +126,7 @@ tr:hover .pet-img {
     transform: scale(1.1);
 }
 
-/* BADGES */
+
 .badge {
     padding: 6px 12px;
     border-radius: 20px;
@@ -145,7 +144,6 @@ tr:hover .pet-img {
     align-items: center;
 }
 
-/* EDIT: Cam-Trắng -> Trắng-Cam */
 .btn-edit {
     background: #ffffff;
     color: #f97316;
@@ -163,7 +161,6 @@ tr:hover .pet-img {
     color: #ffffff;
 }
 
-/* DELETE: Đỏ-Trắng -> Trắng-Đỏ */
 .btn-delete {
     background: #ffffff;
     color: #dc2626;
@@ -181,7 +178,7 @@ tr:hover .pet-img {
     color: #ffffff;
 }
 
-/* HISTORY: Xanh-Trắng -> Trắng-Xanh */
+
 .btn-history {
     background: #ffffff;
     color: #22a06b;

@@ -1,3 +1,13 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: ADMIN
+  Date: 1/24/2026
+  Time: 4:09 PM
+  To change this template use File | Settings | File Templates.
+--%>
+
+
+
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -19,7 +29,6 @@
         <div class="profile-image">
             <c:choose>
                 <c:when test="${not empty cat.img}">
-                    <%-- Thêm contextPath để ảnh hiển thị đúng --%>
                     <img src="${pageContext.request.contextPath}/${cat.img}" alt="Pet Image">
                 </c:when>
                 <c:otherwise>
@@ -47,7 +56,6 @@
 
             <div class="field">
                 <label>Owner ID</label>
-                <%-- Sửa readonly: Chỉ dùng thuộc tính readonly không cần dấu ngoặc kép bên trong --%>
                 <input type="number" name="ownerID" value="${cat.ownerID}"
                 ${not empty cat ? 'readonly' : ''} required>
             </div>
@@ -72,7 +80,6 @@
 
                 <div class="field">
                     <label>Gender</label>
-                    <%-- Sửa disabled: select khi disabled sẽ không gửi dữ liệu về servlet --%>
                     <select name="gender" ${not empty cat ? 'disabled' : ''}>
                         <option value="0" ${cat.gender == 0 ? "selected" : ""}>Male</option>
                         <option value="1" ${cat.gender == 1 ? "selected" : ""}>Female</option>

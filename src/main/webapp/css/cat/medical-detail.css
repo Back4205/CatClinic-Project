@@ -1,4 +1,4 @@
-/* Tổng thể trang */
+
 body {
     margin: 0;
     padding: 40px 0;
@@ -8,7 +8,7 @@ body {
     justify-content: center;
 }
 
-/* Container chính */
+
 .detail-container {
     width: 95%;
     max-width: 1000px;
@@ -18,7 +18,7 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-/* Tiêu đề chính */
+
 .main-title {
     color: #f97316;
     text-align: center;
@@ -28,7 +28,7 @@ body {
     font-weight: bold;
 }
 
-/* Tiêu đề phụ (Services, Drugs...) */
+
 h3 {
     color: #333;
     font-size: 19px;
@@ -37,7 +37,7 @@ h3 {
     margin: 35px 0 15px 0;
 }
 
-/* Bảng dữ liệu */
+
 .detail-table {
     width: 100%;
     border-collapse: collapse;
@@ -46,7 +46,7 @@ h3 {
 
 .detail-table th {
     background-color: #f8f9fa;
-    color: #888; /* Màu xám nhẹ giống Medical History */
+    color: #888;
     font-weight: 600;
     text-align: left;
     padding: 15px;
@@ -60,25 +60,25 @@ h3 {
     border-bottom: 1px solid #f1f1f1;
     color: #444;
     font-size: 14px;
-    transition: background 0.2s; /* Làm mượt hover */
+    transition: background 0.2s;
 }
 
-/* HIỆU ỨNG HOVER DÒNG (Quan trọng để giống Medical History) */
+
 .detail-table tr:hover td {
     background-color: #fffaf5;
 }
 
-/* Bảng thông tin bác sĩ (dạng dọc) */
+
 .info-table th {
     width: 220px;
     background-color: #fffaf5;
-    color: #f97316; /* Tiêu đề bên trái vẫn giữ màu cam */
+    color: #f97316;
 }
 
 .center { text-align: center !important; }
 .right { text-align: right !important; }
 
-/* Hình ảnh kết quả xét nghiệm */
+
 .result-img {
     border-radius: 8px;
     border: 1px solid #ddd;
@@ -89,7 +89,7 @@ tr:hover .result-img {
     transform: scale(1.1);
 }
 
-/* Nút quay lại (Giống Cat List) */
+
 .btn-back {
     display: block;
     width: fit-content;

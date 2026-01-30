@@ -43,14 +43,14 @@ public class CatAddcontroller extends HttpServlet {
             int gender = Integer.parseInt(request.getParameter("gender"));
             int age = Integer.parseInt(request.getParameter("age"));
 
-            // ===== VALIDATE =====
+
             if (name == null || name.trim().isEmpty()) {
                 message = "Name is required!";
             } else if (age < 0) {
                 message = "Age must be >= 0!";
             }
 
-            // ===== UPLOAD IMAGE =====
+            //  UPLOAD IMAGE
             Part filePart = request.getPart("image");
             String imagePath = null;
 
@@ -67,11 +67,11 @@ public class CatAddcontroller extends HttpServlet {
                 String savedName = System.currentTimeMillis() + "_" + fileName;
                 filePart.write(uploadDir.getAbsolutePath() + File.separator + savedName);
 
-                // 🔥 DB chỉ lưu dạng này
+
                 imagePath = UPLOAD_DIR + "/" + savedName;
             }
 
-            // ===== NẾU CÓ LỖI =====
+
             if (!message.isEmpty()) {
                 Cat cat = new Cat();
                 cat.setOwnerID(ownerID);
@@ -89,7 +89,6 @@ public class CatAddcontroller extends HttpServlet {
                 return;
             }
 
-            // ===== SAVE DB =====
             Cat cat = new Cat();
             cat.setOwnerID(ownerID);
             cat.setName(name);

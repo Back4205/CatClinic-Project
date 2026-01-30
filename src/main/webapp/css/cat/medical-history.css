@@ -18,7 +18,7 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-/* Tiêu đề bảng màu cam */
+
 .medical-title {
     color: #f97316;
     font-size: 24px;
@@ -29,7 +29,7 @@ body {
     text-transform: uppercase;
 }
 
-/* Cấu trúc Bảng */
+
 .medical-table {
     width: 100%;
     border-collapse: collapse;
@@ -55,12 +55,12 @@ body {
     transition: background 0.2s;
 }
 
-/* Hiệu ứng hover dòng */
+
 .medical-table tr:hover td {
     background-color: #fffaf5;
 }
 
-/* NÚT VIEW DETAIL: Chữ cam nền trắng -> Chữ trắng nền cam */
+
 .btn-view {
     display: inline-block;
     padding: 8px 16px;
