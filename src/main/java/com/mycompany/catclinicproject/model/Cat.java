@@ -7,17 +7,22 @@ public class Cat {
     private int gender;
     private String breed;
     private int age;
+    private String img ;
+    private int isActive;
     private boolean hasBooking;
+
     public Cat() {
 
     }
-    public Cat(int catID, int ownerID, String name, int gender, String breed, int age) {
+    public Cat(int catID, int ownerID, String name, int gender, String breed, int age,String img, int isActive) {
         this.catID = catID;
         this.ownerID = ownerID;
         this.name = name;
         this.gender = gender;
         this.breed = breed;
         this.age = age;
+        this.img = img;
+        this.isActive = isActive;
     }
     public int getCatID() {
         return catID;
@@ -55,6 +60,18 @@ public class Cat {
     }
     public void setAge(int age) {
         this.age = age;
+    }
+    public String getImg() {
+        return img;
+    }
+    public void setImg(String img) {
+        this.img = img;
+    }
+    public int getIsActive() {
+        return isActive;
+    }
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
     }
     public boolean isHasBooking() {
         return hasBooking;

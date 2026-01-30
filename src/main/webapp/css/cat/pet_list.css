@@ -1,0 +1,234 @@
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    padding: 30px;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    width: 95%;
+    max-width: 1200px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    margin-top: 30px;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header h2 {
+    color: #333;
+    margin: 0;
+    font-size: 24px;
+}
+
+.btn-add {
+    background: #f97316;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-add:hover {
+    background: #ea580c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+}
+
+/* FILTER SECTION */
+.filter {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.5fr 1.5fr auto;
+    gap: 15px;
+    margin-bottom: 30px;
+    background: #fcfcfc;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #f0f0f0;
+}
+
+.filter input, .filter select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.filter input:focus, .filter select:focus {
+    border-color: #f97316;
+}
+
+.btn-filter {
+    background: #f97316;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.btn-filter:hover {
+    background: #ea580c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    font-size: 13px;
+    color: #888;
+    padding: 15px;
+    border-bottom: 2px solid #f0f0f0;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #f1f1f1;
+    vertical-align: middle;
+    transition: background 0.2s ease;
+}
+
+/* Hiệu ứng hover dòng giống Medical History */
+tr:hover td {
+    background-color: #fffaf5;
+}
+
+.pet-img {
+    border-radius: 8px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+tr:hover .pet-img {
+    transform: scale(1.1);
+}
+
+/* BADGES */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.male { background: #e6f4ff; color: #1c7ed6; }
+.female { background: #ffe4ec; color: #d63384; }
+
+
+.action-group {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* EDIT: Cam-Trắng -> Trắng-Cam */
+.btn-edit {
+    background: #ffffff;
+    color: #f97316;
+    border: 1px solid #f97316;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-edit:hover {
+    background: #f97316;
+    color: #ffffff;
+}
+
+/* DELETE: Đỏ-Trắng -> Trắng-Đỏ */
+.btn-delete {
+    background: #ffffff;
+    color: #dc2626;
+    border: 1px solid #dc2626;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+/* HISTORY: Xanh-Trắng -> Trắng-Xanh */
+.btn-history {
+    background: #ffffff;
+    color: #22a06b;
+    border: 1px solid #22a06b;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-history:hover {
+    background: #22a06b;
+    color: #ffffff;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 30px;
+}
+
+.pagination a {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    text-decoration: none;
+    color: #666;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.pagination a:hover:not(.disabled) {
+    border-color: #f97316;
+    color: #f97316;
+}
+
+.pagination a.active {
+    background: #f97316;
+    color: white;
+    border-color: #f97316;
+}
+
+.pagination a.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}

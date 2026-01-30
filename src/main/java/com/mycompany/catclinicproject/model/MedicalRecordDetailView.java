@@ -20,13 +20,14 @@ public class MedicalRecordDetailView {
         this.diagnosis = diagnosis;
         this.clinicalNote = clinicalNote;
     }
-    public MedicalRecordDetailView( int medicalRecordID, Date visitDate, String doctorName, String diagnosis, String clinicalNote) {
+    public MedicalRecordDetailView( int medicalRecordID, Date visitDate, String doctorName, String diagnosis, String clinicalNote ) {
 
         this.medicalRecordID = medicalRecordID;
         this.visitDate = visitDate;
         this.doctorName = doctorName;
         this.diagnosis = diagnosis;
         this.clinicalNote = clinicalNote;
+
     }
     public int getBookingID() {
         return bookingID;
@@ -64,5 +65,6 @@ public class MedicalRecordDetailView {
     public void setClinicalNote(String clinicalNote) {
         this.clinicalNote = clinicalNote;
     }
+
 
 }

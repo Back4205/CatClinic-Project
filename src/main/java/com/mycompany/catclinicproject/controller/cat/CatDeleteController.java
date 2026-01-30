@@ -15,7 +15,7 @@ public class CatDeleteController extends HttpServlet {
             throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("catId"));
         CatDAO dao = new CatDAO();
-        dao.deleteCat(id);
+        dao.deleteOrDeactivateCat(id);
         response.sendRedirect(request.getContextPath() + "/cats");
     }
 

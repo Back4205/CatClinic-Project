@@ -12,7 +12,7 @@ public class CatDAO extends DBContext {
 
     public List<Cat> getCatList() {
         List<Cat> catList = new ArrayList<Cat>();
-        String sql = "SELECT * FROM Cats";
+        String sql = "SELECT * FROM Cats where  IsActive = 1";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -24,6 +24,8 @@ public class CatDAO extends DBContext {
                 cat.setGender(rs.getInt("gender"));
                 cat.setBreed(rs.getString("breed"));
                 cat.setAge(rs.getInt("age"));
+                cat.setImg(rs.getString("Image"));
+                cat.setIsActive(rs.getInt("IsActive"));
                 catList.add(cat);
             }
         } catch (Exception e) {
@@ -35,7 +37,8 @@ public class CatDAO extends DBContext {
 
     public List<Cat> getCatsByOwnerID(int ownerID) {
         List<Cat> catList = new ArrayList<Cat>();
-        String sql = "SELECT * FROM Cats WHERE ownerID = ?";
+        String sql = "SELECT * FROM Cats WHERE ownerID = ? AND IsActive = 1";
+
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, ownerID);
@@ -48,6 +51,8 @@ public class CatDAO extends DBContext {
                 cat.setGender(rs.getInt("gender"));
                 cat.setBreed(rs.getString("breed"));
                 cat.setAge(rs.getInt("age"));
+                cat.setImg(rs.getString("Image"));
+                cat.setIsActive(rs.getInt("IsActive"));
                 catList.add(cat);
             }
         } catch (Exception e) {
@@ -57,7 +62,7 @@ public class CatDAO extends DBContext {
     }
 
     public boolean addCat(Cat cat) {
-        String sql = "INSERT INTO Cats (ownerID, name, gender, breed, age) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Cats (ownerID, name, gender, breed, age,Image,IsActive ) VALUES (?, ?, ?, ?, ?,?,1)";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, cat.getOwnerID());
@@ -65,6 +70,8 @@ public class CatDAO extends DBContext {
             ps.setInt(3, cat.getGender());
             ps.setString(4, cat.getBreed());
             ps.setInt(5, cat.getAge());
+            ps.setString(6, cat.getImg());
+
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (Exception e) {
@@ -74,66 +81,93 @@ public class CatDAO extends DBContext {
     }
 
     public boolean updateCat(Cat cat) {
-        String sql = "UPDATE Cats SET  name = ?,  age = ? WHERE catID = ?";
+        String sql = "UPDATE Cats SET  name = ?,  age = ? , Image = ? WHERE catID = ?";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, cat.getName());
             ps.setInt(2, cat.getAge());
-            ps.setInt(3, cat.getCatID());
+            ps.setString(3, cat.getImg());
+            ps.setInt(4, cat.getCatID());
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
+    }
+    public boolean hasBooking(int catID) {
+        String sql = "SELECT 1 FROM Bookings WHERE CatID = ? " ;
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, catID);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public boolean deleteCat(int catID) {
-        String sql = "DELETE FROM Cats WHERE catID = ?";
-        try {
-            PreparedStatement ps = c.prepareStatement(sql);
-            ps.setInt(1, catID);
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+    public boolean deleteOrDeactivateCat(int catID) {
+
+
+        if (hasBooking(catID)) {
+            String sql = "UPDATE Cats SET isActive = 0 WHERE catID = ?";
+            try (PreparedStatement ps = c.prepareStatement(sql)) {
+                ps.setInt(1, catID);
+                return ps.executeUpdate() > 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
+        else {
+            String sql = "DELETE FROM Cats WHERE catID = ?";
+            try (PreparedStatement ps = c.prepareStatement(sql)) {
+                ps.setInt(1, catID);
+                return ps.executeUpdate() > 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return false;
     }
+
 
     public List<Cat> filterAndPagingCats(int ownerID, String name, String gender, String breed, int age, int numberItemPerPage , int indexPage) {
         List<Cat> list = new ArrayList<>();
 
         int offset = (indexPage - 1) * numberItemPerPage;
 
-        StringBuilder sql = new StringBuilder("SELECT * FROM Cats WHERE 1=1");
+        StringBuilder sql = new StringBuilder("SELECT * FROM Cats WHERE IsActive =1");
         List<Object> params = new ArrayList<>();
 
-        // Owner filter (Admin / Staff: ownerID = 0 → bỏ qua)
+
         if (ownerID > 0) {
             sql.append(" AND ownerID = ?");
             params.add(ownerID);
         }
 
-        // Name
+
         if (name != null && !name.isEmpty()) {
             sql.append(" AND name LIKE ?");
             params.add("%" + name + "%");
         }
 
-        // Gender
+
         if (gender != null && !gender.isEmpty()) {
             sql.append(" AND gender = ?");
             params.add(Integer.parseInt(gender));
         }
 
-        // Breed
+
         if (breed != null && !breed.isEmpty()) {
             sql.append(" AND breed LIKE ?");
             params.add("%" + breed + "%");
         }
 
-        // Age
+
         if (age != -1) {
             if (age == 3) {
                 sql.append(" AND age >= 3");
@@ -143,7 +177,7 @@ public class CatDAO extends DBContext {
             }
         }
 
-        // Paging (SQL Server)
+
         sql.append(" ORDER BY catID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
         params.add(offset);
         params.add(numberItemPerPage);
@@ -162,6 +196,8 @@ public class CatDAO extends DBContext {
                 cat.setGender(rs.getInt("gender"));
                 cat.setBreed(rs.getString("breed"));
                 cat.setAge(rs.getInt("age"));
+                    cat.setImg(rs.getString("Image"));
+                cat.setIsActive(rs.getInt("IsActive"));
                 list.add(cat);
             }
         } catch (Exception e) {
@@ -171,21 +207,11 @@ public class CatDAO extends DBContext {
         return list;
     }
 
-    public boolean hasBooking(int catID) {
-        String sql = "SELECT 1 FROM Booking WHERE CatID = ?";
 
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, catID);
-            ResultSet rs = ps.executeQuery();
-            return rs.next(); // có dòng => có booking
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     public Cat getCatByID(int catID) {
         String sql = "SELECT * FROM Cats WHERE catID = ?";
+
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, catID);
@@ -198,6 +224,8 @@ public class CatDAO extends DBContext {
                 cat.setGender(rs.getInt("gender"));
                 cat.setBreed(rs.getString("breed"));
                 cat.setAge(rs.getInt("age"));
+                cat.setImg(rs.getString("Image"));
+                cat.setIsActive(rs.getInt("IsActive"));
                 return cat;
             }
         } catch (Exception e) {
@@ -207,36 +235,33 @@ public class CatDAO extends DBContext {
     }
     public int countCatsWithFilter(int ownerID, String name, String gender, String breed, int age) {
         StringBuilder sql = new StringBuilder(
-                "SELECT COUNT(*) AS total FROM Cats WHERE 1=1"
+                "SELECT COUNT(*) AS total FROM Cats WHERE IsActive =1"
         );
 
         List<Object> params = new ArrayList<>();
 
-        // Owner (Admin/Staff: ownerID <= 0 thì bỏ)
+
         if (ownerID > 0) {
             sql.append(" AND ownerID = ?");
             params.add(ownerID);
         }
 
-        // Name
+
         if (name != null && !name.trim().isEmpty()) {
             sql.append(" AND name LIKE ?");
             params.add("%" + name.trim() + "%");
         }
 
-        // Gender
         if (gender != null && !gender.isEmpty()) {
             sql.append(" AND gender = ?");
             params.add(Integer.parseInt(gender));
         }
 
-        // Breed
         if (breed != null && !breed.trim().isEmpty()) {
             sql.append(" AND breed LIKE ?");
             params.add("%" + breed.trim() + "%");
         }
 
-        // Age
         if (age != -1) {
             if (age == 3) {
                 sql.append(" AND age >= 3");
@@ -261,32 +286,6 @@ public class CatDAO extends DBContext {
 
         return 0;
     }
-
-
-//    public List<Cat> pagdingCats(int index , int ownerID) {
-//        List<Cat> catList = new ArrayList<Cat>();
-//        String sql = "SELECT * FROM Cats where OwnerID = ? ORDER BY catID OFFSET ? ROWS FETCH NEXT 5 ROWS ONLY";
-//        try {
-//            PreparedStatement ps = c.prepareStatement(sql);
-//            ps.setInt(1, ownerID);
-//            ps.setInt(2, (index - 1) * 5);
-//            ResultSet rs = ps.executeQuery();
-//            while (rs.next()) {
-//                Cat cat = new Cat();
-//                cat.setCatID(rs.getInt("catID"));
-//                cat.setOwnerID(rs.getInt("ownerID"));
-//                cat.setName(rs.getString("name"));
-//                cat.setGender(rs.getInt("gender"));
-//                cat.setBreed(rs.getString("breed"));
-//                cat.setAge(rs.getInt("age"));
-//                catList.add(cat);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return catList;
-//    }
-
 
     public static void main(String[] args) {
         CatDAO catDAO = new CatDAO();

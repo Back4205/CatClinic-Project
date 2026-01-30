@@ -1,8 +1,8 @@
 package com.mycompany.catclinicproject.controller.cat;
 
 import com.mycompany.catclinicproject.dao.MedicalRecordDAO;
-import com.mycompany.catclinicproject.model.Drug;
 import com.mycompany.catclinicproject.model.MedicalRecordDetailView;
+import com.mycompany.catclinicproject.model.MedicalStaffWork;
 import com.mycompany.catclinicproject.model.PrescriptionDrugView;
 import com.mycompany.catclinicproject.model.Service;
 
@@ -38,6 +38,10 @@ public class CatMedicalDetailController extends HttpServlet {
         List<PrescriptionDrugView> drugList = dao.getPrescriptionDrugByBookingID(bookingId);
         request.setAttribute("id",bookingId);// test
 
+        List<MedicalStaffWork> staffWorks =
+                dao.getStaffWorkByBookingID(bookingId);
+
+        request.setAttribute("staffWorks", staffWorks);
 
         request.setAttribute("medicalDetail", medicalDetail);
         request.setAttribute("serviceList", serviceList);
