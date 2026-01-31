@@ -1,0 +1,171 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+}
+
+body {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+}
+
+/* ====== LAYOUT ====== */
+.news-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 32px;
+}
+
+/* ====== SIDEBAR ====== */
+.sidebar h3 {
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.sidebar-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.sidebar-item img {
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.sidebar-item .date {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.sidebar-item .title {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* ====== TAGS ====== */
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.tag {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #ffe9df;
+    color: #f97316;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.tag.active,
+.tag:hover {
+    background: #f97316;
+    color: #fff;
+}
+
+/* ====== BLOG ====== */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.blog-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    transition: 0.3s;
+}
+
+.blog-card:hover {
+    transform: translateY(-4px);
+}
+
+.blog-card img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.blog-card .content {
+    padding: 16px;
+}
+
+.blog-card .date {
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* ====== FAQ ====== */
+.faq-section {
+    margin-top: 80px;
+}
+
+.faq-section h2 {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 40px;
+}
+
+.faq-item {
+    border: 2px solid #f97316;
+    border-radius: 16px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.faq-question {
+    padding: 18px 22px;
+    background: #fff7ed;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-answer {
+    padding: 0 22px;
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.4s;
+    background: #fff;
+}
+
+.faq-item.active .faq-answer {
+    padding: 18px 22px;
+    max-height: 300px;
+}
+
+/* ===== FLOAT BUTTON ===== */
+.float-buttons {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+}
+
+#scrollTopBtn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: #ef4444;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+}
