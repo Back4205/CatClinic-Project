@@ -5,9 +5,6 @@
   Time: 4:09 PM
   To change this template use File | Settings | File Templates.
 --%>
-
-
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -16,27 +13,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Cat Profile Management</title>
+    <script src="${pageContext.request.contextPath}/js/cats/view-avatar-cat.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/cat/cat-from.css">
 </head>
 
 <body>
 
 <form method="post"
-      action="${cat == null ? 'cat-add' : 'cat-update'}"
+      action="${pageContext.request.contextPath}${empty cat ? '/cats/cat-add' : '/cats/cat-update'}"
+
       enctype="multipart/form-data">
 
     <div class="profile-box">
         <div class="profile-image">
             <c:choose>
-                <c:when test="${not empty cat.img}">
-                    <img src="${pageContext.request.contextPath}/${cat.img}" alt="Pet Image">
+                <c:when test="${not empty cat.img && not empty cat}">
+                    <img id="viewImg" src="${pageContext.request.contextPath}/${cat.img}" alt="Pet Image">
                 </c:when>
                 <c:otherwise>
-                    <img src="${pageContext.request.contextPath}/img/default-pet.png" alt="Default Pet">
+                    <img id="viewImg" src="${pageContext.request.contextPath}/img/cats/default.jpg" alt="Default Pet">
                 </c:otherwise>
             </c:choose>
 
-            <input type="file" name="image" accept="image/*">
+            <input class="file-upload-input" type="file" name="image" accept="image/*" onchange="previewImage(this)" >
 
             <c:if test="${not empty cat}">
                 <input type="hidden" name="oldImage" value="${cat.img}">
@@ -105,6 +104,5 @@
         </div>
     </div>
 </form>
-
 </body>
 </html>

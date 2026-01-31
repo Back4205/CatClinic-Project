@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cat Management System</title>
+    <title>Cat Management </title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/cat/pet_list.css">
 </head>
 
@@ -60,9 +60,9 @@
         <tbody>
         <c:forEach items="${catList}" var="c">
             <tr>
-                <td>#${c.catID}</td>
+                <td>${c.catID}</td>
                 <td>
-                    <img src="${pageContext.request.contextPath}/${c.img}"
+                    <img  src="${pageContext.request.contextPath}/${c.img}"
                          class="pet-img" width="60" height="60" alt="Pet Image">
                 </td>
                 <td><b>${c.name}</b></td>

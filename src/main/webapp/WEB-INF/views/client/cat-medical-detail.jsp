@@ -10,7 +10,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cat Profile</title>
+    <title>Medical History Detail </title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/cat/medical-detail.css">
 </head>
 
@@ -31,7 +31,7 @@
             <c:if test="${not empty medicalDetail.doctorName}">
                 <tr>
                     <th>Doctor In Charge</th>
-                    <td style="font-weight: bold; color: #333;">Dr. ${medicalDetail.doctorName}</td>
+                    <td style="font-weight: bold; color: #333;"> ${medicalDetail.doctorName}</td>
                 </tr>
             </c:if>
 
@@ -60,7 +60,7 @@
                         <td style="font-weight: 500;">${s.nameService}</td>
                         <td class="center">${s.timeService}</td>
                         <td>${s.description}</td>
-                        <td class="right" style="color: #22a06b; font-weight: bold;">$${s.price}</td>
+                        <td class="right" style="color: #22a06b; font-weight: bold;">${s.price}VND</td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -76,6 +76,7 @@
                     <th>Instruction</th>
                     <th class="center">Unit</th>
                     <th class="center">Qty</th>
+                    <th class="right">Price</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -85,6 +86,7 @@
                         <td>${d.instruction}</td>
                         <td class="center">${d.unit}</td>
                         <td class="center">${d.quantity}</td>
+                        <td class="right" style="color: #22a06b; font-weight: bold;">${d.price}VND</td>
                     </tr>
                 </c:forEach>
                 </tbody>

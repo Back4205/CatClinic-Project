@@ -6,14 +6,16 @@ public class PrescriptionDrugView {
     private String unit;
     private int quantity;
     private String instruction;
+    private double price ;
 
     public PrescriptionDrugView() {}
 
-    public PrescriptionDrugView(String drugName, String unit, int quantity, String instruction) {
+    public PrescriptionDrugView(String drugName, String unit, int quantity, String instruction , double price) {
         this.drugName = drugName;
         this.unit = unit;
         this.quantity = quantity;
         this.instruction = instruction;
+        this.price = price;
     }
     public String getDrugName() {
         return drugName;
@@ -38,6 +40,12 @@ public class PrescriptionDrugView {
     }
     public void setInstruction(String instruction) {
         this.instruction = instruction;
+    }
+    public double getPrice() {
+        return price;
+    }
+    public void setPrice(double price) {
+        this.price = price;
     }
 
 }

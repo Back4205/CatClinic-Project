@@ -14,29 +14,29 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-@WebServlet(name = "CatAddcontroller", urlPatterns = {"/cats/cat-add"})
-@MultipartConfig(
-        maxFileSize = 1024 * 1024 * 5 // 5MB
-)
-public class CatAddcontroller extends HttpServlet {
+@WebServlet(name = "CatAddController", urlPatterns = {"/cats/cat-add"})
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 10)
 
-    private static final String UPLOAD_DIR = "img/cats";
+public class CatAddController extends HttpServlet {
+
+    private static final String UPLOAD_DIR = "D:/FU-learning/SPRING-2026_ky5/SWP391/CatClinicimg/cats";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         request.setAttribute("cat", null);
-        request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp")
-                .forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        CatDAO catDAO = new CatDAO();
         String message = "";
 
         try {
+
             int ownerID = Integer.parseInt(request.getParameter("ownerID"));
             String name = request.getParameter("name");
             String breed = request.getParameter("breed");
@@ -44,33 +44,9 @@ public class CatAddcontroller extends HttpServlet {
             int age = Integer.parseInt(request.getParameter("age"));
 
 
-            if (name == null || name.trim().isEmpty()) {
-                message = "Name is required!";
-            } else if (age < 0) {
-                message = "Age must be >= 0!";
-            }
-
-            //  UPLOAD IMAGE
-            Part filePart = request.getPart("image");
-            String imagePath = null;
-
-            if (filePart != null && filePart.getSize() > 0) {
-                String fileName = Paths.get(filePart.getSubmittedFileName())
-                        .getFileName().toString();
-
-                String realPath = getServletContext().getRealPath("/");
-                File uploadDir = new File(realPath + UPLOAD_DIR);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdirs();
-                }
-
-                String savedName = System.currentTimeMillis() + "_" + fileName;
-                filePart.write(uploadDir.getAbsolutePath() + File.separator + savedName);
-
-
-                imagePath = UPLOAD_DIR + "/" + savedName;
-            }
-
+          if (catDAO.checkCatNameExistbyOwnerID(1, name )){
+              message = "This owner already has a cat with this name!";
+          }
 
             if (!message.isEmpty()) {
                 Cat cat = new Cat();
@@ -80,13 +56,27 @@ public class CatAddcontroller extends HttpServlet {
                 cat.setGender(gender);
                 cat.setAge(age);
                 cat.setIsActive(1);
-                cat.setImg(imagePath);
 
                 request.setAttribute("cat", cat);
                 request.setAttribute("message", message);
-                request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp")
-                        .forward(request, response);
+                request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
                 return;
+            }
+
+
+            Part filePart = request.getPart("image"); // lay file tu request browse
+            String imagePath = "img/cats/default.jpg";
+
+            if (filePart != null && filePart.getSize() > 0) {
+                String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+
+                File uploadDir = new File(UPLOAD_DIR); // dai dien cho thu muc
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs();
+                }
+                String savedName = System.currentTimeMillis() + "_" + fileName;
+                filePart.write(uploadDir.getAbsolutePath() + File.separator + savedName);
+                imagePath = "img/cats/" + savedName;
             }
 
             Cat cat = new Cat();
@@ -98,15 +88,14 @@ public class CatAddcontroller extends HttpServlet {
             cat.setIsActive(1);
             cat.setImg(imagePath);
 
-            new CatDAO().addCat(cat);
+            catDAO.addCat(cat);
 
             response.sendRedirect(request.getContextPath() + "/cats");
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("message", "Upload error!");
-            request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp")
-                    .forward(request, response);
+            request.setAttribute("message", "Add cat failed!");
+            request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
         }
     }
 }

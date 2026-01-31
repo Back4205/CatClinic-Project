@@ -287,6 +287,36 @@ public class CatDAO extends DBContext {
         return 0;
     }
 
+    public boolean checkCatNameExistbyOwnerID(int ownerId , String name) {
+        String sql = "SELECT 1 FROM Cats WHERE ownerID = ? AND name = ?";
+        try{
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, ownerId);
+            ps.setString(2, name);
+            ResultSet rs = ps.executeQuery();
+            return   rs.next();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean checkCatNameExistUpdate(int ownerId , String name , int catId) {
+        String sql = "SELECT 1 FROM Cats WHERE ownerID = ? AND name = ? and catID <> ?";
+        try{
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, ownerId);
+            ps.setString(2, name);
+            ps.setInt(3, catId);
+            ResultSet rs = ps.executeQuery();
+            return   rs.next();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         CatDAO catDAO = new CatDAO();
         List<Cat> cats = catDAO.getCatList();

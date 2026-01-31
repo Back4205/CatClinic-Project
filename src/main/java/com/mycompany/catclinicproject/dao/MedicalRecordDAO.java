@@ -116,7 +116,7 @@ public class MedicalRecordDAO extends DBContext {
         List<PrescriptionDrugView> list = new ArrayList<>();
 
         String sql =
-                "SELECT d.DrugName, d.Unit, pd.Quantity, pd.UsageInstruction " +
+                "SELECT d.Price, d.DrugName, d.Unit, pd.Quantity, pd.UsageInstruction " +
                         "FROM PrescriptionDetails pd " +
                         "JOIN Drugs d ON pd.DrugID = d.DrugID " +
                         "JOIN Prescriptions p ON pd.PrescriptionID = p.PrescriptionID " +
@@ -130,10 +130,12 @@ public class MedicalRecordDAO extends DBContext {
 
             while (rs.next()) {
                 list.add(new PrescriptionDrugView(
+
                         rs.getString("DrugName"),
                         rs.getString("Unit"),
                         rs.getInt("Quantity"),
-                        rs.getString("UsageInstruction")
+                        rs.getString("UsageInstruction"),
+                        rs.getDouble("Price")
                 ));
             }
         } catch (Exception e) {

@@ -25,7 +25,7 @@
         <tr>
             <th>Date</th>
             <th>Doctor</th>
-            <th>Clinical Note</th>
+            <th>Diagnosis</th>
             <th style="text-align: center;">Action</th>
         </tr>
         </thead>
@@ -33,7 +33,7 @@
         <c:forEach items="${medicalHistoryList}" var="h">
             <tr>
                 <td style="font-weight: 600; color: #333;">${h.visitDate}</td>
-                <td>Dr. ${h.doctorName}</td>
+                <td>${h.doctorName}</td>
                 <td style="max-width: 350px; line-height: 1.5;">${h.clinicalNote}</td>
                 <td style="text-align: center;">
                     <c:choose>
