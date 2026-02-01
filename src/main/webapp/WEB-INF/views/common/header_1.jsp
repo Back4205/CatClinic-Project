@@ -37,8 +37,8 @@
 
     <!-- RIGHT: AUTH -->
     <div class="auth">
-        <a href="login.jsp" class="login">Login</a>
-        <a href="register.jsp" class="register">Register</a>
+        <a href="login" class="login">Login</a>
+        <a href="register" class="register">Register</a>
     </div>
 
 </header>

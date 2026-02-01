@@ -44,6 +44,10 @@
         <servlet-name>backToList</servlet-name>
         <servlet-class>adminController.backToList</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>loginController</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.loginController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>NewController</servlet-name>
         <url-pattern>/new</url-pattern>
@@ -90,6 +94,10 @@
     <servlet-mapping>
         <servlet-name>backToList</servlet-name>
         <url-pattern>/backtolist</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>loginController</servlet-name>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
