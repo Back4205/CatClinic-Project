@@ -2,13 +2,11 @@ package com.mycompany.catclinicproject.controller.cat;
 
 import com.mycompany.catclinicproject.dao.CatDAO;
 import com.mycompany.catclinicproject.model.Cat;
+import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
+import jakarta.servlet.http.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +36,7 @@ public class CatUpdateController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+
         try {
 
             int catId = Integer.parseInt(request.getParameter("catId"));
@@ -45,9 +44,20 @@ public class CatUpdateController extends HttpServlet {
             int newAge = Integer.parseInt(request.getParameter("age"));
 
             CatDAO dao = new CatDAO();
+            HttpSession session = request.getSession(false);
+            User user = (User) session.getAttribute("acc");
+
+            if (user == null) {
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
+
             Cat cat = dao.getCatByID(catId);
-
-
+            if (cat == null || cat.getOwnerID() != user.getUserID()) {
+                session.setAttribute("message", "You are not allowed to update this cat!");
+                request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
+                return;
+            }
             int oldAge = cat.getAge();
             String message = "";
 
@@ -83,7 +93,7 @@ public class CatUpdateController extends HttpServlet {
                 }
                 String savedName = System.currentTimeMillis() + "_" + fileName;
                 filePart.write(uploadDir.getAbsolutePath() + File.separator + savedName);
-                imagePath = "img/cats/" + savedName;
+                imagePath = "image/cats/" + savedName;
             }
 
             cat.setName(name);

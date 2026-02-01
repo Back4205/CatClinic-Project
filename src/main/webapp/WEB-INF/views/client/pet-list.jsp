@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cat Management </title>
+    <title>Cat List </title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/cat/pet_list.css">
 </head>
 

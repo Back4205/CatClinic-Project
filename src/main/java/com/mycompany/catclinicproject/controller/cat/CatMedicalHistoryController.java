@@ -17,4 +17,5 @@ public class CatMedicalHistoryController extends HttpServlet {
         request.setAttribute("medicalHistoryList", medicalHistoryList);
         request.getRequestDispatcher("/WEB-INF/views/client/cat-medical-history.jsp").forward(request, response);
     }
+
 }

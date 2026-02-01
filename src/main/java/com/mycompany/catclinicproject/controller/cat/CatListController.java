@@ -2,11 +2,13 @@ package com.mycompany.catclinicproject.controller.cat;
 
 import com.mycompany.catclinicproject.dao.CatDAO;
 import com.mycompany.catclinicproject.model.Cat;
+import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,6 +18,15 @@ import java.util.List;
 public class CatListController extends HttpServlet {
  protected  void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+     HttpSession session = request.getSession(false);
+     User user = (User)session.getAttribute("acc");
+       CatDAO catDAO = new CatDAO();
+     if(user == null){
+         response.sendRedirect(request.getContextPath()+"/login");
+         return;
+     }
+     int ownerID = user.getUserID();
+   // int ownerID = 1 ; // test
      String name = request.getParameter("name");
      String gender = request.getParameter("gender");
      String breed = request.getParameter("breed");
@@ -25,34 +36,24 @@ public class CatListController extends HttpServlet {
          indexPageTmp = "1";
      }
      int indexPage = Integer.parseInt(indexPageTmp);
-
-
-
      int age = -1; // mặc định không filter
      String ageRaw = request.getParameter("age");
      if (ageRaw != null && !ageRaw.isEmpty()) {
          age = Integer.parseInt(ageRaw);
      }
-     int ownerID = 1; // gia su ownerID = 1
-     CatDAO catDAO = new CatDAO();
-//     List<Cat> catList = catDAO.fillterCats(ownerID,name, gender, breed, age);
-//     for (Cat cat : catList) {
-//         boolean booking = catDAO.hasBooking(cat.getCatID());
-//         cat.setHasBooking(booking);
-//     }
-
      // phan trang
      int total = catDAO.countCatsWithFilter(ownerID, name, gender, breed, age);
-     int pageSize = total / 5 ;
-     if (total % 5 != 0) {
+     int numberItemInPage= 5;
+     int pageSize = total / numberItemInPage ;
+     if (total % numberItemInPage != 0) {
             pageSize += 1;
      }
-     List<Cat> catList = catDAO.filterAndPagingCats(ownerID, name, gender,breed, age, 5, indexPage);
+     List<Cat> catList = catDAO.filterAndPagingCats(ownerID, name, gender,breed, age, numberItemInPage, indexPage);
      for (Cat cat : catList) {
          boolean booking = catDAO.hasBooking(cat.getCatID());
          cat.setHasBooking(booking);
      }
-
+       // request.setAttribute("account", user);
         request.setAttribute("pageSize", pageSize);
         request.setAttribute("catList", catList);
         request.setAttribute("indexPage", indexPage);

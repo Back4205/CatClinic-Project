@@ -31,7 +31,7 @@
                     <img id="viewImg" src="${pageContext.request.contextPath}/${cat.img}" alt="Pet Image">
                 </c:when>
                 <c:otherwise>
-                    <img id="viewImg" src="${pageContext.request.contextPath}/img/cats/default.jpg" alt="Default Pet">
+                    <img id="viewImg" src="${pageContext.request.contextPath}/image/cats/default.jpg" alt="Default Pet">
                 </c:otherwise>
             </c:choose>
 
@@ -47,16 +47,16 @@
             <div class="form-name">
                 <h2>
                     <c:choose>
-                        <c:when test="${empty cat}">Add New Pet</c:when>
+                        <c:when test="${empty cat}">Add New Cat</c:when>
                         <c:otherwise>Pet Profile Details</c:otherwise>
                     </c:choose>
                 </h2>
             </div>
 
             <div class="field">
-                <label>Owner ID</label>
-                <input type="number" name="ownerID" value="${cat.ownerID}"
-                ${not empty cat ? 'readonly' : ''} required>
+                <label>Owner</label>
+<%--                <input type="text" name="ownerID" value="${account.fullName}" readonly>--%>
+                <input type="number" name="ownerID" value="${cat.ownerID}" readonly>
             </div>
 
             <div class="field">

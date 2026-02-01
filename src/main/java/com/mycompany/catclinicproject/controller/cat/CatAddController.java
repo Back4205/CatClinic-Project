@@ -2,13 +2,11 @@ package com.mycompany.catclinicproject.controller.cat;
 
 import com.mycompany.catclinicproject.dao.CatDAO;
 import com.mycompany.catclinicproject.model.Cat;
+import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
+import jakarta.servlet.http.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,10 +32,16 @@ public class CatAddController extends HttpServlet {
             throws ServletException, IOException {
         CatDAO catDAO = new CatDAO();
         String message = "";
-
+        HttpSession session = request.getSession(false);
+        User user = (User)session.getAttribute("acc");
+        if(user == null){
+            response.sendRedirect(request.getContextPath()+"/login");
+            return;
+        }
+        int ownerID = user.getUserID();
         try {
 
-            int ownerID = Integer.parseInt(request.getParameter("ownerID"));
+          //  int ownerID = Integer.parseInt(request.getParameter("ownerID"));  // test
             String name = request.getParameter("name");
             String breed = request.getParameter("breed");
             int gender = Integer.parseInt(request.getParameter("gender"));
@@ -65,7 +69,7 @@ public class CatAddController extends HttpServlet {
 
 
             Part filePart = request.getPart("image"); // lay file tu request browse
-            String imagePath = "img/cats/default.jpg";
+            String imagePath = "image/cats/default.jpg";
 
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
@@ -76,7 +80,7 @@ public class CatAddController extends HttpServlet {
                 }
                 String savedName = System.currentTimeMillis() + "_" + fileName;
                 filePart.write(uploadDir.getAbsolutePath() + File.separator + savedName);
-                imagePath = "img/cats/" + savedName;
+                imagePath = "image/cats/" + savedName;
             }
 
             Cat cat = new Cat();

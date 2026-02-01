@@ -5,7 +5,7 @@
         <PreResources
                 className="org.apache.catalina.webresources.DirResourceSet"
                 base="D:/FU-learning/SPRING-2026_ky5/SWP391/CatClinicimg"
-                webAppMount="/img"
+                webAppMount="/image"
         />
     </Resources>
 
