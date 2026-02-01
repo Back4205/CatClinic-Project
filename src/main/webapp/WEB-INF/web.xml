@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
-   version="6.0">
+<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <servlet>
+        <servlet-name>ProfileController</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.clientcontroller.ProfileController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>editController</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.clientcontroller.editController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BookingHistoryController</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.clientcontroller.BookingHistoryController</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ProfileController</servlet-name>
+        <url-pattern>/accessprofile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>editController</servlet-name>
+        <url-pattern>/edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BookingHistoryController</servlet-name>
+        <url-pattern>/booking-history</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>accessprofile</welcome-file>
     </welcome-file-list>
 </web-app>
