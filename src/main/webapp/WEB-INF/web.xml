@@ -1,8 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
-   version="6.0">
+<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <servlet>
+        <servlet-name>ViewServiceList</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.ServiceManagement.ViewServiceList</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchService</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.ServiceManagement.SearchService</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ViewServiceDetail</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.ServiceManagement.ViewServiceDetail</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>HideService</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.ServiceManagement.HideService</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditService</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.ServiceManagement.EditService</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CreateService</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.ServiceManagement.CreateService</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ViewServiceList</servlet-name>
+        <url-pattern>/ViewServiceList</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchService</servlet-name>
+        <url-pattern>/SearchService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ViewServiceDetail</servlet-name>
+        <url-pattern>/ViewServiceDetail</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HideService</servlet-name>
+        <url-pattern>/HideService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditService</servlet-name>
+        <url-pattern>/EditService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CreateService</servlet-name>
+        <url-pattern>/CreateService</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>
             30
