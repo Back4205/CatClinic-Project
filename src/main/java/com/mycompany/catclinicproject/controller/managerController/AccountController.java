@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.mycompany.catclinicproject.controller;
+package com.mycompany.catclinicproject.controller.managerController;
 
-import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
-import com.mycompany.catclinicproject.model.Service;
+import com.mycompany.catclinicproject.dao.homeDao.UserDao;
+import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Son
  */
-public class NewController extends HttpServlet {
+public class AccountController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,10 +37,10 @@ public class NewController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet NewController</title>");
+            out.println("<title>Servlet AccountController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet NewController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AccountController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,11 +58,14 @@ public class NewController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         ServiceDao sdao = new ServiceDao();
-    List<Service> serviceList = sdao.getAllService();
-    request.setAttribute("serviceList", serviceList);
-    request.getRequestDispatcher("/WEB-INF/views/common/NewPage.jsp").forward(request, response);
-    
+
+        UserDao dao = new UserDao();
+        List<User> list = dao.getAllUser();
+
+        request.setAttribute("UserList", list);
+        request.getRequestDispatcher("/WEB-INF/views/manager/AccountList.jsp")
+                .forward(request, response);
+
     }
 
     /**

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.mycompany.catclinicproject.controller;
+package com.mycompany.catclinicproject.controller.HomeController;
 
 import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
 import com.mycompany.catclinicproject.model.Service;
@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Son
  */
-public class ServiceController extends HttpServlet {
+public class loadHomePage extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,10 +37,10 @@ public class ServiceController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ServiceController</title>");
+            out.println("<title>Servlet loadHomePage</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ServiceController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet loadHomePage at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,46 +58,12 @@ public class ServiceController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       
-
-    String id = request.getParameter("id");
-    ServiceDao newdao = new ServiceDao();
-    List<Service> list = newdao.getAllService();
-
-    try {
-        int idint = Integer.parseInt(id);
-        String jspPage = null;
-
-        switch (idint) {
-            case 1:
-                jspPage = "/WEB-INF/views/common/GeneralCheckup.jsp";
-                break;
-            case 2:
-                jspPage = "/WEB-INF/views/common/petHotel.jsp";
-                break;
-            case 3:
-                jspPage = "/WEB-INF/views/common/Surgery.jsp";
-                break;
-            default:
-                jspPage = null;
-        }
-
-        request.setAttribute("serviceList", list);
-
-        if (jspPage != null) {
-            request.getRequestDispatcher(jspPage).forward(request, response);
-        } else {
-            response.sendRedirect("error.jsp");
-        }
-
-    } catch (NumberFormatException e) {
-        e.printStackTrace();
-        response.sendRedirect("error.jsp");
+        ServiceDao sdao = new ServiceDao();
+    List<Service> serviceList = sdao.getAllService();
+    request.setAttribute("serviceList", serviceList);
+    request.getRequestDispatcher("/WEB-INF/views/common/homePage.jsp").forward(request, response);
+ 
     }
-}
-
-
-    
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -110,7 +76,7 @@ public class ServiceController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        processRequest(request, response);
     }
 
     /**

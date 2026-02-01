@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package adminController;
+package com.mycompany.catclinicproject.controller.managerController;
 
 import com.mycompany.catclinicproject.dao.homeDao.UserDao;
 import com.mycompany.catclinicproject.model.User;
@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author Son
  */
-public class AccountController extends HttpServlet {
+public class DeleteUserByIDs extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,10 +37,10 @@ public class AccountController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AccountController</title>");
+            out.println("<title>Servlet DeleteUserByIDs</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AccountController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet DeleteUserByIDs at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,14 +58,21 @@ public class AccountController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String id = request.getParameter("id");
+        System.out.println("ID = " + id);
 
+        try {
+            UserDao udao = new UserDao();
+            udao.DeleteUserById(id);
+        } catch (Exception e) {
+            
+        }
         UserDao dao = new UserDao();
         List<User> list = dao.getAllUser();
-
         request.setAttribute("UserList", list);
         request.getRequestDispatcher("/WEB-INF/views/manager/AccountList.jsp")
                 .forward(request, response);
-
+        
     }
 
     /**
@@ -77,9 +84,11 @@ public class AccountController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        
     }
 
     /**

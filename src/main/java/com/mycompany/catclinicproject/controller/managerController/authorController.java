@@ -1,4 +1,4 @@
-package adminController;
+package com.mycompany.catclinicproject.controller.managerController;
 
 import com.mycompany.catclinicproject.dao.homeDao.UserDao;
 import jakarta.servlet.ServletException;

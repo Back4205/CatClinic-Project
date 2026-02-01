@@ -2,20 +2,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.mycompany.catclinicproject.controller;
+package com.mycompany.catclinicproject.controller.HomeController;
 
+import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
+import com.mycompany.catclinicproject.model.Service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
  * @author Son
  */
-public class loginController extends HttpServlet {
+public class veteController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,10 +37,10 @@ public class loginController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet loginController</title>");
+            out.println("<title>Servlet veteController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet loginController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet veteController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -55,7 +58,10 @@ public class loginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/auth/login_1.jsp").forward(request, response);
+         ServiceDao sdao = new ServiceDao();
+    List<Service> serviceList = sdao.getAllService();
+    request.setAttribute("serviceList", serviceList);
+              request.getRequestDispatcher("Homejsp/.jsp").forward(request, response);
     }
 
     /**

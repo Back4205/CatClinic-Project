@@ -2,51 +2,51 @@
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
     <servlet>
         <servlet-name>NewController</servlet-name>
-        <servlet-class>com.mycompany.catclinicproject.controller.NewController</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.HomeController.NewController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AboutUsController</servlet-name>
-        <servlet-class>com.mycompany.catclinicproject.controller.AboutUsController</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.HomeController.AboutUsController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>load</servlet-name>
-        <servlet-class>com.mycompany.catclinicproject.controller.load</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.HomeController.load</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>loadHomePage</servlet-name>
-        <servlet-class>com.mycompany.catclinicproject.controller.loadHomePage</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.HomeController.loadHomePage</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>ServiceController</servlet-name>
-        <servlet-class>com.mycompany.catclinicproject.controller.ServiceController</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.HomeController.ServiceController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>veteController</servlet-name>
-        <servlet-class>com.mycompany.catclinicproject.controller.veteController</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.HomeController.veteController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AccountController</servlet-name>
-        <servlet-class>adminController.AccountController</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.managerController.AccountController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>DeleteUserByIDs</servlet-name>
-        <servlet-class>adminController.DeleteUserByIDs</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.managerController.DeleteUserByIDs</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>addAccountController</servlet-name>
-        <servlet-class>adminController.addAccountController</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.managerController.addAccountController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>authorController</servlet-name>
-        <servlet-class>adminController.authorController</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.managerController.authorController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>backToList</servlet-name>
-        <servlet-class>adminController.backToList</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.managerController.backToList</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>loginController</servlet-name>
-        <servlet-class>com.mycompany.catclinicproject.controller.loginController</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.HomeController.loginController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>NewController</servlet-name>

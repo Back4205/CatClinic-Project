@@ -2,22 +2,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package adminController;
+package com.mycompany.catclinicproject.controller.HomeController;
 
-import com.mycompany.catclinicproject.dao.homeDao.UserDao;
+import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
+import com.mycompany.catclinicproject.model.Service;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  *
  * @author Son
  */
-public class addAccountController extends HttpServlet {
+public class NewController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +37,10 @@ public class addAccountController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet addAccountController</title>");
+            out.println("<title>Servlet NewController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet addAccountController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet NewController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,8 +58,11 @@ public class addAccountController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp").forward(request, response);
-
+         ServiceDao sdao = new ServiceDao();
+    List<Service> serviceList = sdao.getAllService();
+    request.setAttribute("serviceList", serviceList);
+    request.getRequestDispatcher("/WEB-INF/views/common/NewPage.jsp").forward(request, response);
+    
     }
 
     /**
@@ -72,49 +76,7 @@ public class addAccountController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        String role = request.getParameter("role");
-        String gender = request.getParameter("gender");
-
-        boolean male = gender.equalsIgnoreCase("Male");
-
-        UserDao dao = new UserDao();
-        if (dao.isUsernameExist(username)) {
-            request.setAttribute("error", "Username already exists!");
-            request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp")
-                    .forward(request, response);
-            return;
-        }
-
-        int roleID = dao.getRoleID(role);
-
-        boolean ok = dao.addUser(
-                username,
-                password,
-                fullName,
-                male,
-                email,
-                roleID,
-                phone,
-                null // GoogleID
-        );
-
-        if (ok) {
-            request.setAttribute("success", "Add user successfully!");
-            request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp")
-                .forward(request, response);
-        } else {
-            request.setAttribute("error", "Add user failed!");
-            request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp")
-                .forward(request, response);
-        }
-
-        
+        processRequest(request, response);
     }
 
     /**
@@ -126,6 +88,5 @@ public class addAccountController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
 
 }

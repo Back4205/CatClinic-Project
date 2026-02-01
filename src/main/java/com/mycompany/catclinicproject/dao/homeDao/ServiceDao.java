@@ -12,7 +12,7 @@ public class ServiceDao extends DBContext {
     // Lấy tất cả service
     public List<Service> getAllService() {
         List<Service> list = new ArrayList<>();
-        String sql = "SELECT * FROM Service";
+        String sql = "SELECT * FROM Services";
 
         try {
             PreparedStatement ps = c.prepareStatement(sql);
@@ -21,7 +21,7 @@ public class ServiceDao extends DBContext {
             while (rs.next()) {
                 Service s = new Service();
                 s.setServiceID(rs.getInt("ServiceID"));
-                s.setNameService(rs.getString("NameService"));
+                s.setNameService(rs.getString("ServiceName"));
                 s.setPrice(rs.getDouble("Price"));
                 s.setDescription(rs.getString("Description"));
                 s.setTimeService(rs.getInt("TimeService"));
