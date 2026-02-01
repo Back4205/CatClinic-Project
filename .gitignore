@@ -1,0 +1,22 @@
+# NetBeans specific
+nbproject/private/
+nbproject/project.xml
+nbproject/project.properties
+nbproject/genfiles.properties
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# Maven specific
+target/
+*.war
+*.ear
+*.jar
+
+# IDE specific
+.idea/
+*.iml
+.vscode/
+.DS_Store
