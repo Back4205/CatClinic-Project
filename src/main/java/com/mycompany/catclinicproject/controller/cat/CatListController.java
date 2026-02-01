@@ -53,7 +53,7 @@ public class CatListController extends HttpServlet {
          boolean booking = catDAO.hasBooking(cat.getCatID());
          cat.setHasBooking(booking);
      }
-       // request.setAttribute("account", user);
+        request.setAttribute("account", user);
         request.setAttribute("pageSize", pageSize);
         request.setAttribute("catList", catList);
         request.setAttribute("indexPage", indexPage);

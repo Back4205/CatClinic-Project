@@ -55,8 +55,8 @@
 
             <div class="field">
                 <label>Owner</label>
-<%--                <input type="text" name="ownerID" value="${account.fullName}" readonly>--%>
-                <input type="number" name="ownerID" value="${cat.ownerID}" readonly>
+                <input type="text" name="ownerID" value="${account.fullName}" readonly>
+<%--                <input type="number" name="ownerID" value="${cat.ownerID}" readonly>     test--%>
             </div>
 
             <div class="field">
