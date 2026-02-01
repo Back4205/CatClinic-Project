@@ -27,6 +27,7 @@ public class User {
         this.roleID = roleID;
         this.isActive = isActive;
         this.googleID = googleID;
+
     }
 
     public int getUserID() {

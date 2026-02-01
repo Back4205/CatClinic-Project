@@ -71,7 +71,7 @@ public class LoginController extends HttpServlet {
 
             switch (account.getRoleID()) {
                 case 1:
-                    response.sendRedirect("manager/dashboard"); 
+                    response.sendRedirect("manager/dashboard");
                     break;
                 case 2:
                     response.sendRedirect("vet/schedule");
