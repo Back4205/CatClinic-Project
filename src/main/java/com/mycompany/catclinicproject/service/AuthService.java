@@ -14,10 +14,10 @@ import java.nio.charset.StandardCharsets;
 
 public class AuthService {
 
-    public static final String GOOGLE_CLIENT_ID = "766431550241-en0u2iq6q8dem2psor9jj7reu7cu400t.apps.googleusercontent.com";
-    public static final String GOOGLE_CLIENT_SECRET = "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";
+    public static final String GOOGLE_CLIENT_ID = "766431550241-pg69p1ohgg79ori80f0bf2n5e3i0cfc1.apps.googleusercontent.com";
+    public static final String GOOGLE_CLIENT_SECRET = "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";
 
-    public static final String GOOGLE_REDIRECT_URI = "http://localhost:8080/CatClinicProject/login-google";
+    public static final String GOOGLE_REDIRECT_URI = "http://localhost:9999/CatClinicProject/login-google";
 
     public static final String GOOGLE_GRANT_TYPE = "authorization_code";
     public static final String GOOGLE_LINK_GET_TOKEN = "https://accounts.google.com/o/oauth2/token";

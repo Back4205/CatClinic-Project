@@ -83,10 +83,10 @@ public class LoginController extends HttpServlet {
                     response.sendRedirect("staff/tasks");
                     break;
                 case 5:
-                    response.sendRedirect("home");
+                    request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
                     break;
                 default:
-                    response.sendRedirect("home");
+                    request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
             }
         }
     }

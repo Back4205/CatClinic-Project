@@ -31,7 +31,7 @@ public class LogoutController extends HttpServlet {
             }
         }
 
-        response.sendRedirect("login");
+        response.sendRedirect("WEB-INF/views/common/homePage.jsp");
     }
 
     @Override

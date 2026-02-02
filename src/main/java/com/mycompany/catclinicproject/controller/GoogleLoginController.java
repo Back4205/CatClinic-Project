@@ -41,7 +41,33 @@ public class GoogleLoginController extends HttpServlet {
 
                 HttpSession session = request.getSession();
                 session.setAttribute("acc", userInDB);
-                response.sendRedirect("home");
+                int roleId = userInDB.getRoleID();
+
+                switch (roleId) {
+                    case 1:
+                        response.sendRedirect("manager/dashboard");
+                        break;
+
+                    case 2:
+                        response.sendRedirect("vet/schedule");
+                        break;
+
+                    case 3:
+                        response.sendRedirect("reception/home");
+                        break;
+
+                    case 4:
+                        response.sendRedirect("staff/tasks");
+                        break;
+
+                    case 5:
+                        request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
+                        break;
+
+                    default:
+                        response.sendRedirect("index.jsp");
+                        break;
+                }
             } else {
                 response.sendRedirect("login?mess=Google Login Failed");
             }
