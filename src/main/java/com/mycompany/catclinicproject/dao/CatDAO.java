@@ -317,34 +317,28 @@ public class CatDAO extends DBContext {
         }
         return false;
     }
-    public Owner getOwnerByUserId(int userID) {
-        String sql = "SELECT * FROM Owners WHERE UserID = ?";
-        try  {
+    public int getOwnerIdByUserId(int userID) {
+        String sql = "SELECT OwnerID FROM Owners WHERE UserID = ?";
+        try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, userID);
             ResultSet rs = ps.executeQuery();
+
             if (rs.next()) {
-                return new Owner(
-                        rs.getInt("OwnerID"),
-                        rs.getInt("UserID"),
-                        rs.getString("Address")
-                );
+                return rs.getInt("OwnerID");
             }
-        }catch (Exception e){
-            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
+        return -1; // không tìm thấy
     }
+
 
 
     public static void main(String[] args) {
         CatDAO catDAO = new CatDAO();
-        List<Cat> cats = catDAO.getCatList();
-        int count = 0;
-        for (Cat cat : cats) {
-          count ++;
-        }
-        System.out.println(count);
+      int muber = catDAO.getOwnerIdByUserId(5);
+        System.out.println(muber);
     }
 
 }

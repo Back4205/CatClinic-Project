@@ -31,7 +31,6 @@ public class ViewServiceDetail extends HttpServlet {
         Service service = dao.getServiceById(id);
 
         request.setAttribute("service", service);
-        request.getRequestDispatcher("/WEB-INF/views/manager/serviceDetail.jsp")
-               .forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/manager/serviceDetail.jsp").forward(request, response);
     }
 }

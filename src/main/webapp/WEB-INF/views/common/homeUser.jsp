@@ -51,7 +51,7 @@
     <div class="auth">
     <i class="fa-regular fa-user"></i>
     <ul class="dropdown-user">
-        <li><a href="profile">My Profile</a></li>
+        <li><a href="accessprofile">My Profile</a></li>
         <li><a href="logout">Logout</a></li>
     </ul>
 </div>

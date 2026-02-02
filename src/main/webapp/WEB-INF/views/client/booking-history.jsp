@@ -22,7 +22,7 @@
 
         <div class="container">
 
-            <c:set var="activePage" value="profile" />
+            <c:set var="activePage" value="history" />
             <%@include file="sidebar.jsp" %>
 
             <main class="content">

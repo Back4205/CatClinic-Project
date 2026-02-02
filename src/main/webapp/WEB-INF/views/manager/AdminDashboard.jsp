@@ -44,7 +44,10 @@
             <p>
                 View, add, edit, or delete pet clinic services and prices.
             </p>
-            <a href="#" class="btn-manage">Manage Now</a>
+            <a href="${pageContext.request.contextPath}/ViewServiceList"
+               class="btn-manage">
+                Manage Now
+            </a>
         </div>
 
     </div>

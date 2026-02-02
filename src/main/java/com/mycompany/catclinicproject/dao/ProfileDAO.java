@@ -1,12 +1,13 @@
 package com.mycompany.catclinicproject.dao;
 
-import com.mycompany.catclinicproject.model.User;
+
+import com.mycompany.catclinicproject.model.UserDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class ProfileDAO extends DBContext {
 
-    public User getUserProfile(int id) {
+    public UserDTO getUserProfile(int id) {
         String sql = "SELECT u.*, o.Address "
                 + "FROM Users u "
                 + "LEFT JOIN Owners o ON u.UserID = o.UserID "
@@ -16,9 +17,9 @@ public class ProfileDAO extends DBContext {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                User u = new User();
+                UserDTO u = new UserDTO();
                 u.setUserID(rs.getInt("UserID"));
-                u.setUserName(rs.getString("FullName"));
+                u.setUserName(rs.getString("UserName"));
                 u.setEmail(rs.getString("Email"));
                 u.setPhone(rs.getString("Phone"));
 
@@ -33,7 +34,7 @@ public class ProfileDAO extends DBContext {
         return null;
     }
 
-    public boolean updateProfile(User u) {
+    public boolean updateProfile(UserDTO u) {
         try {
             String sqlUser = "UPDATE Users SET FullName = ?, Phone = ?, Email = ? WHERE UserID = ?";
             PreparedStatement psUser = c.prepareStatement(sqlUser);

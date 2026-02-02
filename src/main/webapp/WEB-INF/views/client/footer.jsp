@@ -1,5 +1,5 @@
 
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <footer style="
         background: #ffffff;
         border-top: 1px solid #e5e7eb;

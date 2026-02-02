@@ -40,8 +40,7 @@ public class CatAddController extends HttpServlet {
             return;
         }
         int userID = user.getUserID();
-        Owner owner = catDAO.getOwnerByUserId(userID);
-        int ownerID = owner.getOwnerID();
+        int ownerID = catDAO.getOwnerIdByUserId(userID);
         try {
 
           //  int ownerID = Integer.parseInt(request.getParameter("ownerID"));  // test

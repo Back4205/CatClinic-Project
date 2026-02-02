@@ -17,50 +17,64 @@ import java.util.List;
 
 @WebServlet (name = "CatListController", urlPatterns = {"/cats"})
 public class CatListController extends HttpServlet {
- protected  void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-     HttpSession session = request.getSession(false);
-     User user = (User)session.getAttribute("acc");
-       CatDAO catDAO = new CatDAO();
-     if(user == null){
-         response.sendRedirect(request.getContextPath()+"/login");
-         return;
-     }
-     int userID = user.getUserID();
-    Owner owner = catDAO.getOwnerByUserId(userID);
-    int ownerID = owner.getOwnerID();
+   
 
-     String name = request.getParameter("name");
-     String gender = request.getParameter("gender");
-     String breed = request.getParameter("breed");
-     String  indexPageTmp =  request.getParameter("indexPage");
+      protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
 
-     if (indexPageTmp== null) {
-         indexPageTmp = "1";
-     }
-     int indexPage = Integer.parseInt(indexPageTmp);
-     int age = -1; // mặc định không filter
-     String ageRaw = request.getParameter("age");
-     if (ageRaw != null && !ageRaw.isEmpty()) {
-         age = Integer.parseInt(ageRaw);
-     }
-     // phan trang
-     int total = catDAO.countCatsWithFilter(ownerID, name, gender, breed, age);
-     int numberItemInPage= 5;
-     int pageSize = total / numberItemInPage ;
-     if (total % numberItemInPage != 0) {
-            pageSize += 1;
-     }
-     List<Cat> catList = catDAO.filterAndPagingCats(ownerID, name, gender,breed, age, numberItemInPage, indexPage);
-     for (Cat cat : catList) {
-         boolean booking = catDAO.hasBooking(cat.getCatID());
-         cat.setHasBooking(booking);
-     }
-        request.setAttribute("account", user);
-        request.setAttribute("pageSize", pageSize);
-        request.setAttribute("catList", catList);
-        request.setAttribute("indexPage", indexPage);
-        request.getRequestDispatcher("/WEB-INF/views/client/pet-list.jsp").forward(request, response);
+            HttpSession session = request.getSession();
+            User user = (User) session.getAttribute("acc");
 
- }
-}
+            if (user == null) {
+                response.sendRedirect(request.getContextPath() + "/login");
+                return;
+            }
+
+            CatDAO catDAO = new CatDAO();
+
+            int userID = user.getUserID();
+            int ownerID = catDAO.getOwnerIdByUserId(userID);
+            
+            System.out.println("USER ID = " + userID);
+            System.out.println("OWNER ID = " + ownerID);
+
+
+            String name = request.getParameter("name");
+            String gender = request.getParameter("gender");
+            String breed = request.getParameter("breed");
+            String indexPageTmp = request.getParameter("indexPage");
+
+            if (indexPageTmp == null) indexPageTmp = "1";
+            int indexPage = Integer.parseInt(indexPageTmp);
+
+            int age = -1;
+            String ageRaw = request.getParameter("age");
+            if (ageRaw != null && !ageRaw.isEmpty()) {
+                age = Integer.parseInt(ageRaw);
+            }
+
+            int total = catDAO.countCatsWithFilter(ownerID, name, gender, breed, age);
+            int numberItemInPage = 5;
+            int pageSize = total / numberItemInPage;
+            if (total % numberItemInPage != 0) {
+                pageSize++;
+            }
+
+            List<Cat> catList = catDAO.filterAndPagingCats(ownerID, name, gender, breed, age, numberItemInPage, indexPage);
+
+            for (Cat cat : catList) {
+                boolean booking = catDAO.hasBooking(cat.getCatID());
+                cat.setHasBooking(booking);
+            }
+
+            request.setAttribute("ownerID", ownerID);
+            request.setAttribute("account", user);
+            request.setAttribute("pageSize", pageSize);
+            request.setAttribute("catList", catList);
+            request.setAttribute("indexPage", indexPage);
+
+            request.getRequestDispatcher("/WEB-INF/views/client/pet-list.jsp").forward(request, response);
+        }
+    }
+
+

@@ -1,4 +1,5 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+
 <header class="topbar">
     <div class="logo"><i class="bi bi-hospital"></i> CatClinic</div>
     <div class="user-info">

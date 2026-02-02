@@ -16,8 +16,8 @@
 </head>
 
 <body>
-<div class="container">
 
+<div class="container">
     <div class="header">
         <h2>Cat Management</h2>
         <form action="${pageContext.request.contextPath}/cats/cat-add" method="get">
@@ -118,5 +118,7 @@
     </div>
 
 </div>
+
 </body>
+
 </html>

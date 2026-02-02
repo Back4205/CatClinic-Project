@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee                              https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
-    <!-- LOGIN -->
-     <servlet>
-        <servlet-name>loadHomePage</servlet-name>
-        <servlet-class>com.mycompany.catclinicproject.controller.HomeController.loadHomePage</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>loadHomePage</servlet-name>
-        <url-pattern>/loadinfo</url-pattern>
-    </servlet-mapping>
-      <welcome-file-list>
+<web-app
+        xmlns="https://jakarta.ee/xml/ns/jakartaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        https://jakarta.ee/xml/ns/jakartaee
+        https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+        version="5.0">
+    <welcome-file-list>
         <welcome-file>loadinfo</welcome-file>
     </welcome-file-list>
+
     <session-config>
-        <session-timeout>
-            30
-        </session-timeout>
+        <session-timeout>30</session-timeout>
     </session-config>
+
 </web-app>

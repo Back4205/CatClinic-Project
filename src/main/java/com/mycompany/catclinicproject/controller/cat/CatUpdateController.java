@@ -46,15 +46,14 @@ public class CatUpdateController extends HttpServlet {
 
             CatDAO dao = new CatDAO();
             HttpSession session = request.getSession(false);
-            User user = (User) session.getAttribute("acc");
-
-            if (user == null) {
-                response.sendRedirect(request.getContextPath() + "/login");
+            User user = (User)session.getAttribute("acc");
+            CatDAO catDAO = new CatDAO();
+            if(user == null){
+                response.sendRedirect(request.getContextPath()+"/login");
                 return;
             }
             int userID = user.getUserID();
-            Owner owner = dao.getOwnerByUserId(userID);
-            int ownerID = owner.getOwnerID();
+            int ownerID = catDAO.getOwnerIdByUserId(userID);
 
             Cat cat = dao.getCatByID(catId);
             if (cat == null || cat.getOwnerID() != ownerID) {

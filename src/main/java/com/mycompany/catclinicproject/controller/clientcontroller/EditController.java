@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.controller.clientcontroller;
 
 import com.mycompany.catclinicproject.dao.ProfileDAO;
 import com.mycompany.catclinicproject.model.User;
+import com.mycompany.catclinicproject.model.UserDTO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,17 +20,17 @@ public class EditController extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        int userID = 5;
-//        HttpSession session = request.getSession(false);
-//     User user = (User)session.getAttribute("acc");
-//     if(user == null){
-//         response.sendRedirect(request.getContextPath()+"/login");
-//         return;
-//     }
-//     int userID = user.getUserID();
+  //      int userID = 5;
+        HttpSession session = request.getSession(false);
+     User user = (User)session.getAttribute("acc");
+     if(user == null){
+         response.sendRedirect(request.getContextPath()+"/login");
+         return;
+     }
+     int userID = user.getUserID();
 
         ProfileDAO dao = new ProfileDAO();
-        User userProfile = dao.getUserProfile(userID);
+        UserDTO userProfile = dao.getUserProfile(userID);
 
         request.setAttribute("user", userProfile);
         request.getRequestDispatcher("/WEB-INF/views/client/edit-profile.jsp").forward(request, response);
@@ -41,21 +42,21 @@ public class EditController extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        int userID = 5;
-//       HttpSession session = request.getSession(false);
-//     User user = (User)session.getAttribute("acc");
-//     if(user == null){
-//         response.sendRedirect(request.getContextPath()+"/login");
-//         return;
-//     }
-//     int userID = user.getUserID();
+    //    int userID = 5;
+       HttpSession session = request.getSession(false);
+     User user = (User)session.getAttribute("acc");
+     if(user == null){
+         response.sendRedirect(request.getContextPath()+"/login");
+         return;
+     }
+     int userID = user.getUserID();
 
         String userName = request.getParameter("userName");
         String phone = request.getParameter("phone");
         String email = request.getParameter("email");
         String address = request.getParameter("address");
 
-        User u = new User();
+       UserDTO u = new UserDTO();
         u.setUserID(userID);
         u.setUserName(userName);
         u.setPhone(phone);

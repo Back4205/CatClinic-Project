@@ -23,14 +23,15 @@ public class BookingHistoryController extends HttpServlet {
             throws ServletException, IOException {
 
         // --- HARDCODED USER ID = 5 ---
-        int userID = 5;
-//        HttpSession session = request.getSession(false);
-//     User user = (User)session.getAttribute("acc");
-//     if(user == null){
-//         response.sendRedirect(request.getContextPath()+"/login");
-//         return;
-//     }
-//     int userID = user.getUserID();
+      //  int userID = 5;
+        HttpSession session = request.getSession(false);
+     User user = (User)session.getAttribute("acc");
+     if(user == null){
+         response.sendRedirect(request.getContextPath()+"/login");
+         return;
+     }
+     int userID = user.getUserID();
+
 
         String keyword = request.getParameter("search");
         String filterStatus = request.getParameter("status");
@@ -97,6 +98,7 @@ public class BookingHistoryController extends HttpServlet {
             }
         }
 
+        request.setAttribute("user", user);
         request.setAttribute("bookingList", filteredList); // Filtered list
         request.setAttribute("total", total);
         request.setAttribute("scheduled", scheduled);

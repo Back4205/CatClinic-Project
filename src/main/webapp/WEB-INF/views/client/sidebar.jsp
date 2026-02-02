@@ -1,5 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 
 <aside class="sidebar">
     <div class="profile-card">
@@ -19,10 +18,10 @@
         <a href="accessprofile" class="${activePage == 'profile' ? 'active' : ''}">
             <i class="bi bi-person-gear"></i> Profile & Security
         </a>
-        <a href="#" class="${activePage == 'home' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/homeUser.jsp" class="${activePage == 'home' ? 'active' : ''}">
             <i class="bi bi-house"></i> Home
         </a>
-        <a href="#" style="color: red; margin-top: 20px;">
+        <a href="${pageContext.request.contextPath}/homePage.jsp" style="color: red; margin-top: 20px;">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
     </nav>

@@ -1,6 +1,9 @@
-package com.mycompany.catclinicproject.controller;
+package com.mycompany.catclinicproject.controller.authentic;
 
+import com.mycompany.catclinicproject.dao.ServiceDAO;
 import com.mycompany.catclinicproject.dao.UserDAO;
+import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
+import com.mycompany.catclinicproject.model.Service;
 import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -10,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 
 @WebServlet(name = "LoginController", urlPatterns = {"/login"})
 public class LoginController extends HttpServlet {
@@ -44,6 +48,9 @@ public class LoginController extends HttpServlet {
 
         UserDAO dao = new UserDAO();
         User account = dao.checkLogin(u, p);
+       
+        
+
 
         if (account == null) {
 
@@ -71,7 +78,7 @@ public class LoginController extends HttpServlet {
 
             switch (account.getRoleID()) {
                 case 1:
-                    response.sendRedirect("manager/dashboard");
+                    request.getRequestDispatcher("WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
                     break;
                 case 2:
                     response.sendRedirect("vet/schedule");
@@ -83,6 +90,9 @@ public class LoginController extends HttpServlet {
                     response.sendRedirect("staff/tasks");
                     break;
                 case 5:
+                    ServiceDao sdao = new ServiceDao();
+                    List<Service> serviceList = sdao.getAllService();
+                    request.setAttribute("serviceList", serviceList);
                     request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
                     break;
                 default:
@@ -91,3 +101,4 @@ public class LoginController extends HttpServlet {
         }
     }
 }
+

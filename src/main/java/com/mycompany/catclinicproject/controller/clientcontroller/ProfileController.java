@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.controller.clientcontroller;
 
 import com.mycompany.catclinicproject.dao.ProfileDAO;
 import com.mycompany.catclinicproject.model.User;
+import com.mycompany.catclinicproject.model.UserDTO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,18 +19,18 @@ public class ProfileController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//         HttpSession session = request.getSession(false);
-//     User user = (User)session.getAttribute("acc");
-//     if(user == null){
-//         response.sendRedirect(request.getContextPath()+"/login");
-//         return;
-//     }
-//     int userID = user.getUserID();
+         HttpSession session = request.getSession(false);
+     User user = (User)session.getAttribute("acc");
+     if(user == null){
+         response.sendRedirect(request.getContextPath()+"/login");
+         return;
+     }
+     int userID = user.getUserID();
 
-        int userID = 5;
+//        int userID = 5;
 
         ProfileDAO dao = new ProfileDAO();
-        User userProfile = dao.getUserProfile(userID);
+        UserDTO userProfile = dao.getUserProfile(userID);
 
         request.setAttribute("user", userProfile);
         request.getRequestDispatcher("/WEB-INF/views/client/my-profile.jsp").forward(request, response);
@@ -39,14 +40,14 @@ public class ProfileController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        int userID = 5;
-//         HttpSession session = request.getSession(false);
-//     User user = (User)session.getAttribute("acc");
-//     if(user == null){
-//         response.sendRedirect(request.getContextPath()+"/login");
-//         return;
-//     }
-//      int userID = user.getUserID();
+//        int userID = 5;
+         HttpSession session = request.getSession(false);
+     User user = (User)session.getAttribute("acc");
+     if(user == null){
+         response.sendRedirect(request.getContextPath()+"/login");
+         return;
+     }
+      int userID = user.getUserID();
         String action = request.getParameter("action");
         ProfileDAO dao = new ProfileDAO();
 
