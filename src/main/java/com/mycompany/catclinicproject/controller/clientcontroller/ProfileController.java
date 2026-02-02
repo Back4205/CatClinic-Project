@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "ProfileController", urlPatterns = {"/accessprofile"})
 public class ProfileController extends HttpServlet {
-
+    private static final String PASS_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$";
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -48,30 +48,55 @@ public class ProfileController extends HttpServlet {
         String action = request.getParameter("action");
         ProfileDAO dao = new ProfileDAO();
 
-        // Condition: Check if the user action is "changePassword"
-        if ("changePassword".equals(action)) {
-            String oldPass = request.getParameter("oldPass");
-            String newPass = request.getParameter("newPass");
-            String confirmPass = request.getParameter("confirmPass");
+          if ("changePassword".equals(action)) {
 
-            // Condition: Check if the new password and confirm password do NOT match
-            if (!newPass.equals(confirmPass)) {
-                request.setAttribute("message", "New passwords do not match!");
-                request.setAttribute("messageType", "error");
-            } 
-            // Condition: Check if the old password is correct in the database
-            else if (dao.checkPassword(userID, oldPass)) {
-                dao.changePassword(userID, newPass);
-                request.setAttribute("message", "Password updated successfully!");
-                request.setAttribute("messageType", "success");
-            } 
-            // Condition: Execute this block if the old password is incorrect
-            else {
-                request.setAttribute("message", "Current password is incorrect!");
-                request.setAttribute("messageType", "error");
-            }
+        String oldPass = request.getParameter("oldPass");
+        String newPass = request.getParameter("newPass");
+        String confirmPass = request.getParameter("confirmPass");
+
+        // 1. Check empty
+        if (oldPass == null || newPass == null || confirmPass == null
+                || oldPass.isEmpty() || newPass.isEmpty() || confirmPass.isEmpty()) {
+
+            request.setAttribute("message", "Please fill in all password fields!");
+            request.setAttribute("messageType", "error");
+
         }
-        
-        doGet(request, response);
+        // 2. Check old password
+        else if (!dao.checkPassword(userID, oldPass)) {
+
+            request.setAttribute("message", "Current password is incorrect!");
+            request.setAttribute("messageType", "error");
+
+        }
+        // 3. Check new password format
+        else if (!newPass.matches(PASS_PATTERN)) {
+
+            request.setAttribute("message",
+                    "Password must be at least 6 characters, including letters and numbers!");
+            request.setAttribute("messageType", "error");
+
+        }
+        // 4. Check confirm password
+        else if (!newPass.equals(confirmPass)) {
+
+            request.setAttribute("message", "New passwords do not match!");
+            request.setAttribute("messageType", "error");
+
+        }
+        // 5. Change password
+        else {
+
+            dao.changePassword(userID, newPass);
+            request.setAttribute("message", "Password updated successfully!");
+            request.setAttribute("messageType", "success");
+
+        }
     }
+
+    request.getRequestDispatcher("/WEB-INF/views/client/my-profile.jsp")
+            .forward(request, response);
 }
+        
+       // doGet(request, response);
+    }

@@ -1,46 +1,27 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%--<%@page contentType="text/html" pageEncoding="UTF-8"%>--%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <title>Edit Profile | CatClinic</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/edit-profile.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    </head>
-    <body>
+    <meta charset="UTF-8">
+    <title>Edit Profile | CatClinic</title>
+    
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/base.css">
+    
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/header.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/sidebar.css">
+    
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/edit-profile.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>    <body>
 
-        <header class="topbar">
-            <div class="logo">CatClinic</div>
-            <div class="top-user">
-                <div class="user-text">
-                    <strong>${user.userName}</strong>
-                    <span>PREMIUM MEMBER</span>
-                </div>
-                    <div class="avatar">
-                        <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
-                    </div>
-            </div>
-        </header>
+       <%@include file="header.jsp" %>
 
         <div class="container">
-            <aside class="sidebar">
-                <div class="user-card">
-                     <div class="avatar large">
-        <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
-    </div>
-                    <h3>${user.userName}</h3>
-                    <p>CATCLINIC PORTAL</p>
-                </div>
-                <nav class="menu">
-                    <a href="${pageContext.request.contextPath}/cats">? Cat List</a>
-                    <a href="#">? Visit History</a>
-                    <a href="accessprofile" class="active">? Profile & Security</a>
-                </nav>
-                <a href="#" class="logout">? Logout</a>
-            </aside>
-
+            <c:set var="activePage" value="profile" />
+        <%@include file="sidebar.jsp" %>
             <main class="content">
                 <section class="card">
                     <h2>Edit Profile</h2>
@@ -92,6 +73,12 @@
                     </form>
                 </section>
             </main>
+                            
         </div>
+               <footer style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 25px 0; text-align: center; color: #64748b; font-size: 14px; margin-top: auto;">
+    <div class="footer-content">
+        &copy; 2026 CatClinic. All rights reserved.
+    </div>
+</footer>                
     </body>
 </html>

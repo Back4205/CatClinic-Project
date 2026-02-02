@@ -1,11 +1,8 @@
-/* --- LAYOUT CHUNG --- */
-body {
-    background-color: #f8f9fa; 
-}
+/* --- TRANG VISIT HISTORY (Nội dung riêng) --- */
 
 .page-title h2 {
     margin: 0;
-    border-left: 4px solid #111;
+    border-left: 4px solid var(--dark);
     padding-left: 15px;
     font-size: 24px;
     color: #333;
@@ -18,7 +15,7 @@ body {
     letter-spacing: 0.5px;
 }
 
-
+/* THỐNG KÊ (Stats) */
 .stats-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr); 
@@ -38,28 +35,23 @@ body {
     transition: transform 0.2s;
 }
 
-.stat-card:hover {
-    transform: translateY(-3px); 
-}
+.stat-card:hover { transform: translateY(-3px); }
 
 .stat-icon {
-    width: 55px;
-    height: 55px;
+    width: 55px; height: 55px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-size: 26px;
 }
 
 .stat-info h3 { margin: 0; font-size: 28px; color: #333; font-weight: 700; }
 .stat-info p { margin: 0; color: #888; font-size: 12px; text-transform: uppercase; font-weight: 600; }
 
-
 .icon-total { background: #e0f2fe; color: #0284c7; } 
 .icon-scheduled { background: #dcfce7; color: #166534; } 
 .icon-completed { background: #f3e8ff; color: #7e22ce; } 
 
+/* THANH LỌC (Filter Bar) */
 .filter-bar {
     background: white;
     padding: 15px 20px;
@@ -81,29 +73,18 @@ body {
     font-size: 14px;
     transition: 0.2s;
 }
-.search-input:focus { border-color: #10b981; background: white; }
+.search-input:focus { border-color: var(--primary); background: white; }
 
 .filter-buttons button {
-    background: white;
-    border: 1px solid #e5e7eb;
-    padding: 8px 16px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 12px;
-    color: #6b7280;
-    margin-left: 8px;
-    transition: 0.2s;
+    background: white; border: 1px solid #e5e7eb;
+    padding: 8px 16px; border-radius: 6px;
+    cursor: pointer; font-weight: 600; font-size: 12px;
+    color: #6b7280; margin-left: 8px; transition: 0.2s;
 }
 
-.filter-buttons button:hover { background: #f3f4f6; }
-.filter-buttons button.active {
-    background: #111827; 
-    color: white;
-    border-color: #111827;
-}
+.filter-buttons button.active { background: var(--dark); color: white; border-color: var(--dark); }
 
-
+/* DANH SÁCH LỊCH SỬ (Booking List) */
 .booking-list {
     background: white;
     border-radius: 12px;
@@ -121,22 +102,17 @@ body {
     transition: background 0.2s;
 }
 
-.booking-item:last-child { border-bottom: none; }
 .booking-item:hover { background-color: #fafafa; }
 
-/* Chi tiết từng cột */
 .cat-info strong { display: block; font-size: 16px; color: #1f2937; margin-bottom: 2px; }
-.cat-info span { font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; }
+.cat-info span { font-size: 11px; color: #9ca3af; text-transform: uppercase; }
 
 .datetime { color: #4b5563; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
-.datetime i { width: 20px; text-align: center; margin-right: 5px; color: #10b981; }
-
-.service-type { font-size: 14px; font-weight: 600; color: #374151; display: flex; align-items: center; }
-.service-type i { margin-right: 8px; font-size: 16px; color: #6b7280; }
+.datetime i { margin-right: 5px; color: var(--primary); }
 
 .price { font-weight: 700; color: #111827; font-size: 15px; }
 
-
+/* TRẠNG THÁI (Status Badges) */
 .status-badge {
     padding: 6px 14px;
     border-radius: 20px;
@@ -149,7 +125,7 @@ body {
 }
 
 .status-upcoming { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; } 
-.status-completed { background: #1f2937; color: white; border: 1px solid #1f2937; }
+.status-completed { background: var(--dark); color: white; }
 .status-cancelled { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; } 
 .status-inprogress { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; } 
 
@@ -163,19 +139,6 @@ body {
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
-    display: inline-block;
-    text-align: center;
     transition: 0.2s;
 }
-.btn-view:hover {
-    border-color: #10b981;
-    color: #10b981;
-    background: #ecfdf5;
-}
-
-.empty-state {
-    padding: 60px;
-    text-align: center;
-    color: #9ca3af;
-}
-.empty-state i { font-size: 48px; margin-bottom: 10px; display: block; opacity: 0.5; }
+.btn-view:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }

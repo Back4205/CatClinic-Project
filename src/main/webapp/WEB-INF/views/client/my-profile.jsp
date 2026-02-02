@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%--<%@page contentType="text/html" pageEncoding="UTF-8"%>--%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
@@ -6,71 +6,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile Settings | CatClinic</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/my-profile.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     
-<!--    <style>
-        #toggle-pass {
-            display: none;
-        }
-
-        #passwordForm {
-            display: none;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .btn-toggle {
-            background-color: #10b981;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            display: inline-block;
-            user-select: none;
-        }
-        .btn-toggle:hover { background-color: #059669; }
-
-        #toggle-pass:checked ~ #passwordForm {
-            display: block; /* Hiá»‡n form */
-        }
-        
-        #toggle-pass:checked ~ .password-header .btn-toggle {
-            display: none; /* áº¨n nÃºt Change Password Ä‘i */
-        }
-    </style>-->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/base.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/header.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/sidebar.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/my-profile.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body>
+<%@include file="header.jsp" %>
 
-    <header class="topbar">
-        <div class="logo"><i class="bi bi-hospital"></i> CatClinic</div>
-        <div class="user-info">
-            <span class="name">${user.userName}</span>
-             <div class="avatar">
-                        <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
-                    </div>
-        </div>
-    </header>
 
     <div class="container">
-        <aside class="sidebar">
-           <div class="profile-card">
-    <div class="avatar large">
-        <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
-    </div>
-    <h3>${user.userName}</h3>
-    <p>CATCLINIC PORTAL</p>
-</div>
-            <nav class="menu">
-                <a href="${pageContext.request.contextPath}/cats"><i class="bi bi-grid-fill"></i> Cat List</a>
-                <a href="booking-history"><i class="bi bi-calendar-event"></i> Visit History</a>
-                <a href="accessprofile" class="active"><i class="bi bi-person-gear"></i> Profile & Security</a>
-                <a href="#"><i class="bi bi-house"></i> Home</a>
-                <a href="#" style="color: red; margin-top: 20px;"><i class="bi bi-box-arrow-right"></i> Logout</a>
-            </nav>
-        </aside>
+        <c:set var="activePage" value="profile" />
+        <%@include file="sidebar.jsp" %>
 
         <main class="content">
             
@@ -96,8 +46,9 @@
 
             <div class="password-box">
                 
-                <input type="checkbox" id="toggle-pass" 
-                       <c:if test="${not empty message}">checked</c:if> >
+                <input type="checkbox" id="toggle-pass"
+       <c:if test="${not empty message}">checked</c:if>>
+
 
                 <div class="password-header">
                     <h3><i class="bi bi-shield-lock"></i> Password Security</h3>
@@ -106,24 +57,46 @@
                 </div>
 
                 <div id="passwordForm">
-                    <form action="accessprofile" method="POST">
-                        <input type="hidden" name="action" value="changePassword">
-                        
-                        <input type="password" name="oldPass" placeholder="Current Password" required>
-                        <input type="password" name="newPass" placeholder="New Password" required>
-                        <input type="password" name="confirmPass" placeholder="Confirm Password" required>
+                    <form action="${pageContext.request.contextPath}/accessprofile" method="post">
+    <input type="hidden" name="action" value="changePassword">
 
-                        <div class="actions">
-                            <button type="submit" class="update-btn">Update Credentials</button>
-                            
-                            <label for="toggle-pass" class="cancel-btn" style="text-align:center; padding-top:14px; display:inline-block;">Cancel</label>
-                        </div>
-                    </form>
+    <input type="password"
+           name="oldPass"
+           placeholder="Current Password"
+           >
+
+    <input type="password"
+           name="newPass"
+           placeholder="New Password">
+
+    <input type="password"
+           name="confirmPass"
+           placeholder="Confirm Password"
+>           
+
+    <div class="actions">
+        <button type="submit" class="update-btn">Update Credentials</button>
+        <label for="toggle-pass"
+               class="cancel-btn"
+               style="text-align:center; padding-top:14px; display:inline-block;">
+            Cancel
+        </label>
+    </div>
+</form>
+
                 </div>
                 
             </div>
         </main>
     </div>
+    </div> <%-- CHÈN DÒNG NÀY VÀO ?ÂY --%>
+    <footer style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 25px 0; text-align: center; color: #64748b; font-size: 14px; margin-top: auto;">
+    <div class="footer-content">
+        &copy; 2026 CatClinic. All rights reserved.
+    </div>
+</footer>
 
+</body>
+</html>
 </body>
 </html>

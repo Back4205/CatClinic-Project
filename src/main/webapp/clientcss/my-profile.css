@@ -1,156 +1,8 @@
 /* =========================
-   RESET & BASE
+   MY-PROFILE.CSS (Nội dung riêng)
 ========================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
 
-:root {
-    --primary: #f97316;
-    --primary-light: #fff7ed;
-    --dark: #0f172a;
-    --dark-2: #020617;
-    --gray: #64748b;
-}
-
-body {
-    background: #f5f7fa;
-    color: #1f2937;
-}
-
-/* =========================
-   TOP BAR
-========================= */
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 30px;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.logo {
-    font-size: 22px;
-    font-weight: bold;
-    color: var(--primary);
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.user-info .name {
-    font-weight: 500;
-}
-
-.badge {
-    font-size: 12px;
-    color: var(--gray);
-}
-
-.avatar {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: var(--primary-light);
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-} 
-
-/* Avatar container - FIX LỖI ẢNH TO */
-.avatar.large {
-    width: 80px;            /* Kích thước chuẩn như hình 2 */
-    height: 80px;
-    margin: 0 auto 10px;
-    border-radius: 50%;
-    overflow: hidden;      /* QUAN TRỌNG: cắt ảnh thừa */
-    background: #f1f5f9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-/* Avatar image - FIX LỖI ẢNH TO */
-.avatar.large img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;     /* Giữ tỉ lệ, không méo */
-    display: block;
-}
-
-/* =========================
-   LAYOUT
-========================= */
-.container {
-    display: flex;
-    gap: 30px;
-    padding: 30px;
-}
-
-/* =========================
-   SIDEBAR
-========================= */
-.sidebar {
-    width: 260px;
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 20px;
-    /* overflow: hidden; */ /* Bỏ ẩn ở đây để không làm mất bóng đổ nếu có */
-}
-
-.profile-card {
-    text-align: center;
-    margin-bottom: 25px;
-}
-
-.profile-card h3 {
-    margin-bottom: 4px;
-}
-
-.profile-card p {
-    font-size: 12px;
-    color: var(--gray);
-}
-
-/* =========================
-   MENU
-========================= */
-.menu a {
-    display: block;
-    padding: 12px 14px;
-    margin-bottom: 8px;
-    text-decoration: none;
-    color: #374151;
-    border-radius: 10px;
-    transition: 0.2s;
-}
-
-.menu a:hover,
-.menu a.active {
-    background: var(--primary-light);
-    color: var(--primary);
-}
-
-/* =========================
-   MAIN CONTENT
-========================= */
-.content {
-    flex: 1;
-}
-
-/* =========================
-   PROFILE BOX
-========================= */
+/* PROFILE BOX - Khung chứa thông tin cá nhân */
 .profile-box {
     background: #ffffff;
     border-radius: 14px;
@@ -169,9 +21,9 @@ body {
     font-size: 22px;
 }
 
-/* Edit button */
+/* Nút Edit Profile */
 .edit-btn {
-    text-decoration: none; /* Bỏ gạch chân thẻ a */
+    text-decoration: none;
     padding: 8px 18px;
     border-radius: 999px;
     border: 1px solid var(--primary);
@@ -187,7 +39,7 @@ body {
     color: #fff;
 }
 
-/* Info grid */
+/* Lưới hiển thị thông tin Full Name, Email... */
 .info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -205,20 +57,20 @@ body {
 }
 
 /* =========================
-   PASSWORD SECURITY
+   PASSWORD SECURITY - Khung màu tối
 ========================= */
 .password-box {
-    background: linear-gradient(135deg, var(--dark), var(--dark-2));
+    background: linear-gradient(135deg, #f97316, #fb923c);
     border-radius: 18px;
     padding: 30px;
     color: #ffffff;
 }
 
+
 .password-box h3 {
     margin-bottom: 20px;
 }
 
-/* Inputs */
 .password-box input {
     width: 100%;
     padding: 14px 16px;
@@ -234,9 +86,7 @@ body {
     color: #94a3b8;
 }
 
-/* =========================
-   ACTION BUTTONS
-========================= */
+/* Các nút Update và Cancel */
 .actions {
     display: flex;
     gap: 15px;
@@ -255,10 +105,6 @@ body {
     transition: 0.2s;
 }
 
-.update-btn:hover {
-    opacity: 0.9;
-}
-
 .cancel-btn {
     padding: 14px 26px;
     border-radius: 12px;
@@ -268,12 +114,8 @@ body {
     cursor: pointer;
 }
 
-.cancel-btn:hover {
-    background: rgba(255,255,255,0.08);
-}
-
 /* =========================
-   PASSWORD TOGGLE LOGIC (Chuyển từ JSP sang)
+   LOGIC ẨN HIỆN PASSWORD (Checkbox Hack)
 ========================= */
 #toggle-pass {
     display: none;
@@ -294,38 +136,12 @@ body {
     font-weight: bold;
     cursor: pointer;
     display: inline-block;
-    user-select: none;
 }
 
-.btn-toggle:hover { 
-    background-color: #059669; 
-}
-
-/* Kỹ thuật Checkbox Hack để hiển thị Form */
 #toggle-pass:checked ~ #passwordForm {
     display: block;
 }
 
-/* Ẩn nút "Change Password" khi form đang mở */
 #toggle-pass:checked ~ .password-header .btn-toggle {
     display: none;
-}
-
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #fff7ed;
-    color: #f97316;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden; /* Đảm bảo avatar nhỏ cũng không bị tràn */
-}
-
-.avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
