@@ -87,4 +87,5 @@ public class AuthService {
 
         return user;
     }
+    private static AuthService instance;
 }
