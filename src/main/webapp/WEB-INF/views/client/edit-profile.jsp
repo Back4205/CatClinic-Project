@@ -4,24 +4,24 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-    <meta charset="UTF-8">
-    <title>Edit Profile | CatClinic</title>
-    
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/base.css">
-    
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/header.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/sidebar.css">
-    
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/edit-profile.css">
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-</head>    <body>
+        <meta charset="UTF-8">
+        <title>Edit Profile | CatClinic</title>
 
-       <%@include file="header.jsp" %>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/base.css">
+
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/header.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/sidebar.css">
+
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/edit-profile.css">
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    </head>    <body>
+
+        <%@include file="header.jsp" %>
 
         <div class="container">
             <c:set var="activePage" value="profile" />
-        <%@include file="sidebar.jsp" %>
+            <%@include file="sidebar.jsp" %>
             <main class="content">
                 <section class="card">
                     <h2>Edit Profile</h2>
@@ -34,7 +34,7 @@
                     </c:if>
 
                     <form action="${pageContext.request.contextPath}/edit" method="post">
-                        
+
                         <div class="form-grid">
                             <div class="field">
                                 <label>Full Name</label>
@@ -58,7 +58,7 @@
                             <button type="submit" class="btn primary">
                                 ${messageType == 'success' ? 'Update Again' : 'Save Changes'}
                             </button>
-                            
+
                             <a href="accessprofile" class="btn">
                                 <c:choose>
                                     <c:when test="${messageType == 'success'}">
@@ -73,12 +73,12 @@
                     </form>
                 </section>
             </main>
-                            
+
         </div>
-               <footer style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 25px 0; text-align: center; color: #64748b; font-size: 14px; margin-top: auto;">
-    <div class="footer-content">
-        &copy; 2026 CatClinic. All rights reserved.
-    </div>
-</footer>                
+        <footer style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 25px 0; text-align: center; color: #64748b; font-size: 14px; margin-top: auto;">
+            <div class="footer-content">
+                &copy; 2026 CatClinic. All rights reserved.
+            </div>
+        </footer>                
     </body>
 </html>

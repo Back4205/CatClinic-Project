@@ -91,10 +91,10 @@
     </div>
     </div> <%-- CHÈN DÒNG NÀY VÀO ?ÂY --%>
     <footer style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 25px 0; text-align: center; color: #64748b; font-size: 14px; margin-top: auto;">
-    <div class="footer-content">
-        &copy; 2026 CatClinic. All rights reserved.
-    </div>
-</footer>
+        <div class="footer-content">
+            &copy; 2026 CatClinic. All rights reserved.
+        </div>
+    </footer>
 
 </body>
 </html>

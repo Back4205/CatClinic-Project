@@ -1,6 +1,4 @@
-/* =========================
-    TOP BAR
-========================= */
+
 .topbar {
     display: flex;
     justify-content: space-between;
@@ -26,7 +24,6 @@
     font-weight: 500;
 }
 
-/* Avatar nhỏ trên Header */
 .avatar {
     width: 34px;
     height: 34px;

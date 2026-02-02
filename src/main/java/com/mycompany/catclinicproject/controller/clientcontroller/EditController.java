@@ -16,9 +16,9 @@ public class EditController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        request.setCharacterEncoding("UTF-8"); 
-        
+
+        request.setCharacterEncoding("UTF-8");
+
         int userID = 5;
 //        HttpSession session = request.getSession(false);
 //     User user = (User)session.getAttribute("acc");
@@ -30,7 +30,7 @@ public class EditController extends HttpServlet {
 
         ProfileDAO dao = new ProfileDAO();
         User userProfile = dao.getUserProfile(userID);
-        
+
         request.setAttribute("user", userProfile);
         request.getRequestDispatcher("/WEB-INF/views/client/edit-profile.jsp").forward(request, response);
     }
@@ -38,7 +38,7 @@ public class EditController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         request.setCharacterEncoding("UTF-8");
 
         int userID = 5;
@@ -64,15 +64,11 @@ public class EditController extends HttpServlet {
 
         ProfileDAO dao = new ProfileDAO();
         boolean isUpdated = dao.updateProfile(u);
-
-        // Condition: Check if the update operation was successful (returns true)
         if (isUpdated) {
             request.setAttribute("message", "Update Profile Successfully!");
             request.setAttribute("messageType", "success");
-            request.setAttribute("user", u); 
-        } 
-        // Condition: Execute this block if the update operation failed (returns false)
-        else {
+            request.setAttribute("user", u);
+        } else {
             request.setAttribute("message", "Update failed. Please try again.");
             request.setAttribute("messageType", "error");
             request.setAttribute("user", u);

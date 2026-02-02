@@ -1,6 +1,4 @@
-/* =========================
-    SIDEBAR
-========================= */
+
 .sidebar {
     width: 260px;
     background: #ffffff;
@@ -22,7 +20,6 @@
     color: var(--gray);
 }
 
-/* Avatar lớn trong Sidebar */
 .avatar.large {
     width: 80px;
     height: 80px;
@@ -44,9 +41,6 @@
     display: block;
 }
 
-/* =========================
-    MENU LINKS
-========================= */
 .menu a {
     display: block;
     padding: 12px 14px;
