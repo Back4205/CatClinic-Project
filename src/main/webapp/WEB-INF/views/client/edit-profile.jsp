@@ -6,7 +6,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Edit Profile | CatClinic</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/editProfile.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/edit-profile.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     </head>
     <body>

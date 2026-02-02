@@ -13,13 +13,11 @@ public class User {
     private boolean isActive;
     private String googleID;
 
-    // --- PHẦN BẠN THÊM VÀO (Để phục vụ Profile) ---
     private String address; 
 
     public User() {
     }
 
-    // Constructor CŨ của bạn mình (GIỮ NGUYÊN ĐỂ KHÔNG LỖI LOGIN)
     public User(int userID, String userName, String password, String fullName, String email, String phone, boolean male, int roleID, boolean isActive, String googleID) {
         this.userID = userID;
         this.userName = userName;
@@ -114,7 +112,6 @@ public class User {
         this.googleID = googleID;
     }
 
-    // --- GETTER & SETTER MỚI CHO ADDRESS (THÊM VÀO CUỐI) ---
     public String getAddress() {
         return address;
     }

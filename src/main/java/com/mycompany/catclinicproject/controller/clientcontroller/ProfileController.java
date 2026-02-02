@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-// 👇 ĐÃ SỬA: Đường dẫn là /accessprofile
 @WebServlet(name = "ProfileController", urlPatterns = {"/accessprofile"})
 public class ProfileController extends HttpServlet {
 
@@ -17,46 +16,48 @@ public class ProfileController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // --- FIX CỨNG ID = 5 ĐỂ TEST ---
         int userID = 5; 
 
         ProfileDAO dao = new ProfileDAO();
         User userProfile = dao.getUserProfile(userID);
         
         request.setAttribute("user", userProfile);
-        request.getRequestDispatcher("/WEB-INF/views/client/MyProfile.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/client/my-profile.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // --- FIX CỨNG ID = 5 ---
         int userID = 5;
 
         String action = request.getParameter("action");
         ProfileDAO dao = new ProfileDAO();
 
-        // Logic đổi mật khẩu
+        // Condition: Check if the user action is "changePassword"
         if ("changePassword".equals(action)) {
             String oldPass = request.getParameter("oldPass");
             String newPass = request.getParameter("newPass");
             String confirmPass = request.getParameter("confirmPass");
 
+            // Condition: Check if the new password and confirm password do NOT match
             if (!newPass.equals(confirmPass)) {
                 request.setAttribute("message", "New passwords do not match!");
                 request.setAttribute("messageType", "error");
-            } else if (dao.checkPassword(userID, oldPass)) {
+            } 
+            // Condition: Check if the old password is correct in the database
+            else if (dao.checkPassword(userID, oldPass)) {
                 dao.changePassword(userID, newPass);
                 request.setAttribute("message", "Password updated successfully!");
                 request.setAttribute("messageType", "success");
-            } else {
+            } 
+            // Condition: Execute this block if the old password is incorrect
+            else {
                 request.setAttribute("message", "Current password is incorrect!");
                 request.setAttribute("messageType", "error");
             }
         }
         
-        // Load lại trang
         doGet(request, response);
     }
 }

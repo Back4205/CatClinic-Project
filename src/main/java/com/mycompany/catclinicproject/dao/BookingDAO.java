@@ -10,8 +10,7 @@ public class BookingDAO extends DBContext {
 
     public List<BookingHistoryDTO> getHistoryByUserID(int userID) {
         List<BookingHistoryDTO> list = new ArrayList<>();
-        
-        // Thêm b.EndDate vào câu SELECT
+
         String sql = "SELECT b.BookingID, c.Name AS CatName, c.Breed, " +
                      "b.AppointmentDate, b.EndDate, b.AppointmentTime, b.Status, " + // <--- Thêm b.EndDate
                      "s.ServiceName, bd.PriceAtBooking " +
@@ -27,6 +26,7 @@ public class BookingDAO extends DBContext {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, userID);
             ResultSet rs = ps.executeQuery();
+            //Iterate through each database row.
             while (rs.next()) {
                 list.add(new BookingHistoryDTO(
                     rs.getInt("BookingID"),

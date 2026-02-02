@@ -8,9 +8,9 @@
     <meta charset="UTF-8">
     <title>Booking History | CatClinic</title>
     
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/myProfileStyle.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/my-profile.css">
     
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/bookingHistory.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/booking-history.css">
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>

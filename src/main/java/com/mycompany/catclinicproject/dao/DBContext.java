@@ -9,7 +9,6 @@ public class DBContext {
 
     public DBContext() {
         try {
-            // Mật khẩu của bạn là abc@123
             String url = "jdbc:sqlserver://localhost:1433;databaseName=Cat_Clinic_Final;encrypt=true;trustServerCertificate=true";
             String username = "sa";
             String pass = "abc@123"; 
@@ -20,7 +19,6 @@ public class DBContext {
         }
     }
 
-    // --- ĐÂY LÀ HÀM QUAN TRỌNG MÀ SERVER ĐANG BÁO THIẾU ---
     public Connection getConnection() {
         return c;
     }

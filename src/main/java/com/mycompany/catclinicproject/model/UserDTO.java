@@ -7,7 +7,7 @@ public class UserDTO {
     private String password;
     private String phoneNumber;
     private String address;
-    private int roleID; // 1: Admin, 2: Customer...
+    private int roleID; 
 
     public UserDTO() {
     }
@@ -22,7 +22,6 @@ public class UserDTO {
         this.roleID = roleID;
     }
 
-    // --- GETTER & SETTER ---
     public int getUserID() { return userID; }
     public void setUserID(int userID) { this.userID = userID; }
 

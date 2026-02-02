@@ -5,8 +5,8 @@
         <servlet-class>com.mycompany.catclinicproject.controller.clientcontroller.ProfileController</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>editController</servlet-name>
-        <servlet-class>com.mycompany.catclinicproject.controller.clientcontroller.editController</servlet-class>
+        <servlet-name>EditController</servlet-name>
+        <servlet-class>com.mycompany.catclinicproject.controller.clientcontroller.EditController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>BookingHistoryController</servlet-name>
@@ -17,7 +17,7 @@
         <url-pattern>/accessprofile</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>editController</servlet-name>
+        <servlet-name>EditController</servlet-name>
         <url-pattern>/edit</url-pattern>
     </servlet-mapping>
     <servlet-mapping>

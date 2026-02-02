@@ -7,8 +7,8 @@ public class BookingHistoryDTO {
     private int bookingID;
     private String catName;
     private String catBreed;
-    private Date appointmentDate; // Ngày bắt đầu
-    private Date endDate;         // <--- MỚI THÊM: Ngày kết thúc
+    private Date appointmentDate; 
+    private Date endDate;       
     private Time appointmentTime;
     private String serviceName;
     private String serviceType;
@@ -18,19 +18,17 @@ public class BookingHistoryDTO {
     public BookingHistoryDTO() {
     }
 
-    // Cập nhật Constructor thêm endDate
     public BookingHistoryDTO(int bookingID, String catName, String catBreed, Date appointmentDate, Date endDate, Time appointmentTime, String serviceName, double price, String status) {
         this.bookingID = bookingID;
         this.catName = catName;
         this.catBreed = catBreed;
         this.appointmentDate = appointmentDate;
-        this.endDate = endDate; // <--- Gán giá trị
+        this.endDate = endDate; 
         this.appointmentTime = appointmentTime;
         this.serviceName = serviceName;
         this.price = price;
         this.status = status;
         
-        // Logic phân loại Spa/Clinic
         if (serviceName != null && (serviceName.toLowerCase().contains("spa") || serviceName.toLowerCase().contains("grooming") || serviceName.toLowerCase().contains("hotel"))) {
             this.serviceType = "Spa";
         } else {
@@ -38,11 +36,9 @@ public class BookingHistoryDTO {
         }
     }
 
-    // --- Getter & Setter mới cho EndDate ---
     public Date getEndDate() { return endDate; }
     public void setEndDate(Date endDate) { this.endDate = endDate; }
     
-    // ... Các getter/setter cũ giữ nguyên ...
     public int getBookingID() { return bookingID; }
     public void setBookingID(int bookingID) { this.bookingID = bookingID; }
     public String getCatName() { return catName; }

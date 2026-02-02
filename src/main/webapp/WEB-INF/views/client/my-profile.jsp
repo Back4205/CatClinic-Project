@@ -6,16 +6,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile Settings | CatClinic</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/myProfileStyle.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/my-profile.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     
     <style>
-        /* 1. Ẩn cái checkbox đi (nó là công tắc ngầm) */
         #toggle-pass {
             display: none;
         }
 
-        /* 2. Mặc định ẩn Form */
         #passwordForm {
             display: none;
             margin-top: 20px;
@@ -23,7 +21,6 @@
             border-top: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* 3. Style cho nút bấm (Label đóng vai trò là nút) */
         .btn-toggle {
             background-color: #10b981;
             color: white;
@@ -36,7 +33,6 @@
         }
         .btn-toggle:hover { background-color: #059669; }
 
-        /* 4. PHÉP MÀU: Khi checkbox được check -> Hiện form, Ẩn nút mở */
         #toggle-pass:checked ~ #passwordForm {
             display: block; /* Hiện form */
         }

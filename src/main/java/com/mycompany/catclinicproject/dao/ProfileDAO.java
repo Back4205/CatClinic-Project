@@ -6,14 +6,12 @@ import java.sql.ResultSet;
 
 public class ProfileDAO extends DBContext {
 
-    // 1. LẤY THÔNG TIN
     public User getUserProfile(int id) {
         String sql = "SELECT u.*, o.Address " +
                      "FROM Users u " +
                      "LEFT JOIN Owners o ON u.UserID = o.UserID " +
                      "WHERE u.UserID = ?";
         try {
-            // SỬA Ở ĐÂY: Dùng 'c' thay vì 'connection'
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
@@ -35,12 +33,9 @@ public class ProfileDAO extends DBContext {
         return null;
     }
 
-    // 2. CẬP NHẬT
     public boolean updateProfile(User u) {
         try {
-            // Bước 1: Update bảng Users
             String sqlUser = "UPDATE Users SET FullName = ?, Phone = ?, Email = ? WHERE UserID = ?";
-            // SỬA Ở ĐÂY: Dùng 'c'
             PreparedStatement psUser = c.prepareStatement(sqlUser);
             psUser.setString(1, u.getUserName());
             psUser.setString(2, u.getPhone());
@@ -48,20 +43,15 @@ public class ProfileDAO extends DBContext {
             psUser.setInt(4, u.getUserID());
             
             int r1 = psUser.executeUpdate();
-
-            // Bước 2: Update bảng Owners
             String sqlOwnerUpdate = "UPDATE Owners SET Address = ? WHERE UserID = ?";
-            // SỬA Ở ĐÂY: Dùng 'c'
             PreparedStatement psOwner = c.prepareStatement(sqlOwnerUpdate);
             psOwner.setString(1, u.getAddress());
             psOwner.setInt(2, u.getUserID());
             
             int r2 = psOwner.executeUpdate();
             
-            // Nếu chưa có trong Owners -> Insert mới
             if (r2 == 0) {
                 String sqlOwnerInsert = "INSERT INTO Owners (UserID, Address) VALUES (?, ?)";
-                // SỬA Ở ĐÂY: Dùng 'c'
                 PreparedStatement psInsert = c.prepareStatement(sqlOwnerInsert);
                 psInsert.setInt(1, u.getUserID());
                 psInsert.setString(2, u.getAddress());
@@ -76,7 +66,6 @@ public class ProfileDAO extends DBContext {
         return false;
     }
     
-    // 3. CHECK PASS
     public boolean checkPassword(int userID, String oldPass) {
         String sql = "SELECT * FROM Users WHERE UserID = ? AND Password = ?";
         try {
@@ -91,7 +80,6 @@ public class ProfileDAO extends DBContext {
         return false;
     }
 
-    // 4. CHANGE PASS
     public void changePassword(int userID, String newPass) {
         String sql = "UPDATE Users SET Password = ? WHERE UserID = ?";
         try {

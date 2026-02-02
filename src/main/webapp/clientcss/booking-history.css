@@ -1,6 +1,6 @@
 /* --- LAYOUT CHUNG --- */
 body {
-    background-color: #f8f9fa; /* Màu nền xám nhạt */
+    background-color: #f8f9fa; 
 }
 
 .page-title h2 {
@@ -18,10 +18,10 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* --- 1. THẺ BÀI THỐNG KÊ (STATS CARDS) --- */
+
 .stats-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Chia 3 cột đều nhau */
+    grid-template-columns: repeat(3, 1fr); 
     gap: 20px;
     margin-bottom: 30px;
     margin-top: 20px;
@@ -39,7 +39,7 @@ body {
 }
 
 .stat-card:hover {
-    transform: translateY(-3px); /* Hiệu ứng bay lên nhẹ khi di chuột */
+    transform: translateY(-3px); 
 }
 
 .stat-icon {
@@ -55,12 +55,11 @@ body {
 .stat-info h3 { margin: 0; font-size: 28px; color: #333; font-weight: 700; }
 .stat-info p { margin: 0; color: #888; font-size: 12px; text-transform: uppercase; font-weight: 600; }
 
-/* Màu sắc riêng cho từng thẻ */
-.icon-total { background: #e0f2fe; color: #0284c7; } /* Xanh dương */
-.icon-scheduled { background: #dcfce7; color: #166534; } /* Xanh lá */
-.icon-completed { background: #f3e8ff; color: #7e22ce; } /* Tím */
 
-/* --- 2. THANH BỘ LỌC (FILTER BAR) --- */
+.icon-total { background: #e0f2fe; color: #0284c7; } 
+.icon-scheduled { background: #dcfce7; color: #166534; } 
+.icon-completed { background: #f3e8ff; color: #7e22ce; } 
+
 .filter-bar {
     background: white;
     padding: 15px 20px;
@@ -99,23 +98,22 @@ body {
 
 .filter-buttons button:hover { background: #f3f4f6; }
 .filter-buttons button.active {
-    background: #111827; /* Màu đen */
+    background: #111827; 
     color: white;
     border-color: #111827;
 }
 
-/* --- 3. DANH SÁCH LỊCH (BOOKING LIST) --- */
+
 .booking-list {
     background: white;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    min-height: 400px; /* Đảm bảo chiều cao tối thiểu cho đẹp */
+    min-height: 400px; 
 }
 
 .booking-item {
     display: grid;
-    /* Chia cột: Mèo(2) | Ngày(2) | Dịch vụ(2) | Giá(1) | Trạng thái(1.5) | Nút(1) */
     grid-template-columns: 2fr 2fr 2fr 1fr 1.5fr 1fr; 
     align-items: center;
     padding: 20px 25px;
@@ -138,7 +136,7 @@ body {
 
 .price { font-weight: 700; color: #111827; font-size: 15px; }
 
-/* --- BADGE TRẠNG THÁI (STATUS) --- */
+
 .status-badge {
     padding: 6px 14px;
     border-radius: 20px;
@@ -150,13 +148,11 @@ body {
     min-width: 90px;
 }
 
-/* Màu sắc trạng thái */
-.status-upcoming { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; } /* Cam nhạt */
-.status-completed { background: #1f2937; color: white; border: 1px solid #1f2937; } /* Đen */
-.status-cancelled { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; } /* Đỏ */
-.status-inprogress { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; } /* Xanh lá */
+.status-upcoming { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; } 
+.status-completed { background: #1f2937; color: white; border: 1px solid #1f2937; }
+.status-cancelled { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; } 
+.status-inprogress { background: #ecfdf5; color: #059669; border: 1px solid #d1fae5; } 
 
-/* --- NÚT VIEW --- */
 .btn-view {
     border: 1px solid #e5e7eb;
     color: #6b7280;
@@ -177,7 +173,6 @@ body {
     background: #ecfdf5;
 }
 
-/* --- EMPTY STATE (Khi danh sách trống) --- */
 .empty-state {
     padding: 60px;
     text-align: center;
