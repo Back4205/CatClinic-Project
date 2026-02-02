@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "EditController", urlPatterns = {"/edit"})
 public class EditController extends HttpServlet {
@@ -19,6 +20,13 @@ public class EditController extends HttpServlet {
         request.setCharacterEncoding("UTF-8"); 
         
         int userID = 5;
+//        HttpSession session = request.getSession(false);
+//     User user = (User)session.getAttribute("acc");
+//     if(user == null){
+//         response.sendRedirect(request.getContextPath()+"/login");
+//         return;
+//     }
+//     int userID = user.getUserID();
 
         ProfileDAO dao = new ProfileDAO();
         User userProfile = dao.getUserProfile(userID);
@@ -34,6 +42,13 @@ public class EditController extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
 
         int userID = 5;
+//       HttpSession session = request.getSession(false);
+//     User user = (User)session.getAttribute("acc");
+//     if(user == null){
+//         response.sendRedirect(request.getContextPath()+"/login");
+//         return;
+//     }
+//     int userID = user.getUserID();
 
         String userName = request.getParameter("userName");
         String phone = request.getParameter("phone");

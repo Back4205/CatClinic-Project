@@ -18,19 +18,23 @@
                     <strong>${user.userName}</strong>
                     <span>PREMIUM MEMBER</span>
                 </div>
-                <div class="avatar">?</div>
+                    <div class="avatar">
+                        <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
+                    </div>
             </div>
         </header>
 
         <div class="container">
             <aside class="sidebar">
                 <div class="user-card">
-                    <div class="avatar large">?</div>
+                     <div class="avatar large">
+        <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
+    </div>
                     <h3>${user.userName}</h3>
                     <p>CATCLINIC PORTAL</p>
                 </div>
                 <nav class="menu">
-                    <a href="#">? Cat List</a>
+                    <a href="${pageContext.request.contextPath}/cats">? Cat List</a>
                     <a href="#">? Visit History</a>
                     <a href="accessprofile" class="active">? Profile & Security</a>
                 </nav>

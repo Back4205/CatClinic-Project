@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/my-profile.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     
-    <style>
+<!--    <style>
         #toggle-pass {
             display: none;
         }
@@ -40,7 +40,7 @@
         #toggle-pass:checked ~ .password-header .btn-toggle {
             display: none; /* Ẩn nút Change Password đi */
         }
-    </style>
+    </style>-->
 </head>
 <body>
 
@@ -48,19 +48,23 @@
         <div class="logo"><i class="bi bi-hospital"></i> CatClinic</div>
         <div class="user-info">
             <span class="name">${user.userName}</span>
-            <div class="avatar"><i class="bi bi-person-circle"></i></div>
+             <div class="avatar">
+                        <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
+                    </div>
         </div>
     </header>
 
     <div class="container">
         <aside class="sidebar">
-            <div class="profile-card">
-                <div class="avatar large"><i class="bi bi-person-circle"></i></div>
-                <h3>${user.userName}</h3>
-                <p>CATCLINIC PORTAL</p>
-            </div>
+           <div class="profile-card">
+    <div class="avatar large">
+        <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
+    </div>
+    <h3>${user.userName}</h3>
+    <p>CATCLINIC PORTAL</p>
+</div>
             <nav class="menu">
-                <a href="#"><i class="bi bi-grid-fill"></i> Cat List</a>
+                <a href="${pageContext.request.contextPath}/cats"><i class="bi bi-grid-fill"></i> Cat List</a>
                 <a href="booking-history"><i class="bi bi-calendar-event"></i> Visit History</a>
                 <a href="accessprofile" class="active"><i class="bi bi-person-gear"></i> Profile & Security</a>
                 <a href="#"><i class="bi bi-house"></i> Home</a>

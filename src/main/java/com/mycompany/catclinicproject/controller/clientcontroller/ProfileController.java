@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "ProfileController", urlPatterns = {"/accessprofile"})
 public class ProfileController extends HttpServlet {
@@ -15,8 +16,15 @@ public class ProfileController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+//         HttpSession session = request.getSession(false);
+//     User user = (User)session.getAttribute("acc");
+//     if(user == null){
+//         response.sendRedirect(request.getContextPath()+"/login");
+//         return;
+//     }
+//     int userID = user.getUserID();
 
-        int userID = 5; 
+         int userID = 5; 
 
         ProfileDAO dao = new ProfileDAO();
         User userProfile = dao.getUserProfile(userID);
@@ -30,7 +38,13 @@ public class ProfileController extends HttpServlet {
             throws ServletException, IOException {
         
         int userID = 5;
-
+//         HttpSession session = request.getSession(false);
+//     User user = (User)session.getAttribute("acc");
+//     if(user == null){
+//         response.sendRedirect(request.getContextPath()+"/login");
+//         return;
+//     }
+//      int userID = user.getUserID();
         String action = request.getParameter("action");
         ProfileDAO dao = new ProfileDAO();
 

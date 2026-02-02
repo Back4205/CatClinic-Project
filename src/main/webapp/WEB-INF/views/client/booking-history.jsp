@@ -33,7 +33,7 @@
                 <p>CATCLINIC PORTAL</p>
             </div>
             <nav class="menu">
-                <a href="#"><i class="bi bi-grid-fill"></i> Cat List</a>
+                <a href="${pageContext.request.contextPath}/cats"><i class="bi bi-grid-fill"></i> Cat List</a>
                 
                 <a href="booking-history" class="active"><i class="bi bi-calendar-event"></i> Booking History</a>
                 

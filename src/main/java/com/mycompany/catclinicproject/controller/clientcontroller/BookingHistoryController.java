@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.controller.clientcontroller;
 
 import com.mycompany.catclinicproject.dao.BookingDAO;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
+import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId; 
@@ -12,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "BookingHistoryController", urlPatterns = {"/booking-history"})
 public class BookingHistoryController extends HttpServlet {
@@ -22,6 +24,13 @@ public class BookingHistoryController extends HttpServlet {
         
         // --- HARDCODED USER ID = 5 ---
         int userID = 5;
+//        HttpSession session = request.getSession(false);
+//     User user = (User)session.getAttribute("acc");
+//     if(user == null){
+//         response.sendRedirect(request.getContextPath()+"/login");
+//         return;
+//     }
+//     int userID = user.getUserID();
 
         String keyword = request.getParameter("search"); 
         String filterStatus = request.getParameter("status"); 

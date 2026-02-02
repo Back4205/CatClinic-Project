@@ -53,6 +53,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden; /* Đảm bảo avatar nhỏ cũng không bị tràn */
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* ===== LAYOUT ===== */
@@ -78,15 +85,31 @@ body {
     margin-bottom: 30px;
 }
 
+/* FIX LỖI ẢNH ĐẠI DIỆN TO */
 .avatar.large {
-    width: 70px;
-    height: 70px;
+    width: 80px;            /* Tăng kích thước lên 80px cho cân đối */
+    height: 80px;
     margin: 0 auto 10px;
     font-size: 24px;
+    border-radius: 50%;
+    overflow: hidden;       /* Cắt bỏ phần ảnh thừa */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.avatar.large img {
+    width: 100%;            /* Ép ảnh vừa khung */
+    height: 100%;
+    object-fit: cover;      /* Chống móp méo ảnh */
+    display: block;
 }
 
 .user-card h3 {
     margin-bottom: 4px;
+    color: #111827;
 }
 
 .user-card p {
@@ -162,6 +185,8 @@ body {
     display: block;
     font-weight: 500;
     margin-bottom: 6px;
+    font-size: 14px;
+    color: #4b5563;
 }
 
 .field input {
@@ -170,31 +195,49 @@ body {
     border-radius: 10px;
     border: 1px solid #d1d5db;
     font-size: 14px;
+    background: #fff;
+    transition: 0.2s;
 }
 
 .field input:focus {
     outline: none;
     border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
 }
 
 /* ===== BUTTONS ===== */
 .buttons {
     margin-top: 30px;
+    display: flex;
+    gap: 12px;
 }
 
 .btn {
-    padding: 10px 20px;
+    padding: 12px 24px;
     border-radius: 10px;
     border: none;
     font-weight: 600;
     cursor: pointer;
     background: #e5e7eb;
+    color: #374151;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    filter: brightness(0.95);
 }
 
 .btn.primary {
     background: #f97316;
     color: #ffffff;
-    margin-right: 10px;
+}
+
+.btn.primary:hover {
+    background: #ea580c;
 }
 
 /* ===== PASSWORD ===== */

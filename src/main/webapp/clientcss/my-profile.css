@@ -63,6 +63,29 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+} 
+
+/* Avatar container - FIX LỖI ẢNH TO */
+.avatar.large {
+    width: 80px;            /* Kích thước chuẩn như hình 2 */
+    height: 80px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    overflow: hidden;      /* QUAN TRỌNG: cắt ảnh thừa */
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Avatar image - FIX LỖI ẢNH TO */
+.avatar.large img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;     /* Giữ tỉ lệ, không méo */
+    display: block;
 }
 
 /* =========================
@@ -82,18 +105,12 @@ body {
     background: #ffffff;
     border-radius: 14px;
     padding: 20px;
+    /* overflow: hidden; */ /* Bỏ ẩn ở đây để không làm mất bóng đổ nếu có */
 }
 
 .profile-card {
     text-align: center;
     margin-bottom: 25px;
-}
-
-.profile-card .avatar.large {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 10px;
-    font-size: 26px;
 }
 
 .profile-card h3 {
@@ -154,6 +171,7 @@ body {
 
 /* Edit button */
 .edit-btn {
+    text-decoration: none; /* Bỏ gạch chân thẻ a */
     padding: 8px 18px;
     border-radius: 999px;
     border: 1px solid var(--primary);
@@ -161,6 +179,7 @@ body {
     color: var(--primary);
     cursor: pointer;
     transition: 0.2s;
+    font-size: 14px;
 }
 
 .edit-btn:hover {
@@ -251,4 +270,62 @@ body {
 
 .cancel-btn:hover {
     background: rgba(255,255,255,0.08);
+}
+
+/* =========================
+   PASSWORD TOGGLE LOGIC (Chuyển từ JSP sang)
+========================= */
+#toggle-pass {
+    display: none;
+}
+
+#passwordForm {
+    display: none;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-toggle {
+    background-color: #10b981;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+    user-select: none;
+}
+
+.btn-toggle:hover { 
+    background-color: #059669; 
+}
+
+/* Kỹ thuật Checkbox Hack để hiển thị Form */
+#toggle-pass:checked ~ #passwordForm {
+    display: block;
+}
+
+/* Ẩn nút "Change Password" khi form đang mở */
+#toggle-pass:checked ~ .password-header .btn-toggle {
+    display: none;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff7ed;
+    color: #f97316;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Đảm bảo avatar nhỏ cũng không bị tràn */
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
