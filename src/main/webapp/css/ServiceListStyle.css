@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f6f6f6;
+    padding: 30px;
+}
+
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.btn-create {
+    background: #ff7a18;
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Filter */
+.filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.filter input,
+.filter select {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #ff7a18;
+    color: white;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+tbody tr {
+    border-bottom: 1px solid #eee;
+}
+
+/* Status */
+.active {
+    color: green;
+    font-weight: bold;
+}
+
+.inactive {
+    color: gray;
+}
+
+/* Buttons */
+a {
+    color: #ff7a18;
+    text-decoration: none;
+    margin-right: 8px;
+}
+
+.btn-hide, .btn-show {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ff7a18;
+    background: white;
+    color: #ff7a18;
+    cursor: pointer;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.page {
+    display: inline-block;
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    border-radius: 50%;
+    border: 1px solid #ff7a18;
+    color: #ff7a18;
+    margin: 0 3px;
+    cursor: pointer;
+}
+
+.page.active {
+    background: #ff7a18;
+    color: white;
+}
