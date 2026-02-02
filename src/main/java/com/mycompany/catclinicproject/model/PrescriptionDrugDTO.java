@@ -1,6 +1,6 @@
 package com.mycompany.catclinicproject.model;
 
-public class PrescriptionDrugView {
+public class PrescriptionDrugDTO {
 
     private String drugName;
     private String unit;
@@ -8,9 +8,9 @@ public class PrescriptionDrugView {
     private String instruction;
     private double price ;
 
-    public PrescriptionDrugView() {}
+    public PrescriptionDrugDTO() {}
 
-    public PrescriptionDrugView(String drugName, String unit, int quantity, String instruction , double price) {
+    public PrescriptionDrugDTO(String drugName, String unit, int quantity, String instruction , double price) {
         this.drugName = drugName;
         this.unit = unit;
         this.quantity = quantity;

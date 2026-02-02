@@ -1,15 +1,17 @@
 package com.mycompany.catclinicproject.model;
 
-public class AppointmentService {
+public class BookingDetail {
     private int bookingID;
     private int serviceID;
+    private double priceAtBooking;
 
-    public AppointmentService() {
+    public BookingDetail() {
     }
 
-    public AppointmentService(int bookingID, int serviceID) {
+    public BookingDetail(int bookingID, int serviceID , int priceAtBooking) {
         this.bookingID = bookingID;
         this.serviceID = serviceID;
+        this.priceAtBooking = priceAtBooking;
     }
 
     public int getBookingID() {
@@ -26,6 +28,12 @@ public class AppointmentService {
 
     public void setServiceID(int serviceID) {
         this.serviceID = serviceID;
+    }
+    public double getPriceAtBooking() {
+        return priceAtBooking;
+    }
+    public void setPriceAtBooking(double priceAtBooking) {
+        this.priceAtBooking = priceAtBooking;
     }
     
     

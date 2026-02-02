@@ -1,7 +1,7 @@
 package com.mycompany.catclinicproject.controller.cat;
 
 import com.mycompany.catclinicproject.dao.MedicalRecordDAO;
-import com.mycompany.catclinicproject.model.MedicalHistoryView;
+import com.mycompany.catclinicproject.model.MedicalHistoryDTO;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 
@@ -13,7 +13,7 @@ public class CatMedicalHistoryController extends HttpServlet {
             throws jakarta.servlet.ServletException, java.io.IOException {
         int catId = Integer.parseInt(request.getParameter("catId"));
         MedicalRecordDAO medicalRecordDAO = new MedicalRecordDAO();
-        List<MedicalHistoryView> medicalHistoryList = medicalRecordDAO.getMedicalHistoryByCatID(catId);
+        List<MedicalHistoryDTO> medicalHistoryList = medicalRecordDAO.getMedicalHistoryByCatID(catId);
         request.setAttribute("medicalHistoryList", medicalHistoryList);
         request.getRequestDispatcher("/WEB-INF/views/client/cat-medical-history.jsp").forward(request, response);
     }

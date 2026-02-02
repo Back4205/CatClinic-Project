@@ -1,9 +1,9 @@
 package com.mycompany.catclinicproject.controller.cat;
 
 import com.mycompany.catclinicproject.dao.MedicalRecordDAO;
-import com.mycompany.catclinicproject.model.MedicalRecordDetailView;
-import com.mycompany.catclinicproject.model.MedicalStaffWork;
-import com.mycompany.catclinicproject.model.PrescriptionDrugView;
+import com.mycompany.catclinicproject.model.MedicalRecordDetailDTO;
+import com.mycompany.catclinicproject.model.MedicalStaffWorkDTO;
+import com.mycompany.catclinicproject.model.PrescriptionDrugDTO;
 import com.mycompany.catclinicproject.model.Service;
 
 import jakarta.servlet.ServletException;
@@ -24,10 +24,10 @@ public class CatMedicalDetailController extends HttpServlet {
         int bookingId = Integer.parseInt(request.getParameter("idBooking"));
         MedicalRecordDAO dao = new MedicalRecordDAO();
 
-        MedicalRecordDetailView medicalDetail = dao.getMedicalRecordDetailViewByBookingID(bookingId);
+        MedicalRecordDetailDTO medicalDetail = dao.getMedicalRecordDetailViewByBookingID(bookingId);
         List<Service> serviceList = dao.getServiceByBookingID(bookingId);
-        List<PrescriptionDrugView> drugList = dao.getPrescriptionDrugByBookingID(bookingId);
-        List<MedicalStaffWork> staffWorks = dao.getStaffWorkByBookingID(bookingId);
+        List<PrescriptionDrugDTO> drugList = dao.getPrescriptionDrugByBookingID(bookingId);
+        List<MedicalStaffWorkDTO> staffWorks = dao.getStaffWorkByBookingID(bookingId);
 
         request.setAttribute("staffWorks", staffWorks);
         request.setAttribute("medicalDetail", medicalDetail);

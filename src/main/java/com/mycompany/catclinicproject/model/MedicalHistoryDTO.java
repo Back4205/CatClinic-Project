@@ -4,28 +4,27 @@
  */
 package com.mycompany.catclinicproject.model;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 /**
  *
  * @author Vuong Bach
  */
-public class MedicalHistoryView {
+public class MedicalHistoryDTO {
 
     private int bookingID;
     private Date visitDate;
     private String doctorName;
     private String clinicalNote;
 
-    public MedicalHistoryView(int bookingID, Date visitDate, String doctorName, String clinicalNote) {
+    public MedicalHistoryDTO(int bookingID, Date visitDate, String doctorName, String clinicalNote) {
         this.bookingID = bookingID;
         this.visitDate = visitDate;
         this.doctorName = doctorName;
         this.clinicalNote = clinicalNote;
     }
 
-    public MedicalHistoryView() {
+    public MedicalHistoryDTO() {
     }
 
     public int getBookingID() {

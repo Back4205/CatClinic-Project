@@ -1,18 +1,17 @@
 package com.mycompany.catclinicproject.model;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
-public class MedicalRecordDetailView {
+public class MedicalRecordDetailDTO {
     private int bookingID;
     private int medicalRecordID;
     private Date visitDate;
     private String doctorName;
     private String diagnosis;
     private String clinicalNote;
-    public MedicalRecordDetailView() {
+    public MedicalRecordDetailDTO() {
     }
-    public MedicalRecordDetailView( int bookingID,int medicalRecordID, Date visitDate, String doctorName, String diagnosis, String clinicalNote) {
+    public MedicalRecordDetailDTO(int bookingID, int medicalRecordID, Date visitDate, String doctorName, String diagnosis, String clinicalNote) {
         this.bookingID = bookingID;
         this.medicalRecordID = medicalRecordID;
         this.visitDate = visitDate;
@@ -20,7 +19,7 @@ public class MedicalRecordDetailView {
         this.diagnosis = diagnosis;
         this.clinicalNote = clinicalNote;
     }
-    public MedicalRecordDetailView( int medicalRecordID, Date visitDate, String doctorName, String diagnosis, String clinicalNote ) {
+    public MedicalRecordDetailDTO(int medicalRecordID, Date visitDate, String doctorName, String diagnosis, String clinicalNote ) {
 
         this.medicalRecordID = medicalRecordID;
         this.visitDate = visitDate;

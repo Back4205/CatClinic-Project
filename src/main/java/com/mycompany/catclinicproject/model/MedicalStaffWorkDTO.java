@@ -1,16 +1,16 @@
 package com.mycompany.catclinicproject.model;
 
-public class MedicalStaffWork {
+public class MedicalStaffWorkDTO {
     private String staffName;
     private String staffRole;
 
     private String testName;
     private String resultImage;
 
-    public MedicalStaffWork() {
+    public MedicalStaffWorkDTO() {
     }
 
-    public MedicalStaffWork(String staffName, String staffRole, String testName, String resultImage) {
+    public MedicalStaffWorkDTO(String staffName, String staffRole, String testName, String resultImage) {
         this.staffName = staffName;
         this.staffRole = staffRole;
         this.testName = testName;

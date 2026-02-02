@@ -12,8 +12,8 @@ public class MedicalRecordDAO extends DBContext {
 
 
 
-    public List<MedicalHistoryView> getMedicalHistoryByCatID(int catId) {
-        List<MedicalHistoryView> list = new ArrayList<>();
+    public List<MedicalHistoryDTO> getMedicalHistoryByCatID(int catId) {
+        List<MedicalHistoryDTO> list = new ArrayList<>();
 
         String sql =
                 "SELECT b.BookingID, b.AppointmentDate, u.FullName AS DoctorName, mr.Diagnosis " +
@@ -30,7 +30,7 @@ public class MedicalRecordDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                list.add(new MedicalHistoryView(
+                list.add(new MedicalHistoryDTO(
                         rs.getInt("BookingID"),
                         rs.getDate("AppointmentDate"),
                         rs.getString("DoctorName"),
@@ -46,7 +46,7 @@ public class MedicalRecordDAO extends DBContext {
 
 
 
-    public MedicalRecordDetailView getMedicalRecordDetailViewByBookingID(int bookingID) {
+    public MedicalRecordDetailDTO getMedicalRecordDetailViewByBookingID(int bookingID) {
 
         String sql =
                 "SELECT mr.RecordID, b.AppointmentDate, u.FullName AS DoctorName, " +
@@ -63,7 +63,7 @@ public class MedicalRecordDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return new MedicalRecordDetailView(
+                return new MedicalRecordDetailDTO(
                         rs.getInt("RecordID"),
                         rs.getDate("AppointmentDate"),
                         rs.getString("DoctorName"),
@@ -111,9 +111,9 @@ public class MedicalRecordDAO extends DBContext {
     }
 
 
-    public List<PrescriptionDrugView> getPrescriptionDrugByBookingID(int bookingID) {
+    public List<PrescriptionDrugDTO> getPrescriptionDrugByBookingID(int bookingID) {
 
-        List<PrescriptionDrugView> list = new ArrayList<>();
+        List<PrescriptionDrugDTO> list = new ArrayList<>();
 
         String sql =
                 "SELECT d.Price, d.DrugName, d.Unit, pd.Quantity, pd.UsageInstruction " +
@@ -129,7 +129,7 @@ public class MedicalRecordDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                list.add(new PrescriptionDrugView(
+                list.add(new PrescriptionDrugDTO(
 
                         rs.getString("DrugName"),
                         rs.getString("Unit"),
@@ -143,9 +143,9 @@ public class MedicalRecordDAO extends DBContext {
         }
         return list;
     }
-    public List<MedicalStaffWork> getStaffWorkByBookingID(int bookingID) {
+    public List<MedicalStaffWorkDTO> getStaffWorkByBookingID(int bookingID) {
 
-        List<MedicalStaffWork> list = new ArrayList<>();
+        List<MedicalStaffWorkDTO> list = new ArrayList<>();
 
         String sql =
                 "SELECT " +
@@ -168,7 +168,7 @@ public class MedicalRecordDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                list.add(new MedicalStaffWork(
+                list.add(new MedicalStaffWorkDTO(
                         rs.getString("StaffName"),
                         rs.getString("StaffRole"),
                         rs.getString("TestName"),
@@ -183,8 +183,8 @@ public class MedicalRecordDAO extends DBContext {
     }
         public static void main( String[] args){
         MedicalRecordDAO dao = new MedicalRecordDAO();
-        List<MedicalStaffWork> list = dao.getStaffWorkByBookingID(1);
-        for(MedicalStaffWork mw:list){
+        List<MedicalStaffWorkDTO> list = dao.getStaffWorkByBookingID(1);
+        for(MedicalStaffWorkDTO mw:list){
             System.out.println(mw.getResultImage()+" , " + mw.getStaffName() +" , " + mw.getTestName() + " , " + mw.getStaffRole());
         }
 

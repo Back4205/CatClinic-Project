@@ -18,7 +18,7 @@ public class Booking {
     private int catID;
     private int veterinarianID;
     private String status;
-    private Date appointmentDate; // luu ngay thang nam gio phut giay
+    private Date appointmentDate;
 
     public Booking() {
     }
