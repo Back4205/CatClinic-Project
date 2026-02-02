@@ -1,6 +1,8 @@
 package com.mycompany.catclinicproject.model;
 
+
 public class Service {
+
     private int serviceID;
     private String nameService;
     private double price;
@@ -11,7 +13,7 @@ public class Service {
     public Service() {
     }
 
-    public Service(int serviceID, String nameService, double price, 
+    public Service(int serviceID, String nameService, double price,
                    String description, int timeService, boolean isActive) {
         this.serviceID = serviceID;
         this.nameService = nameService;
@@ -61,6 +63,7 @@ public class Service {
         this.timeService = timeService;
     }
 
+    // BOOLEAN GETTER CHUẨN JAVA BEAN
     public boolean isIsActive() {
         return isActive;
     }
