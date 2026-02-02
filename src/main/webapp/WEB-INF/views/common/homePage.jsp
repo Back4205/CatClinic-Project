@@ -34,7 +34,7 @@
                     <a href="#" class="btn-primary"> <i class="fa-solid fa-calendar"></i> Book Appointment</a>
                 </div>
             </div>
-
+            
             <div class="hero-image">
                 <div class="image-card">
                     <img src="image/imageHome/download.jpg" alt=""/>

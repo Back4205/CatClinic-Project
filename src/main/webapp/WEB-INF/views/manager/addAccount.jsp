@@ -30,13 +30,11 @@
                 <label>Username</label>
                 <input type="text" name="username" value="${param.username}" required>
             </div>
-
             <div class="form-group">
                 <label>Password</label>
                 <input type="password" name="password" required>
             </div>
         </div>
-
         <div class="form-group">
             <label>Full Name</label>
             <input type="text" name="fullName" value="${param.fullName}">

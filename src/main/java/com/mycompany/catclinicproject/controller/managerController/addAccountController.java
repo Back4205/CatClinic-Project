@@ -55,11 +55,27 @@ public class addAccountController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp").forward(request, response);
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    HttpSession session = request.getSession();
 
+    if (session.getAttribute("success") != null) {
+        request.setAttribute("success", session.getAttribute("success"));
+        session.removeAttribute("success");
     }
+
+    if (session.getAttribute("error") != null) {
+        request.setAttribute("error", session.getAttribute("error"));
+        session.removeAttribute("error");
+    }
+
+    request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp")
+            .forward(request, response);
+}
+
+
+
+    
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -70,52 +86,43 @@ public class addAccountController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
 
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        String role = request.getParameter("role");
-        String gender = request.getParameter("gender");
+    HttpSession session = request.getSession();
 
-        boolean male = gender.equalsIgnoreCase("Male");
+    String username = request.getParameter("username");
+    String password = request.getParameter("password");
+    String fullName = request.getParameter("fullName");
+    String email = request.getParameter("email");
+    String phone = request.getParameter("phone");
+    String role = request.getParameter("role");
+    String gender = request.getParameter("gender");
 
-        UserDao dao = new UserDao();
-        if (dao.isUsernameExist(username)) {
-            request.setAttribute("error", "Username already exists!");
-            request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp")
-                    .forward(request, response);
-            return;
-        }
+    boolean male = "Male".equalsIgnoreCase(gender);
 
-        int roleID = dao.getRoleID(role);
+    UserDao dao = new UserDao();
 
-        boolean ok = dao.addUser(
-                username,
-                password,
-                fullName,
-                male,
-                email,
-                roleID,
-                phone,
-                null // GoogleID
-        );
-
-        if (ok) {
-            request.setAttribute("success", "Add user successfully!");
-            request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp")
-                .forward(request, response);
-        } else {
-            request.setAttribute("error", "Add user failed!");
-            request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp")
-                .forward(request, response);
-        }
-
-        
+    if (dao.isUsernameExist(username)) {
+        session.setAttribute("error", "Username already exists!");
+        response.sendRedirect("addAccount");
+        return;
     }
+
+    int roleID = dao.getRoleID(role);
+
+    boolean ok = dao.addUser(username, password, fullName, male,
+                             email, roleID, phone, null);
+
+    if (ok) {
+        session.setAttribute("success", "Add user successfully!");
+    } else {
+        session.setAttribute("error", "Add user failed!");
+    }
+
+    response.sendRedirect("addAccount");
+}
+
 
     /**
      * Returns a short description of the servlet.

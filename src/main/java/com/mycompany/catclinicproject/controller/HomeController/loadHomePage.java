@@ -61,7 +61,7 @@ public class loadHomePage extends HttpServlet {
         ServiceDao sdao = new ServiceDao();
     List<Service> serviceList = sdao.getAllService();
     request.setAttribute("serviceList", serviceList);
-    request.getRequestDispatcher("/WEB-INF/views/common/homePage.jsp").forward(request, response);
+    request.getRequestDispatcher("/WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
  
     }
 
