@@ -6,7 +6,7 @@
     </servlet>
     <servlet>
         <servlet-name>EditController</servlet-name>
-        <servlet-class>com.mycompany.catclinicproject.controller.clientcontroller.EditController_Temp</servlet-class>
+        <servlet-class>com.mycompany.catclinicproject.controller.clientcontroller.EditController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>BookingHistoryController</servlet-name>
