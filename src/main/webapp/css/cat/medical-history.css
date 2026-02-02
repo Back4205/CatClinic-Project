@@ -1,0 +1,105 @@
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f7fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+}
+
+.medical-history-container {
+    width: 95%;
+    max-width: 1000px;
+    margin-top: 30px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+
+.medical-title {
+    color: #f97316;
+    font-size: 24px;
+    margin-bottom: 25px;
+    border-left: 5px solid #f97316;
+    padding-left: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+
+.medical-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.medical-table th {
+    background-color: #f8f9fa;
+    color: #888;
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    border-bottom: 2px solid #eee;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.medical-table td {
+    padding: 15px;
+    border-bottom: 1px solid #f1f1f1;
+    color: #444;
+    vertical-align: middle;
+    transition: background 0.2s;
+}
+
+
+.medical-table tr:hover td {
+    background-color: #fffaf5;
+}
+
+
+.btn-view {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #ffffff;
+    color: #f97316;
+    border: 1px solid #f97316;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-view:hover {
+    background-color: #f97316;
+    color: #ffffff;
+}
+
+
+.btn-back {
+    margin-top: 30px;
+    padding: 12px 25px;
+    background-color: #22a06b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-back:hover {
+    background-color: #1c8b5e;
+    transform: translateY(-2px);
+}
+
+.no-detail {
+    color: #999;
+    font-style: italic;
+    font-size: 12px;
+}

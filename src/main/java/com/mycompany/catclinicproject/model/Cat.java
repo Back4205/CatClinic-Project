@@ -1,59 +1,84 @@
 package com.mycompany.catclinicproject.model;
 
 public class Cat {
+    private int catID;
+    private int ownerID;
     private String name;
-    private int age;
+    private int gender;
     private String breed;
-    private String gender;
-    private String id ;
+    private int age;
+    private String img ;
+    private int isActive;
+    private boolean hasBooking;
 
     public Cat() {
 
     }
-    public Cat(String id ,String name, int age, String breed, String gender) {
+    public Cat(int catID, int ownerID, String name, int gender, String breed, int age,String img, int isActive) {
+        this.catID = catID;
+        this.ownerID = ownerID;
         this.name = name;
-        this.age = age;
-        this.breed = breed;
         this.gender = gender;
-        this.id = id;
+        this.breed = breed;
+        this.age = age;
+        this.img = img;
+        this.isActive = isActive;
     }
+    public int getCatID() {
+        return catID;
+    }
+    public void setCatID(int catID) {
+        this.catID = catID;
+    }
+    public int getOwnerID() {
+        return ownerID;
+    }
+    public void setOwnerID(int ownerID) {
+        this.ownerID = ownerID;
 
+    }
     public String getName() {
         return name;
     }
-
-    public Cat setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
-
-    public int getAge() {
-        return age;
+    public int getGender() {
+        return gender;
     }
-    public Cat setAge(int age) {
-        this.age = age;
-        return this;
+    public void setGender(int gender) {
+        this.gender = gender;
     }
     public String getBreed() {
         return breed;
     }
-    public Cat setBreed(String breed) {
+    public void setBreed(String breed) {
         this.breed = breed;
-        return this;
     }
-    public String getGender() {
-        return gender;
+    public int getAge() {
+        return age;
     }
-    public Cat setGender(String gender) {
-        this.gender = gender;
-        return this;
+    public void setAge(int age) {
+        this.age = age;
     }
-    public String getId() {
-        return id;
+    public String getImg() {
+        return img;
     }
-    public Cat setId(String id) {
-        this.id = id;
-        return this;
+    public void setImg(String img) {
+        this.img = img;
     }
+    public int getIsActive() {
+        return isActive;
+    }
+    public void setIsActive(int isActive) {
+        this.isActive = isActive;
+    }
+    public boolean isHasBooking() {
+        return hasBooking;
+    }
+    public void setHasBooking(boolean hasBooking) {
+        this.hasBooking = hasBooking;
+    }
+
 
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context docBase="D:\FU-learning\FALL-2025_ky4\PRJ301\project\PROJECT_PRJ301\build\web" path="/PROJECT_PRJ301">
+  <!--
+<Resource
+        name="jdbc/CourseDB"
+        auth="Container"
+        type="javax.sql.DataSource"
+        driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+        
+        
+        url="jdbc:sqlserver://localhost:1433;databaseName=SkillUpEasy1;encrypt=true;trustServerCertificate=true"
+        
+        username="sa"
+        password="123"
+       
+    ></Resource>-->
+</Context>
