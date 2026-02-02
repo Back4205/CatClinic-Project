@@ -6,7 +6,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/css/service.css">
+          href="${pageContext.request.contextPath}/css/service-list.css">
 </head>
 
 <body data-context="${pageContext.request.contextPath}">

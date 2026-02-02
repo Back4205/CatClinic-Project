@@ -21,11 +21,7 @@ public class ViewServiceList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        // Forward sang serviceList.jsp (KHÔNG load DB)
         request.getRequestDispatcher("/WEB-INF/views/manager/serviceList.jsp")
                 .forward(request, response);
     }
-
-
 }

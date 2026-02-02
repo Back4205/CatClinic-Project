@@ -148,7 +148,7 @@ public void insertService(Service s) {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            closeConnection(); // đóng connection
+            closeConnection(); 
         }
 
         return list;
@@ -172,7 +172,6 @@ public void insertService(Service s) {
         sql += " AND isActive = ? ";
     }
 
-    // SORT PRICE
     if ("asc".equals(sortPrice)) {
         sql += " ORDER BY price ASC ";
     } else if ("desc".equals(sortPrice)) {
