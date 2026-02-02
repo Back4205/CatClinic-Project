@@ -6,9 +6,11 @@ package com.mycompany.catclinicproject.controller.managerController;
 
 import com.mycompany.catclinicproject.dao.homeDao.UserDao;
 import com.mycompany.catclinicproject.model.User;
+import com.mycompany.catclinicproject.model.UserDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,6 +20,8 @@ import java.util.List;
  *
  * @author Son
  */
+@WebServlet(name = "DeleteUserByIDs", urlPatterns = {"/deleteUsers"})
+
 public class DeleteUserByIDs extends HttpServlet {
 
     /**
@@ -68,7 +72,7 @@ public class DeleteUserByIDs extends HttpServlet {
             
         }
         UserDao dao = new UserDao();
-        List<User> list = dao.getAllUser();
+        List<UserDTO> list = dao.getAllUser();
         request.setAttribute("UserList", list);
         request.getRequestDispatcher("/WEB-INF/views/manager/AccountList.jsp")
                 .forward(request, response);

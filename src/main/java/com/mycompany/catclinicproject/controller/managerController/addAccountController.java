@@ -8,6 +8,7 @@ import com.mycompany.catclinicproject.dao.homeDao.UserDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,6 +18,8 @@ import jakarta.servlet.http.HttpSession;
  *
  * @author Son
  */
+@WebServlet(name = "addAccountController", urlPatterns = {"/addAccount"})
+
 public class addAccountController extends HttpServlet {
 
     /**

@@ -61,7 +61,7 @@ public class veteController extends HttpServlet {
          ServiceDao sdao = new ServiceDao();
     List<Service> serviceList = sdao.getAllService();
     request.setAttribute("serviceList", serviceList);
-              request.getRequestDispatcher("Homejsp/.jsp").forward(request, response);
+              request.getRequestDispatcher("/.jsp").forward(request, response);
     }
 
     /**

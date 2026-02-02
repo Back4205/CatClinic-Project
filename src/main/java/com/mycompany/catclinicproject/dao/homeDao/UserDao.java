@@ -5,10 +5,9 @@
 package com.mycompany.catclinicproject.dao.homeDao;
 
 import com.mycompany.catclinicproject.dao.DBContext;
-import com.mycompany.catclinicproject.model.User;
+import com.mycompany.catclinicproject.model.UserDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +17,8 @@ import java.util.List;
  */
 public class UserDao extends DBContext {
 
-    public List<User> getAllUser() {
-        List<User> list = new ArrayList<>();
+    public List<UserDTO> getAllUser() {
+        List<UserDTO> list = new ArrayList<>();
 
         String sql = " SELECT u.UserID, u.UserName, u.FullName,r.RoleName, u.Email, u.Phone "
                 + "FROM Users u JOIN Roles r ON u.RoleID = r.RoleID WHERE IsActive = 1";
@@ -29,7 +28,7 @@ public class UserDao extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                User u = new User();
+                UserDTO u = new UserDTO();
                 u.setUserID(rs.getInt("UserID"));
                 u.setUserName(rs.getString("UserName"));
                 u.setFullName(rs.getString("FullName"));
