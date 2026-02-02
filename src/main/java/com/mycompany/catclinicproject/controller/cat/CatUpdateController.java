@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.controller.cat;
 
 import com.mycompany.catclinicproject.dao.CatDAO;
 import com.mycompany.catclinicproject.model.Cat;
+import com.mycompany.catclinicproject.model.Owner;
 import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -51,9 +52,12 @@ public class CatUpdateController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/login");
                 return;
             }
+            int userID = user.getUserID();
+            Owner owner = dao.getOwnerByUserId(userID);
+            int ownerID = owner.getOwnerID();
 
             Cat cat = dao.getCatByID(catId);
-            if (cat == null || cat.getOwnerID() != user.getUserID()) {
+            if (cat == null || cat.getOwnerID() != ownerID) {
                 session.setAttribute("message", "You are not allowed to update this cat!");
                 request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
                 return;

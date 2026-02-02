@@ -1,6 +1,7 @@
 package com.mycompany.catclinicproject.dao;
 
 import com.mycompany.catclinicproject.model.Cat;
+import com.mycompany.catclinicproject.model.Owner;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -316,6 +317,25 @@ public class CatDAO extends DBContext {
         }
         return false;
     }
+    public Owner getOwnerByUserId(int userID) {
+        String sql = "SELECT * FROM Owners WHERE UserID = ?";
+        try  {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Owner(
+                        rs.getInt("OwnerID"),
+                        rs.getInt("UserID"),
+                        rs.getString("Address")
+                );
+            }
+        }catch (Exception e){
+            
+        }
+        return null;
+    }
+
 
     public static void main(String[] args) {
         CatDAO catDAO = new CatDAO();

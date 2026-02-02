@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.controller.cat;
 
 import com.mycompany.catclinicproject.dao.CatDAO;
 import com.mycompany.catclinicproject.model.Cat;
+import com.mycompany.catclinicproject.model.Owner;
 import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -38,7 +39,9 @@ public class CatAddController extends HttpServlet {
             response.sendRedirect(request.getContextPath()+"/login");
             return;
         }
-        int ownerID = user.getUserID();
+        int userID = user.getUserID();
+        Owner owner = catDAO.getOwnerByUserId(userID);
+        int ownerID = owner.getOwnerID();
         try {
 
           //  int ownerID = Integer.parseInt(request.getParameter("ownerID"));  // test
