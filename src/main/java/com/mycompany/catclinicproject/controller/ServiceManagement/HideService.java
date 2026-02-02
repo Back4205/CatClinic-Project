@@ -7,11 +7,13 @@ package com.mycompany.catclinicproject.controller.ServiceManagement;
 
 import com.mycompany.catclinicproject.dao.ServiceDAO;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@WebServlet(name = "HideService", urlPatterns = {"/HideService"})
 public class HideService extends HttpServlet {
 
     @Override

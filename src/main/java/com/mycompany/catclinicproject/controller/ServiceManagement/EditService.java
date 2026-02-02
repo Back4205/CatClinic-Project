@@ -8,11 +8,13 @@ package com.mycompany.catclinicproject.controller.ServiceManagement;
 import com.mycompany.catclinicproject.dao.ServiceDAO;
 import com.mycompany.catclinicproject.model.Service;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@WebServlet(name = "EditService", urlPatterns = {"/EditService"})
 public class EditService extends HttpServlet {
 
     @Override

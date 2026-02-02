@@ -9,10 +9,12 @@ import com.mycompany.catclinicproject.dao.ServiceDAO;
 import com.mycompany.catclinicproject.model.Service;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+@WebServlet(name = "CreateService", urlPatterns = {"/CreateService"})
 public class CreateService extends HttpServlet {
 
     @Override
