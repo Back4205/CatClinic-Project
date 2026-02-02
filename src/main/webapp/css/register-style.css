@@ -1,0 +1,194 @@
+
+:root {
+    --primary-orange: #f97316;
+    --primary-hover: #ea580c;
+    --bg-light: #fff7ed;
+    --text-dark: #1f2937;
+    --text-gray: #6b7280;
+    --border-color: #e5e7eb;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-light);
+
+    background-image: radial-gradient(circle at 2px 2px, #fde6d2 1px, transparent 0);
+    background-size: 40px 40px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+
+.register-card {
+    background: white;
+    width: 100%;
+    max-width: 650px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #fed7aa;
+}
+
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.header-icon {
+    font-size: 40px;
+    color: var(--primary-orange);
+    margin-bottom: 10px;
+}
+.header h3 {
+    color: var(--text-dark);
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.header p {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.row-flex {
+    display: flex;
+    gap: 15px;
+}
+
+.col-half {
+    flex: 1;
+}
+
+@media (max-width: 500px) {
+    .row-flex {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.9rem;
+}
+.required::after {
+    content: " *";
+    color: var(--primary-orange);
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: 0.2s;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--primary-orange);
+    color: white;
+    margin-top: 10px;
+}
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-google {
+    background-color: white;
+    border: 1px solid var(--border-color);
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-weight: 500;
+}
+.btn-google:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    color: #9ca3af;
+    margin: 20px 0;
+    font-size: 0.85rem;
+}
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid var(--border-color);
+}
+.divider::before {
+    margin-right: 10px;
+}
+.divider::after {
+    margin-left: 10px;
+}
+
+.alert-error {
+    background-color: #fef2f2;
+    color: #dc2626;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    border: 1px solid #fecaca;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.text-center {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+}
+.text-center a {
+    color: var(--primary-orange);
+    text-decoration: none;
+    font-weight: 600;
+}
+.text-center a:hover {
+    text-decoration: underline;
+}

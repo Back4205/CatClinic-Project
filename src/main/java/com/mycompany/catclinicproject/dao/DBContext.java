@@ -1,17 +1,16 @@
 package com.mycompany.catclinicproject.dao;
 
-
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBContext {
+
     protected Connection c;
 
     public DBContext() {
         try {
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=;encrypt=true;trustServerCertificate=true";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=Cat_Clinic_Final;encrypt=true;trustServerCertificate=true";
             String username = "sa";
             String pass = "123";
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
@@ -34,6 +33,4 @@ public class DBContext {
         }
     }
 
-
 }
-
