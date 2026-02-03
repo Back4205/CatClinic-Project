@@ -97,10 +97,20 @@
                             </div>
 
                             <div class="datetime">
-                                <span><i class="bi bi-calendar3"></i> ${b.appointmentDate}</span>
-                                <span style="font-size: 12px; color: #888; margin-left: 25px;">
-                                    ${b.appointmentTime}
-                                </span>
+                                <div class="date-row">
+                                    <span class="date-label">Begin</span>
+                                    <span>${b.appointmentDate}</span>
+                                    <span style="font-size: 11px; color: #999; margin-left: 5px;">
+                                        (${b.appointmentTime})
+                                    </span>
+                                </div>
+
+                                <c:if test="${not empty b.endDate && b.endDate != b.appointmentDate}">
+                                    <div class="date-row">
+                                        <span class="date-label">End</span>
+                                        <span>${b.endDate}</span>
+                                    </div>
+                                </c:if>
                             </div>
 
                             <div class="service-type">

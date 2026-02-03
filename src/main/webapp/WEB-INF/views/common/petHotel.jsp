@@ -12,7 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
-<jsp:include page="/WEB-INF/views/common/header_1.jsp" />
+<jsp:include page="headerSelection.jsp"/>
 
         <section class="pet-transfer">
             <div class="container">

@@ -18,10 +18,10 @@
         <a href="accessprofile" class="${activePage == 'profile' ? 'active' : ''}">
             <i class="bi bi-person-gear"></i> Profile & Security
         </a>
-        <a href="${pageContext.request.contextPath}/homeUser.jsp" class="${activePage == 'home' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/loadinfo" class="${activePage == 'home' ? 'active' : ''}">
             <i class="bi bi-house"></i> Home
         </a>
-        <a href="${pageContext.request.contextPath}/homePage.jsp" style="color: red; margin-top: 20px;">
+        <a href="${pageContext.request.contextPath}/logout" style="color: red; margin-top: 20px;">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
     </nav>

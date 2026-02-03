@@ -12,7 +12,7 @@ public class ServiceDao extends DBContext {
     // Lấy tất cả service
     public List<Service> getAllService() {
         List<Service> list = new ArrayList<>();
-        String sql = "SELECT * FROM Services";
+        String sql = "SELECT * FROM Services Where isActive = 1";
 
         try {
             PreparedStatement ps = c.prepareStatement(sql);

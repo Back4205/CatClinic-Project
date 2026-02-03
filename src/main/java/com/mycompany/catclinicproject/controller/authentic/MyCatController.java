@@ -1,4 +1,4 @@
-package com.mycompany.catclinicproject.controller;
+package com.mycompany.catclinicproject.controller.authentic;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

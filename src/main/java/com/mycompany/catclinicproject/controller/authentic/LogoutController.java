@@ -1,4 +1,4 @@
-package com.mycompany.catclinicproject.controller;
+package com.mycompany.catclinicproject.controller.authentic;
 
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -18,20 +18,8 @@ public class LogoutController extends HttpServlet {
 
         HttpSession session = request.getSession();
 
-        session.invalidate();
-
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-
-                if (cookie.getName().equals("cuser") || cookie.getName().equals("cpass")) {
-                    cookie.setMaxAge(0);
-                    response.addCookie(cookie);
-                }
-            }
-        }
-
-        response.sendRedirect("WEB-INF/views/common/homePage.jsp");
+        session.removeAttribute("acc");
+        response.sendRedirect("loadinfo");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.mycompany.catclinicproject.controller;
+package com.mycompany.catclinicproject.controller.authentic;
 
 import com.mycompany.catclinicproject.dao.UserDAO;
 import com.mycompany.catclinicproject.model.RegisterDTO;

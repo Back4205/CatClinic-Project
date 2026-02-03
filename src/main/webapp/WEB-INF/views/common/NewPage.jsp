@@ -21,7 +21,7 @@
 
 <body>
 
-<jsp:include page="/WEB-INF/views/common/header_1.jsp" />
+<jsp:include page="headerSelection.jsp"/>
 
 <!-- ================= MAIN CONTENT ================= -->
 <div class="container">
