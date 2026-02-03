@@ -153,7 +153,7 @@ public class CatDAO extends DBContext {
 
         if (name != null && !name.isEmpty()) {
             sql.append(" AND name LIKE ?");
-            params.add("%" + name + "%");
+            params.add("%" + name.trim() + "%");
         }
 
 
@@ -165,7 +165,7 @@ public class CatDAO extends DBContext {
 
         if (breed != null && !breed.isEmpty()) {
             sql.append(" AND breed LIKE ?");
-            params.add("%" + breed + "%");
+            params.add("%" + breed.trim() + "%");
         }
 
 

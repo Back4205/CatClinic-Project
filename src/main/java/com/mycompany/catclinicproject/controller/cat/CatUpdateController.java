@@ -86,7 +86,7 @@ public class CatUpdateController extends HttpServlet {
 
 
             String imagePath = cat.getImg();
-            Part filePart = request.getPart("image");// lay file tu request browse
+            Part filePart = request.getPart("image");// lay file anh ma user con tu folder trong laptop
 
             if (filePart != null && filePart.getSize() > 0) {
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();

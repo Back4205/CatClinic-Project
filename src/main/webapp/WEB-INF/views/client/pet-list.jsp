@@ -124,10 +124,20 @@
             </a>
         </div>
     <div class="pagination">
-        <a class="${indexPage == 1 ? 'disabled' : ''}"
-           href="${pageContext.request.contextPath}/cats?indexPage=${indexPage - 1}&name=${param.name}&age=${param.age}&gender=${param.gender}&breed=${param.breed}">
-            PREV
-        </a>
+<%--        <a class="${indexPage == 1 ? 'disabled' : ''}"--%>
+<%--           href="${pageContext.request.contextPath}/cats?indexPage=${indexPage - 1}&name=${param.name}&age=${param.age}&gender=${param.gender}&breed=${param.breed}">--%>
+<%--            PREV--%>
+<%--        </a>--%>
+    <c:choose>
+        <c:when test="${indexPage == 1}">
+            <a class="disabled">PREV</a>
+        </c:when>
+        <c:otherwise>
+            <a href="${pageContext.request.contextPath}/cats?indexPage=${indexPage - 1}&name=${param.name}&age=${param.age}&gender=${param.gender}&breed=${param.breed}">
+                PREV
+            </a>
+        </c:otherwise>
+    </c:choose>
 
         <c:forEach begin="1" end="${pageSize}" var="i">
             <a class="${i == indexPage ? 'active' : ''}"
@@ -136,10 +146,22 @@
             </a>
         </c:forEach>
 
-        <a class="${indexPage == pageSize ? 'disabled' : ''}"
-           href="${pageContext.request.contextPath}/cats?indexPage=${indexPage + 1}&name=${param.name}&age=${param.age}&gender=${param.gender}&breed=${param.breed}">
-            NEXT
-        </a>
+<%--        <a class="${indexPage == pageSize ? 'disabled' : ''}"--%>
+<%--           href="${pageContext.request.contextPath}/cats?indexPage=${indexPage + 1}&name=${param.name}&age=${param.age}&gender=${param.gender}&breed=${param.breed}">--%>
+<%--            NEXT--%>
+<%--        </a>--%>
+
+    <c:choose>
+        <c:when test="${indexPage == pageSize}">
+            <a class="disabled">NEXT</a>
+        </c:when>
+        <c:otherwise>
+            <a href="${pageContext.request.contextPath}/cats?indexPage=${indexPage + 1}&name=${param.name}&age=${param.age}&gender=${param.gender}&breed=${param.breed}">
+                NEXT
+            </a>
+        </c:otherwise>
+    </c:choose>
+
     </div>
     </div>
 

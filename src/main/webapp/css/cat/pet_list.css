@@ -283,6 +283,7 @@ tr:hover .pet-img {
 .pagination a.disabled {
     opacity: 0.3;
     cursor: not-allowed;
+    pointer-events: none; /* Khóa hẳn, không cho phép click vào đường dẫn */
 }
 
 /* ================== FOOTER ================== */

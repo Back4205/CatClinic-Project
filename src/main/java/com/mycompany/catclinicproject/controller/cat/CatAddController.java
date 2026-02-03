@@ -50,9 +50,10 @@ public class CatAddController extends HttpServlet {
             int age = Integer.parseInt(request.getParameter("age"));
 
 
-          if (catDAO.checkCatNameExistbyOwnerID(1, name )){
+          if (catDAO.checkCatNameExistbyOwnerID(ownerID, name )){
               message = "This owner already has a cat with this name!";
           }
+
 
             if (!message.isEmpty()) {
                 Cat cat = new Cat();
