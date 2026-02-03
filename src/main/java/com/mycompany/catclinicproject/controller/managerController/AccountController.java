@@ -14,6 +14,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.util.List;
 
 /**
@@ -62,7 +64,16 @@ public class AccountController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("acc") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        User user = (User) session.getAttribute("acc");
+        if (user.getRoleID() != 1) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         UserDao dao = new UserDao();
         List<UserDTO> list = dao.getAllUser();
 

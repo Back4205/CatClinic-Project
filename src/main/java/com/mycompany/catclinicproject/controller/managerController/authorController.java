@@ -1,6 +1,7 @@
 package com.mycompany.catclinicproject.controller.managerController;
 
 import com.mycompany.catclinicproject.dao.homeDao.UserDao;
+import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,6 +17,16 @@ public class authorController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("acc") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        User user = (User) session.getAttribute("acc");
+        if (user.getRoleID() != 1) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
         String userName = request.getParameter("userName");
         String idRaw = request.getParameter("userID");
         if (idRaw == null) {

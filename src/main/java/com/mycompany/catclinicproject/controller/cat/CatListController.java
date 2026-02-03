@@ -34,9 +34,6 @@ public class CatListController extends HttpServlet {
 
             int userID = user.getUserID();
             int ownerID = catDAO.getOwnerIdByUserId(userID);
-            
-            System.out.println("USER ID = " + userID);
-            System.out.println("OWNER ID = " + ownerID);
 
 
             String name = request.getParameter("name");
