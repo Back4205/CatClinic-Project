@@ -13,9 +13,29 @@
 <head>
     <title>Cat List </title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/cat/pet_list.css">
+
 </head>
 
 <body>
+
+<header class="topbar">
+    <div class="header-inner">
+
+        <a href="${pageContext.request.contextPath}/loadinfo" class="logo">
+            <i class="bi bi-hospital"></i> CatClinic
+        </a>
+
+        <div class="user-info">
+            <span class="name">${acc.userName}</span>
+            <div class="avatar">
+                <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
+            </div>
+        </div>
+
+    </div>
+</header>
+
+
 
 <div class="container">
     <div class="header">
@@ -97,7 +117,12 @@
         </c:forEach>
         </tbody>
     </table>
-
+    <div class="table-footer">
+        <div class="footer-actions">
+            <a href="${pageContext.request.contextPath}/profile" class="btn-profile">
+                Back To Profile
+            </a>
+        </div>
     <div class="pagination">
         <a class="${indexPage == 1 ? 'disabled' : ''}"
            href="${pageContext.request.contextPath}/cats?indexPage=${indexPage - 1}&name=${param.name}&age=${param.age}&gender=${param.gender}&breed=${param.breed}">
@@ -116,9 +141,14 @@
             NEXT
         </a>
     </div>
+    </div>
 
 </div>
+<footer>
+    <p>&copy; 2026 CatClinic. All rights reserved.</p>
+</footer>
 
 </body>
+
 
 </html>

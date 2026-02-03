@@ -1,21 +1,82 @@
+/* ================== GLOBAL LAYOUT ================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: #f5f7fa;
-    padding: 30px;
-    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ================== TOPBAR (HEADER) ================== */
+.topbar {
+    background: #ffffff;
+    width: 100%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     display: flex;
     justify-content: center;
 }
 
+.header-inner {
+    width: 95%;
+    max-width: 1200px;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 800;
+    color: #f97316;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-info .name {
+    font-weight: 600;
+    color: #333;
+}
+
+.avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #eee;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ================== MAIN CONTAINER ================== */
 .container {
+    flex: 1 0 auto;
     width: 95%;
     max-width: 1200px;
     background: #ffffff;
     border-radius: 14px;
     padding: 30px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    margin-top: 30px;
+    margin: 30px auto;
 }
 
 .header {
@@ -27,7 +88,6 @@ body {
 
 .header h2 {
     color: #333;
-    margin: 0;
     font-size: 24px;
 }
 
@@ -48,7 +108,7 @@ body {
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
 }
 
-
+/* ================== FILTER SECTION (ĐÃ CẬP NHẬT HIỆU ỨNG) ================== */
 .filter {
     display: grid;
     grid-template-columns: 1fr 1fr 1.5fr 1.5fr auto;
@@ -65,7 +125,7 @@ body {
     border-radius: 8px;
     border: 1px solid #ddd;
     outline: none;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s; /* Bổ sung hiệu ứng mượt khi focus */
 }
 
 .filter input:focus, .filter select:focus {
@@ -80,16 +140,16 @@ body {
     padding: 10px 20px;
     cursor: pointer;
     font-weight: 600;
-    transition: background 0.3s;
+    transition: all 0.3s ease; /* Bổ sung hiệu ứng mượt */
 }
 
 .btn-filter:hover {
     background: #ea580c;
-    transform: translateY(-2px);
+    transform: translateY(-2px); /* Bổ sung hiệu ứng nổi lên như cũ */
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
 }
 
-
+/* ================== TABLE STYLES (ĐÃ CẬP NHẬT HIỆU ỨNG) ================== */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -108,24 +168,22 @@ td {
     padding: 15px;
     border-bottom: 1px solid #f1f1f1;
     vertical-align: middle;
-    transition: background 0.2s ease;
+    transition: background 0.2s ease; /* Hiệu ứng đổi màu hàng */
 }
 
-
 tr:hover td {
-    background-color: #fffaf5;
+    background-color: #fffaf5; /* Hiệu ứng hover hàng như cũ */
 }
 
 .pet-img {
     border-radius: 8px;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease; /* Hiệu ứng zoom ảnh */
 }
 
 tr:hover .pet-img {
-    transform: scale(1.1);
+    transform: scale(1.1); /* Zoom ảnh khi hover hàng */
 }
-
 
 .badge {
     padding: 6px 12px;
@@ -137,17 +195,17 @@ tr:hover .pet-img {
 .male { background: #e6f4ff; color: #1c7ed6; }
 .female { background: #ffe4ec; color: #d63384; }
 
-
+/* ================== ACTION GROUP ================== */
 .action-group {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
-.btn-edit {
+.action-group form { margin: 0; }
+
+.btn-edit, .btn-delete, .btn-history {
     background: #ffffff;
-    color: #f97316;
-    border: 1px solid #f97316;
     padding: 8px 14px;
     border-radius: 6px;
     font-size: 12px;
@@ -156,52 +214,48 @@ tr:hover .pet-img {
     transition: all 0.3s ease;
 }
 
-.btn-edit:hover {
+.btn-edit { color: #f97316; border: 1px solid #f97316; }
+.btn-edit:hover { background: #f97316; color: #fff; }
+
+.btn-delete { color: #dc2626; border: 1px solid #dc2626; }
+.btn-delete:hover { background: #dc2626; color: #fff; }
+
+.btn-history { color: #22a06b; border: 1px solid #22a06b; white-space: nowrap; }
+.btn-history:hover { background: #22a06b; color: #fff; }
+
+/* ================== TABLE FOOTER (ĐÃ CẬP NHẬT) ================== */
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-bottom: 10px;
+}
+
+.btn-profile {
+    display: inline-block;
     background: #f97316;
-    color: #ffffff;
-}
-
-.btn-delete {
-    background: #ffffff;
-    color: #dc2626;
-    border: 1px solid #dc2626;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 12px;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 8px;
     font-weight: 600;
-    cursor: pointer;
+    font-size: 14px;
     transition: all 0.3s ease;
 }
 
-.btn-delete:hover {
-    background: #dc2626;
-    color: #ffffff;
+.btn-profile:hover {
+    background: #ea580c;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2);
 }
 
-
-.btn-history {
-    background: #ffffff;
-    color: #22a06b;
-    border: 1px solid #22a06b;
-    padding: 8px 14px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-history:hover {
-    background: #22a06b;
-    color: #ffffff;
-}
-
-
+/* ================== PAGINATION (ĐÃ CẬP NHẬT HIỆU ỨNG) ================== */
 .pagination {
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-top: 30px;
+    margin-top: 0; /* Đổi thành 0 vì nằm trong table-footer */
 }
 
 .pagination a {
@@ -211,12 +265,13 @@ tr:hover .pet-img {
     text-decoration: none;
     color: #666;
     font-size: 14px;
-    transition: all 0.3s;
+    transition: all 0.3s; /* Hiệu ứng mượt cho các ô chuyển trang */
 }
 
 .pagination a:hover:not(.disabled) {
     border-color: #f97316;
     color: #f97316;
+    transform: translateY(-2px); /* Thêm hiệu ứng nổi lên nhẹ */
 }
 
 .pagination a.active {
@@ -228,4 +283,14 @@ tr:hover .pet-img {
 .pagination a.disabled {
     opacity: 0.3;
     cursor: not-allowed;
+}
+
+/* ================== FOOTER ================== */
+footer {
+    flex-shrink: 0;
+    text-align: center;
+    padding: 25px;
+    background: #ffffff;
+    border-top: 1px solid #f0f0f0;
+    color: #888;
 }
