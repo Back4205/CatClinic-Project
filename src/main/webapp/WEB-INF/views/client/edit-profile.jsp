@@ -59,7 +59,7 @@
                                 ${messageType == 'success' ? 'Update Again' : 'Save Changes'}
                             </button>
 
-                            <a href="accessprofile" class="btn">
+                            <a href="profile" class="btn">
                                 <c:choose>
                                     <c:when test="${messageType == 'success'}">
                                         <i class="bi bi-arrow-left"></i> Back to Profile

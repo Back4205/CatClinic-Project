@@ -179,7 +179,7 @@ public class CatDAO extends DBContext {
         }
 
 
-        sql.append(" ORDER BY catID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        sql.append(" ORDER BY CatID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
         params.add(offset);
         params.add(numberItemPerPage);
 
@@ -233,6 +233,53 @@ public class CatDAO extends DBContext {
             e.printStackTrace();
         }
         return null;
+    }
+    public int countCats(int ownerID) {
+        String sql = "SELECT COUNT(*) FROM Cats WHERE ownerID = ? and IsActive = 1";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, ownerID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<Cat> getCatsByOwnerPaging(int ownerID, int indexPage, int pageSize) {
+
+        List<Cat> list = new ArrayList<>();
+
+        String sql = " SELECT * FROM Cats WHERE ownerID = ? and IsActive =1 " +
+                "ORDER BY CatID DESC "+
+                " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, ownerID);
+            ps.setInt(2, (indexPage - 1) * pageSize);
+            ps.setInt(3, pageSize);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Cat cat = new Cat();
+                cat.setCatID(rs.getInt("catID"));
+                cat.setName(rs.getString("name"));
+                cat.setAge(rs.getInt("age"));
+                cat.setGender(rs.getInt("gender"));
+                cat.setBreed(rs.getString("breed"));
+                cat.setImg(rs.getString("Image"));
+                list.add(cat);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
     public int countCatsWithFilter(int ownerID, String name, String gender, String breed, int age) {
         StringBuilder sql = new StringBuilder(
@@ -337,7 +384,8 @@ public class CatDAO extends DBContext {
 
     public static void main(String[] args) {
         CatDAO catDAO = new CatDAO();
-      int muber = catDAO.getOwnerIdByUserId(5);
+//      int muber = catDAO.getOwnerIdByUserId(5);
+        int muber = catDAO.countCats(1);
         System.out.println(muber);
     }
 

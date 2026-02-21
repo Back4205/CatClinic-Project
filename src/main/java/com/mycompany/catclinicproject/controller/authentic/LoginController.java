@@ -21,6 +21,9 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // bách
+        String from = request.getParameter("from");
+        request.setAttribute("from", from);
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -46,10 +49,9 @@ public class LoginController extends HttpServlet {
         String p = request.getParameter("password");
         String r = request.getParameter("remember");
 
+        String from = request.getParameter("from");
         UserDAO dao = new UserDAO();
         User account = dao.checkLogin(u, p);
-       
-        
 
 
         if (account == null) {
@@ -76,27 +78,32 @@ public class LoginController extends HttpServlet {
             response.addCookie(cu);
             response.addCookie(cp);
 
-            switch (account.getRoleID()) {
-                case 1:
-                    request.getRequestDispatcher("WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
-                    break;
-                case 2:
-                    response.sendRedirect("vet/schedule");
-                    break;
-                case 3:
-                    response.sendRedirect("reception/home");
-                    break;
-                case 4:
-                    response.sendRedirect("staff/tasks");
-                    break;
-                case 5:
-                    ServiceDao sdao = new ServiceDao();
-                    List<Service> serviceList = sdao.getAllService();
-                    request.setAttribute("serviceList", serviceList);
-                    request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
-                    break;
-                default:
-                    request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
+            if ("booking".equals(from)) {
+
+                response.sendRedirect(request.getContextPath() + "/Booking");
+            } else {
+                switch (account.getRoleID()) {
+                    case 1:
+                        request.getRequestDispatcher("WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
+                        break;
+                    case 2:
+                        response.sendRedirect("vet/schedule");
+                        break;
+                    case 3:
+                        response.sendRedirect("reception/home");
+                        break;
+                    case 4:
+                        response.sendRedirect("staff/tasks");
+                        break;
+                    case 5:
+                        ServiceDao sdao = new ServiceDao();
+                        List<Service> serviceList = sdao.getAllService();
+                        request.setAttribute("serviceList", serviceList);
+                        request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
+                        break;
+                    default:
+                        request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
+                }
             }
         }
     }

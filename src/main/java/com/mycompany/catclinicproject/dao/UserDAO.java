@@ -2,11 +2,15 @@ package com.mycompany.catclinicproject.dao;
 
 import com.mycompany.catclinicproject.model.RegisterDTO;
 import com.mycompany.catclinicproject.model.User;
+import com.mycompany.catclinicproject.model.UserDTO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDAO extends DBContext {
 
@@ -188,4 +192,64 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
     }
+
+    public List<UserDTO> getVetAndCareStaff() {
+        List<UserDTO> list = new ArrayList<>();
+        String sql = "SELECT u.UserID, u.FullName, r.RoleName, 'Veterinarian' AS Type " +
+                "FROM Veterinarians v " +
+                "JOIN Users u ON v.UserID = u.UserID " +
+                "JOIN Roles r ON u.RoleID = r.RoleID " +
+                "WHERE u.IsActive = 1 " +
+                "UNION ALL " +
+                "SELECT u.UserID, u.FullName, r.RoleName, 'Care' AS Type " +
+                "FROM Staffs s " +
+                "JOIN Users u ON s.UserID = u.UserID " +
+                "JOIN Roles r ON u.RoleID = r.RoleID " +
+                "WHERE s.Position = N'Care' AND u.IsActive = 1 "+
+                " ORDER BY Type DESC ";
+
+        try (
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                UserDTO user = new UserDTO();
+
+                user.setUserID(rs.getInt("UserID"));
+                user.setFullName(rs.getString("FullName"));
+                user.setRoleName(rs.getString("RoleName"));
+
+                user.setType(rs.getString("Type"));
+
+                list.add(user);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+
+    public User getUserByID(int userID) {
+        String sql = "SELECT * FROM Users WHERE UserID = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setUserID(rs.getInt("UserID"));
+                user.setFullName(rs.getString("FullName"));
+                user.setEmail(rs.getString("Email"));
+                user.setPhone(rs.getString("Phone"));
+                user.setRoleID(rs.getInt("RoleID")); // Quan trọng để check Doctor hay Staff
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

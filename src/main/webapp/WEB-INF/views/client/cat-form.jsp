@@ -54,7 +54,7 @@
             <form method="post"
                   action="${pageContext.request.contextPath}${empty cat ? '/cats/cat-add' : '/cats/cat-update'}"
                   enctype="multipart/form-data">
-
+                <input type="hidden" name="from" value="${from}">
                 <div class="profile-box">
 
                     <!-- IMAGE -->
