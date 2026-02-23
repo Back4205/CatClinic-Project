@@ -50,6 +50,7 @@ public class LoginController extends HttpServlet {
         String r = request.getParameter("remember");
 
         String from = request.getParameter("from");
+
         UserDAO dao = new UserDAO();
         User account = dao.checkLogin(u, p);
 
@@ -78,7 +79,7 @@ public class LoginController extends HttpServlet {
             response.addCookie(cu);
             response.addCookie(cp);
 
-            if ("booking".equals(from)) {
+            if ("booking".equals(from) ) {
 
                 response.sendRedirect(request.getContextPath() + "/Booking");
             } else {
