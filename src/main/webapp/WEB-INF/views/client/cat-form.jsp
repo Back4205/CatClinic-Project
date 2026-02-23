@@ -119,7 +119,16 @@
                             <button class="btn btn-primary" type="submit">
                                 <c:out value="${empty cat ? 'ADD PET' : 'UPDATE PROFILE CAT'}" />
                             </button>
-                            <a href="${pageContext.request.contextPath}/cats" class="btn btn-cancel">CANCEL</a>
+                            <c:choose>
+                                <c:when test="${from eq 'booking'}">
+                                    <a href="${pageContext.request.contextPath}/Booking"
+                                       class="btn btn-cancel">CANCEL</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="${pageContext.request.contextPath}/cats"
+                                       class="btn btn-cancel">CANCEL</a>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
 
                         <c:if test="${not empty message}">

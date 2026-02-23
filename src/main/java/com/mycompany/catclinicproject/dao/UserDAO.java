@@ -201,12 +201,12 @@ public class UserDAO extends DBContext {
                 "JOIN Roles r ON u.RoleID = r.RoleID " +
                 "WHERE u.IsActive = 1 " +
                 "UNION ALL " +
-                "SELECT u.UserID, u.FullName, r.RoleName, 'Care' AS Type " +
+                "SELECT u.UserID, u.FullName, r.RoleName, s.Position AS Type " +
                 "FROM Staffs s " +
                 "JOIN Users u ON s.UserID = u.UserID " +
                 "JOIN Roles r ON u.RoleID = r.RoleID " +
-                "WHERE s.Position = N'Care' AND u.IsActive = 1 "+
-                " ORDER BY Type DESC ";
+                "WHERE s.Position IN (N'Care', N'Technician') AND u.IsActive = 1 " +
+                "ORDER BY Type DESC ";
 
         try (
              PreparedStatement ps = c.prepareStatement(sql);
@@ -246,6 +246,32 @@ public class UserDAO extends DBContext {
                 user.setRoleID(rs.getInt("RoleID")); // Quan trọng để check Doctor hay Staff
                 return user;
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /** Lấy VetID từ UserID (chỉ áp dụng cho bác sĩ) */
+    public Integer getVetIDByUserID(int userID) {
+        String sql = "SELECT VetID FROM Veterinarians WHERE UserID = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("VetID");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /** Lấy StaffID từ UserID (chỉ áp dụng cho nhân viên) */
+    public Integer getStaffIDByUserID(int userID) {
+        String sql = "SELECT StaffID FROM Staffs WHERE UserID = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt("StaffID");
         } catch (Exception e) {
             e.printStackTrace();
         }

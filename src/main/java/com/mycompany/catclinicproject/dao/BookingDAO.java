@@ -13,10 +13,11 @@ public class BookingDAO extends DBContext {
 
     private static final Logger LOGGER = Logger.getLogger(BookingDAO.class.getName());
 
-    // =========================
-    // GET BOOKING HISTORY
-    // =========================
+    // =========================================================
+    // GET BOOKING HISTORY BY USER
+    // =========================================================
     public List<BookingHistoryDTO> getHistoryByUserID(int userID) {
+
         List<BookingHistoryDTO> list = new ArrayList<>();
 
         String sql = "SELECT b.BookingID, c.Name AS CatName, c.Breed, "
@@ -31,7 +32,6 @@ public class BookingDAO extends DBContext {
                 + "ORDER BY b.AppointmentDate DESC";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
-
             ps.setInt(1, userID);
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -57,11 +57,14 @@ public class BookingDAO extends DBContext {
         return list;
     }
 
-    // =========================
-    // GET CAT ID BY BOOKING ID
-    // =========================
+
+    // =========================================================
+// GET CAT ID BY BOOKING ID
+// =========================================================
     public int getCatIdByBookingID(int bookingID) {
+
         String sql = "SELECT CatID FROM Bookings WHERE BookingID = ?";
+        int catID = -1;
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -69,7 +72,7 @@ public class BookingDAO extends DBContext {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt("CatID");
+                    catID = rs.getInt("CatID");
                 }
             }
 
@@ -77,126 +80,201 @@ public class BookingDAO extends DBContext {
             LOGGER.log(Level.SEVERE, "Error getCatIdByBookingID", e);
         }
 
-        return -1;
+        return catID;
     }
 
-    // =========================
-    // CREATE BOOKING
-    // =========================
-    public int createBooking(Booking booking) {
+    // =========================================================
+    // CREATE BOOKING + DETAILS + INVOICE (TRANSACTION SAFE)
+    // =========================================================
+    public int createBookingWithInvoice(Booking booking,
+                                        List<Integer> serviceIDs,
+                                        List<Double> prices,
+                                        double totalAmount) {
 
-        String sql = "INSERT INTO Bookings "
+        int bookingID = -1;
+
+        String lockSlotSQL = "UPDATE TimeSlots SET Status = N'Pending' "
+                + "WHERE SlotID = ? AND Status = N'Available'";
+
+        String insertBookingSQL = "INSERT INTO Bookings "
                 + "(CatID, VetID, StaffID, SlotID, AppointmentDate, EndDate, AppointmentTime, Status, Note) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        String insertDetailSQL = "INSERT INTO BookingDetails "
+                + "(BookingID, ServiceID, PriceAtBooking) VALUES (?, ?, ?)";
 
-            ps.setInt(1, booking.getCatID());
-            ps.setInt(2, booking.getVeterinarianID());
-            ps.setInt(3, booking.getStaffID());
-            ps.setInt(4, booking.getSlotID());
-            ps.setDate(5, new java.sql.Date(booking.getAppointmentDate().getTime()));
-            ps.setDate(6, new java.sql.Date(booking.getEndDate().getTime()));
-            ps.setTime(7, booking.getAppointmentTime());
-            ps.setString(8, "PendingPayment");
-            ps.setString(9, booking.getStatus());
+        String insertInvoiceSQL = "INSERT INTO Invoices "
+                + "(BookingID, TotalAmount, PaymentStatus) VALUES (?, ?, ?)";
 
-            int rows = ps.executeUpdate();
+        try {
+            c.setAutoCommit(false);
 
-            if (rows > 0) {
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        return rs.getInt(1);
+            // 1️⃣ LOCK SLOT (if medical service)
+            if (booking.getSlotID() > 0) {
+                try (PreparedStatement psLock = c.prepareStatement(lockSlotSQL)) {
+                    psLock.setInt(1, booking.getSlotID());
+                    int affected = psLock.executeUpdate();
+
+                    if (affected == 0) {
+                        c.rollback();
+                        return -1; // Slot already taken
                     }
                 }
             }
 
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error createBooking", e);
-        }
+            // 2️⃣ INSERT BOOKING
+            try (PreparedStatement ps = c.prepareStatement(insertBookingSQL, Statement.RETURN_GENERATED_KEYS)) {
 
-        return -1;
-    }
+                ps.setInt(1, booking.getCatID());
+                ps.setObject(2, booking.getVeterinarianID() <= 0 ? null : booking.getVeterinarianID());
+                ps.setObject(3, booking.getStaffID() <= 0 ? null : booking.getStaffID());
+                ps.setObject(4, booking.getSlotID() <= 0 ? null : booking.getSlotID());
+                ps.setDate(5, new java.sql.Date(booking.getAppointmentDate().getTime()));
+                ps.setDate(6, new java.sql.Date(booking.getEndDate().getTime()));
+                ps.setTime(7, booking.getAppointmentTime());
+                ps.setString(8, "PendingPayment");
+                ps.setString(9, booking.getNote() == null ? "" : booking.getNote());
 
-    // =========================
-    // CHECK SLOT AVAILABLE
-    // =========================
-    public boolean checkSlotAvailable(int slotID) {
+                ps.executeUpdate();
 
-        String sql = "SELECT Status FROM TimeSlots WHERE SlotID = ?";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setInt(1, slotID);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return "Available".equals(rs.getString("Status"));
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        bookingID = rs.getInt(1);
+                    }
                 }
             }
 
+            if (bookingID == -1) {
+                c.rollback();
+                return -1;
+            }
+
+            // 3️⃣ INSERT BOOKING DETAILS (MULTI SERVICE)
+            try (PreparedStatement psDetail = c.prepareStatement(insertDetailSQL)) {
+
+                for (int i = 0; i < serviceIDs.size(); i++) {
+                    psDetail.setInt(1, bookingID);
+                    psDetail.setInt(2, serviceIDs.get(i));
+                    psDetail.setDouble(3, prices.get(i));
+                    psDetail.addBatch();
+                }
+
+                psDetail.executeBatch();
+            }
+
+            // 4️⃣ INSERT INVOICE
+            try (PreparedStatement psInvoice = c.prepareStatement(insertInvoiceSQL)) {
+                psInvoice.setInt(1, bookingID);
+                psInvoice.setDouble(2, totalAmount);
+                psInvoice.setString(3, "Unpaid");
+                psInvoice.executeUpdate();
+            }
+
+            c.commit();
+
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error checkSlotAvailable", e);
+            try {
+                c.rollback();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "Rollback failed", ex);
+            }
+            LOGGER.log(Level.SEVERE, "Error createBookingWithInvoice", e);
+            bookingID = -1;
+
+        } finally {
+            try {
+                c.setAutoCommit(true);
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Reset autoCommit failed", e);
+            }
+        }
+
+        return bookingID;
+    }
+
+    // =========================================================
+    // CONFIRM BOOKING AFTER SUCCESS PAYMENT
+    // =========================================================
+    public boolean confirmBooking(int bookingID, int slotID) {
+
+        String updateBookingSQL = "UPDATE Bookings SET Status = N'Confirmed' WHERE BookingID = ?";
+        String updateSlotSQL = "UPDATE TimeSlots SET Status = N'Booked' WHERE SlotID = ?";
+
+        try {
+            c.setAutoCommit(false);
+
+            try (PreparedStatement ps1 = c.prepareStatement(updateBookingSQL)) {
+                ps1.setInt(1, bookingID);
+                ps1.executeUpdate();
+            }
+
+            if (slotID > 0) {
+                try (PreparedStatement ps2 = c.prepareStatement(updateSlotSQL)) {
+                    ps2.setInt(1, slotID);
+                    ps2.executeUpdate();
+                }
+            }
+
+            c.commit();
+            return true;
+
+        } catch (SQLException e) {
+            try {
+                c.rollback();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "Rollback failed", ex);
+            }
+            LOGGER.log(Level.SEVERE, "Error confirmBooking", e);
+        } finally {
+            try {
+                c.setAutoCommit(true);
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Reset autoCommit failed", e);
+            }
         }
 
         return false;
     }
 
-    // =========================
-    // UPDATE BOOKING STATUS
-    // =========================
-    public boolean updateBookingStatus(int bookingID, String status) {
+    // =========================================================
+    // CANCEL BOOKING (RELEASE SLOT)
+    // =========================================================
+    public boolean cancelBooking(int bookingID, int slotID) {
 
-        String sql = "UPDATE Bookings SET Status = ? WHERE BookingID = ?";
+        String updateBookingSQL = "UPDATE Bookings SET Status = N'Cancelled' WHERE BookingID = ?";
+        String releaseSlotSQL = "UPDATE TimeSlots SET Status = N'Available' WHERE SlotID = ?";
 
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
+        try {
+            c.setAutoCommit(false);
 
-            ps.setString(1, status);
-            ps.setInt(2, bookingID);
+            try (PreparedStatement ps1 = c.prepareStatement(updateBookingSQL)) {
+                ps1.setInt(1, bookingID);
+                ps1.executeUpdate();
+            }
 
-            return ps.executeUpdate() > 0;
+            if (slotID > 0) {
+                try (PreparedStatement ps2 = c.prepareStatement(releaseSlotSQL)) {
+                    ps2.setInt(1, slotID);
+                    ps2.executeUpdate();
+                }
+            }
 
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error updateBookingStatus", e);
-        }
-
-        return false;
-    }
-
-    // =========================
-    // LOCK SLOT
-    // =========================
-    public boolean lockSlot(int slotID) {
-
-        String sql = "UPDATE TimeSlots SET Status = N'Booked' "
-                + "WHERE SlotID = ? AND Status = N'Available'";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setInt(1, slotID);
-            return ps.executeUpdate() > 0;
+            c.commit();
+            return true;
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error lockSlot", e);
-        }
-
-        return false;
-    }
-
-    // =========================
-    // RELEASE SLOT
-    // =========================
-    public boolean releaseSlot(int slotID) {
-
-        String sql = "UPDATE TimeSlots SET Status = N'Available' WHERE SlotID = ?";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setInt(1, slotID);
-            return ps.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error releaseSlot", e);
+            try {
+                c.rollback();
+            } catch (SQLException ex) {
+                LOGGER.log(Level.SEVERE, "Rollback failed", ex);
+            }
+            LOGGER.log(Level.SEVERE, "Error cancelBooking", e);
+        } finally {
+            try {
+                c.setAutoCommit(true);
+            } catch (SQLException e) {
+                LOGGER.log(Level.SEVERE, "Reset autoCommit failed", e);
+            }
         }
 
         return false;
