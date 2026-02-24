@@ -277,8 +277,13 @@
 </footer>
 
 <script>
-    function calculatePrice() {
-        const serviceSelect = document.getElementById('serviceSelect');
+
+        setTimeout(function(){
+        location.reload();
+    }, 60000); // 60 giây
+
+function calculatePrice() {
+const serviceSelect = document.getElementById('serviceSelect');
         const summaryArea = document.getElementById('costSummaryArea');
         const priceBaseDisplay = document.getElementById('priceBaseDisplay');
         const depositDisplay = document.getElementById('depositDisplay');

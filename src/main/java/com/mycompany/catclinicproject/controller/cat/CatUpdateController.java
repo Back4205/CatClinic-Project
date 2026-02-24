@@ -42,7 +42,11 @@ public class CatUpdateController extends HttpServlet {
 
             int catId = Integer.parseInt(request.getParameter("catId"));
             String name = request.getParameter("name");
+            String breed = request.getParameter("breed");
+            int gender = Integer.parseInt(request.getParameter("gender"));
+
             int newAge = Integer.parseInt(request.getParameter("age"));
+
 
             CatDAO dao = new CatDAO();
             HttpSession session = request.getSession(false);
@@ -64,6 +68,7 @@ public class CatUpdateController extends HttpServlet {
             int oldAge = cat.getAge();
             String message = "";
 
+            String letterOnlyRegex = "^[a-zA-ZÀ-ỹ\\s]+$";
 
             if (dao.checkCatNameExistUpdate(cat.getOwnerID(), name, catId)) {
                 message = "This owner already has a cat with this name!";
@@ -72,6 +77,10 @@ public class CatUpdateController extends HttpServlet {
                     message = "Age cannot be decreased!";
             } else if (newAge > oldAge + 1) {
                     message = "Age can only increase by 1 year!";
+            }if (breed == null || breed.trim().isEmpty()) {
+                message = "Gender cannot be empty!";
+            } else if (!breed.matches(letterOnlyRegex)) {
+                message = "Gender cannot contain numbers or special characters!";
             }
 
 
@@ -102,6 +111,8 @@ public class CatUpdateController extends HttpServlet {
             cat.setName(name);
             cat.setAge(newAge);
             cat.setImg(imagePath);
+            cat.setBreed(breed);
+            cat.setGender(gender);
 
             dao.updateCat(cat);
 

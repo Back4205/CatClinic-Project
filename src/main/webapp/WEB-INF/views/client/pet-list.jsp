@@ -78,7 +78,7 @@
             <table>
                 <thead>
                 <tr>
-                    <th style="width: 50px;">ID</th>
+
                     <th style="width: 80px;">Photo</th>
                     <th>Name</th>
                     <th>Age</th>
@@ -91,7 +91,7 @@
                 <tbody>
                 <c:forEach items="${catList}" var="c">
                     <tr>
-                        <td><strong>${c.catID}</strong></td>
+
 
                         <td>
                             <img src="${pageContext.request.contextPath}/${c.img}"

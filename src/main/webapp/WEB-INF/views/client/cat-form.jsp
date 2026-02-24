@@ -91,8 +91,8 @@
 
                         <div class="field">
                             <label>Breed</label>
-                            <input type="text" name="breed" value="${cat.breed}"
-                            ${not empty cat ? 'readonly' : ''} required>
+                            <input type="text" name="breed" value="${cat.breed}" required>
+<%--                            ${not empty cat ? 'readonly' : ''} required>--%>
                         </div>
 
                         <div class="row">
@@ -104,7 +104,8 @@
 
                             <div class="field">
                                 <label>Gender</label>
-                                <select name="gender" ${not empty cat ? 'disabled' : ''}>
+<%--                                <select name="gender" ${not empty cat ? 'disabled' : ''}>--%>
+                                <select name="gender" required>
                                     <option value="0" ${cat.gender == 0 ? "selected" : ""}>Male</option>
                                     <option value="1" ${cat.gender == 1 ? "selected" : ""}>Female</option>
                                 </select>

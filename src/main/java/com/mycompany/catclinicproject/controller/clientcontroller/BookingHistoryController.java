@@ -37,6 +37,7 @@ public class BookingHistoryController extends HttpServlet {
         String filterStatus = request.getParameter("status");
 
         BookingDAO dao = new BookingDAO();
+        dao.autoCancelExpiredBookings();
         List<BookingHistoryDTO> fullList = dao.getHistoryByUserID(userID);
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));

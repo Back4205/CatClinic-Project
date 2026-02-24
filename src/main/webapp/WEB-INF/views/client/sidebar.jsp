@@ -5,7 +5,7 @@
         <div class="avatar large">
             <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
         </div>
-        <h3>${acc.userName}</h3>
+        <h3>${acc.fullName}</h3>
         <p>CATCLINIC PORTAL</p>
     </div>
     <nav class="menu">

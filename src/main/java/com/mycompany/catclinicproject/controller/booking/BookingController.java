@@ -29,6 +29,8 @@ public class BookingController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login?from=booking");
             return;
         }
+        BookingDAO bookingDAO = new BookingDAO();
+        bookingDAO.autoCancelExpiredBookings();
 
         loadBookingData(request, user);
         request.getRequestDispatcher("/WEB-INF/views/client/Booking.jsp").forward(request, response);

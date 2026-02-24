@@ -119,7 +119,7 @@
                             </div>
 
                             <div class="price">
-                                $${b.price}
+                                ${b.price}VND
                             </div>
 
                             <div>

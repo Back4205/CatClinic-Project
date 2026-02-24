@@ -279,4 +279,86 @@ public class BookingDAO extends DBContext {
 
         return false;
     }
+
+    public boolean updateBookingStatus(int bookingID, String status) {
+        String sql = "UPDATE Bookings SET status = ? WHERE bookingID = ?";
+
+        try (
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, status);
+            ps.setInt(2, bookingID);
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    public int getSlotIDByBookingID(int bookingID) {
+
+        String sql = "SELECT SlotID FROM Bookings WHERE BookingID = ?";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setInt(1, bookingID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("SlotID");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public void autoCancelExpiredBookings() {
+
+        try {
+
+            // 1️⃣ Lấy các slot của booking quá 5 phút
+            String selectSql = " SELECT SlotID FROM Bookings WHERE Status = 'PendingPayment' AND DATEDIFF(MINUTE, BookingDate, GETDATE()) >= 5 AND SlotID IS NOT NULL ";
+
+            PreparedStatement psSelect = c.prepareStatement(selectSql);
+            ResultSet rs = psSelect.executeQuery();
+
+            List<Integer> slotIds = new ArrayList<>();
+
+            while (rs.next()) {
+                slotIds.add(rs.getInt("SlotID"));
+            }
+
+            // 2️⃣ Cancel booking
+            String cancelSql = " UPDATE Bookings SET Status = 'Cancelled' WHERE Status = 'PendingPayment' AND DATEDIFF(MINUTE, BookingDate, GETDATE()) >= 5";
+
+
+            PreparedStatement psCancel = c.prepareStatement(cancelSql);
+            psCancel.executeUpdate();
+
+            // 3️⃣ Nhả slot
+            if (!slotIds.isEmpty()) {
+
+                String releaseSql = " UPDATE TimeSlots SET Status = 'Available' WHERE SlotID = ?";
+
+                PreparedStatement psRelease = c.prepareStatement(releaseSql);
+
+                for (Integer id : slotIds) {
+                    psRelease.setInt(1, id);
+                    psRelease.executeUpdate();
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
