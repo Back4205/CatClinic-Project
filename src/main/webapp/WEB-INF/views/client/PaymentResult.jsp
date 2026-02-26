@@ -62,6 +62,8 @@
             <i class="bi bi-check-circle-fill success-icon" style="font-size: 64px;"></i>
             <h2 style="color: #22a06b;">Thanh toán thành công!</h2>
             <p>Cảm ơn bạn đã tin tưởng CatClinic. Lịch hẹn của bạn đã được xác nhận.</p>
+            <p>Mã giao dịch VNPay:</p>
+            <h3 style="color:#ff6600">${transactionCode}</h3>
         </c:when>
 
         <c:when test="${status eq 'invalid_signature'}">

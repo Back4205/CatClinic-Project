@@ -80,7 +80,8 @@ public class VNPayReturnController extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
             return;
         }
-
+        String transactionNo = request.getParameter("vnp_TransactionNo");
+        request.setAttribute("transactionCode", transactionNo);
         //  THANH TOÁN THÀNH CÔNG
         long amountPaid = Long.parseLong(amountStr) / 100;
 

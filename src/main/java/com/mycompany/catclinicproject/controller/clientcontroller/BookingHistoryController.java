@@ -54,9 +54,9 @@ public class BookingHistoryController extends HttpServlet {
                 }
             }
 
-            if (checkDate.isBefore(today) && "Confirmed".equalsIgnoreCase(b.getStatus())) {
-                b.setStatus("Completed");
-            }
+//            if (checkDate.isBefore(today) && "Confirmed".equalsIgnoreCase(b.getStatus())) {
+//                b.setStatus("Completed");
+//            }
         }
 
         int total = fullList.size();
@@ -97,10 +97,31 @@ public class BookingHistoryController extends HttpServlet {
             if (isMatchKeyword && isMatchStatus) {
                 filteredList.add(b);
             }
+
+        }
+        int totalRecord = filteredList.size();
+
+        int pageSize = 5;
+        int page = 1;
+
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            page = Integer.parseInt(pageParam);
         }
 
+        int totalPage = (int) Math.ceil((double) totalRecord / pageSize);
+
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalRecord);
+
+        List<BookingHistoryDTO> pageList = new ArrayList<>();
+        if (start < totalRecord) {
+            pageList = filteredList.subList(start, end);
+        }
+        request.setAttribute("totalPage", totalPage);
+        request.setAttribute("currentPage", page);
         request.setAttribute("user", user);
-        request.setAttribute("bookingList", filteredList); // Filtered list
+        request.setAttribute("bookingList", pageList); // Filtered list
         request.setAttribute("total", total);
         request.setAttribute("scheduled", scheduled);
         request.setAttribute("completed", completed);

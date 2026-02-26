@@ -89,54 +89,69 @@
 
                 <div class="booking-list">
 
-                    <c:forEach var="b" items="${bookingList}">
-                        <div class="booking-item">
-                            <div class="cat-info">
-                                <strong>${b.catName}</strong>
-                                <span>${b.catBreed}</span>
-                            </div>
+                    <table class="booking-table">
+                        <thead>
+                        <tr>
+                            <th>Cat</th>
+                            <th>Day</th>
+                            <th>Service</th>
+                            <th>Price Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
 
-                            <div class="datetime">
-                                <div class="date-row">
-                                    <span class="date-label">Begin</span>
-                                    <span>${b.appointmentDate}</span>
-                                    <span style="font-size: 11px; color: #999; margin-left: 5px;">
-                                        (${b.appointmentTime})
-                                    </span>
-                                </div>
+                        <c:forEach var="b" items="${bookingList}">
+                            <tr>
+                                <!-- CAT -->
+                                <td>
+                                    <strong>${b.catName}</strong><br>
+                                    <span style="font-size:12px;color:#777;">${b.catBreed}</span>
+                                </td>
 
-                                <c:if test="${not empty b.endDate && b.endDate != b.appointmentDate}">
-                                    <div class="date-row">
-                                        <span class="date-label">End</span>
-                                        <span>${b.endDate}</span>
+                                <!-- DAY -->
+                                <td>
+                                        ${b.appointmentDate}
+                                    <div style="font-size:12px;color:#777;">
+                                            ${b.appointmentTime}
                                     </div>
-                                </c:if>
-                            </div>
+                                </td>
 
-                            <div class="service-type">
-                                <i class="bi ${b.serviceType == 'Spa' ? 'bi-scissors' : 'bi-capsule'}"></i>
-                                ${b.serviceName}
-                            </div>
+                                <!-- SERVICE -->
+                                <td>
+                                    <i class="bi ${b.serviceType == 'Spa' ? 'bi-scissors' : 'bi-capsule'}"></i>
+                                        ${b.serviceName}
+                                </td>
 
-                            <div class="price">
-                                ${b.price}VND
-                            </div>
+                                <!-- PRICE -->
+                                <td>
+                                    <fmt:formatNumber value="${b.price}" type="number"/> VND
+                                </td>
 
-                            <div>
-                                <span class="status-badge
-                                      ${b.status == 'Completed' || b.status == 'Done' ? 'status-completed' : ''}
-                                      ${b.status == 'Confirmed' || b.status == 'Upcoming' || b.status == 'Pending' ? 'status-upcoming' : ''}
-                                      ${b.status == 'Cancelled' ? 'status-cancelled' : ''}
-                                      ${b.status == 'In Progress' ? 'status-inprogress' : ''}">
-                                    ${b.status}
-                                </span>
-                            </div>
+                                <!-- STATUS -->
+                                <td>
+                        <span class="status-badge
+                            ${b.status == 'Completed' || b.status == 'Done' ? 'status-completed' : ''}
+                            ${b.status == 'Confirmed' || b.status == 'Upcoming' || b.status == 'Pending' ? 'status-upcoming' : ''}
+                            ${b.status == 'Cancelled' ? 'status-cancelled' : ''}
+                            ${b.status == 'In Progress' ? 'status-inprogress' : ''}
+                            ${b.status == 'PendingPayment' ? 'status-pendingpayment' : ''}">
+                                ${b.status}
+                        </span>
+                                </td>
 
-                            <div style="text-align: right;">
-                                <a href="#" class="btn-view">Details</a>
-                            </div>
-                        </div>
-                    </c:forEach>
+                                <!-- ACTION -->
+                                <td>
+                                    <a href="booking-detail?id=${b.bookingID}" class="btn-view">
+                                        Detail
+                                    </a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+
+                        </tbody>
+                    </table>
 
                     <c:if test="${empty bookingList}">
                         <div class="empty-state">
@@ -146,7 +161,35 @@
                     </c:if>
 
                 </div>
+                <c:if test="${totalPage > 1}">
+                    <div class="pagination">
 
+
+                        <c:if test="${currentPage > 1}">
+                            <a href="booking-history?page=${currentPage - 1}&search=${currentSearch}&status=${currentStatus}"
+                               class="page-btn">
+                                Prev
+                            </a>
+                        </c:if>
+
+
+                        <c:forEach begin="1" end="${totalPage}" var="i">
+                            <a href="booking-history?page=${i}&search=${currentSearch}&status=${currentStatus}"
+                               class="page-btn ${i == currentPage ? 'active' : ''}">
+                                    ${i}
+                            </a>
+                        </c:forEach>
+
+
+                        <c:if test="${currentPage < totalPage}">
+                            <a href="booking-history?page=${currentPage + 1}&search=${currentSearch}&status=${currentStatus}"
+                               class="page-btn">
+                                Next
+                            </a>
+                        </c:if>
+
+                    </div>
+                </c:if>
             </main>
         </div>
         <footer style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 25px 0; text-align: center; color: #64748b; font-size: 14px; margin-top: auto;">
