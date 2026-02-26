@@ -1,107 +1,148 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
 <html lang="vi">
-    <head>
-        <meta charset="UTF-8">
-        <title>Service List</title>
-        <link href="css/ServiceListStyle.css" rel="stylesheet" type="text/css"/>
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <title>Service List</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/service-list.css">
+</head>
+<body>
 
-        <div class="container">
-            <div class="header">
-                <h2>Service List</h2>
-                <a href="${pageContext.request.contextPath}/CreateService"
-                   class="btn-create">
-                    + Create New Service
-                </a>
-            </div>
-            <div class="filter">
-                <input type="text" id="searchInput" placeholder="Search service name...">
-                <select id="statusFilter">
-                    <option value="all">All</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-            </div>
+<div class="container">
 
-            <table>
-                <thead>
+    <!-- HEADER -->
+<div class="header">
+
+    <a href="${pageContext.request.contextPath}/ViewCategoryList"
+       class="btn-back">
+        Back to Category List
+    </a>
+
+    <h2 class="title">Service List</h2>
+
+    <a href="${pageContext.request.contextPath}/CreateService?categoryID=${categoryID}"
+       class="btn-create">
+        + Create New Service
+    </a>
+</div>
+
+
+    <!-- FILTER -->
+    <div class="filter-card">
+        <input type="text" id="searchInput"
+               placeholder="Search service name...">
+
+        <select id="statusFilter">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+        </select>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price (VND)</th>
+                    <th>Description</th>
+                    <th>Time (Min)</th>
+                    <th>Status</th>
+                    <th>Image</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="serviceTable">
+                <c:forEach var="s" items="${serviceList}">
                     <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                        <th>Category</th>
-                        <th>Action</th>
+                        <td>${s.serviceID}</td>
+                        <td>${s.nameService}</td>
+                        <td>${s.price}</td>
+                        <td>${s.description}</td>
+                        <td>${s.timeService}</td>
 
+                        <td>
+                            <span class="${s.isActive ? 'status-active' : 'status-inactive'}">
+                                ${s.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                        </td>
+
+                        <td>
+                            <img src="${s.imgUrl}" class="service-img">
+                        </td>
+
+                        <td class="action-buttons">
+
+                            <a href="${pageContext.request.contextPath}/EditService?serviceID=${s.serviceID}"
+                               class="btn-edit">
+                                Edit
+                            </a>
+
+                            <form action="${pageContext.request.contextPath}/HideService"
+                                  method="post"
+                                  onsubmit="return confirmAction(this)">
+                                <input type="hidden" name="serviceID" value="${s.serviceID}">
+                                <input type="hidden" name="categoryID" value="${s.categoryID}">
+                                <input type="hidden" name="action"
+                                       value="${s.isActive ? 'hide' : 'show'}">
+
+                                <button type="submit"
+                                        class="${s.isActive ? 'btn-hide' : 'btn-show'}">
+                                    ${s.isActive ? 'Hide' : 'Show'}
+                                </button>
+                            </form>
+
+                        </td>
                     </tr>
-                </thead>
-                <tbody id="serviceTable">
-                    <c:forEach var="s" items="${serviceList}">
-                        <tr>
-                            <td>${s.serviceID}</td>
-                            <td>${s.nameService}</td>
-                            <td>${s.price}</td>
-                            <td>${s.timeService}</td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${s.isActive}">
-                                        Active
-                                    </c:when>
-                                    <c:otherwise>
-                                        Inactive
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>                            <td>${s.categoryID}</td>
+                </c:forEach>
+            </tbody>
+        </table>
+    </div>
 
-                            <td>
-                                <a href="${pageContext.request.contextPath}/ViewServiceDetail?id=${s.serviceID}">View</a>
-                                <a href="${pageContext.request.contextPath}/EditService?id=${s.serviceID}">Edit</a>
-                                <form action="${pageContext.request.contextPath}/HideService"
-                                      method="post" >
-                                    <input type="hidden" name="id" value="${s.serviceID}">
-                                    <input type="hidden" name="action"
-                                           value="${s.isActive ? 'hide' : 'show'}">
-                                    <button type="submit" class="btn-hide"> 
-                                        ${s.isActive ? 'Hide' : 'Show'}
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-        </div>
-        <p>${url}<p/>
-        <script>
-            const searchInput = document.getElementById("searchInput");
-            const statusFilter = document.getElementById("statusFilter");
-            const rows = document.querySelectorAll("#serviceTable tr");
+</div>
 
-            function applyFilter() {
-                const keyword = searchInput.value.trim().toLowerCase();
-                const status = statusFilter.value;
+<script>
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const rows = document.querySelectorAll("#serviceTable tr");
 
-                rows.forEach(row => {
-                    // RESET hi?n th? tr??c
-                    row.style.display = "";
+    function applyFilter() {
+        const keyword = searchInput.value.trim().toLowerCase();
+        const status = statusFilter.value;
 
-                    const serviceName = row.cells[1].innerText.toLowerCase();
-                    const serviceStatus = row.cells[4].innerText.toLowerCase();
+        rows.forEach(row => {
+            row.style.display = "";
 
-                    const matchName = serviceName.includes(keyword);
-                    const matchStatus =
-                            status === "all" || serviceStatus === status;
+            const serviceName = row.cells[1].innerText.toLowerCase();
+            const serviceStatus = row.cells[5].innerText.toLowerCase();
 
-                    if (!(matchName && matchStatus)) {
-                        row.style.display = "none";
-                    }
-                });
+            const matchName = serviceName.includes(keyword);
+            const matchStatus =
+                status === "all" || serviceStatus === status;
+
+            if (!(matchName && matchStatus)) {
+                row.style.display = "none";
             }
+        });
+    }
 
-            searchInput.addEventListener("keyup", applyFilter);
-            statusFilter.addEventListener("change", applyFilter);
-        </script>
+    function confirmAction(form) {
+        const action = form.querySelector("input[name='action']").value;
+        return confirm(
+            action === "hide"
+            ? "Are you sure you want to hide this service?"
+            : "Are you sure you want to show this service?"
+        );
+    }
+
+    searchInput.addEventListener("keyup", applyFilter);
+    statusFilter.addEventListener("change", applyFilter);
+</script>
+
+</body>
+</html>

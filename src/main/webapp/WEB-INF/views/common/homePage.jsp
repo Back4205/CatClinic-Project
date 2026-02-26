@@ -39,7 +39,7 @@
                 <div class="image-card">
                     <div class="image-card">
                         <img 
-                            src="https://res.cloudinary.com/dydnbzspg/image/upload/v1770562809/my_brand/service_1770562806460.png"
+                            src="https://res.cloudinary.com/dydnbzspg/image/upload/v1772093271/The_Therapeutic_Energy_of_Aromatherapy_for_Canines_and_Cats_jj02fi.jpg"
                             alt="Cat Clinic Service"
                             />
 

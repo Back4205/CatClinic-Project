@@ -1,16 +1,16 @@
+/* ===== GLOBAL ===== */
 body {
-    font-family: Arial, sans-serif;
-    background: #fff;
     margin: 0;
-    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #fff7f0;
 }
 
 .container {
-    max-width: 1200px;
-    margin: 30px auto;
+    width: 95%;
+    margin: 40px auto;
 }
 
-/* HEADER */
+/* ===== HEADER ===== */
 .header {
     display: flex;
     justify-content: space-between;
@@ -18,100 +18,193 @@ body {
     margin-bottom: 20px;
 }
 
-.btn-primary {
-    background: #f97316;
+.title {
+    color: #ff6b00;
+    margin: 0;
+}
+
+.btn-create {
+    background-color: #ff6b00;
     color: white;
-    padding: 10px 16px;
-    border-radius: 6px;
+    padding: 10px 18px;
     text-decoration: none;
-}
-
-/* FILTER */
-.filter-bar {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.filter-bar input,
-.filter-bar select {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
     border-radius: 6px;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
-/* TABLE */
-.service-table {
+.btn-create:hover {
+    background-color: #e65c00;
+}
+
+/* ===== FILTER ===== */
+.filter-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+.filter-card input,
+.filter-card select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.filter-card input:focus,
+.filter-card select:focus {
+    border-color: #ff6b00;
+    outline: none;
+}
+
+/* ===== TABLE ===== */
+.table-wrapper {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
 }
 
-.service-table th {
-    background: #f97316;
+thead {
+    background-color: #ff6b00;
     color: white;
+}
+
+th, td {
     padding: 12px;
-}
-
-.service-table td {
-    padding: 12px;
-    border-bottom: 1px solid #eee;
-}
-
-/* COLUMN WIDTH */
-.col-id { width: 80px; text-align: center; }
-.col-name { width: 30%; text-align: left; }
-.col-price { width: 120px; text-align: right; }
-.col-time { width: 120px; text-align: center; }
-.col-status { width: 120px; text-align: center; }
-.col-action { width: 220px; text-align: center; white-space: nowrap; }
-
-/* STATUS */
-.status-active {
-    color: #16a34a;
-    font-weight: 600;
-}
-
-.status-inactive {
-    color: #9ca3af;
-}
-
-/* ACTION */
-.link {
-    color: #f97316;
-    margin-right: 8px;
-    text-decoration: none;
-}
-
-.btn-outline {
-    border: 1px solid #f97316;
-    background: white;
-    color: #f97316;
-    padding: 4px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.inline-form {
-    display: inline;
-}
-
-/* PAGINATION */
-.pagination {
-    margin-top: 20px;
     text-align: center;
 }
 
-.pagination button {
-    border: 1px solid #f97316;
-    background: white;
-    color: #f97316;
-    padding: 6px 12px;
-    margin: 0 4px;
-    border-radius: 50%;
+tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: 0.2s;
 }
 
-.pagination button.active {
-    background: #f97316;
+tbody tr:hover {
+    background-color: #fff2e6;
+}
+
+/* ===== IMAGE ===== */
+.service-img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* ===== STATUS ===== */
+.status-active {
+    background-color: #28a745;
     color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.status-inactive {
+    background-color: #dc3545;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+/* ===== ACTION ===== */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-edit {
+    background-color: #ffa94d;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.btn-edit:hover {
+    background-color: #ff922b;
+}
+
+.btn-hide {
+    background-color: #dc3545;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-show {
+    background-color: #28a745;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-hide:hover {
+    background-color: #bb2d3b;
+}
+
+.btn-show:hover {
+    background-color: #218838;
+}
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.title {
+    color: #ff6b00;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Back button */
+.btn-back {
+    background: #ffffff;
+    color: #ff6b00;
+    border: 2px solid #ff6b00;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-back:hover {
+    background: #ff6b00;
+    color: white;
+}
+
+/* Create button */
+.btn-create {
+    background: #ff6b00;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-create:hover {
+    background: #e65c00;
 }

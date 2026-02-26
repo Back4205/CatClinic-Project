@@ -17,6 +17,7 @@ public class Category {
 
     public Category() {
     }
+
     public Category(int categoryID, String categoryName, String banner, String description, boolean active) {
         this.categoryID = categoryID;
         this.categoryName = categoryName;

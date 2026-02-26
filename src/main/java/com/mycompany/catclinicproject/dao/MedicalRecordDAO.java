@@ -97,12 +97,13 @@ public class MedicalRecordDAO extends DBContext {
             while (rs.next()) {
                 list.add(new Service(
                         rs.getInt("ServiceID"),
-                        rs.getString("ServiceName"),
+                        rs.getString("NameService"),
                         rs.getDouble("Price"),
                         rs.getString("Description"),
                         rs.getInt("TimeService"),
                         rs.getBoolean("IsActive"),
-                        rs.getInt("CategoryID")
+                        rs.getInt("CategoryID"),
+                        rs.getString("ImgURL")
                 ));
             }
         } catch (Exception e) {

@@ -144,200 +144,177 @@ public void insertService(AddServiceDTO s) {
         }
 }
 
+    public List<Service> getServicesByCategoryID(int CategoryID) {
+        List<Service> list = new ArrayList<>();
+        Service s = null;
+        String sql = "select * from Services Where CategoryID = ?";
 
-    public Service getServiceById(int id) {
-    String sql = "SELECT * FROM Services WHERE ServiceID = ?";
-    Service s = null;
-
-    try {
-        PreparedStatement ps = c.prepareStatement(sql);
-        ps.setInt(1, id);
-        ResultSet rs = ps.executeQuery();
-
-        if (rs.next()) {
-            s = new Service(
-                    rs.getInt("ServiceID"),
-                    rs.getString("ServiceName"),
-                    rs.getDouble("price"),
-                    rs.getString("description"),
-                    rs.getInt("timeService"),
-                    rs.getBoolean("isActive"),
-                    rs.getInt("CategoryID")
-            );
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        closeConnection();
-    }
-    return s;
-}
-    public void updateService(Service s) {
-    String sql = "UPDATE Services "
-               + "SET ServiceName = ?, price = ?, description = ?, timeService = ? "
-               + "WHERE serviceID = ?";
-    
-    try {
-        PreparedStatement ps = c.prepareStatement(sql);
-        ps.setString(1, s.getNameService());
-        ps.setDouble(2, s.getPrice());
-        ps.setString(3, s.getDescription());
-        ps.setInt(4, s.getTimeService());
-        ps.setInt(5, s.getServiceID());
-
-        ps.executeUpdate();
-        System.out.println("UPDATE SERVICE SUCCESS");
-
-    } catch (Exception e) {
-        System.out.println("UPDATE SERVICE FAILED");
-        e.printStackTrace();
-    } finally {
-        closeConnection();
-    }
-}
-
-    public void updateServiceStatus(int serviceID, boolean isActive) {
-    String sql = "UPDATE Services SET isActive = ? WHERE serviceID = ?";
-
-    try {
-        PreparedStatement ps = c.prepareStatement(sql);
-        ps.setBoolean(1, isActive);
-        ps.setInt(2, serviceID);
-
-        ps.executeUpdate();
-        System.out.println("UPDATE SERVICE STATUS SUCCESS");
-
-    } catch (Exception e) {
-        System.out.println("UPDATE SERVICE STATUS FAILED");
-        e.printStackTrace();
-    } finally {
-        closeConnection();
-    }
-}
-     public ArrayList<Service> searchByName(String nameService) {
-        ArrayList<Service> list = new ArrayList<>();
-
-        String sql = "SELECT * FROM Services WHERE ServiceName LIKE ?";
-
-        try {
-            PreparedStatement ps = c.prepareStatement(sql);
-            ps.setString(1, "%" + nameService + "%");
-
-            ResultSet rs = ps.executeQuery();
-
+        try (PreparedStatement ps = c.prepareStatement(sql)){
+             ps.setInt(1, CategoryID);
+             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Service s = new Service();
-                s.setServiceID(rs.getInt("ServiceID"));
-                s.setNameService(rs.getString("ServiceName"));
-                s.setPrice(rs.getDouble("Price"));
-                s.setDescription(rs.getString("Description"));
-                s.setTimeService(rs.getInt("TimeService"));
-                s.setIsActive(rs.getBoolean("IsActive"));
+                s = new Service(
+                rs.getInt("ServiceID"),
+                rs.getString("NameService"),
+                rs.getDouble("Price"),
+                rs.getString("Description"),
+                rs.getInt("TimeService"),
+                rs.getBoolean("IsActive"),
+                rs.getInt("CategoryID"),
+                rs.getString("ImgURL"));
                 list.add(s);
+                
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            closeConnection(); 
         }
 
         return list;
     }
-    public ArrayList<Service> search(
-        String name,
-        Boolean status,
-        String sortPrice,
-        int page,
-        int pageSize) {
 
-    ArrayList<Service> list = new ArrayList<>();
+    /* =======================
+       INSERT SERVICE
+       ======================= */
+    public void insertService(Service s) {
+        String sql = "INSERT INTO Services\n" +
+"            (NameService, Price, Description, TimeService, IsActive, CategoryID,ImgURL)\n" +
+"            VALUES (?, ?, ?, ?, ?, ?, ?)"
+            
+        ;
 
-    String sql = "SELECT * FROM Services WHERE 1=1 ";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
 
-    if (name != null && !name.isEmpty()) {
-        sql += " AND ServiceName LIKE ? ";
+            ps.setString(1, s.getNameService());
+            ps.setDouble(2, s.getPrice());
+            ps.setString(3, s.getDescription());
+            ps.setInt(4, s.getTimeService());
+            ps.setBoolean(5, s.isIsActive());
+            ps.setInt(6, s.getCategoryID());
+            ps.setString(7, s.getImgUrl());
+            ps.executeUpdate();
+            System.out.println("INSERT SERVICE SUCCESS");
+
+        } catch (Exception e) {
+            System.out.println("INSERT SERVICE FAILED");
+            e.printStackTrace();
+        }
     }
 
-    if (status != null) {
-        sql += " AND isActive = ? ";
-    }
+    /* =======================
+       GET SERVICE BY ID
+       ======================= */
+    public Service getServiceById(int id) {
+        String sql = "SELECT * FROM Services WHERE ServiceID = ?";
+        Service s = null;
 
-    if ("asc".equals(sortPrice)) {
-        sql += " ORDER BY price ASC ";
-    } else if ("desc".equals(sortPrice)) {
-        sql += " ORDER BY price DESC ";
-    } else {
-        sql += " ORDER BY serviceID ";
-    }
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
 
-    sql += " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                s = new Service(
+                        rs.getInt("ServiceID"),
+                        rs.getString("NameService"),
+                        rs.getDouble("Price"),
+                        rs.getString("Description"),
+                        rs.getInt("TimeService"),
+                        rs.getBoolean("IsActive"),
+                        rs.getInt("CategoryID"),
+                        rs.getString("ImgURL")
+                );    
+             }
+           
 
-    try {
-        PreparedStatement ps = c.prepareStatement(sql);
-        int index = 1;
-
-        if (name != null && !name.isEmpty()) {
-            ps.setString(index++, "%" + name + "%");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (status != null) {
-            ps.setBoolean(index++, status);
-        }
-
-        ps.setInt(index++, (page - 1) * pageSize);
-        ps.setInt(index++, pageSize);
-
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            Service s = new Service();
-            s.setServiceID(rs.getInt("serviceID"));
-            s.setNameService(rs.getString("ServiceName"));
-            s.setPrice(rs.getDouble("price"));
-            s.setTimeService(rs.getInt("timeService"));
-            s.setIsActive(rs.getBoolean("isActive"));
-            list.add(s);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
+        return s;
     }
 
-    return list;
-}
+    /* =======================
+       UPDATE SERVICE
+       ======================= */
+    public void updateService(Service s) {
+        String sql = "UPDATE Services\n" +
+"            SET NameService = ?,\n" +
+"                Price = ?,\n" +
+"                Description = ?,\n" +
+"                TimeService = ?,\n" +
+"                CategoryID = ?,\n" +
+"                ImgURL = ?\n" +
+"            WHERE ServiceID = ?"
+            
+        ;
 
-    public int count(String name, Boolean status) {
-    String sql = "SELECT COUNT(*) FROM Services WHERE 1=1 ";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
 
-    if (name != null && !name.isEmpty()) {
-        sql += " AND ServiceName LIKE ? ";
+            ps.setString(1, s.getNameService());
+            ps.setDouble(2, s.getPrice());
+            ps.setString(3, s.getDescription());
+            ps.setInt(4, s.getTimeService());
+            ps.setInt(5, s.getCategoryID());
+            ps.setString(6, s.getImgUrl());
+            ps.setInt(7, s.getServiceID());
+
+            ps.executeUpdate();
+            System.out.println("UPDATE SERVICE SUCCESS");
+
+        } catch (Exception e) {
+            System.out.println("UPDATE SERVICE FAILED");
+            e.printStackTrace();
+        }
     }
 
-    if (status != null) {
-        sql += " AND isActive = ? ";
+    /* =======================
+       UPDATE SERVICE STATUS
+       ======================= */
+    public void updateServiceStatus(int serviceID, boolean isActive) {
+        String sql = "UPDATE Services SET IsActive = ? WHERE ServiceID = ?";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setBoolean(1, isActive);
+            ps.setInt(2, serviceID);
+
+            ps.executeUpdate();
+            System.out.println("UPDATE SERVICE STATUS SUCCESS");
+
+        } catch (Exception e) {
+            System.out.println("UPDATE SERVICE STATUS FAILED");
+            e.printStackTrace();
+        }
     }
+    public void InsertImgService(String ImgName,String ImgURL,int ServiceID){
+        String sql = "INSERT INTO ImgServices\n" +
+"            (ImgName,ImgURL,ServiceID)\n" +
+"            VALUES (?,?, ?)";
+         try (PreparedStatement ps = c.prepareStatement(sql)) {
+             ps.setString(1, ImgName);
+             ps.setString(2, ImgURL);
+             ps.setInt(3, ServiceID);
+            ps.executeUpdate();
+            System.out.println("INSERT SERVICE SUCCESS");
 
-    try {
-        PreparedStatement ps = c.prepareStatement(sql);
-        int index = 1;
-
-        if (name != null && !name.isEmpty()) {
-            ps.setString(index++, "%" + name + "%");
+        } catch (Exception e) {
+            System.out.println("INSERT SERVICE FAILED");
+            e.printStackTrace();
         }
-
-        if (status != null) {
-            ps.setBoolean(index++, status);
-        }
-
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            return rs.getInt(1);
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-
-    return 0;
-}
+    public boolean isServiceNameExists(String name) {
+        String sql = "SELECT 1 FROM Services WHERE NameService = ?";
+        try {
+            PreparedStatement ps = this.c.prepareStatement(sql);
+            ps.setString(1, name);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
 
      
 }

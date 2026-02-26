@@ -62,29 +62,6 @@ public class ServiceDao extends DBContext {
         return list;
     }
 
-    public Service getServiceById(int id) {
-        String sql = "SELECT * FROM Service WHERE ServiceID = ?";
-        try {
-            PreparedStatement ps = c.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return new Service(
-                        rs.getInt("ServiceID"),
-                        rs.getString("NameService"),
-                        rs.getDouble("Price"),
-                        rs.getString("Description"),
-                        rs.getInt("TimeService"),
-                        rs.getBoolean("IsActive"),
-                        rs.getInt("CategoryID")
-                );
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public void insert(Service s) {
         String sql = "INSERT INTO Service(NameService, Price, Description, TimeService, IsActive) "
