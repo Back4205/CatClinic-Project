@@ -19,7 +19,7 @@
     </div>
 
     <div class="user-info">
-        <span class="name">${acc.fullName}</span>
+        <span class="name">Wellcome ${acc.fullName}</span>
         <div class="avatar">
             <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
         </div>

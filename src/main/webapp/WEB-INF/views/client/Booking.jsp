@@ -80,6 +80,19 @@
         .owner-info { line-height: 2; }
         .owner-info div { padding: 5px 0; }
         hr { margin: 20px 0; border: none; border-top: 1px solid #e5e7eb; }
+        .booking-error {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            background: #fee2e2;
+            color: #b91c1c;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #fecaca;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
@@ -215,7 +228,7 @@
                 </div>
 
                 <c:if test="${param.serviceID != '2' && not empty param.serviceID}">
-                    <div class="card-header" style="border:none; margin-top:10px;"><h4 style="color:#9ca3af; font-size:12px;"><i class="bi bi-clock"></i> Veterinarian's Schedule</h4></div>
+                    <div class="card-header" style="border:none; margin-top:10px;"><h4 style="color:#9ca3af; font-size:12px;"><i class="bi bi-clock"></i> Veterinarian's Schedule - 1h/Slot</h4></div>
                     <div class="schedule-scroll">
                         <c:forEach items="${slotListGrouped}" var="entry">
                             <div class="day-group">
@@ -263,6 +276,12 @@
                 <div class="action-buttons">
                     <button type="button" class="btn-main" id="confirmBtn" disabled>Confirm Appointment</button>
                     <button type="submit" class="btn-pay-now">Pay 20% Deposit Now</button>
+                    <c:if test="${not empty error}">
+                        <div class="booking-error">
+                            <i class="bi bi-exclamation-circle"></i>
+                                ${error}
+                        </div>
+                    </c:if>
                 </div>
                 </form>
             </div>
@@ -278,9 +297,6 @@
 
 <script>
 
-        setTimeout(function(){
-        location.reload();
-    }, 60000); // 60 giây
 
 function calculatePrice() {
 const serviceSelect = document.getElementById('serviceSelect');
@@ -292,12 +308,12 @@ const serviceSelect = document.getElementById('serviceSelect');
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
         const confirmBtn = document.getElementById('confirmBtn');
-
+        // Nếu chưa chọn dịch vụ thì  ẩn phần tóm tắt giá
         if (!serviceSelect || serviceSelect.value === "") {
             summaryArea.style.display = "none";
             return;
         }
-
+        // Lấy giá gốc từ thuộc tính data-price của option được chọn
         const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
         const priceBase = parseFloat(selectedOption.getAttribute('data-price')) || 0;
         const serviceID = serviceSelect.value;
@@ -307,15 +323,17 @@ const serviceSelect = document.getElementById('serviceSelect');
             summaryArea.style.display = "block";
             document.getElementById('priceLabel').innerText = "Price per day:";
             priceBaseDisplay.innerText = priceBase.toLocaleString('vi-VN') + " VND";
-
+            // chỉ tính khi chọn endate và Started date
             if (startDateInput.value && endDateInput && endDateInput.value) {
                 const start = new Date(startDateInput.value);
                 const end = new Date(endDateInput.value);
+                // Tính số ngày chênh lệch
                 const diffTime = Math.abs(end - start);
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
                 finalPrice = diffDays * priceBase;
-
+                // tổng tiền và số nggày
                 totalLabel.innerHTML = "Estimated Total (<strong>" + diffDays + "</strong> days):";
+
                 confirmBtn.innerText = "Book Appointment from " + startDateInput.value + " to " + endDateInput.value;
             }
         } else {
@@ -326,16 +344,18 @@ const serviceSelect = document.getElementById('serviceSelect');
                 document.getElementById('priceLabel').innerText = "Service Price:";
                 priceBaseDisplay.innerText = priceBase.toLocaleString('vi-VN') + " VND";
                 totalLabel.innerText = "Total Amount:";
-
+                // Lấy giờ từ data-time của radio slot
                 const selectedTime = selectedSlot.getAttribute('data-time');
+                // Tìm ngày tương ứng
                 const dayGroup = selectedSlot.closest('.day-group');
                 const dayTitle = dayGroup ? dayGroup.querySelector('.day-title').innerText : '';
+
                 confirmBtn.innerText = "Book Appointment at " + selectedTime + " on " + dayTitle;
             } else {
                 summaryArea.style.display = "none";
             }
         }
-
+        // cập nhật giá đặt cọc 20% và tổng tiền
         if (finalPrice > 0) {
             const deposit = finalPrice * 0.2;
             depositDisplay.innerText = deposit.toLocaleString('vi-VN') + " VND";
@@ -373,7 +393,7 @@ const serviceSelect = document.getElementById('serviceSelect');
 
                 // Nếu giờ trong danh sách nhỏ hơn hoặc bằng giờ hiện tại
                 if (optionMinutes <= currentTotalMinutes) {
-                    option.style.display = "none"; // ẨN HOÀN TOÀN
+                    option.style.display = "none"; // ẨN
                     option.disabled = true;        // Chặn chọn bằng phím mũi tên
                 }
             }
@@ -392,14 +412,14 @@ const serviceSelect = document.getElementById('serviceSelect');
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        updateCheckInTime();
+        updateCheckInTime();    // Chạy lần đầu để disable giờ
         const startDateInput = document.getElementById("startDate");
         if (startDateInput) {
-            startDateInput.addEventListener("change", updateCheckInTime);
+            startDateInput.addEventListener("change", updateCheckInTime); // Mỗi lần đổi ngày thì ktra lại 
         }
         calculatePrice();
     });
-    // Thêm vào phần <script> ở cuối file
+
 document.addEventListener('DOMContentLoaded', function() {
     // Xử lý radio buttons cho slot
     const slotRadios = document.querySelectorAll('input[name="slotID"]');

@@ -18,15 +18,10 @@ import java.util.*;
 public class VNpayController extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
-            throws ServletException, IOException {
-
-        // ===== 1. Validate bookingID =====
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String bookingID = request.getParameter("bookingID");
-
         if (bookingID == null || bookingID.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendRedirect("/WEB-INF/views/client/error.jsp?msg=Invalid Booking ID");
             return;
         }
 
@@ -34,30 +29,26 @@ public class VNpayController extends HttpServlet {
         try {
             bookingIdInt = Integer.parseInt(bookingID);
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+
             return;
         }
 
-        // ===== 2. Lấy Invoice =====
+        // Lấy Invoice
         InvoiceDAO invoiceDAO = new InvoiceDAO();
         Invoice invoice = invoiceDAO.getInvoiceByBookingID(bookingIdInt);
 
         if (invoice == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            response.sendRedirect("/WEB-INF/views/client/error.jsp?msg=Invalid Invoice ID");
             return;
         }
 
-        // ===== 3. Không cho thanh toán lại nếu đã Paid =====
-        if ("Paid".equalsIgnoreCase(invoice.getPaymentStatus())) {
-            response.sendRedirect("payment-result?msg=already_paid");
-            return;
-        }
 
-        // ===== 4. Tính tiền đặt cọc 20% =====
+
+        // Tính tiền đặt cọc 20%
         long deposit = Math.round(invoice.getTotalAmount() * 0.2);
         long vnpAmount = deposit * 100; // VNPay yêu cầu nhân 100
 
-        // ===== 5. Tạo mã giao dịch UNIQUE =====
+        //Tạo mã giao dịch UNIQUE
         String vnp_TxnRef = invoice.getInvoiceID() + "_" + System.currentTimeMillis();
         String vnp_IpAddr = request.getRemoteAddr();
 
@@ -75,18 +66,18 @@ public class VNpayController extends HttpServlet {
         vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_ReturnUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-        // ===== 6. Thời gian Việt Nam =====
+        // Thời gian Việt Nam
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
 
         String createDate = formatter.format(cld.getTime());
-        vnp_Params.put("vnp_CreateDate", createDate);
+        vnp_Params.put("vnp_CreateDate", createDate); // tg giao dịch
 
-        cld.add(Calendar.MINUTE, 15);
+        cld.add(Calendar.MINUTE, 5); // hết hạn sau 5p
         String expireDate = formatter.format(cld.getTime());
-        vnp_Params.put("vnp_ExpireDate", expireDate);
+        vnp_Params.put("vnp_ExpireDate", expireDate); // tg het han
 
-        // ===== 7. Sắp xếp key =====
+        //  Sắp xếp key
         List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
 
@@ -102,14 +93,9 @@ public class VNpayController extends HttpServlet {
 
                 String encodedValue = URLEncoder.encode(value, StandardCharsets.UTF_8);
 
-                hashData.append(fieldName)
-                        .append("=")
-                        .append(encodedValue);
+                hashData.append(fieldName).append("=").append(encodedValue);
 
-                query.append(fieldName)
-                        .append("=")
-                        .append(encodedValue);
-
+                query.append(fieldName).append("=").append(encodedValue); // url den trang thanh toan
                 if (i < fieldNames.size() - 1) {
                     hashData.append("&");
                     query.append("&");
@@ -117,17 +103,10 @@ public class VNpayController extends HttpServlet {
             }
         }
 
-        // ===== 8. Tạo chữ ký =====
-        String secureHash = VNPayConfig.hmacSHA512(
-                VNPayConfig.vnp_HashSecret,
-                hashData.toString()
-        );
-
+        //  Tạo chữ ký
+        String secureHash = VNPayConfig.hmacSHA512(VNPayConfig.vnp_HashSecret, hashData.toString());
         query.append("&vnp_SecureHash=").append(secureHash);
-
         String paymentUrl = VNPayConfig.vnp_PayUrl + "?" + query;
-
-        // ===== 9. Redirect sang VNPay =====
         response.sendRedirect(paymentUrl);
     }
 }

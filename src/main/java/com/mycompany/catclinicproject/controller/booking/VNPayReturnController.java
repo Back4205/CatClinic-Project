@@ -17,9 +17,7 @@ import java.util.*;
 public class VNPayReturnController extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         Map<String, String> fields = new HashMap<>();
 
@@ -33,13 +31,12 @@ public class VNPayReturnController extends HttpServlet {
 
         String vnp_SecureHash = fields.remove("vnp_SecureHash");
 
-        // 1️⃣ VERIFY CHỮ KÝ
+        //  VERIFY CHỮ KÝ
         String signValue = VNPayConfig.hashAllFields(fields);
 
         if (!signValue.equals(vnp_SecureHash)) {
             request.setAttribute("msg", "invalid_signature");
-            request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp")
-                    .forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
             return;
         }
 
@@ -59,42 +56,36 @@ public class VNPayReturnController extends HttpServlet {
 
         if (invoice == null) {
             request.setAttribute("msg", "invoice_not_found");
-            request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp")
-                    .forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
             return;
         }
 
         int invoiceID = invoice.getInvoiceID();
 
-        // 2️⃣ NGƯỜI DÙNG HỦY (24 là cancel bên VNPay sandbox)
+        //  NGƯỜI DÙNG HỦY (24 là cancel bên VNPay sandbox)
         if ("24".equals(responseCode)) {
 
-            bookingDAO.updateBookingStatus(bookingIdInt, "Cancel");
+            bookingDAO.updateBookingStatus(bookingIdInt, "Cancelled");
+            int slotID = bookingDAO.getSlotIDByBookingID(bookingIdInt);
+            bookingDAO.cancelBooking(bookingIdInt, slotID);
             request.setAttribute("msg", "failed");
-            request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp")
-                    .forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
             return;
         }
 
-        // 3️⃣ THANH TOÁN KHÔNG THÀNH CÔNG
+        //  THANH TOÁN KHÔNG THÀNH CÔNG
         if (!"00".equals(responseCode)) {
 
             request.setAttribute("msg", "failed");
-            request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp")
-                    .forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
             return;
         }
 
-        // 4️⃣ THANH TOÁN THÀNH CÔNG
+        //  THANH TOÁN THÀNH CÔNG
         long amountPaid = Long.parseLong(amountStr) / 100;
 
         // Insert Payment
-        paymentDAO.insertPayment(
-                invoiceID,
-                amountPaid,
-                "VNPay",
-                request.getParameter("vnp_TransactionNo")
-        );
+        paymentDAO.insertPayment(invoiceID, amountPaid, "VNPay", request.getParameter("vnp_TransactionNo"));
 
         // Tính tổng đã thanh toán
         double totalPaid = paymentDAO.getTotalPaidAmount(invoiceID);
@@ -113,7 +104,6 @@ public class VNPayReturnController extends HttpServlet {
         }
 
         request.setAttribute("msg", "success");
-        request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp")
-                .forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
     }
 }

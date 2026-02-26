@@ -48,6 +48,7 @@ public class BookingController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
+        String message = "";
 
         try {
 
@@ -60,34 +61,40 @@ public class BookingController extends HttpServlet {
             String checkInTimeParam = request.getParameter("checkInTime");
             String note = request.getParameter("note");
 
-            Booking booking = new Booking();
-            booking.setCatID(catID);
-            booking.setNote(note);
-
             BookingDAO bookingDAO = new BookingDAO();
             ServiceDAO serviceDAO = new ServiceDAO();
             UserDAO userDAO = new UserDAO();
 
+            Booking booking = new Booking();
+            booking.setCatID(catID);
+            booking.setNote(note);
+
             List<Integer> serviceIDs = new ArrayList<>();
             List<Double> prices = new ArrayList<>();
-
             double totalAmount = 0;
 
             User assignee = userDAO.getUserByID(assigneeID);
 
-            // =============================
-            // MEDICAL (VETERINARIAN)
-            // =============================
+
+            //  (VETERINARIAN) dich vu kham
             if (assignee.getRoleID() == 2) {
 
                 if (slotParam == null || slotParam.isEmpty()) {
-                    throw new Exception("Vui lòng chọn slot!");
+                    message = "please choose slot!";
+                }
+
+                int slotID = Integer.parseInt(slotParam);
+
+                // check CAt co lịch nao trufng giờ hay chua
+                if (bookingDAO.isCatMedicalConflict(catID, slotID)) {
+                    message ="Cat has an appointment at this time!";
                 }
 
                 Integer vetID = userDAO.getVetIDByUserID(assigneeID);
-                if (vetID == null) throw new Exception("Không tìm thấy bác sĩ!");
+                if (vetID == null){
+                    message ="Not found VET!";
+                }
 
-                int slotID = Integer.parseInt(slotParam);
                 TimeSlotDAO slotDAO = new TimeSlotDAO();
                 TimeSlot slot = slotDAO.getSlotByID(slotID);
 
@@ -105,44 +112,42 @@ public class BookingController extends HttpServlet {
                 prices.add(totalAmount);
             }
 
-            // =============================
-        // PET HOTEL (STAFF)
-        // =============================
+            //  PET HOTEL
+
             else {
 
-                Integer staffID = userDAO.getStaffIDByUserID(assigneeID);
-                if (staffID == null) throw new Exception("Không tìm thấy nhân viên!");
-
                 if (startDateParam == null || endDateParam == null || checkInTimeParam == null) {
-                    throw new Exception("Vui lòng chọn đầy đủ ngày và giờ!");
+                    message ="Please select full date and time!";
                 }
 
                 LocalDate start = LocalDate.parse(startDateParam);
                 LocalDate end = LocalDate.parse(endDateParam);
-                LocalDate today = LocalDate.now();
-                LocalTime now = LocalTime.now();
-
                 LocalTime checkInTime = LocalTime.parse(checkInTimeParam);
 
-                //  Không cho đặt ngày quá khứ
-                if (start.isBefore(today)) {
-                    throw new Exception("Không thể đặt ngày trong quá khứ!");
+                if (end.isBefore(start)) {
+                    message ="Error Enddate";
                 }
 
-                //  Nếu đặt hôm nay thì không cho chọn giờ đã qua
-                if (start.equals(today) && checkInTime.isBefore(now)) {
-                    throw new Exception("Giờ check-in đã qua!");
+                //  CHECK CAT HOTEL CONFLICT
+                if (bookingDAO.isCatHotelConflict(catID, java.sql.Date.valueOf(start), java.sql.Date.valueOf(end), java.sql.Time.valueOf(checkInTime))) {
+
+                    message ="The cat already has a hotel booking for this period!";
                 }
+
+                Integer staffID = userDAO.getStaffIDByUserID(assigneeID);
+                if (staffID == null){
+                    message ="Not found staff!";
+                }
+
 
                 long numDays = java.time.temporal.ChronoUnit.DAYS.between(start, end) + 1;
-                if (numDays <= 0) throw new Exception("Ngày nhận không hợp lệ!");
 
                 Service svc = serviceDAO.getServiceById(serviceID);
                 totalAmount = svc.getPrice() * numDays;
 
                 booking.setVeterinarianID(0);
                 booking.setStaffID(staffID);
-                booking.setSlotID(0);
+                booking.setSlotID(0); // pethotel thif k dufng slot
                 booking.setAppointmentDate(java.sql.Date.valueOf(start));
                 booking.setEndDate(java.sql.Date.valueOf(end));
                 booking.setAppointmentTime(java.sql.Time.valueOf(checkInTime));
@@ -151,25 +156,18 @@ public class BookingController extends HttpServlet {
                 prices.add(totalAmount);
             }
 
-            // =============================
-            // CALL DAO (TRANSACTION SAFE)
-            // =============================
-            int bookingID = bookingDAO.createBookingWithInvoice(
-                    booking, serviceIDs, prices, totalAmount
-            );
+            // tao booking vaf  Bookingdetail vaf invoice
+            int bookingID = bookingDAO.createBookingWithInvoice(booking, serviceIDs, prices, totalAmount);
 
             if (bookingID == -1) {
-                throw new Exception("Không thể tạo booking. Slot có thể đã bị đặt.");
+                message ="Unable to create a booking. The slot may already be taken.";
             }
 
-            // =============================
-            // REDIRECT TO VNPAY
-            // =============================
             response.sendRedirect(request.getContextPath() + "/vnpay?bookingID=" + bookingID);
 
         } catch (Exception e) {
 
-            request.setAttribute("error", e.getMessage());
+            request.setAttribute("error", message);
             loadBookingData(request, user);
             request.getRequestDispatcher("/WEB-INF/views/client/Booking.jsp")
                     .forward(request, response);
@@ -182,30 +180,36 @@ public class BookingController extends HttpServlet {
         ServiceDAO serviceDAO = new ServiceDAO();
         UserDAO userDAO = new UserDAO();
 
-        // 1. Dữ liệu mèo và phân trang
+        // data mèo và phân trang
         int ownerID = catDAO.getOwnerIdByUserId(user.getUserID());
         int indexPage = request.getParameter("indexPage") != null ? Integer.parseInt(request.getParameter("indexPage")) : 1;
         request.setAttribute("catList", catDAO.getCatsByOwnerPaging(ownerID, indexPage, 5));
         request.setAttribute("totalPage", (int) Math.ceil((double) catDAO.countCats(ownerID) / 5));
         request.setAttribute("indexPage", indexPage);
 
-        // 2. Dịch vụ và Người phụ trách (lọc theo loại dịch vụ)
+
         request.setAttribute("serviceList", serviceDAO.getAllServices());
         List<UserDTO> allPerson = userDAO.getVetAndCareStaff();
         List<UserDTO> listPerson = filterPersonByService(request, serviceDAO, allPerson);
         request.setAttribute("listPerson", listPerson);
         boolean isPetHotel = isPetHotelService(request, serviceDAO);
         request.setAttribute("isPetHotelService", isPetHotel);
-        // Truyền service đã chọn (để hiển thị giá/ngày cho Pet Hotel)
+
+        // Truyền service đã chọn để hiển thị giá/ngày cho Pet Hotel
         String serviceParam = request.getParameter("serviceID");
         if (serviceParam != null && !serviceParam.isEmpty()) {
             try {
                 Service sel = serviceDAO.getServiceById(Integer.parseInt(serviceParam));
-                if (sel != null) request.setAttribute("selectedService", sel);
-            } catch (Exception ignored) { }
+                if (sel != null)
+                {
+                    request.setAttribute("selectedService", sel);
+                }
+            } catch (Exception ignored) {
+
+            }
         }
 
-        // 3. Xử lý lịch trình 7 ngày
+        //  Load lịch slot
         String assigneeParam = request.getParameter("assigneeInfo");
         String startDateParam = request.getParameter("startDate");
         if (startDateParam == null || startDateParam.isEmpty()) {
@@ -218,10 +222,10 @@ public class BookingController extends HttpServlet {
         if (assigneeParam != null && !assigneeParam.isEmpty()) {
             int assigneeID = Integer.parseInt(assigneeParam);
 
-            // Kiểm tra role người phụ trách (Care/Technician = Staff, Veterinarian = Bác sĩ)
+            // Kiểm tra role người phụ trách (Care Staff, Veterinarian = Bác sĩ)
             for (UserDTO p : listPerson) {
                 if (p.getUserID() == assigneeID) {
-                    if ("Care".equalsIgnoreCase(p.getType()) || "Technician".equalsIgnoreCase(p.getType())) {
+                    if ("Care".equalsIgnoreCase(p.getType()) ) {
                         isStaff = "true";
                     }
                     break;
@@ -234,8 +238,14 @@ public class BookingController extends HttpServlet {
                 if (vetID != null) {
                     List<TimeSlot> flatList = slotDAO.getSlotsNext7DaysFromDate(vetID, startDateParam);
                     for (TimeSlot s : flatList) {
-                        String dateKey = s.getSlotDate().toString();
-                        groupedSlots.computeIfAbsent(dateKey, k -> new ArrayList<>()).add(s);
+                        String dateKey = s.getSlotDate().toString(); // lấy ngày làm key
+                        List<TimeSlot> listByDate = groupedSlots.get(dateKey);
+                        // check nếu trong map chưa có value của key
+                        if (listByDate == null) {
+                            listByDate = new ArrayList<>();
+                            groupedSlots.put(dateKey, listByDate);
+                        }
+                        listByDate.add(s);
                     }
                 }
             }
@@ -246,28 +256,33 @@ public class BookingController extends HttpServlet {
         request.setAttribute("currentDate", LocalDate.now().toString());
     }
 
-    /** Kiểm tra dịch vụ đã chọn có phải Pet Hotel (trông mèo) hay không → chỉ hiển thị Staff */
+   // check sẻvice is pet hotel
     private boolean isPetHotelService(HttpServletRequest request, ServiceDAO serviceDAO) {
         String serviceParam = request.getParameter("serviceID");
-        if (serviceParam == null || serviceParam.isEmpty()) return false;
+        if (serviceParam == null || serviceParam.isEmpty()) {
+            return false;
+        }
         try {
             int serviceID = Integer.parseInt(serviceParam);
             Service svc = serviceDAO.getServiceById(serviceID);
             if (svc != null && svc.getNameService() != null) {
                 String name = svc.getNameService().toLowerCase();
-                return name.contains("pet hotel") || name.contains("hotel");
+                return name.contains("pet hotel") ;
             }
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+
+        }
         return false;
     }
 
-    /** Lọc danh sách: Pet Hotel → chỉ Staff; Khám bệnh → chỉ Bác sĩ */
+    // filter người phụ trách bơir dịch vụ
     private List<UserDTO> filterPersonByService(HttpServletRequest request, ServiceDAO serviceDAO, List<UserDTO> allPerson) {
+
         boolean isPetHotel = isPetHotelService(request, serviceDAO);
         List<UserDTO> filtered = new ArrayList<>();
         for (UserDTO p : allPerson) {
             if (isPetHotel) {
-                if ("Care".equalsIgnoreCase(p.getType()) || "Technician".equalsIgnoreCase(p.getType())) {
+                if ("Care".equalsIgnoreCase(p.getType()) ) {
                     filtered.add(p);
                 }
             } else {

@@ -6,16 +6,10 @@ import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class BookingDAO extends DBContext {
 
-    private static final Logger LOGGER = Logger.getLogger(BookingDAO.class.getName());
 
-    // =========================================================
-    // GET BOOKING HISTORY BY USER
-    // =========================================================
     public List<BookingHistoryDTO> getHistoryByUserID(int userID) {
 
         List<BookingHistoryDTO> list = new ArrayList<>();
@@ -51,16 +45,12 @@ public class BookingDAO extends DBContext {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error getHistoryByUserID", e);
+
         }
 
         return list;
     }
 
-
-    // =========================================================
-// GET CAT ID BY BOOKING ID
-// =========================================================
     public int getCatIdByBookingID(int bookingID) {
 
         String sql = "SELECT CatID FROM Bookings WHERE BookingID = ?";
@@ -77,19 +67,15 @@ public class BookingDAO extends DBContext {
             }
 
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error getCatIdByBookingID", e);
+
         }
 
         return catID;
     }
 
-    // =========================================================
-    // CREATE BOOKING + DETAILS + INVOICE (TRANSACTION SAFE)
-    // =========================================================
-    public int createBookingWithInvoice(Booking booking,
-                                        List<Integer> serviceIDs,
-                                        List<Double> prices,
-                                        double totalAmount) {
+
+    // tao Booking ,  Booking detail và invoice
+    public int createBookingWithInvoice(Booking booking, List<Integer> serviceIDs, List<Double> prices, double totalAmount) {
 
         int bookingID = -1;
 
@@ -107,22 +93,21 @@ public class BookingDAO extends DBContext {
                 + "(BookingID, TotalAmount, PaymentStatus) VALUES (?, ?, ?)";
 
         try {
-            c.setAutoCommit(false);
-
-            // 1️⃣ LOCK SLOT (if medical service)
+            c.setAutoCommit(false); // tắt chế độ lưu vào DB tự động . mọi thay đổi chỉ được lưu trong bộ nhớ
+            //  LOCK SLOT (if medical service)
             if (booking.getSlotID() > 0) {
                 try (PreparedStatement psLock = c.prepareStatement(lockSlotSQL)) {
                     psLock.setInt(1, booking.getSlotID());
                     int affected = psLock.executeUpdate();
 
                     if (affected == 0) {
-                        c.rollback();
-                        return -1; // Slot already taken
+                        c.rollback(); // hủy tất cả những thay đổi từ khi setAutoCommit(false)
+                        return -1;
                     }
                 }
             }
 
-            // 2️⃣ INSERT BOOKING
+            //  tạo Bôking                                                   yêu cầu JDBC trả về các data mà DB tự sinh ra
             try (PreparedStatement ps = c.prepareStatement(insertBookingSQL, Statement.RETURN_GENERATED_KEYS)) {
 
                 ps.setInt(1, booking.getCatID());
@@ -143,26 +128,26 @@ public class BookingDAO extends DBContext {
                     }
                 }
             }
-
+            // khong tạo được booking
             if (bookingID == -1) {
-                c.rollback();
+                c.rollback(); // hủy transaction
                 return -1;
             }
 
-            // 3️⃣ INSERT BOOKING DETAILS (MULTI SERVICE)
+            //  tạo bookingDetail
             try (PreparedStatement psDetail = c.prepareStatement(insertDetailSQL)) {
 
                 for (int i = 0; i < serviceIDs.size(); i++) {
                     psDetail.setInt(1, bookingID);
                     psDetail.setInt(2, serviceIDs.get(i));
                     psDetail.setDouble(3, prices.get(i));
-                    psDetail.addBatch();
+                    psDetail.addBatch(); // Thu gom vào batch để insert nhiều dòng 1 lần
                 }
 
-                psDetail.executeBatch();
+                psDetail.executeBatch();// Thực thi toàn bộ batch cùng lúc
             }
 
-            // 4️⃣ INSERT INVOICE
+            //  tạo hóa đơn
             try (PreparedStatement psInvoice = c.prepareStatement(insertInvoiceSQL)) {
                 psInvoice.setInt(1, bookingID);
                 psInvoice.setDouble(2, totalAmount);
@@ -170,31 +155,26 @@ public class BookingDAO extends DBContext {
                 psInvoice.executeUpdate();
             }
 
-            c.commit();
+            c.commit(); // update toàn bộ thay đổi lên trên DB
 
         } catch (SQLException e) {
             try {
                 c.rollback();
             } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Rollback failed", ex);
             }
-            LOGGER.log(Level.SEVERE, "Error createBookingWithInvoice", e);
+
             bookingID = -1;
 
         } finally {
             try {
                 c.setAutoCommit(true);
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "Reset autoCommit failed", e);
             }
         }
 
         return bookingID;
     }
 
-    // =========================================================
-    // CONFIRM BOOKING AFTER SUCCESS PAYMENT
-    // =========================================================
     public boolean confirmBooking(int bookingID, int slotID) {
 
         String updateBookingSQL = "UPDATE Bookings SET Status = N'Confirmed' WHERE BookingID = ?";
@@ -222,23 +202,18 @@ public class BookingDAO extends DBContext {
             try {
                 c.rollback();
             } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Rollback failed", ex);
             }
-            LOGGER.log(Level.SEVERE, "Error confirmBooking", e);
         } finally {
             try {
                 c.setAutoCommit(true);
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "Reset autoCommit failed", e);
             }
         }
 
         return false;
     }
 
-    // =========================================================
-    // CANCEL BOOKING (RELEASE SLOT)
-    // =========================================================
+
     public boolean cancelBooking(int bookingID, int slotID) {
 
         String updateBookingSQL = "UPDATE Bookings SET Status = N'Cancelled' WHERE BookingID = ?";
@@ -266,14 +241,11 @@ public class BookingDAO extends DBContext {
             try {
                 c.rollback();
             } catch (SQLException ex) {
-                LOGGER.log(Level.SEVERE, "Rollback failed", ex);
             }
-            LOGGER.log(Level.SEVERE, "Error cancelBooking", e);
         } finally {
             try {
                 c.setAutoCommit(true);
             } catch (SQLException e) {
-                LOGGER.log(Level.SEVERE, "Reset autoCommit failed", e);
             }
         }
 
@@ -323,7 +295,7 @@ public class BookingDAO extends DBContext {
 
         try {
 
-            // 1️⃣ Lấy các slot của booking quá 5 phút
+            //  Lấy các slot của booking quá 5 phút
             String selectSql = " SELECT SlotID FROM Bookings WHERE Status = 'PendingPayment' AND DATEDIFF(MINUTE, BookingDate, GETDATE()) >= 5 AND SlotID IS NOT NULL ";
 
             PreparedStatement psSelect = c.prepareStatement(selectSql);
@@ -335,14 +307,14 @@ public class BookingDAO extends DBContext {
                 slotIds.add(rs.getInt("SlotID"));
             }
 
-            // 2️⃣ Cancel booking
+            //  Cancel booking
             String cancelSql = " UPDATE Bookings SET Status = 'Cancelled' WHERE Status = 'PendingPayment' AND DATEDIFF(MINUTE, BookingDate, GETDATE()) >= 5";
 
 
             PreparedStatement psCancel = c.prepareStatement(cancelSql);
             psCancel.executeUpdate();
 
-            // 3️⃣ Nhả slot
+            //  Nhả slot
             if (!slotIds.isEmpty()) {
 
                 String releaseSql = " UPDATE TimeSlots SET Status = 'Available' WHERE SlotID = ?";
@@ -358,6 +330,61 @@ public class BookingDAO extends DBContext {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+//    public boolean isCatTimeOverlapping(int catID, int slotID) {
+//
+//        String sql = " SELECT 1 FROM Bookings b JOIN TimeSlots ts_old ON b.SlotID = ts_old.SlotID JOIN TimeSlots ts_new ON ts_new.SlotID = ? WHERE b.CatID = ? AND b.Status IN ('PendingPayment','Confirmed') AND ts_old.SlotDate = ts_new.SlotDate AND ts_old.StartTime < ts_new.EndTimeAND ts_old.EndTime > ts_new.StartTime";
+//
+//        try (PreparedStatement ps = c.prepareStatement(sql)) {
+//            ps.setInt(1, slotID);
+//            ps.setInt(2, catID);
+//
+//            ResultSet rs = ps.executeQuery();
+//            return rs.next(); // true = có trùng
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return false;
+//    }
+    public boolean isCatMedicalConflict(int catID, int newSlotID) {
+
+        String sql = " SELECT 1 FROM Bookings b JOIN TimeSlots ts_old ON b.SlotID = ts_old.SlotID JOIN TimeSlots ts_new ON ts_new.SlotID = ? WHERE b.CatID = ? AND b.Status IN ('PendingPayment','Confirmed') AND ts_old.SlotDate = ts_new.SlotDate AND ts_old.StartTime < ts_new.EndTime AND ts_old.EndTime > ts_new.StartTime";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setInt(1, newSlotID);
+            ps.setInt(2, catID);
+
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // true = trùng
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+
+    public boolean isCatHotelConflict(int catID, java.sql.Date newStart, java.sql.Date newEnd, java.sql.Time newTime) {
+
+        String sql = " SELECT 1 FROM Bookings WHERE CatID = ? AND StaffID IS NOT NULL AND Status IN ('PendingPayment', 'Confirmed') AND (AppointmentDate <= ? AND EndDate >= ?) ";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setInt(1, catID);
+            ps.setDate(2, newEnd);
+            ps.setDate(3, newStart);
+
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
 

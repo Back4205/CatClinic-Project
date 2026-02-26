@@ -4,8 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class PaymentDAO extends DBContext{
-    public void insertPayment(int invoiceID, double amount,
-                              String method, String transactionCode) {
+    public void insertPayment(int invoiceID, double amount, String method, String transactionCode) {
 
         String sql = "INSERT INTO Payments (InvoiceID, AmountPaid, PaymentMethod, TransactionCode) VALUES (?, ?, ?, ?)";
 

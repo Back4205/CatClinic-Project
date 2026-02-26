@@ -13,7 +13,7 @@
             <i class="bi bi-grid-fill"></i> Cat List
         </a>
         <a href="${pageContext.request.contextPath}/booking-history" class="${activePage == 'history' ? 'active' : ''}">
-            <i class="bi bi-calendar-event"></i> Visit History
+            <i class="bi bi-calendar-event"></i> Booking  History
         </a>
         <a href="${pageContext.request.contextPath}/profile" class="${activePage == 'profile' ? 'active' : ''}">
             <i class="bi bi-person-gear"></i> Profile & Security
