@@ -1,105 +1,127 @@
-
 body {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f7fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f5f7fa;
+}
+
+.container {
     display: flex;
-    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
+    padding: 30px 40px;
+    background-color: #f5f7fa;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    padding: 30px;
-}
-
-.medical-history-container {
-    width: 95%;
-    max-width: 1000px;
-    margin-top: 30px;
-    background: #fff;
-    padding: 30px;
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-}
-
-
-.medical-title {
-    color: #f97316;
-    font-size: 24px;
     margin-bottom: 25px;
-    border-left: 5px solid #f97316;
-    padding-left: 15px;
-    font-weight: bold;
+}
+
+.page-title h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: #1f2937;
+    border-left: 4px solid #1f2937;
+    padding-left: 12px;
     text-transform: uppercase;
 }
 
+.page-title p {
+    margin-top: 6px;
+    margin-left: 16px;
+    font-size: 12px;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-back {
+    background: #22a06b;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(34, 160, 107, 0.2);
+}
+
+.btn-back:hover {
+    background: #1c8b5e;
+    transform: translateY(-2px);
+}
+
+.table-wrapper {
+    width: 100%;
+    background: #ffffff;
+    padding: 10px 20px 25px 20px;
+    border-radius: 12px;
+    border: 1px solid #f3f4f6;
+    overflow-x: auto;
+}
 
 .medical-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px;
 }
 
-.medical-table th {
-    background-color: #f8f9fa;
-    color: #888;
-    font-weight: 600;
-    text-align: left;
-    padding: 15px;
-    border-bottom: 2px solid #eee;
+.medical-table thead th {
     text-transform: uppercase;
     font-size: 12px;
+    color: #888;
+    padding: 20px 15px;
+    border-bottom: 2px solid #f0f0f0;
+    text-align: left;
 }
 
-.medical-table td {
+.medical-table tbody td {
     padding: 15px;
     border-bottom: 1px solid #f1f1f1;
-    color: #444;
     vertical-align: middle;
-    transition: background 0.2s;
+    font-size: 14px;
+    color: #374151;
 }
-
 
 .medical-table tr:hover td {
     background-color: #fffaf5;
 }
 
-
-.btn-view {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: #ffffff;
+.btn-view-detail {
+    height: 36px;
+    padding: 0 16px;
+    background: #ffffff;
     color: #f97316;
-    border: 1px solid #f97316;
-    text-decoration: none;
+    border: 1.5px solid #f97316;
     border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    transition: all 0.3s ease;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    text-transform: uppercase;
 }
 
-.btn-view:hover {
+.btn-view-detail:hover {
     background-color: #f97316;
     color: #ffffff;
-}
-
-
-.btn-back {
-    margin-top: 30px;
-    padding: 12px 25px;
-    background-color: #22a06b;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.btn-back:hover {
-    background-color: #1c8b5e;
     transform: translateY(-2px);
 }
 
-.no-detail {
-    color: #999;
-    font-style: italic;
-    font-size: 12px;
+.empty-state {
+    text-align: center;
+    padding: 60px 0;
+    color: #94a3b8;
 }

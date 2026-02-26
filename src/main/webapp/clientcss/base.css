@@ -19,14 +19,14 @@ body {
     color: #1f2937;
     display: flex;
     flex-direction: column;
-    min-height: 100vh; 
+    min-height: 100vh;
 }
 
 .container {
     display: flex;
     gap: 30px;
     padding: 30px;
-    flex: 1; 
+    flex: 1;
 }
 
 .content {

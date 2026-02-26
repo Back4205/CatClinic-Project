@@ -44,4 +44,23 @@ public class BookingDAO extends DBContext {
         }
         return list;
     }
+
+    public int getCatIdByBookingID(int bookingID) {
+
+        String sql = "SELECT b.CatID FROM Bookings b WHERE b.BookingID = ?";
+
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, bookingID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()){
+                return rs.getInt("CatID");
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
 }

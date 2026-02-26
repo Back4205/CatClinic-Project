@@ -65,7 +65,7 @@ public class CatListController extends HttpServlet {
             }
 
             request.setAttribute("ownerID", ownerID);
-            request.setAttribute("account", user);
+            request.setAttribute("user", user);
             request.setAttribute("pageSize", pageSize);
             request.setAttribute("catList", catList);
             request.setAttribute("indexPage", indexPage);

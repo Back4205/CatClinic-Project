@@ -5,17 +5,17 @@
         <div class="avatar large">
             <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
         </div>
-        <h3>${user.userName}</h3>
+        <h3>${acc.userName}</h3>
         <p>CATCLINIC PORTAL</p>
     </div>
     <nav class="menu">
         <a href="${pageContext.request.contextPath}/cats" class="${activePage == 'cats' ? 'active' : ''}">
             <i class="bi bi-grid-fill"></i> Cat List
         </a>
-        <a href="booking-history" class="${activePage == 'history' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/booking-history" class="${activePage == 'history' ? 'active' : ''}">
             <i class="bi bi-calendar-event"></i> Visit History
         </a>
-        <a href="accessprofile" class="${activePage == 'profile' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/profile" class="${activePage == 'profile' ? 'active' : ''}">
             <i class="bi bi-person-gear"></i> Profile & Security
         </a>
         <a href="${pageContext.request.contextPath}/loadinfo" class="${activePage == 'home' ? 'active' : ''}">
