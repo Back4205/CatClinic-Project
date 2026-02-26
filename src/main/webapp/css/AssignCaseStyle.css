@@ -1,0 +1,240 @@
+/* ===== PAGE BACKGROUND ===== */
+.dashboard-content {
+    padding: 30px 40px;
+    background: #f3f6fb;
+    min-height: 100vh;
+}
+
+/* ===== TITLE ===== */
+.page-title h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 25px;
+}
+
+/* ===== HEADER SEARCH + FILTER ===== */
+.case-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+/* SEARCH BOX */
+.search-container {
+    position: relative;
+    width: 320px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 10px 15px 10px 38px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-container i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+}
+
+/* DROPDOWN + PLUS */
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.status-dropdown {
+    padding: 10px 15px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.btn-plus {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    cursor: pointer;
+    font-size: 16px;
+    color: #334155;
+}
+
+/* ===== TABLE CONTAINER ===== */
+.table-container {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* ===== TABLE ===== */
+.vet-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.vet-table thead {
+    background: #f1f5f9;
+}
+
+.vet-table thead th {
+    padding: 18px 22px;
+    text-align: left;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.vet-table tbody td {
+    padding: 22px;
+    border-top: 1px solid #f1f5f9;
+    font-size: 14px;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.vet-table tbody tr:hover {
+    background: #f8fafc;
+}
+
+/* ===== CASE ID STYLE ===== */
+.case-id {
+    font-weight: 700;
+    color: #2563eb;
+    background: #e0e7ff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: inline-block;
+}
+
+/* ===== PET CELL ===== */
+.pet-cell {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    background: #e2e8f0;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #475569;
+    font-size: 16px;
+}
+
+.info .name {
+    display: block;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.info .sub {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 3px;
+}
+
+/* ===== STATUS BADGES ===== */
+.badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Assigned */
+.badge.assigned {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+/* In Treatment */
+.badge.in-treatment {
+    background: #fde68a;
+    color: #b45309;
+}
+
+/* Waiting */
+.badge.waiting {
+    background: #e9d5ff;
+    color: #7c3aed;
+}
+
+/* Discharged */
+.badge.discharged {
+    background: #bbf7d0;
+    color: #15803d;
+}
+
+/* ===== ACTIONS ===== */
+.actions-cell {
+    text-align: right;
+}
+
+.btn-emr {
+    background: #e2e8f0;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #2563eb;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.icon-action {
+    margin-left: 12px;
+    font-size: 16px;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.icon-action:hover {
+    color: #2563eb;
+}
+
+/* ===== PAGINATION ===== */
+.pagination {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.pagination a {
+    padding: 8px 14px;
+    margin: 0 4px;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    color: #334155;
+    font-size: 14px;
+}
+
+.pagination a.active-page {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+}

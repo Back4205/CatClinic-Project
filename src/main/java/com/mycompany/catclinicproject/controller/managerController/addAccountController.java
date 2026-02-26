@@ -60,9 +60,9 @@ public class addAccountController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    HttpSession session = request.getSession();
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
         if (session == null || session.getAttribute("acc") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -72,23 +72,19 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
-    if (session.getAttribute("success") != null) {
-        request.setAttribute("success", session.getAttribute("success"));
-        session.removeAttribute("success");
+        if (session.getAttribute("success") != null) {
+            request.setAttribute("success_addaccount", session.getAttribute("success"));
+            session.removeAttribute("success");
+        }
+
+        if (session.getAttribute("error_addaccount") != null) {
+            request.setAttribute("error_addaccount", session.getAttribute("error_addaccount"));
+            session.removeAttribute("error_addaccount");
+        }
+
+        request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp")
+                .forward(request, response);
     }
-
-    if (session.getAttribute("error") != null) {
-        request.setAttribute("error", session.getAttribute("error"));
-        session.removeAttribute("error");
-    }
-
-    request.getRequestDispatcher("/WEB-INF/views/manager/addAccount.jsp")
-            .forward(request, response);
-}
-
-
-
-    
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -99,43 +95,71 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
      * @throws IOException if an I/O error occurs
      */
     @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-    HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String fullName = request.getParameter("fullName");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
+        String role = request.getParameter("role");
+        String gender = request.getParameter("gender");
+        boolean male = "Male".equalsIgnoreCase(gender);
+        UserDao dao = new UserDao();
+        username = username == null ? "" : username.trim();
 
-    String username = request.getParameter("username");
-    String password = request.getParameter("password");
-    String fullName = request.getParameter("fullName");
-    String email = request.getParameter("email");
-    String phone = request.getParameter("phone");
-    String role = request.getParameter("role");
-    String gender = request.getParameter("gender");
+// Regex:
+// - Ít nhất 1 chữ
+// - Ít nhất 1 số
+// - Không có khoảng trắng
+// - Tối thiểu 6 ký tự
+        if (!username.matches("^(?=.*[A-Za-z])(?=.*\\d)\\S{6,}$")) {
+            session.setAttribute("error_addaccount",
+                    "Username must be at least 6 characters, contain at least 1 letter and 1 number, and no spaces!");
+            response.sendRedirect("addAccount");
+            return;
+        }
 
-    boolean male = "Male".equalsIgnoreCase(gender);
+        if (dao.isUsernameExist(username)) {
+            session.setAttribute("error_addaccount", "Username already exists!");
+            response.sendRedirect("addAccount");
+            return;
+        }
 
-    UserDao dao = new UserDao();
+        if (password.length() < 6 || !password.matches("^(?=.*[A-Za-z])(?=.*\\d).+$")) {
+            session.setAttribute("error_addaccount", "Pass is invalid!");
+            response.sendRedirect("addAccount");
+            return;
+        }
+        if (dao.isEmailExist(email)) {
+            session.setAttribute("error_addaccount", "Email already exists!");
+            response.sendRedirect("addAccount");
+            return;
+        }
+        if (dao.isPhoneExist(phone) || phone.length() != 10 || !(phone.matches("\\d+"))) {
+            session.setAttribute("error_addaccount", "Phone already exists or invalid!");
+            response.sendRedirect("addAccount");
+            return;
+        }
+        int roleID = dao.getRoleID(role);
+        if (roleID == 1) {
+            session.setAttribute("error_addaccount", "Role name must not Admin!");
+            response.sendRedirect("addAccount");
+            return;
+        }
+        boolean ok = dao.addUser(username, password, fullName, male,
+                email, roleID, phone, null);
 
-    if (dao.isUsernameExist(username)) {
-        session.setAttribute("error", "Username already exists!");
+        if (ok) {
+            session.setAttribute("success", "Add user successfully!");
+        } else {
+            session.setAttribute("error_addaccount", "Add user failed!");
+        }
+
         response.sendRedirect("addAccount");
-        return;
     }
-
-    int roleID = dao.getRoleID(role);
-
-    boolean ok = dao.addUser(username, password, fullName, male,
-                             email, roleID, phone, null);
-
-    if (ok) {
-        session.setAttribute("success", "Add user successfully!");
-    } else {
-        session.setAttribute("error", "Add user failed!");
-    }
-
-    response.sendRedirect("addAccount");
-}
-
 
     /**
      * Returns a short description of the servlet.
@@ -146,6 +170,5 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-    
 
 }

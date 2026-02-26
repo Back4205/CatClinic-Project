@@ -1,8 +1,9 @@
 package com.mycompany.catclinicproject.controller.authentic;
 
-import com.mycompany.catclinicproject.dao.ServiceDAO;
+import com.mycompany.catclinicproject.dao.CategoryDao;
 import com.mycompany.catclinicproject.dao.UserDAO;
 import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
+import com.mycompany.catclinicproject.model.Category;
 import com.mycompany.catclinicproject.model.Service;
 import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
@@ -81,7 +82,7 @@ public class LoginController extends HttpServlet {
                     request.getRequestDispatcher("WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
                     break;
                 case 2:
-                    response.sendRedirect("vet/schedule");
+                    response.sendRedirect("DashboardController");
                     break;
                 case 3:
                     response.sendRedirect("reception/home");
@@ -90,9 +91,9 @@ public class LoginController extends HttpServlet {
                     response.sendRedirect("staff/tasks");
                     break;
                 case 5:
-                    ServiceDao sdao = new ServiceDao();
-                    List<Service> serviceList = sdao.getAllService();
-                    request.setAttribute("serviceList", serviceList);
+                      CategoryDao cdao = new CategoryDao();
+        List<Category> list = cdao.getAllCategory();
+        request.setAttribute("CategoryList", list);
                     request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
                     break;
                 default:

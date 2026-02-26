@@ -4,8 +4,11 @@
  */
 package com.mycompany.catclinicproject.controller.HomeController;
 
-import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
-import com.mycompany.catclinicproject.model.Service;
+import com.mycompany.catclinicproject.dao.CategoryDao;
+import com.mycompany.catclinicproject.dao.ServiceDAO;
+import com.mycompany.catclinicproject.dao.homeDao.ServiceDaoo;
+import com.mycompany.catclinicproject.model.Category;
+import com.mycompany.catclinicproject.model.ServiceDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import jakarta.servlet.annotation.WebServlet;
-
 
 /**
  *
@@ -61,11 +63,14 @@ public class loadHomePage extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ServiceDao sdao = new ServiceDao();
-    List<Service> serviceList = sdao.getAllService();
-    request.setAttribute("serviceList", serviceList);
-    request.getRequestDispatcher("/WEB-INF/views/common/homePage.jsp").forward(request, response);
- 
+        CategoryDao cdao = new CategoryDao();
+        List<Category> list = cdao.getAllCategory();
+         ServiceDaoo sdao = new ServiceDaoo();
+        List<ServiceDTO> lists = sdao.getAllServices();
+        request.setAttribute("listService", lists);
+        request.setAttribute("CategoryList", list);
+        request.getRequestDispatcher("/WEB-INF/views/common/homePage.jsp").forward(request, response);
+
     }
 
     /**

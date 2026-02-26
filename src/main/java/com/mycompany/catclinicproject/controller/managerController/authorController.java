@@ -29,6 +29,12 @@ public class authorController extends HttpServlet {
         }
         String userName = request.getParameter("userName");
         String idRaw = request.getParameter("userID");
+        if (idRaw.equalsIgnoreCase("1")) {
+            session.setAttribute("error_account", "Can't update admin role");
+            response.sendRedirect("account");
+
+            return;
+        }
         if (idRaw == null) {
             response.sendRedirect("account");
             return;
@@ -56,21 +62,22 @@ public class authorController extends HttpServlet {
         try {
             int userID = Integer.parseInt(request.getParameter("userID"));
             String roleName = request.getParameter("role");
-
-            session.removeAttribute("error");
-            session.removeAttribute("success");
-
-            // ❌ chưa chọn role
             if (roleName == null) {
                 session.setAttribute("error", "Please select a role.");
                 response.sendRedirect("author?userID=" + userID);
                 return;
             }
+            if (roleName.equalsIgnoreCase("1")) {
+                session.setAttribute("error", "Can't update admin role");
+                response.sendRedirect("author?userID=" + userID);
+                return;
+            }
+            session.removeAttribute("error");
+            session.removeAttribute("success");
 
             int newRoleID = dao.getRoleID(roleName);
             int currentRoleID = dao.getRoleIdByUserId(userID);
 
-            // ❌ role không đổi
             if (newRoleID == currentRoleID) {
                 session.setAttribute("error", "User already has this role.");
                 response.sendRedirect("author?userID=" + userID);

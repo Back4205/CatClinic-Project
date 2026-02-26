@@ -101,7 +101,8 @@ public class MedicalRecordDAO extends DBContext {
                         rs.getDouble("Price"),
                         rs.getString("Description"),
                         rs.getInt("TimeService"),
-                        rs.getBoolean("IsActive")
+                        rs.getBoolean("IsActive"),
+                        rs.getInt("CategoryID")
                 ));
             }
         } catch (Exception e) {

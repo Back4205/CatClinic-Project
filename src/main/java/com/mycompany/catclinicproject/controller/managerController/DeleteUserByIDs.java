@@ -64,31 +64,57 @@ public class DeleteUserByIDs extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          // ===== 1. CHECK LOGIN =====
         HttpSession session = request.getSession(false);
+
         if (session == null || session.getAttribute("acc") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-        User user = (User) session.getAttribute("acc");
-        if (user.getRoleID() != 1) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
-        String id = request.getParameter("id");
-        System.out.println("ID = " + id);
 
-        try {
-            UserDao udao = new UserDao();
-            udao.DeleteUserById(id);
-        } catch (Exception e) {
+        User currentUser = (User) session.getAttribute("acc");
+
+        // ===== 2. CHECK ROLE (ADMIN ONLY) =====
+        if (currentUser.getRoleID() != 1) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
             
         }
-        UserDao dao = new UserDao();
-        List<UserDTO> list = dao.getAllUser();
-        request.setAttribute("UserList", list);
-        request.getRequestDispatcher("/WEB-INF/views/manager/AccountList.jsp")
-                .forward(request, response);
-        
+
+        // ===== 3. GET PARAM =====
+        String idRaw = request.getParameter("id");
+        String page = request.getParameter("page");
+        String keyword = request.getParameter("keyword");
+        String role = request.getParameter("role");
+
+        if (page == null || page.isEmpty()) page = "1";
+        if (keyword == null) keyword = "";
+        if (role == null) role = "";
+
+        try {
+            int userID = Integer.parseInt(idRaw);
+
+            UserDao dao = new UserDao();
+
+            // Không cho xóa admin chính
+            if (userID == 1) {
+                session.setAttribute("error_account", "Cannot delete main Admin account!");
+                  response.sendRedirect("account?page=" + page
+                + "&keyword=" + keyword
+                + "&role=" + role);
+                return ;
+            } 
+            dao.DeleteUserById(userID);
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("error_account", "Delete failed!");
+        }
+
+        // ===== 4. REDIRECT BACK WITH STATE =====
+        response.sendRedirect("account?page=" + page
+                + "&keyword=" + keyword
+                + "&role=" + role);
+    
+
     }
 
     /**
@@ -104,7 +130,6 @@ public class DeleteUserByIDs extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        
     }
 
     /**

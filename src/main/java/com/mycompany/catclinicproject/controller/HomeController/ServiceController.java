@@ -4,8 +4,13 @@
  */
 package com.mycompany.catclinicproject.controller.HomeController;
 
+import com.mycompany.catclinicproject.dao.CategoryDao;
+import com.mycompany.catclinicproject.dao.ServiceDAO;
 import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
+import com.mycompany.catclinicproject.dao.homeDao.ServiceDaoo;
+import com.mycompany.catclinicproject.model.Category;
 import com.mycompany.catclinicproject.model.Service;
+import com.mycompany.catclinicproject.model.ServiceDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -61,42 +66,14 @@ public class ServiceController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       
-
-    String id = request.getParameter("id");
-    ServiceDao newdao = new ServiceDao();
-    List<Service> list = newdao.getAllService();
-
-    try {
-        int idint = Integer.parseInt(id);
-        String jspPage = null;
-
-        switch (idint) {
-            case 1:
-                jspPage = "/WEB-INF/views/common/GeneralCheckup.jsp";
-                break;
-            case 2:
-                jspPage = "/WEB-INF/views/common/petHotel.jsp";
-                break;
-            case 3:
-                jspPage = "/WEB-INF/views/common/Surgery.jsp";
-                break;
-            default:
-                jspPage = null;
-        }
-
-        request.setAttribute("serviceList", list);
-
-        if (jspPage != null) {
-            request.getRequestDispatcher(jspPage).forward(request, response);
-        } else {
-            response.sendRedirect("error.jsp");
-        }
-
-    } catch (NumberFormatException e) {
-        e.printStackTrace();
-        response.sendRedirect("error.jsp");
-    }
+       String id = request.getParameter("id");
+        CategoryDao cdao = new CategoryDao();
+        List<Category> list = cdao.getAllCategory();
+        ServiceDaoo dao = new ServiceDaoo();
+        ServiceDTO service = dao.getServiceById(Integer.parseInt(id));
+        request.setAttribute("CategoryList", list);
+        request.setAttribute("service", service);
+        request.getRequestDispatcher("/WEB-INF/views/common/ServiceDetail.jsp").forward(request, response);
 }
 
 

@@ -38,7 +38,6 @@
                     <p class="section-title">SELECT ROLE</p>
 
                     <div class="role-grid">
-                        <label><input type="radio" name="role" value="Admin"> Admin</label>
                         <label><input type="radio" name="role" value="Veterinarian"> Veterinarian</label>
                         <label><input type="radio" name="role" value="Receptionist"> Receptionist</label>
                         <label><input type="radio" name="role" value="Staff"> Staff</label>

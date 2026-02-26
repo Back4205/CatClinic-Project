@@ -4,8 +4,10 @@
  */
 package com.mycompany.catclinicproject.controller.HomeController;
 
-import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
-import com.mycompany.catclinicproject.model.Service;
+import com.mycompany.catclinicproject.dao.CategoryDao;
+import com.mycompany.catclinicproject.dao.homeDao.ServiceDaoo;
+import com.mycompany.catclinicproject.model.Category;
+import com.mycompany.catclinicproject.model.ServiceDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,9 +21,8 @@ import java.util.List;
  *
  * @author Son
  */
-@WebServlet(name = "NewController", urlPatterns = {"/new"})
-
-public class NewController extends HttpServlet {
+@WebServlet(name = "CategoryController", urlPatterns = {"/CategoryController"})
+public class CategoryController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +41,10 @@ public class NewController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet NewController</title>");
+            out.println("<title>Servlet CategoryController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet NewController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet CategoryController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,11 +62,37 @@ public class NewController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         ServiceDao sdao = new ServiceDao();
-    List<Service> serviceList = sdao.getAllService();
-    request.setAttribute("serviceList", serviceList);
-    request.getRequestDispatcher("/WEB-INF/views/common/NewPage.jsp").forward(request, response);
-    
+        String cidParam = request.getParameter("id");
+        if (cidParam == null) {
+            response.sendRedirect("home");
+            return;
+        }
+        int cid = Integer.parseInt(cidParam);
+        int page = 1;
+        int pageSize = 6;
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            page = Integer.parseInt(pageParam);
+        }
+        CategoryDao cdao = new CategoryDao();
+        List<Category> list = cdao.getAllCategory();
+        CategoryDao categoryDao = new CategoryDao();
+        ServiceDaoo serviceDaoo = new ServiceDaoo();
+        Category category = categoryDao.getCategoryById(cid);
+        List<ServiceDTO> services = serviceDaoo.getServiceByCategory(cid, page, pageSize);
+        int total = serviceDaoo.countServiceByCategory(cid);
+
+        int totalPage = total / pageSize;
+        if (total % pageSize != 0) {
+            totalPage++;
+        }
+        request.setAttribute("CategoryList", list);
+        request.setAttribute("category", category);
+        request.setAttribute("services", services);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPage", totalPage);
+        request.setAttribute("cid", cid);
+        request.getRequestDispatcher("/WEB-INF/views/common/CategoryPage.jsp").forward(request, response);
     }
 
     /**

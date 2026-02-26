@@ -4,7 +4,9 @@
  */
 package com.mycompany.catclinicproject.controller.HomeController;
 
+import com.mycompany.catclinicproject.dao.CategoryDao;
 import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
+import com.mycompany.catclinicproject.model.Category;
 import com.mycompany.catclinicproject.model.Service;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -61,9 +63,9 @@ public class AboutUsController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ServiceDao sdao = new ServiceDao();
-    List<Service> serviceList = sdao.getAllService();
-    request.setAttribute("serviceList", serviceList);
+          CategoryDao cdao = new CategoryDao();
+        List<Category> list = cdao.getAllCategory();
+        request.setAttribute("CategoryList", list);
             request.getRequestDispatcher("/WEB-INF/views/common/AboutUsPage.jsp").forward(request, response);
 
 

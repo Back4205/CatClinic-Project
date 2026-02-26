@@ -21,12 +21,38 @@ public class ServiceDao extends DBContext {
             while (rs.next()) {
                 Service s = new Service();
                 s.setServiceID(rs.getInt("ServiceID"));
-                s.setNameService(rs.getString("ServiceName"));
+                s.setNameService(rs.getString("NameService"));
                 s.setPrice(rs.getDouble("Price"));
                 s.setDescription(rs.getString("Description"));
                 s.setTimeService(rs.getInt("TimeService"));
                 s.setIsActive(rs.getBoolean("IsActive"));
+                s.setCategoryID(rs.getInt("CategoryID"));
+                list.add(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        return list;
+    }
+    
+   public List<Service> getAllCategory() {
+        List<Service> list = new ArrayList<>();
+        String sql = "select * from Categorys";
+
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Service s = new Service();
+                s.setServiceID(rs.getInt("ServiceID"));
+                s.setNameService(rs.getString("NameService"));
+                s.setPrice(rs.getDouble("Price"));
+                s.setDescription(rs.getString("Description"));
+                s.setTimeService(rs.getInt("TimeService"));
+                s.setIsActive(rs.getBoolean("IsActive"));
+                s.setCategoryID(rs.getInt("CategoryID"));
                 list.add(s);
             }
         } catch (Exception e) {
@@ -50,7 +76,8 @@ public class ServiceDao extends DBContext {
                         rs.getDouble("Price"),
                         rs.getString("Description"),
                         rs.getInt("TimeService"),
-                        rs.getBoolean("IsActive")
+                        rs.getBoolean("IsActive"),
+                        rs.getInt("CategoryID")
                 );
             }
         } catch (Exception e) {
@@ -105,4 +132,5 @@ public class ServiceDao extends DBContext {
             e.printStackTrace();
         }
     }
+    
 }

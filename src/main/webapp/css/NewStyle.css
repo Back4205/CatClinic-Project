@@ -1,171 +1,246 @@
+/* ================= RESET ================= */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
 }
 
 body {
-    background: #f8fafc;
-    color: #0f172a;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
 }
 
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 40px auto;
+/* ================= WRAPPER ================= */
+.news-wrapper {
+    padding: 40px 60px;
 }
 
-/* ====== LAYOUT ====== */
-.news-layout {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 32px;
+.news-container {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
 }
 
-/* ====== SIDEBAR ====== */
+/* ================= SIDEBAR ================= */
+.sidebar {
+    width: 260px;
+}
+
 .sidebar h3 {
     font-size: 20px;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
 .sidebar-item {
     display: flex;
     gap: 12px;
-    margin-bottom: 16px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 18px;
+    align-items: center;
 }
 
 .sidebar-item img {
     width: 70px;
     height: 70px;
-    border-radius: 8px;
     object-fit: cover;
+    border-radius: 12px;
 }
 
-.sidebar-item .date {
-    font-size: 12px;
-    color: #64748b;
-}
-
-.sidebar-item .title {
+.sidebar-content a {
     font-size: 14px;
-    font-weight: 600;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: 0.3s;
 }
 
-/* ====== TAGS ====== */
+.sidebar-content a:hover {
+    color: #ff7a00;
+}
+
+/* ================= MAIN CONTENT ================= */
+.main-content {
+    flex: 1;
+}
+
+/* SEARCH */
+.search-box {
+    margin-bottom: 15px;
+}
+
+.search-box input {
+    width: 280px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+}
+
+.search-box input:focus {
+    border-color: #ff7a00;
+}
+
+/* TAG */
 .tag-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 24px;
+    margin-bottom: 30px;
 }
 
-.tag {
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: #ffe9df;
-    color: #f97316;
+.tag-list span {
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #ff7a00;
+    color: #ff7a00;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-right: 8px;
+    margin-bottom: 8px;
     cursor: pointer;
     transition: 0.3s;
 }
 
-.tag.active,
-.tag:hover {
-    background: #f97316;
-    color: #fff;
+.tag-list span:hover {
+    background: #ff7a00;
+    color: white;
 }
 
-/* ====== BLOG ====== */
+/* ================= BLOG GRID ================= */
 .blog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
 }
 
 .blog-card {
     background: #fff;
-    border-radius: 16px;
+    border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
     transition: 0.3s;
 }
 
 .blog-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
 }
 
 .blog-card img {
-    height: 200px;
     width: 100%;
+    height: 220px;
     object-fit: cover;
 }
 
-.blog-card .content {
-    padding: 16px;
+.blog-body {
+    padding: 20px;
 }
 
-.blog-card .date {
-    font-size: 13px;
-    color: #64748b;
+.blog-body h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
 }
 
-/* ====== FAQ ====== */
-.faq-section {
-    margin-top: 80px;
+.blog-body p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 12px;
+    line-height: 1.6;
 }
 
-.faq-section h2 {
-    text-align: center;
-    font-size: 36px;
-    margin-bottom: 40px;
-}
-
-.faq-item {
-    border: 2px solid #f97316;
-    border-radius: 16px;
-    margin-bottom: 16px;
-    overflow: hidden;
-}
-
-.faq-question {
-    padding: 18px 22px;
-    background: #fff7ed;
+.read-more {
+    text-decoration: none;
+    color: #ff7a00;
     font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    font-size: 14px;
 }
 
-.faq-answer {
-    padding: 0 22px;
-    max-height: 0;
-    overflow: hidden;
-    transition: 0.4s;
-    background: #fff;
+.read-more:hover {
+    text-decoration: underline;
 }
 
-.faq-item.active .faq-answer {
-    padding: 18px 22px;
-    max-height: 300px;
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+    .blog-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
-/* ===== FLOAT BUTTON ===== */
-.float-buttons {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
+@media (max-width: 768px) {
+    .news-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+    }
+
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.pagination {
+    margin-top: 40px;
+    text-align: center;
 }
 
-#scrollTopBtn {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    border: none;
-    background: #ef4444;
+.pagination a {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 0 4px;
+    border: 1px solid #ff7a00;
+    color: #ff7a00;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.pagination a:hover {
+    background: #ff7a00;
     color: #fff;
-    font-size: 20px;
+}
+
+.pagination a.active {
+    background: #ff7a00;
+    color: #fff;
+}
+
+.pagination .nav-btn {
+    font-weight: bold;
+}.search-box {
+    margin-bottom: 20px;
+}
+
+.search-box form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-box input {
+    flex: 1;
+    max-width: 300px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    outline: none;
+}
+
+.search-box input:focus {
+    border-color: #ff7a00;
+}
+
+.search-box button {
+    padding: 8px 16px;
+    border: none;
+    background: #ff7a00;
+    color: white;
+    border-radius: 6px;
     cursor: pointer;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.search-box button:hover {
+    background: #e66900;
 }

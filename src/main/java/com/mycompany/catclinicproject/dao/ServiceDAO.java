@@ -1,8 +1,11 @@
 package com.mycompany.catclinicproject.dao;
 
+import com.mycompany.catclinicproject.model.AddServiceDTO;
 import com.mycompany.catclinicproject.model.Service;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +13,7 @@ public class ServiceDAO extends DBContext {
     public List<Service> getAllServices() {
         List<Service> list = new ArrayList<>();
 
-        String sql = "SELECT ServiceID, ServiceName, Price, TimeService, IsActive FROM Services";
+        String sql = "SELECT ServiceID, NameService, Price, TimeService, IsActive,CategoryID FROM Services";
 
         try (PreparedStatement ps = c.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -18,10 +21,11 @@ public class ServiceDAO extends DBContext {
             while (rs.next()) {
                 Service s = new Service();
                 s.setServiceID(rs.getInt("ServiceID"));
-                s.setNameService(rs.getString("ServiceName"));
+                s.setNameService(rs.getString("NameService"));
                 s.setPrice(rs.getDouble("Price"));
                 s.setTimeService(rs.getInt("TimeService"));
                 s.setIsActive(rs.getBoolean("IsActive")); 
+                s.setCategoryID(rs.getInt("CategoryID"));
 
                 list.add(s);
             }
@@ -32,28 +36,114 @@ public class ServiceDAO extends DBContext {
 
         return list;
     }
-public void insertService(Service s) {
-    String sql = "INSERT INTO Services (ServiceName, Price, Description, TimeService, isActive) "
-               + "VALUES (?, ?, ?, ?, ?)";
+public void insertServices(AddServiceDTO s) {
+    String sqlService = "INSERT INTO Services (ServiceName, Price, Description, TimeService, IsActive, CategoryID) "
+                      + "VALUES (?, ?, ?, ?, ?, ?)";
+
+    String sqlImg = "INSERT INTO ImgServices (ImgURL, IsActive, ServiceID) "
+                  + "VALUES (?, ?, ?)";
 
     try {
-        PreparedStatement ps = c.prepareStatement(sql);
+        c.setAutoCommit(false);
+
+        PreparedStatement ps = c.prepareStatement(sqlService, Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, s.getNameService());
         ps.setDouble(2, s.getPrice());
         ps.setString(3, s.getDescription());
         ps.setInt(4, s.getTimeService());
         ps.setBoolean(5, s.isIsActive());
-
+        ps.setInt(6, s.getCategoryID());
         ps.executeUpdate();
-        System.out.println("INSERT SERVICE SUCCESS");
+
+        ResultSet rs = ps.getGeneratedKeys();
+        if (!rs.next()) {
+            throw new Exception("Cannot get ServiceID");
+        }
+        int serviceID = rs.getInt(1);
+
+        PreparedStatement psImg = c.prepareStatement(sqlImg);
+        psImg.setString(1, s.getImgURL());
+        psImg.setBoolean(2, true);
+        psImg.setInt(3, serviceID);
+        psImg.executeUpdate();
+
+        c.commit();
+        System.out.println("INSERT SERVICE + IMAGE SUCCESS");
 
     } catch (Exception e) {
-        System.out.println("INSERT SERVICE FAILED");
+        try { c.rollback(); } catch (Exception ex) {}
         e.printStackTrace();
     } finally {
         closeConnection();
     }
 }
+
+
+public void insertService(AddServiceDTO s) {
+
+        String sqlService =
+                "INSERT INTO Services "
+              + "(ServiceName, Price, Description, TimeService, IsActive, CategoryID) "
+              + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        String sqlImg =
+                "INSERT INTO ImgServices "
+              + "(ImgURL, IsActive, ServiceID) "
+              + "VALUES (?, ?, ?)";
+
+        try {
+            // ===== START TRANSACTION =====
+            c.setAutoCommit(false);
+
+            // ===== INSERT SERVICE =====
+            PreparedStatement psService =
+                    c.prepareStatement(sqlService, Statement.RETURN_GENERATED_KEYS);
+
+            psService.setString(1, s.getNameService());
+            psService.setDouble(2, s.getPrice());          // PRICE = double
+            psService.setString(3, s.getDescription());
+            psService.setInt(4, s.getTimeService());
+            psService.setBoolean(5, s.isIsActive());
+            psService.setInt(6, s.getCategoryID());
+
+            psService.executeUpdate();
+
+            // ===== GET SERVICE ID =====
+            ResultSet rs = psService.getGeneratedKeys();
+            if (!rs.next()) {
+                throw new SQLException("Cannot get generated ServiceID");
+            }
+            int serviceID = rs.getInt(1);
+
+            // ===== INSERT IMAGE (NẾU CÓ) =====
+            if (s.getImgURL() != null && !s.getImgURL().isEmpty()) {
+
+                PreparedStatement psImg = c.prepareStatement(sqlImg);
+                psImg.setString(1, s.getImgURL());
+                psImg.setBoolean(2, true);
+                psImg.setInt(3, serviceID);
+
+                psImg.executeUpdate();
+            }
+
+            // ===== COMMIT =====
+            c.commit();
+            System.out.println("INSERT SERVICE + IMAGE SUCCESS");
+
+        } catch (Exception e) {
+            // ===== ROLLBACK =====
+            try {
+                if (c != null) c.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+
+        } finally {
+            closeConnection();
+        }
+}
+
 
     public Service getServiceById(int id) {
     String sql = "SELECT * FROM Services WHERE ServiceID = ?";
@@ -71,7 +161,8 @@ public void insertService(Service s) {
                     rs.getDouble("price"),
                     rs.getString("description"),
                     rs.getInt("timeService"),
-                    rs.getBoolean("isActive")
+                    rs.getBoolean("isActive"),
+                    rs.getInt("CategoryID")
             );
         }
     } catch (Exception e) {
@@ -85,7 +176,7 @@ public void insertService(Service s) {
     String sql = "UPDATE Services "
                + "SET ServiceName = ?, price = ?, description = ?, timeService = ? "
                + "WHERE serviceID = ?";
-
+    
     try {
         PreparedStatement ps = c.prepareStatement(sql);
         ps.setString(1, s.getNameService());
@@ -248,4 +339,5 @@ public void insertService(Service s) {
     return 0;
 }
 
+     
 }

@@ -9,18 +9,28 @@ public class Service {
     private String description;
     private int timeService;
     private boolean isActive;
+    private int CategoryID;
 
     public Service() {
     }
 
     public Service(int serviceID, String nameService, double price,
-                   String description, int timeService, boolean isActive) {
+                   String description, int timeService, boolean isActive,int CategoryID) {
         this.serviceID = serviceID;
         this.nameService = nameService;
         this.price = price;
         this.description = description;
         this.timeService = timeService;
         this.isActive = isActive;
+        this.CategoryID = CategoryID;
+    }
+
+    public void setCategoryID(int CategoryID) {
+        this.CategoryID = CategoryID;
+    }
+    
+    public int getCategoryID() {
+        return CategoryID;
     }
 
     public int getServiceID() {

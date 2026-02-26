@@ -61,26 +61,57 @@ public class AccountController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private static final int PAGE_SIZE = 5;
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
+
         if (session == null || session.getAttribute("acc") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
-        User user = (User) session.getAttribute("acc");
-        if (user.getRoleID() != 1) {
+
+        User currentUser = (User) session.getAttribute("acc");
+
+        // ===== 2. CHECK ROLE (ADMIN ONLY) =====
+        if (currentUser.getRoleID() != 1) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
         }
+        String keyword = request.getParameter("keyword");
+        String role = request.getParameter("role");
+        String pageStr = request.getParameter("page");
+
+        if (keyword == null) {
+            keyword = "";
+        }
+        if (role == null) {
+            role = "";
+        }
+
+        int page = 1;
+        int pageSize = 5;
+
+        if (pageStr != null) {
+            page = Integer.parseInt(pageStr);
+        }
+
         UserDao dao = new UserDao();
-        List<UserDTO> list = dao.getAllUser();
+
+        int totalRecord = dao.countSearchFilter(keyword, role);
+        int totalPage = (int) Math.ceil((double) totalRecord / pageSize);
+
+        List<UserDTO> list = dao.searchFilterPaging(keyword, role, page, pageSize);
 
         request.setAttribute("UserList", list);
-        request.getRequestDispatcher("/WEB-INF/views/manager/AccountList.jsp")
-                .forward(request, response);
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("role", role);
+        request.setAttribute("page", page);
+        request.setAttribute("totalPage", totalPage);
 
+        request.getRequestDispatcher("WEB-INF/views/manager/AccountList.jsp").forward(request, response);
     }
 
     /**

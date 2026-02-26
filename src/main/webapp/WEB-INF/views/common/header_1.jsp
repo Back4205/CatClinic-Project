@@ -14,13 +14,13 @@
         <!-- Services Dropdown -->
         <div class="nav-item">
             <a href="#" class="services-link">
-                Services <span class="arrow"><i class="fa-solid fa-angle-down"></i></i></span>
+                Services <span class="arrow"><i class="fa-solid fa-angle-down"></i></span>
             </a>
            <ul class="dropdown-menu">
-    <c:forEach var="s" items="${serviceList}">
+    <c:forEach var="s" items="${CategoryList}">
     <li>
-        <a href="service?id=${s.serviceID}">
-            ${s.nameService}
+        <a href="CategoryController?id=${s.categoryID}">
+            ${s.categoryName}
         </a>
     </li>
 </c:forEach>

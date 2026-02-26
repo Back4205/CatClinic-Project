@@ -18,11 +18,11 @@ public class UserDTO {
     private String address;
     private String password;
     private String phoneNumber;
-     private int roleID;
-
+    private int roleID;
+    
     public UserDTO() {
+        
     }
-
     public UserDTO(int userID, String userName, String fullName,
                    String roleName, String email, String phone) {
         this.userID = userID;

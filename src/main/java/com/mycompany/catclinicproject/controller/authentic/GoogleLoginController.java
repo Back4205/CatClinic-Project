@@ -2,7 +2,6 @@ package com.mycompany.catclinicproject.controller.authentic;
 
 import com.mycompany.catclinicproject.dao.UserDAO;
 import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
-import com.mycompany.catclinicproject.dao.ServiceDAO;
 import com.mycompany.catclinicproject.model.Service;
 import com.mycompany.catclinicproject.model.User;
 import com.mycompany.catclinicproject.service.AuthService;

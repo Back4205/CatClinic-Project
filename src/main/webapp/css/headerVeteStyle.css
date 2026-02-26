@@ -1,0 +1,82 @@
+/* ================= HEADER ================= */
+
+.header {
+    width: 100%;                  /* full ngang main */
+    height: 80px;                 /* chiều cao header */
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 0 40px;              /* khoảng cách 2 bên */
+    background-color: #fff;    /* nền giống ảnh bạn gửi */
+
+    border-bottom: 1px solid #dcdcdc;
+}
+
+/* ===== LEFT SIDE ===== */
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.header-left h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.today-date {
+    font-size: 14px;
+    color: #555;
+    border-left: 1px solid #bdbdbd;
+    padding-left: 20px;
+}
+
+/* ===== RIGHT SIDE ===== */
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.notification {
+    font-size: 18px;
+    color: #444;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.notification:hover {
+    color: #ff7a00;
+}
+
+/* ===== USER INFO ===== */
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid #ff7a00;
+    color: #2563eb;
+    font-size: 16px;
+}

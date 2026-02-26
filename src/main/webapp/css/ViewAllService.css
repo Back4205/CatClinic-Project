@@ -1,0 +1,232 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ================= CARE SECTION ================= */
+.care-section {
+    background: #f9733a;
+    padding: 120px 8%;
+    text-align: center;
+    color: #fff;
+}
+
+.care-content h2 {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.care-content p {
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+.care-btn {
+    background: #ffb703;
+    color: #222;
+    padding: 14px 28px;
+    border-radius: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.care-btn:hover {
+    background: #ff9f1c;
+    transform: translateY(-2px);
+}
+
+
+/* ================= SERVICES ================= */
+.services {
+    padding: 100px 8%;
+    background: #f8fafc;
+    text-align: center;
+}
+
+.section-title {
+    font-size: 36px;
+    font-weight: 800;
+}
+
+.line {
+    width: 90px;
+    height: 4px;
+    background: #f97316;
+    margin: 15px auto 60px;
+    border-radius: 10px;
+}
+
+.service-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 40px;
+}
+
+.service-item {
+    background: #fff;
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.06);
+    transition: all 0.3s ease;
+}
+
+.service-item:hover {
+    transform: translateY(-8px);
+}
+
+.image-box {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 50%;
+    border: 4px solid #f97316;
+}
+
+.image-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.service-item h3 {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #f97316;
+}
+
+.price, .time {
+    font-size: 14px;
+    margin-top: 6px;
+    color: #555;
+}
+
+.read-more {
+    margin-top: 15px;
+    display: inline-block;
+    color: #f97316;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.read-more:hover {
+    color: #ea580c;
+}
+
+
+/* ================= BOOKING BANNER ================= */
+.booking-banner {
+    background: #fde8d7;
+    padding: 100px 8%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.booking-content h2 {
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 25px;
+}
+
+.booking-btn {
+    background: #f97316;
+    color: #fff;
+    padding: 14px 30px;
+    border-radius: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.booking-btn:hover {
+    background: #ea580c;
+    transform: translateY(-2px);
+}
+
+.dog-left {
+    position: absolute;
+    left: 60px;
+    bottom: 0;
+    height: 230px;
+}
+
+.cat-right {
+    position: absolute;
+    right: 60px;
+    bottom: 0;
+    height: 260px;
+}
+
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 992px) {
+
+    .care-content h2 {
+        font-size: 36px;
+    }
+
+    .booking-content h2 {
+        font-size: 28px;
+    }
+
+    .dog-left,
+    .cat-right {
+        display: none;
+    }
+}
+/* ================= PAGINATION ================= */
+
+.pagination {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.pagination a {
+    min-width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+
+    background: #ffffff;
+    color: #333;
+
+    border: 1px solid #eee;
+    border-radius: 10px;
+
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+.pagination a:hover {
+    background: #f97316;
+    color: #fff;
+    border-color: #f97316;
+    transform: translateY(-2px);
+}
+
+/* Trang đang active */
+.active-page {
+    background: #f97316 !important;
+    color: #fff !important;
+    border-color: #f97316 !important;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+/* Prev / Next icon */
+.pagination a:first-child,
+.pagination a:last-child {
+    font-weight: bold;
+}

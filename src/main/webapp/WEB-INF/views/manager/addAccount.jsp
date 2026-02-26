@@ -15,13 +15,13 @@
 <div class="form-wrapper">
     <h2 class="title">ADD NEW ACCOUNT</h2>
 
-    <c:if test="${not empty success}">
-        <div class="msg success">${success}</div>
-    </c:if>
+   <c:if test="${not empty success_addaccount}">
+    <div class="msg success_addaccount">${success_addaccount}</div>
+</c:if>
 
-    <c:if test="${not empty error}">
-        <div class="msg error">${error}</div>
-    </c:if>
+<c:if test="${not empty error_addaccount}">
+    <div class="msg error_addaccount">${error_addaccount}</div>
+</c:if>
 
     <form action="addAccount" method="post">
 
@@ -77,10 +77,10 @@
             CONFIRM ACCOUNT CREATION
         </button>
 
-        <button type="button" class="btn-cancel" onclick="history.back()">
-            CANCEL
-        </button>
-
+      <button type="button" class="btn-cancel"
+        onclick="location.href='account'">
+    CANCEL
+</button>
     </form>
 </div>
 
