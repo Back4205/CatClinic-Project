@@ -24,14 +24,15 @@ public class Booking {
     private Date appointmentDate;
     private Date endDate;
     private Time appointmentTime;
-    private String note ; 
+    private String note ;
+    private Date BookingDate;
 
 
 
     public Booking() {
     }
 
-    public Booking(int bookingID, int catID, int veterinarianID, int StaffID, int SlotID, String status, Date appointmentDate, Date endDate, Time appointmentTime, String note) {
+    public Booking(int bookingID, int catID, int veterinarianID, int StaffID, int SlotID, String status, Date appointmentDate,Date BookingDate, Date endDate, Time appointmentTime, String note) {
         this.bookingID = bookingID;
         this.catID = catID;
         this.veterinarianID = veterinarianID;
@@ -39,6 +40,7 @@ public class Booking {
         this.SlotID = SlotID;
         this.status = status;
         this.appointmentDate = appointmentDate;
+        this.BookingDate = BookingDate;
         this.endDate = endDate;
         this.appointmentTime = appointmentTime;
         this.note = note;
@@ -133,6 +135,12 @@ public class Booking {
 
     public void setNote(String note) {
         this.note = note;
+    }
+    public Date getBookingDate() {
+        return BookingDate;
+    }
+    public void setBookingDate(Date bookingDate) {
+        BookingDate = bookingDate;
     }
 
    

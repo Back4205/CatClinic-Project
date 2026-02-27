@@ -9,18 +9,22 @@ public class Service {
     private String description;
     private int timeService;
     private boolean isActive;
+    private int categoryID;
+    private String imgURL ;
 
     public Service() {
     }
 
     public Service(int serviceID, String nameService, double price,
-                   String description, int timeService, boolean isActive) {
+                   String description, int timeService, boolean isActive, int categoryID, String imgURL) {
         this.serviceID = serviceID;
         this.nameService = nameService;
         this.price = price;
         this.description = description;
         this.timeService = timeService;
         this.isActive = isActive;
+        this.categoryID = categoryID;
+        this.imgURL = imgURL;
     }
 
     public int getServiceID() {
@@ -71,4 +75,17 @@ public class Service {
     public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
+    public int getCategoryID() {
+        return categoryID;
+    }
+    public void setCategoryID(int categoryID) {
+        this.categoryID = categoryID;
+    }
+    public String getImgURL() {
+        return imgURL;
+    }
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
+    }
+
 }

@@ -1,8 +1,9 @@
+/* Tổng quan */
 body {
     margin: 0;
     padding: 0;
-    background-color: #f5f7fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8fafc;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
 .container {
@@ -13,115 +14,213 @@ body {
 .content {
     flex: 1;
     padding: 30px 40px;
-    background-color: #f5f7fa;
+    max-width: 1200px;
 }
 
+/* Header */
 .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
+    margin-bottom: 24px;
 }
 
 .page-title h2 {
     margin: 0;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
-    color: #1f2937;
-    border-left: 4px solid #1f2937;
+    color: #0f172a;
+    border-left: 4px solid #f97316;
     padding-left: 12px;
-    text-transform: uppercase;
 }
 
 .page-title p {
-    margin-top: 6px;
-    margin-left: 16px;
-    font-size: 12px;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    margin: 4px 0 0 16px;
+    font-size: 13px;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
 }
 
-.btn-back {
-    background: #22a06b;
+/* --- Filter Section --- */
+.filter-section {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    margin-bottom: 24px;
+}
+
+.search-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+}
+
+.filter-inputs {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.filter-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.form-input {
+    padding: 10px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-search {
+    background: #f97316;
     color: white;
     border: none;
-    padding: 12px 20px;
+    padding: 10px 24px;
     border-radius: 8px;
+    font-weight: 700;
     cursor: pointer;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(34, 160, 107, 0.2);
+    transition: 0.2s;
+    margin-bottom: 4px;
 }
 
-.btn-back:hover {
-    background: #1c8b5e;
-    transform: translateY(-2px);
+.btn-search:hover {
+    background: #ea580c;
 }
 
+
+
+/* --- Table Section --- */
 .table-wrapper {
-    width: 100%;
-    background: #ffffff;
-    padding: 10px 20px 25px 20px;
+    background: white;
+    padding: 8px 24px 24px;
     border-radius: 12px;
-    border: 1px solid #f3f4f6;
-    overflow-x: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .medical-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* Giúp kiểm soát chiều rộng cột chính xác */
 }
 
+/* Định nghĩa độ rộng cột để không bị lệch */
+.medical-table th:nth-child(1) { width: 15%; } /* Date */
+.medical-table th:nth-child(2) { width: 20%; } /* Doctor */
+.medical-table th:nth-child(3) { width: 45%; } /* Notes */
+.medical-table th:nth-child(4) { width: 20%; } /* Action */
+
 .medical-table thead th {
-    text-transform: uppercase;
-    font-size: 12px;
-    color: #888;
-    padding: 20px 15px;
-    border-bottom: 2px solid #f0f0f0;
     text-align: left;
+    padding: 20px 15px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    border-bottom: 2px solid #f1f5f9;
 }
 
 .medical-table tbody td {
-    padding: 15px;
-    border-bottom: 1px solid #f1f1f1;
-    vertical-align: middle;
+    padding: 16px 15px;
+    border-bottom: 1px solid #f1f5f9;
     font-size: 14px;
-    color: #374151;
+    color: #1e293b;
+    vertical-align: middle;
 }
 
-.medical-table tr:hover td {
-    background-color: #fffaf5;
+.text-center {
+    text-align: center !important;
+}
+
+.doctor-cell i {
+    color: #f97316;
+    margin-right: 6px;
 }
 
 .btn-view-detail {
-    height: 36px;
-    padding: 0 16px;
-    background: #ffffff;
-    color: #f97316;
+    display: inline-block;
+    padding: 8px 16px;
     border: 1.5px solid #f97316;
     border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    color: #f97316;
     text-decoration: none;
-    transition: all 0.25s ease;
+    font-weight: 700;
+    font-size: 11px;
     text-transform: uppercase;
+    transition: 0.2s;
 }
 
 .btn-view-detail:hover {
-    background-color: #f97316;
-    color: #ffffff;
-    transform: translateY(-2px);
+    background: #f97316;
+    color: white;
+}
+/* --- PAGINATION STYLES (Đồng bộ theo mẫu mới) --- */
+.pagination {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
 }
 
-.empty-state {
-    text-align: center;
-    padding: 60px 0;
-    color: #94a3b8;
+.pagination a {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    text-decoration: none;
+    color: #666;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-color: #ffffff; /* Đảm bảo có nền trắng */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+}
+
+.pagination a:hover:not(.disabled):not(.active) {
+    border-color: #f97316;
+    color: #f97316;
+    transform: translateY(-2px);
+    background-color: #fffaf5;
+}
+
+.pagination a.active {
+    background: #f97316;
+    color: white !important;
+    border-color: #f97316;
+    font-weight: 600;
+    cursor: default;
+}
+
+.pagination a.disabled {
+    opacity: 0.3;
+    pointer-events: none;
+    background: #f5f5f5;
+    border-color: #ddd;
+}
+
+/* Icon trong phân trang */
+.pagination a i {
+    font-size: 12px;
 }

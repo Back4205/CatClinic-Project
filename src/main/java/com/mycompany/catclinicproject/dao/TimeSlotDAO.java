@@ -19,15 +19,15 @@ public class TimeSlotDAO extends DBContext {
         String sql =
                 "SELECT * FROM TimeSlots " +
                         "WHERE VetID = ? " +
-                        "AND SlotDate BETWEEN CAST(GETDATE() AS DATE) " +
+                        "AND Date BETWEEN CAST(GETDATE() AS DATE) " +
                         "AND DATEADD(DAY, 6, CAST(GETDATE() AS DATE)) " +
                         "AND ( " +
-                        "       SlotDate > CAST(GETDATE() AS DATE) " +
-                        "    OR (SlotDate = CAST(GETDATE() AS DATE) " +
+                        "       Date > CAST(GETDATE() AS DATE) " +
+                        "    OR (Date = CAST(GETDATE() AS DATE) " +
                         "        AND StartTime > CAST(GETDATE() AS TIME)) " +
                         "    ) " +
                         "AND Status = N'Available' " +
-                        "ORDER BY SlotDate, StartTime";
+                        "ORDER BY Date, StartTime";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -39,7 +39,7 @@ public class TimeSlotDAO extends DBContext {
 
                 slot.setSlotID(rs.getInt("SlotID"));
                 slot.setVetID(rs.getInt("VetID"));
-                slot.setSlotDate(rs.getDate("SlotDate"));
+                slot.setSlotDate(rs.getDate("Date"));
                 slot.setStartTime(rs.getTime("StartTime"));
                 slot.setEndTime(rs.getTime("EndTime"));
                 slot.setStatus(rs.getString("Status"));
@@ -62,10 +62,10 @@ public class TimeSlotDAO extends DBContext {
         String sql =
                 "SELECT * FROM TimeSlots " +
                         "WHERE VetID = ? " +
-                        "AND SlotDate = ? " +
+                        "AND Date = ? " +
                         "AND ( " +
-                        "       SlotDate > CAST(GETDATE() AS DATE) " +
-                        "    OR (SlotDate = CAST(GETDATE() AS DATE) " +
+                        "       Date > CAST(GETDATE() AS DATE) " +
+                        "    OR (Date = CAST(GETDATE() AS DATE) " +
                         "        AND StartTime > CAST(GETDATE() AS TIME)) " +
                         "    ) " +
                         "AND Status = N'Available' " +
@@ -83,7 +83,7 @@ public class TimeSlotDAO extends DBContext {
 
                 slot.setSlotID(rs.getInt("SlotID"));
                 slot.setVetID(rs.getInt("VetID"));
-                slot.setSlotDate(rs.getDate("SlotDate"));
+                slot.setSlotDate(rs.getDate("Date"));
                 slot.setStartTime(rs.getTime("StartTime"));
                 slot.setEndTime(rs.getTime("EndTime"));
                 slot.setStatus(rs.getString("Status"));
@@ -113,7 +113,7 @@ public class TimeSlotDAO extends DBContext {
 
                 slot.setSlotID(rs.getInt("SlotID"));
                 slot.setVetID(rs.getInt("VetID"));
-                slot.setSlotDate(rs.getDate("SlotDate"));
+                slot.setSlotDate(rs.getDate("Date"));
                 slot.setStartTime(rs.getTime("StartTime"));
                 slot.setEndTime(rs.getTime("EndTime"));
                 slot.setStatus(rs.getString("Status"));
@@ -133,7 +133,7 @@ public class TimeSlotDAO extends DBContext {
                               Time startTime, Time endTime) {
 
         String sql =
-                "INSERT INTO TimeSlots (VetID, SlotDate, StartTime, EndTime, Status) " +
+                "INSERT INTO TimeSlots (VetID, Date, StartTime, EndTime, Status) " +
                         "VALUES (?, ?, ?, ?, N'Available')";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
@@ -175,14 +175,14 @@ public class TimeSlotDAO extends DBContext {
         List<TimeSlot> list = new ArrayList<>();
         String sql = "SELECT * FROM TimeSlots " +
                 "WHERE VetID = ? " +
-                "AND SlotDate BETWEEN ? AND DATEADD(DAY, 6, ?) " +
+                "AND Date BETWEEN ? AND DATEADD(DAY, 6, ?) " +
                 "AND ( " +
-                "       SlotDate > CAST(GETDATE() AS DATE) " +
-                "    OR (SlotDate = CAST(GETDATE() AS DATE) " +
+                "       Date > CAST(GETDATE() AS DATE) " +
+                "    OR (Date = CAST(GETDATE() AS DATE) " +
                 "        AND StartTime > CAST(GETDATE() AS TIME)) " +
                 "    ) " +
                 "AND Status = N'Available' " +
-                "ORDER BY SlotDate, StartTime";
+                "ORDER BY Date, StartTime";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, vetID);
@@ -194,7 +194,7 @@ public class TimeSlotDAO extends DBContext {
                 TimeSlot slot = new TimeSlot();
                 slot.setSlotID(rs.getInt("SlotID"));
                 slot.setVetID(rs.getInt("VetID"));
-                slot.setSlotDate(rs.getDate("SlotDate"));
+                slot.setSlotDate(rs.getDate("Date"));
                 slot.setStartTime(rs.getTime("StartTime"));
                 slot.setEndTime(rs.getTime("EndTime"));
                 slot.setStatus(rs.getString("Status"));

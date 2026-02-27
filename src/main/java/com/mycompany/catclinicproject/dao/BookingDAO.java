@@ -16,11 +16,11 @@ public class BookingDAO extends DBContext {
 
         String sql = "SELECT b.BookingID, c.Name AS CatName, c.Breed, "
                 + "b.AppointmentDate, b.EndDate, b.AppointmentTime, b.Status, "
-                + "s.ServiceName, bd.PriceAtBooking "
+                + "s.NameService, bd.PriceAtBooking "
                 + "FROM Bookings b "
                 + "JOIN Cats c ON b.CatID = c.CatID "
                 + "JOIN Owners o ON c.OwnerID = o.OwnerID "
-                + "JOIN BookingDetails bd ON b.BookingID = bd.BookingID "
+                + "JOIN Appointment_Service bd ON b.BookingID = bd.BookingID "
                 + "JOIN Services s ON bd.ServiceID = s.ServiceID "
                 + "WHERE o.UserID = ? "
                 + "ORDER BY b.AppointmentDate DESC";
@@ -37,7 +37,7 @@ public class BookingDAO extends DBContext {
                             rs.getDate("AppointmentDate"),
                             rs.getDate("EndDate"),
                             rs.getTime("AppointmentTime"),
-                            rs.getString("ServiceName"),
+                            rs.getString("NameService"),
                             rs.getDouble("PriceAtBooking"),
                             rs.getString("Status")
                     ));
@@ -83,10 +83,10 @@ public class BookingDAO extends DBContext {
                 + "WHERE SlotID = ? AND Status = N'Available'";
 
         String insertBookingSQL = "INSERT INTO Bookings "
-                + "(CatID, VetID, StaffID, SlotID, AppointmentDate, EndDate, AppointmentTime, Status, Note) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "(CatID, VetID, StaffID, SlotID, AppointmentDate,BookingDate, EndDate, AppointmentTime, Status, Note) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        String insertDetailSQL = "INSERT INTO BookingDetails "
+        String insertDetailSQL = "INSERT INTO Appointment_Service "
                 + "(BookingID, ServiceID, PriceAtBooking) VALUES (?, ?, ?)";
 
         String insertInvoiceSQL = "INSERT INTO Invoices "
@@ -115,10 +115,11 @@ public class BookingDAO extends DBContext {
                 ps.setObject(3, booking.getStaffID() <= 0 ? null : booking.getStaffID());
                 ps.setObject(4, booking.getSlotID() <= 0 ? null : booking.getSlotID());
                 ps.setDate(5, new java.sql.Date(booking.getAppointmentDate().getTime()));
-                ps.setDate(6, new java.sql.Date(booking.getEndDate().getTime()));
-                ps.setTime(7, booking.getAppointmentTime());
-                ps.setString(8, "PendingPayment");
-                ps.setString(9, booking.getNote() == null ? "" : booking.getNote());
+                ps.setDate(6, new java.sql.Date(System.currentTimeMillis()));
+                ps.setDate(7, new java.sql.Date(booking.getEndDate().getTime()));
+                ps.setTime(8, booking.getAppointmentTime());
+                ps.setString(9, "PendingPayment");
+                ps.setString(10, booking.getNote() == null ? "" : booking.getNote());
 
                 ps.executeUpdate();
 
@@ -333,7 +334,7 @@ public class BookingDAO extends DBContext {
     }
 //    public boolean isCatTimeOverlapping(int catID, int slotID) {
 //
-//        String sql = " SELECT 1 FROM Bookings b JOIN TimeSlots ts_old ON b.SlotID = ts_old.SlotID JOIN TimeSlots ts_new ON ts_new.SlotID = ? WHERE b.CatID = ? AND b.Status IN ('PendingPayment','Confirmed') AND ts_old.SlotDate = ts_new.SlotDate AND ts_old.StartTime < ts_new.EndTimeAND ts_old.EndTime > ts_new.StartTime";
+//        String sql = " SELECT 1 FROM Bookings b JOIN TimeSlots ts_old ON b.SlotID = ts_old.SlotID JOIN TimeSlots ts_new ON ts_new.SlotID = ? WHERE b.CatID = ? AND b.Status IN ('PendingPayment','Confirmed') AND ts_old.Date = ts_new.Date AND ts_old.StartTime < ts_new.EndTimeAND ts_old.EndTime > ts_new.StartTime";
 //
 //        try (PreparedStatement ps = c.prepareStatement(sql)) {
 //            ps.setInt(1, slotID);
@@ -349,7 +350,7 @@ public class BookingDAO extends DBContext {
 //    }
     public boolean isCatMedicalConflict(int catID, int newSlotID) {
 
-        String sql = " SELECT 1 FROM Bookings b JOIN TimeSlots ts_old ON b.SlotID = ts_old.SlotID JOIN TimeSlots ts_new ON ts_new.SlotID = ? WHERE b.CatID = ? AND b.Status IN ('PendingPayment','Confirmed') AND ts_old.SlotDate = ts_new.SlotDate AND ts_old.StartTime < ts_new.EndTime AND ts_old.EndTime > ts_new.StartTime";
+        String sql = " SELECT 1 FROM Bookings b JOIN TimeSlots ts_old ON b.SlotID = ts_old.SlotID JOIN TimeSlots ts_new ON ts_new.SlotID = ? WHERE b.CatID = ? AND b.Status IN ('PendingPayment','Confirmed') AND ts_old.Date = ts_new.Date AND ts_old.StartTime < ts_new.EndTime AND ts_old.EndTime > ts_new.StartTime";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
 

@@ -3,6 +3,7 @@ package com.mycompany.catclinicproject.dao;
 import com.mycompany.catclinicproject.model.Service;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,7 @@ public class ServiceDAO extends DBContext {
     public List<Service> getAllServices() {
         List<Service> list = new ArrayList<>();
 
-        String sql = "SELECT ServiceID, ServiceName, Price, TimeService, IsActive FROM Services";
+        String sql = "SELECT ServiceID, NameService, Price, TimeService, IsActive FROM Services WHERE IsActive = 1";
 
         try (PreparedStatement ps = c.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -18,7 +19,7 @@ public class ServiceDAO extends DBContext {
             while (rs.next()) {
                 Service s = new Service();
                 s.setServiceID(rs.getInt("ServiceID"));
-                s.setNameService(rs.getString("ServiceName"));
+                s.setNameService(rs.getString("NameService"));
                 s.setPrice(rs.getDouble("Price"));
                 s.setTimeService(rs.getInt("TimeService"));
                 s.setIsActive(rs.getBoolean("IsActive")); 
@@ -33,7 +34,7 @@ public class ServiceDAO extends DBContext {
         return list;
     }
 public void insertService(Service s) {
-    String sql = "INSERT INTO Services (ServiceName, Price, Description, TimeService, isActive) "
+    String sql = "INSERT INTO Services (NameService, Price, Description, TimeService, isActive) "
                + "VALUES (?, ?, ?, ?, ?)";
 
     try {
@@ -56,34 +57,38 @@ public void insertService(Service s) {
 }
 
     public Service getServiceById(int id) {
-    String sql = "SELECT * FROM Services WHERE ServiceID = ?";
-    Service s = null;
+        String sql = " SELECT ServiceID, NameService, Price, Description, TimeService,  IsActive, CategoryID, ImgURL  FROM Services  WHERE ServiceID = ? ";
 
-    try {
-        PreparedStatement ps = c.prepareStatement(sql);
-        ps.setInt(1, id);
-        ResultSet rs = ps.executeQuery();
+        try (
+             PreparedStatement ps = c.prepareStatement(sql)) {
 
-        if (rs.next()) {
-            s = new Service(
-                    rs.getInt("ServiceID"),
-                    rs.getString("ServiceName"),
-                    rs.getDouble("price"),
-                    rs.getString("description"),
-                    rs.getInt("timeService"),
-                    rs.getBoolean("isActive")
-            );
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return new Service(
+                            rs.getInt("ServiceID"),
+                            rs.getString("NameService"),
+                            rs.getDouble("Price"),          // chú ý: cột tên là Price (viết hoa P)
+                            rs.getString("Description"),
+                            rs.getInt("TimeService"),
+                            rs.getBoolean("IsActive"),
+                            rs.getInt("CategoryID"),
+                            rs.getString("ImgURL")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            // Nên log thay vì chỉ printStackTrace
+            e.printStackTrace(); // tạm thời, production → dùng Logger
+            // Hoặc: throw new RuntimeException("Lỗi lấy dịch vụ ID " + id, e);
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    } finally {
-        closeConnection();
+
+        return null; // không tìm thấy hoặc lỗi → trả null
     }
-    return s;
-}
     public void updateService(Service s) {
     String sql = "UPDATE Services "
-               + "SET ServiceName = ?, price = ?, description = ?, timeService = ? "
+               + "SET NameService = ?, price = ?, description = ?, timeService = ? "
                + "WHERE serviceID = ?";
 
     try {
@@ -126,7 +131,7 @@ public void insertService(Service s) {
      public ArrayList<Service> searchByName(String nameService) {
         ArrayList<Service> list = new ArrayList<>();
 
-        String sql = "SELECT * FROM Services WHERE ServiceName LIKE ?";
+        String sql = "SELECT * FROM Services WHERE NameService LIKE ?";
 
         try {
             PreparedStatement ps = c.prepareStatement(sql);
@@ -137,7 +142,7 @@ public void insertService(Service s) {
             while (rs.next()) {
                 Service s = new Service();
                 s.setServiceID(rs.getInt("ServiceID"));
-                s.setNameService(rs.getString("ServiceName"));
+                s.setNameService(rs.getString("NameService"));
                 s.setPrice(rs.getDouble("Price"));
                 s.setDescription(rs.getString("Description"));
                 s.setTimeService(rs.getInt("TimeService"));
@@ -165,7 +170,7 @@ public void insertService(Service s) {
     String sql = "SELECT * FROM Services WHERE 1=1 ";
 
     if (name != null && !name.isEmpty()) {
-        sql += " AND ServiceName LIKE ? ";
+        sql += " AND NameService LIKE ? ";
     }
 
     if (status != null) {
@@ -201,7 +206,7 @@ public void insertService(Service s) {
         while (rs.next()) {
             Service s = new Service();
             s.setServiceID(rs.getInt("serviceID"));
-            s.setNameService(rs.getString("ServiceName"));
+            s.setNameService(rs.getString("NameService"));
             s.setPrice(rs.getDouble("price"));
             s.setTimeService(rs.getInt("timeService"));
             s.setIsActive(rs.getBoolean("isActive"));
@@ -218,7 +223,7 @@ public void insertService(Service s) {
     String sql = "SELECT COUNT(*) FROM Services WHERE 1=1 ";
 
     if (name != null && !name.isEmpty()) {
-        sql += " AND ServiceName LIKE ? ";
+        sql += " AND NameService LIKE ? ";
     }
 
     if (status != null) {
@@ -247,5 +252,38 @@ public void insertService(Service s) {
 
     return 0;
 }
+    public List<Service> getServicesByCategoryID(int categoryID) {
+        List<Service> list = new ArrayList<>();  // hoặc new ArrayList<Service>()
+
+        String sql = " SELECT ServiceID, NameService, Price, Description, TimeService, IsActive, CategoryID, ImgURL FROM Services WHERE CategoryID = ? AND IsActive = 1 ORDER BY NameService ASC ";
+
+        try (
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setInt(1, categoryID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Service s = new Service();
+                    s.setServiceID(rs.getInt("ServiceID"));
+                    s.setNameService(rs.getString("NameService"));
+                    s.setPrice(rs.getDouble("Price"));
+                    s.setDescription(rs.getString("Description"));
+                    s.setTimeService(rs.getInt("TimeService"));
+                    s.setIsActive(rs.getBoolean("IsActive"));
+                    s.setCategoryID(rs.getInt("CategoryID"));
+                    s.setImgURL(rs.getString("ImgURL"));
+
+                    list.add(s);
+                }
+            }
+        } catch (SQLException e) {
+            // Nên log thay vì printStackTrace
+            // Logger.getLogger(getClass().getName()).severe("Lỗi lấy dịch vụ: " + e.getMessage());
+            e.printStackTrace(); // tạm thời giữ nếu chưa có logger
+        }
+
+        return list;
+    }
 
 }

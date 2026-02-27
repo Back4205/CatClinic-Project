@@ -192,90 +192,101 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
     }
+    public Integer getVetIDByUserID(int userId) {
+        String sql = "SELECT VetID FROM Veterinarians WHERE UserID = ?";
 
-    public List<UserDTO> getVetAndCareStaff() {
-        List<UserDTO> list = new ArrayList<>();
-        String sql = "SELECT u.UserID, u.FullName, r.RoleName, 'Veterinarian' AS Type " +
-                "FROM Veterinarians v " +
-                "JOIN Users u ON v.UserID = u.UserID " +
-                "JOIN Roles r ON u.RoleID = r.RoleID " +
-                "WHERE u.IsActive = 1 " +
-                "UNION ALL " +
-                "SELECT u.UserID, u.FullName, r.RoleName, s.Position AS Type " +
-                "FROM Staffs s " +
-                "JOIN Users u ON s.UserID = u.UserID " +
-                "JOIN Roles r ON u.RoleID = r.RoleID " +
-                "WHERE s.Position IN (N'Care', N'Technician') AND u.IsActive = 1 " +
-                "ORDER BY Type DESC ";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        try (
-             PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("VetID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public List<User> getAllVeterinarians() {
+        List<User> vets = new ArrayList<>();
+        String sql = "SELECT u.UserID, u.FullName, u.Email, u.Phone, v.Degree, v.ExperienceYear " +
+                "FROM Users u " +
+                "INNER JOIN Veterinarians v ON u.UserID = v.UserID " +
+                "WHERE u.RoleID = 2 AND u.IsActive = 1";  // RoleID=2 là Veterinarian
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                UserDTO user = new UserDTO();
-
-                user.setUserID(rs.getInt("UserID"));
-                user.setFullName(rs.getString("FullName"));
-                user.setRoleName(rs.getString("RoleName"));
-
-                user.setType(rs.getString("Type"));
-
-                list.add(user);
+                User u = new User();
+                u.setUserID(rs.getInt("UserID"));
+                u.setFullName(rs.getString("FullName"));
+                // set các field khác nếu cần...
+                vets.add(u);
             }
-
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return list;
+        return vets;
     }
 
+    public Integer getRandomCareStaffID() {
+        String sql = "SELECT TOP 1 s.StaffID " +
+                "FROM Staffs s " +
+                "INNER JOIN Users u ON s.UserID = u.UserID " +
+                "WHERE s.Position LIKE '%Care%' OR s.Position LIKE '%Nurse%' " +  // điều chỉnh theo data
+                "AND u.IsActive = 1 " +
+                "ORDER BY NEWID()";  // random
 
-    public User getUserByID(int userID) {
-        String sql = "SELECT * FROM Users WHERE UserID = ?";
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, userID);
-            ResultSet rs = ps.executeQuery();
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
             if (rs.next()) {
-                User user = new User();
-                user.setUserID(rs.getInt("UserID"));
-                user.setFullName(rs.getString("FullName"));
-                user.setEmail(rs.getString("Email"));
-                user.setPhone(rs.getString("Phone"));
-                user.setRoleID(rs.getInt("RoleID")); // Quan trọng để check Doctor hay Staff
-                return user;
+                return rs.getInt("StaffID");
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+    public Integer getRandomStaffByPosition(String positionKeyword) {
+        if (positionKeyword == null || positionKeyword.trim().isEmpty()) {
+            return null;
+        }
+
+
+        String sql =
+                "SELECT TOP 1 s.StaffID " +
+                        "FROM Staffs s " +
+                        "INNER JOIN Users u ON s.UserID = u.UserID " +
+                        "WHERE s.Position LIKE ? " +
+                        "AND u.IsActive = 1 " +
+                        "ORDER BY NEWID()";  // NEWID() để random trong SQL Server
+
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+
+            ps.setString(1, "%" + positionKeyword + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("StaffID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Thay bằng logger trong production
+        }
+
+        return null; // Không tìm thấy staff phù hợp
     }
 
-    /** Lấy VetID từ UserID (chỉ áp dụng cho bác sĩ) */
-    public Integer getVetIDByUserID(int userID) {
-        String sql = "SELECT VetID FROM Veterinarians WHERE UserID = ?";
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, userID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("VetID");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
-    /** Lấy StaffID từ UserID (chỉ áp dụng cho nhân viên) */
-    public Integer getStaffIDByUserID(int userID) {
-        String sql = "SELECT StaffID FROM Staffs WHERE UserID = ?";
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, userID);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("StaffID");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+
+
 
 }

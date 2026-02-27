@@ -17,7 +17,7 @@ import java.util.List;
 
 @WebServlet (name = "CatListController", urlPatterns = {"/cats"})
 public class CatListController extends HttpServlet {
-   
+
 
       protected void doGet(HttpServletRequest request, HttpServletResponse response)
                 throws ServletException, IOException {
