@@ -54,7 +54,7 @@
             <form method="post"
                   action="${pageContext.request.contextPath}${empty cat ? '/cats/cat-add' : '/cats/cat-update'}"
                   enctype="multipart/form-data">
-
+                <input type="hidden" name="from" value="${from}">
                 <div class="profile-box">
 
                     <!-- IMAGE -->
@@ -91,8 +91,8 @@
 
                         <div class="field">
                             <label>Breed</label>
-                            <input type="text" name="breed" value="${cat.breed}"
-                            ${not empty cat ? 'readonly' : ''} required>
+                            <input type="text" name="breed" value="${cat.breed}" required>
+                            <%--                            ${not empty cat ? 'readonly' : ''} required>--%>
                         </div>
 
                         <div class="row">
@@ -104,7 +104,8 @@
 
                             <div class="field">
                                 <label>Gender</label>
-                                <select name="gender" ${not empty cat ? 'disabled' : ''}>
+                                <%--                                <select name="gender" ${not empty cat ? 'disabled' : ''}>--%>
+                                <select name="gender" required>
                                     <option value="0" ${cat.gender == 0 ? "selected" : ""}>Male</option>
                                     <option value="1" ${cat.gender == 1 ? "selected" : ""}>Female</option>
                                 </select>
@@ -119,7 +120,16 @@
                             <button class="btn btn-primary" type="submit">
                                 <c:out value="${empty cat ? 'ADD PET' : 'UPDATE PROFILE CAT'}" />
                             </button>
-                            <a href="${pageContext.request.contextPath}/cats" class="btn btn-cancel">CANCEL</a>
+                            <c:choose>
+                                <c:when test="${from eq 'booking'}">
+                                    <a href="${pageContext.request.contextPath}/Booking"
+                                       class="btn btn-cancel">CANCEL</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="${pageContext.request.contextPath}/cats"
+                                       class="btn btn-cancel">CANCEL</a>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
 
                         <c:if test="${not empty message}">

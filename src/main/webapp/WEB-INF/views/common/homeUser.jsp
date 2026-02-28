@@ -34,7 +34,7 @@
         </p>
 
         <div class="buttons">
-            <a href="#" class="btn-primary">Book Appointment</a>
+            <a href="${pageContext.request.contextPath}/Booking" class="btn-primary">Book Appointment</a>
         </div>
     </div>
 

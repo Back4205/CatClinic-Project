@@ -179,7 +179,7 @@ public class CatDAO extends DBContext {
         }
 
 
-        sql.append(" ORDER BY catID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
+        sql.append(" ORDER BY catID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
         params.add(offset);
         params.add(numberItemPerPage);
 
@@ -332,6 +332,39 @@ public class CatDAO extends DBContext {
         }
         return -1; // không tìm thấy
     }
+    public List<Cat> getCatsByOwnerPaging(int ownerID, int indexPage, int pageSize) {
+
+        List<Cat> list = new ArrayList<>();
+
+        String sql = " SELECT * FROM Cats WHERE ownerID = ? and IsActive =1 " +
+                "ORDER BY CatID DESC "+
+                " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ";
+
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, ownerID);
+            ps.setInt(2, (indexPage - 1) * pageSize);
+            ps.setInt(3, pageSize);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Cat cat = new Cat();
+                cat.setCatID(rs.getInt("catID"));
+                cat.setName(rs.getString("name"));
+                cat.setAge(rs.getInt("age"));
+                cat.setGender(rs.getInt("gender"));
+                cat.setBreed(rs.getString("breed"));
+                cat.setImg(rs.getString("Image"));
+                list.add(cat);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
 
 
 

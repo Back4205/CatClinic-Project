@@ -5,7 +5,7 @@
         <div class="avatar large">
             <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
         </div>
-        <h3>${acc.userName}</h3>
+        <h3>${acc.fullName}</h3>
         <p>CATCLINIC PORTAL</p>
     </div>
     <nav class="menu">
@@ -13,7 +13,7 @@
             <i class="bi bi-grid-fill"></i> Cat List
         </a>
         <a href="${pageContext.request.contextPath}/booking-history" class="${activePage == 'history' ? 'active' : ''}">
-            <i class="bi bi-calendar-event"></i> Visit History
+            <i class="bi bi-calendar-event"></i> Booking  History
         </a>
         <a href="${pageContext.request.contextPath}/profile" class="${activePage == 'profile' ? 'active' : ''}">
             <i class="bi bi-person-gear"></i> Profile & Security

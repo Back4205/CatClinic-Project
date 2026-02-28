@@ -6,6 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDAO extends DBContext {
 
@@ -187,4 +189,93 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
     }
+    public Integer getVetIDByUserID(int userId) {
+        String sql = "SELECT VetID FROM Veterinarians WHERE UserID = ?";
+
+        try (
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("VetID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public List<User> getAllVeterinarians() {
+        List<User> vets = new ArrayList<>();
+        String sql = "SELECT u.UserID, u.FullName, u.Email, u.Phone, v.Degree, v.ExperienceYear " +
+                "FROM Users u " +
+                "INNER JOIN Veterinarians v ON u.UserID = v.UserID " +
+                "WHERE u.RoleID = 2 AND u.IsActive = 1";  // RoleID=2 là Veterinarian
+
+        try (
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                User u = new User();
+                u.setUserID(rs.getInt("UserID"));
+                u.setFullName(rs.getString("FullName"));
+                // set các field khác nếu cần...
+                vets.add(u);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vets;
+    }
+
+    public Integer getRandomCareStaffID() {
+        String sql = "SELECT TOP 1 s.StaffID " +
+                "FROM Staffs s " +
+                "INNER JOIN Users u ON s.UserID = u.UserID " +
+                "WHERE s.Position LIKE '%Care%' OR s.Position LIKE '%Nurse%' " +  // điều chỉnh theo data
+                "AND u.IsActive = 1 " +
+                "ORDER BY NEWID()";  // random
+
+        try (
+             PreparedStatement ps = c.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt("StaffID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public Integer getRandomStaffByPosition(String positionKeyword) {
+
+        String sql =
+                "SELECT TOP 1 s.StaffID " +
+                        "FROM Staffs s " +
+                        "INNER JOIN Users u ON s.UserID = u.UserID " +
+                        "WHERE s.Position LIKE ? " +
+                        "AND u.IsActive = 1 " +
+                        "ORDER BY NEWID()";  // NEWID() để random trong SQL Server
+
+        try (
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+
+            ps.setString(1, "%" + positionKeyword + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("StaffID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Thay bằng logger trong production
+        }
+
+        return null; // Không tìm thấy staff phù hợp
+    }
+
 }

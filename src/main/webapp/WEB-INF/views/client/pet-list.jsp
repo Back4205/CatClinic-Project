@@ -78,7 +78,7 @@
             <table>
                 <thead>
                 <tr>
-                    <th style="width: 50px;">ID</th>
+
                     <th style="width: 80px;">Photo</th>
                     <th>Name</th>
                     <th>Age</th>
@@ -91,7 +91,7 @@
                 <tbody>
                 <c:forEach items="${catList}" var="c">
                     <tr>
-                        <td><strong>${c.catID}</strong></td>
+
 
                         <td>
                             <img src="${pageContext.request.contextPath}/${c.img}"
@@ -157,8 +157,22 @@
         </div>
 
         <div class="pagination">
+
+            <%-- FIRST BUTTON --%>
             <c:choose>
-                <c:when test="${indexPage == 1 || empty indexPage}">
+                <c:when test="${indexPage <= 1}">
+                    <a class="disabled">FIRST</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/cats?indexPage=1&name=${param.name}&age=${param.age}&gender=${param.gender}&breed=${param.breed}">
+                        FIRST
+                    </a>
+                </c:otherwise>
+            </c:choose>
+
+            <%-- PREV BUTTON --%>
+            <c:choose>
+                <c:when test="${indexPage <= 1}">
                     <a class="disabled">PREV</a>
                 </c:when>
                 <c:otherwise>
@@ -168,15 +182,36 @@
                 </c:otherwise>
             </c:choose>
 
-            <c:forEach begin="1" end="${pageSize}" var="i">
+
+            <c:set var="startPage" value="${indexPage - 1}" />
+            <c:set var="endPage" value="${indexPage + 1}" />
+
+            <%-- FIX IF OUT OF RANGE --%>
+            <c:if test="${startPage < 1}">
+                <c:set var="startPage" value="1" />
+                <c:set var="endPage" value="3" />
+            </c:if>
+
+            <c:if test="${endPage > pageSize}">
+                <c:set var="endPage" value="${pageSize}" />
+                <c:set var="startPage" value="${pageSize - 2}" />
+            </c:if>
+
+            <c:if test="${startPage < 1}">
+                <c:set var="startPage" value="1" />
+            </c:if>
+
+            <%-- PAGE NUMBERS --%>
+            <c:forEach begin="${startPage}" end="${endPage}" var="i">
                 <a class="${i == indexPage ? 'active' : ''}"
                    href="${pageContext.request.contextPath}/cats?indexPage=${i}&name=${param.name}&age=${param.age}&gender=${param.gender}&breed=${param.breed}">
                         ${i}
                 </a>
             </c:forEach>
 
+            <%-- NEXT BUTTON --%>
             <c:choose>
-                <c:when test="${indexPage == pageSize || empty pageSize || pageSize == 0}">
+                <c:when test="${indexPage >= pageSize}">
                     <a class="disabled">NEXT</a>
                 </c:when>
                 <c:otherwise>
@@ -185,6 +220,19 @@
                     </a>
                 </c:otherwise>
             </c:choose>
+
+            <%-- LAST BUTTON --%>
+            <c:choose>
+                <c:when test="${indexPage >= pageSize}">
+                    <a class="disabled">LAST</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/cats?indexPage=${pageSize}&name=${param.name}&age=${param.age}&gender=${param.gender}&breed=${param.breed}">
+                        LAST
+                    </a>
+                </c:otherwise>
+            </c:choose>
+
         </div>
 
     </main>

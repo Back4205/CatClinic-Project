@@ -183,6 +183,11 @@
     display: inline-block;
     min-width: 90px;
 }
+.status-pendingpayment {
+    background: #111827;
+    color: white;
+    border: 1px solid #000000;
+}
 
 .status-upcoming {
     background: #fff7ed;
@@ -190,7 +195,7 @@
     border: 1px solid #ffedd5;
 }
 .status-completed {
-    background: var(--dark);
+    background:  #16a34a;
     color: white;
 }
 .status-cancelled {
@@ -220,4 +225,69 @@
     border-color: var(--primary);
     color: var(--primary);
     background: var(--primary-light);
+}
+
+.booking-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.booking-table th {
+    background: #f3f4f6;
+    padding: 14px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.booking-table td {
+    padding: 14px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 14px;
+}
+
+.booking-table tr:hover {
+    background: #f9fafb;
+}
+
+.booking-table th:first-child,
+.booking-table td:first-child {
+    padding-left: 20px;
+}
+
+.booking-table th:last-child,
+.booking-table td:last-child {
+    text-align: center;
+}
+/* PAGINATION */
+.pagination {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.page-btn {
+    display: inline-block;
+    padding: 8px 14px;
+    margin: 0 4px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.page-btn:hover {
+    background: #f3f4f6;
+}
+
+.page-btn.active {
+    background: #111827;
+    color: white;
+    border-color: #111827;
 }
