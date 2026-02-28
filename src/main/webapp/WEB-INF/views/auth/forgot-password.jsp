@@ -1,16 +1,41 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ADMIN
-  Date: 1/23/2026
-  Time: 6:17 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Title</title>
+    <meta charset="UTF-8">
+    <title>Forgot Password</title>
+    <!-- Nhúng file CSS riêng lẻ -->
+    <link href="${pageContext.request.contextPath}/css/forgot-password-style.css" rel="stylesheet">
 </head>
 <body>
+<div class="auth-card">
+    <div class="header">
+        <h3>Forgot Password</h3>
+        <p>Enter your details to receive a reset link.</p>
+    </div>
 
+    <c:if test="${not empty errorMess}">
+        <div class="alert-error">${errorMess}</div>
+    </c:if>
+    <c:if test="${not empty successMess}">
+        <div class="alert-success">${successMess}</div>
+    </c:if>
+
+    <form action="forgot-password" method="post">
+        <div class="form-group">
+            <label class="form-label">ENTER YOUR EMAIL</label>
+            <input type="text" class="form-control" name="email" value="${email}" placeholder="name@example.com" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">SEND LINK</button>
+
+        <div class="divider">OR</div>
+
+        <div class="text-center">
+            Remembered your password? <a href="login">Sign In</a>
+        </div>
+    </form>
+</div>
 </body>
 </html>

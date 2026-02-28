@@ -24,9 +24,13 @@ public class GoogleLoginController extends HttpServlet {
         String code = request.getParameter("code");
 
         if (code != null && !code.isEmpty()) {
-            AuthService auth = new AuthService();
+            // Lấy động đường dẫn URI hiện tại (Chèn thêm dòng này)
+            String redirectUri = request.getScheme() + "://" + request.getServerName() + ":"
+                    + request.getServerPort() + request.getContextPath() + "/login-google";
 
-            String accessToken = auth.getToken(code);
+            AuthService auth = new AuthService();
+            // Truyền biến redirectUri vào hàm getToken (Sửa lại dòng này)
+            String accessToken = auth.getToken(code, redirectUri);
 
             User googleUser = auth.getUserInfo(accessToken);
 
