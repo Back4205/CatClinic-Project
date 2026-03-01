@@ -5,6 +5,7 @@ import com.mycompany.catclinicproject.model.*;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -16,12 +17,15 @@ public class BookingController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("acc") : null;
+
         if (user == null) {
             response.sendRedirect(request.getContextPath() + "/login?from=booking");
             return;
         }
+
         loadBookingData(request, user);
         request.getRequestDispatcher("/WEB-INF/views/client/Booking.jsp").forward(request, response);
     }
@@ -29,7 +33,9 @@ public class BookingController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         request.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("acc") : null;
 
@@ -39,46 +45,52 @@ public class BookingController extends HttpServlet {
         }
 
         String action = request.getParameter("action");
-
-        // TRƯỜNG HỢP 1: Load lại dữ liệu khi đổi Category/Service/Date
-        if (action == null || action.isEmpty()) {
+        Integer staffId = null ;
+        //  Nếu không phải pay thì chỉ reload form (do onchange submit)
+        if (!"pay".equals(action)) {
             loadBookingData(request, user);
             request.getRequestDispatcher("/WEB-INF/views/client/Booking.jsp").forward(request, response);
             return;
         }
 
-        // TRƯỜNG HỢP 2: Thực hiện đặt lịch (Book hoặc Pay)
         try {
             int categoryID = Integer.parseInt(request.getParameter("categoryID"));
             int serviceID  = Integer.parseInt(request.getParameter("serviceID"));
             int catID      = Integer.parseInt(request.getParameter("catID"));
 
-            BookingDAO  bookingDAO  = new BookingDAO();
+            BookingDAO bookingDAO = new BookingDAO();
             CategoryDao categoryDAO = new CategoryDao();
-            ServiceDAO  serviceDAO  = new ServiceDAO();
-            UserDAO     userDAO     = new UserDAO();
-            TimeSlotDAO slotDAO     = new TimeSlotDAO();
+            ServiceDAO serviceDAO = new ServiceDAO();
+            UserDAO userDAO = new UserDAO();
+            TimeSlotDAO slotDAO = new TimeSlotDAO();
 
             Category category = categoryDAO.getCategoryById(categoryID);
-            Service service = serviceDAO.getServiceById(serviceID);
-            String catName = category.getCategoryName().toLowerCase();
-            boolean isBoarding = catName.contains("boarding") || catName.contains("lưu trú");
-            boolean needsVet   = !isBoarding ;
+            Service service   = serviceDAO.getServiceById(serviceID);
+
+            String categoryName = category.getCategoryName().toLowerCase();
+
+            boolean isBoarding = categoryName.contains("boarding");
+            boolean isCheckup  = categoryName.contains("checkup");
+            boolean needsVet   = !isBoarding && !isCheckup;
 
             Booking booking = new Booking();
             booking.setCatID(catID);
             booking.setNote(request.getParameter("note"));
 
             double totalAmount = 0.0;
+
             if (needsVet) {
+
                 String slotID = request.getParameter("slotID");
                 String vetUserID = request.getParameter("assigneeInfo");
-                if (slotID == null || vetUserID == null) throw new Exception("Vui lòng chọn bác sĩ và giờ khám.");
-                int slotIdInt = Integer.parseInt(slotID);
 
-                // 🔥 THÊM ĐOẠN NÀY
-                if (bookingDAO.isCatMedicalConflict(catID, slotIdInt)) {
-                    throw new Exception("Mèo đã có lịch khám khác trùng thời gian!");
+                if (slotID == null || vetUserID == null)
+                    throw new Exception("Vui lòng chọn bác sĩ và giờ khám.");
+                int slotId = Integer.parseInt(slotID);
+
+                // check trufng lich
+                if (bookingDAO.isCatBusyAtSlot(catID, slotId)) {
+                    throw new Exception("Mèo này đã có lịch hẹn với bác sĩ khác vào khung giờ này rồi!");
                 }
 
                 TimeSlot slot = slotDAO.getSlotByID(Integer.parseInt(slotID));
@@ -89,11 +101,42 @@ public class BookingController extends HttpServlet {
                 booking.setAppointmentDate(slot.getSlotDate());
                 booking.setAppointmentTime(slot.getStartTime());
                 booking.setEndDate(slot.getSlotDate());
+
                 totalAmount = service.getPrice();
-            } else if (isBoarding) {
+            }
+            else if (isCheckup) {
+
+                String date = request.getParameter("startDate");
+                String time = request.getParameter("checkInTime");
+
+                if (date == null || time == null || time.isEmpty())
+                    throw new Exception("Vui lòng chọn ngày và giờ.");
+
+                booking.setAppointmentDate(java.sql.Date.valueOf(date));
+                booking.setEndDate(java.sql.Date.valueOf(date));
+                booking.setAppointmentTime(java.sql.Time.valueOf(time + ":00"));
+
+                staffId = userDAO.getRandomStaffByPosition("Technician");
+                if (staffId == null){
+                    throw new Exception("Không có Technician khả dụng.");
+                }
+                booking.setStaffID(staffId);
+
+                totalAmount = service.getPrice();
+            }
+
+
+            else {
+
                 LocalDate start = LocalDate.parse(request.getParameter("startDate"));
-                LocalDate end = LocalDate.parse(request.getParameter("endDate"));
-                if (end.isBefore(start)) throw new Exception("Ngày kết thúc không hợp lệ.");
+                LocalDate end   = LocalDate.parse(request.getParameter("endDate"));
+
+                if (end.isBefore(start))
+                    throw new Exception("Ngày kết thúc không hợp lệ.");
+
+                if (bookingDAO.isCatHotelConflict(catID, java.sql.Date.valueOf(start), java.sql.Date.valueOf(end))) {
+                    throw new Exception("Mèo đã có lịch lưu trú trùng ngày!");
+                }
 
                 long days = ChronoUnit.DAYS.between(start, end) + 1;
                 totalAmount = service.getPrice() * days;
@@ -101,25 +144,41 @@ public class BookingController extends HttpServlet {
                 booking.setAppointmentDate(java.sql.Date.valueOf(start));
                 booking.setEndDate(java.sql.Date.valueOf(end));
                 booking.setAppointmentTime(java.sql.Time.valueOf(request.getParameter("checkInTime") + ":00"));
-                booking.setStaffID(userDAO.getRandomStaffByPosition("Care"));
+
+                staffId = userDAO.getRandomStaffByPosition("Care");
+                if (staffId == null){
+                    throw new Exception("Không có Care Staff khả dụng.");
+                }
+
+
+                booking.setStaffID(staffId);
             }
 
-            // Lưu vào Database và nhận lại BookingID
-            int bookingID = bookingDAO.createBookingWithInvoice(booking, Collections.singletonList(serviceID), Collections.singletonList(totalAmount), totalAmount);
 
-            if ("pay".equals(action)) {
-                response.sendRedirect(request.getContextPath() + "/vnpay?bookingID=" + bookingID);
-            } else {
-                response.sendRedirect(request.getContextPath() + "/booking-success?id=" + bookingID);
+            List<Integer> serviceList = new ArrayList<>();
+            serviceList.add(serviceID);
+
+            List<Double> priceList = new ArrayList<>();
+            priceList.add(totalAmount);
+
+            int bookingID = bookingDAO.createBookingWithInvoice(booking, serviceList, priceList, totalAmount);
+
+            if (bookingID < 0) {
+                throw new Exception("Có lỗi khi tạo booking.");
             }
+            response.sendRedirect(request.getContextPath() + "/vnpay?bookingID=" + bookingID);
+
         } catch (Exception e) {
+
             request.setAttribute("error", "Lỗi: " + e.getMessage());
             loadBookingData(request, user);
-            request.getRequestDispatcher("/WEB-INF/views/client/Booking.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/client/Booking.jsp")
+                    .forward(request, response);
         }
     }
 
     private void loadBookingData(HttpServletRequest request, User user) {
+
         CatDAO catDAO = new CatDAO();
         ServiceDAO serviceDAO = new ServiceDAO();
         UserDAO userDAO = new UserDAO();
@@ -127,36 +186,52 @@ public class BookingController extends HttpServlet {
         CategoryDao categoryDAO = new CategoryDao();
 
         int ownerID = catDAO.getOwnerIdByUserId(user.getUserID());
+
+
         request.setAttribute("catList", catDAO.getCatsByOwnerID(ownerID));
         request.setAttribute("categoryList", categoryDAO.getAllCategories());
         request.setAttribute("currentDate", LocalDate.now().toString());
 
-        // Giữ lại state đã chọn
-        request.setAttribute("selectedCatID", request.getParameter("catID"));
-        request.setAttribute("selectedCategoryID", request.getParameter("categoryID"));
-        request.setAttribute("selectedServiceID", request.getParameter("serviceID"));
-
         String cIDStr = request.getParameter("categoryID");
+
         if (cIDStr != null && !cIDStr.isEmpty()) {
+
             int cID = Integer.parseInt(cIDStr);
-            Category cat = categoryDAO.getCategoryById(cID);
-            String name = cat.getCategoryName().toLowerCase();
+            Category category = categoryDAO.getCategoryById(cID);
+            request.setAttribute("selectedCategoryID", cID);
+            String name = category.getCategoryName().toLowerCase();
+
             boolean isBoarding = name.contains("boarding");
-            boolean needsVet = !isBoarding ;
+            boolean isCheckup  = name.contains("checkup");
+            boolean needsVet   = !isBoarding && !isCheckup;
 
             request.setAttribute("isBoarding", isBoarding);
+            request.setAttribute("isCheckup", isCheckup);
             request.setAttribute("needsVet", needsVet);
-            request.setAttribute("serviceList", serviceDAO.getServicesByCategoryID(cID));
+
+            request.setAttribute("serviceList",
+                    serviceDAO.getServicesByCategoryID(cID));
 
             if (needsVet) {
                 request.setAttribute("listPerson", userDAO.getAllVeterinarians());
-                String vetUser = request.getParameter("assigneeInfo");
-                String date = request.getParameter("startDate");
-                if (vetUser != null && date != null) {
-                    Integer vID = userDAO.getVetIDByUserID(Integer.parseInt(vetUser));
-                    request.setAttribute("slotList", slotDAO.getSlotsNext7DaysFromDate(vID, date));
+                String vetUserIDStr = request.getParameter("assigneeInfo");
+                String startDateStr = request.getParameter("startDate");
+
+                if (vetUserIDStr != null && !vetUserIDStr.isEmpty() && startDateStr != null && !startDateStr.isEmpty()) {
+                    try {
+                        int vetUserID = Integer.parseInt(vetUserIDStr);
+                        Integer vetID = userDAO.getVetIDByUserID(vetUserID);
+
+                        if (vetID != null) {
+                            List<TimeSlot> slotList = slotDAO.getSlotsNext7Days(vetID);
+                            request.setAttribute("slotList", slotList);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
+
         }
     }
 }

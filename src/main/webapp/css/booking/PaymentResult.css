@@ -1,0 +1,59 @@
+
+    /* 1. Thiết lập chung cho body */
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: #f5f7fa;
+    color: #374151;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0; /* Đảm bảo không có margin mặc định */
+}
+
+/* 2. Đảm bảo header/footer luôn chiếm hết chiều ngang */
+header.topbar, footer {
+    width: 100%;
+    flex-shrink: 0; /* Không bị co lại */
+}
+
+/* 3. Container chính để chứa card - Căn giữa thần thánh ở đây */
+.main-content {
+    flex: 1 0 auto; /* Chiếm toàn bộ không gian còn trống */
+    display: flex;
+    justify-content: center; /* Căn giữa ngang */
+    align-items: center;    /* Căn giữa dọc */
+    padding: 40px 0;
+}
+
+/* 4. Định dạng Card */
+.result-card {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+}
+
+.success-icon { color: #22a06b; }
+.error-icon { color: #dc2626; }
+
+.btn {
+    display: inline-block;
+    padding: 14px 28px;
+    background: #ff6600;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-top: 25px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #e65c00;
+}
+
+h2 { margin-top: 20px; }
+p { color: #666; line-height: 1.5; }

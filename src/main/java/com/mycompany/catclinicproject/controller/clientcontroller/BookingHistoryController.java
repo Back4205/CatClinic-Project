@@ -97,9 +97,41 @@ public class BookingHistoryController extends HttpServlet {
                 filteredList.add(b);
             }
         }
+        // ===== PAGINATION =====
+        int pageSize = 5;
+
+        int currentPage = 1;
+        String pageParam = request.getParameter("page");
+
+        if (pageParam != null) {
+            try {
+                currentPage = Integer.parseInt(pageParam);
+                if (currentPage < 1) currentPage = 1;
+            } catch (NumberFormatException e) {
+                currentPage = 1;
+            }
+        }
+
+        int totalRecord = filteredList.size();
+        int totalPage = (int) Math.ceil((double) totalRecord / pageSize);
+
+        if (currentPage > totalPage && totalPage != 0) {
+            currentPage = totalPage;
+        }
+
+        int start = (currentPage - 1) * pageSize;
+        int end = Math.min(start + pageSize, totalRecord);
+
+        List<BookingHistoryDTO> pagedList = new ArrayList<>();
+
+        if (totalRecord > 0 && start < totalRecord) {
+            pagedList = filteredList.subList(start, end);
+        }
 
         request.setAttribute("user", user);
-        request.setAttribute("bookingList", filteredList); // Filtered list
+        request.setAttribute("bookingList", pagedList);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("totalPage", totalPage);
         request.setAttribute("total", total);
         request.setAttribute("scheduled", scheduled);
         request.setAttribute("completed", completed);

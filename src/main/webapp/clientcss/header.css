@@ -1,17 +1,19 @@
-
 .topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 14px 30px;
+
     background: #ffffff;
+    color: #f97316;
+
     border-bottom: 1px solid #e5e7eb;
 }
 
 .logo {
     font-size: 22px;
     font-weight: bold;
-    color: var(--primary);
+    color: #f97316;
 }
 
 .user-info {
@@ -22,14 +24,14 @@
 
 .user-info .name {
     font-weight: 500;
+    color: #f97316;
 }
 
 .avatar {
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: var(--primary-light);
-    color: var(--primary);
+    background: #fff7ed;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -40,4 +42,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+:root {
+    --primary: #f97316;
+    --primary-light: #fff7ed;
+    --dark: #0f172a;
+    --dark-2: #020617;
+    --gray: #64748b;
 }

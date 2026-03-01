@@ -21,7 +21,8 @@ public class VNpayController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String bookingID = request.getParameter("bookingID");
         if (bookingID == null || bookingID.isEmpty()) {
-            response.sendRedirect("/WEB-INF/views/client/error.jsp?msg=Invalid Booking ID");
+            request.setAttribute("msg", "Invalid Booking ID");
+            request.getRequestDispatcher("/WEB-INF/views/client/error.jsp").forward(request, response);
             return;
         }
 
@@ -38,7 +39,9 @@ public class VNpayController extends HttpServlet {
         Invoice invoice = invoiceDAO.getInvoiceByBookingID(bookingIdInt);
 
         if (invoice == null) {
-            response.sendRedirect("/WEB-INF/views/client/error.jsp?msg=Invalid Invoice ID");
+
+            request.setAttribute("msg", "Invalid Invoice ID");
+            request.getRequestDispatcher("/WEB-INF/views/client/error.jsp").forward(request, response);
             return;
         }
 

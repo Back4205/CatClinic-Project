@@ -64,10 +64,6 @@ public class VNPayReturnController extends HttpServlet {
 
             /* ========= 3. CANCEL ========= */
             if ("24".equals(responseCode)) {
-                bookingDAO.cancelBooking(
-                        bookingID,
-                        bookingDAO.getSlotIDByBookingID(bookingID)
-                );
                 request.setAttribute("msg", "failed");
                 request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
                 return;
@@ -88,24 +84,56 @@ public class VNPayReturnController extends HttpServlet {
             }
 
             /* ========= 6. INSERT PAYMENT ========= */
+
             long amountPaid = Long.parseLong(amountStr) / 100;
 
-            paymentDAO.insertPayment(
-                    invoiceID,
-                    amountPaid,
-                    "VNPay",
-                    transactionNo
-            );
+            //  tổng tiền invoice
+            long totalInvoiceAmount = (long) invoice.getTotalAmount();
 
-            /* ========= 7. UPDATE TRẠNG THÁI ========= */
+            //  tổng tiền đã thanh toán trước đó
+            long alreadyPaid = paymentDAO.getTotalPaidByInvoice(invoiceID);
 
-            // 🔥 Vì đây là đặt cọc 20% → chỉ cần >0 là Confirm
-            invoiceDAO.updatePaymentStatus(invoiceID, "PartiallyPaid");
-            bookingDAO.confirmBooking(bookingID);
+            //  nếu đã trả đủ rồi thì không cho trả nữa
+            if (alreadyPaid >= totalInvoiceAmount) {
+                request.setAttribute("msg", "already_paid");
+                request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
+                return;
+            }
+
+            //  nếu trả vượt quá số tiền còn lại
+            if (alreadyPaid + amountPaid > totalInvoiceAmount) {
+                request.setAttribute("msg", "over_paid");
+                request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
+                return;
+            }
+
+             // insert payment
+            paymentDAO.insertPayment(invoiceID, amountPaid, "VNPay", transactionNo);
+
+            long newTotalPaid = alreadyPaid + amountPaid;
+
+            if (newTotalPaid < totalInvoiceAmount) {
+
+                // Thanh toán một phần (20%)
+                invoiceDAO.updatePaymentStatus(invoiceID, "PartiallyPaid");
+
+                // Có tiền đặt cọc thì confirm booking
+                bookingDAO.confirmBooking(bookingID);
+
+            } else {
+
+                // Thanh toán đủ 100%
+                invoiceDAO.updatePaymentStatus(invoiceID, "Paid");
+
+                // Booking đã confirm từ lần đầu rồi
+            }
+
+
 
             request.setAttribute("transactionCode", transactionNo);
             request.setAttribute("msg", "success");
-            request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp")
+                    .forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -48,6 +48,8 @@ public class CatUpdateController extends HttpServlet {
             int newAge = Integer.parseInt(request.getParameter("age"));
 
 
+
+
             CatDAO dao = new CatDAO();
             HttpSession session = request.getSession(false);
             User user = (User)session.getAttribute("acc");
@@ -66,6 +68,8 @@ public class CatUpdateController extends HttpServlet {
                 return;
             }
             int oldAge = cat.getAge();
+            String imagePath = cat.getImg();
+            Part filePart = request.getPart("image");// lay file tu folder trong laptop
             String message = "";
 
             String letterOnlyRegex = "^[a-zA-ZÀ-ỹ\\s]+$";
@@ -82,6 +86,11 @@ public class CatUpdateController extends HttpServlet {
             } else if (!breed.matches(letterOnlyRegex)) {
                 message = "Gender cannot contain numbers or special characters!";
             }
+            else if (filePart != null && filePart.getSize() > 0) {
+                if (!isImageFile(filePart)) {
+                    message = "The uploaded file is not a valid image (it might be a renamed text/exe file)!";
+                }
+            }
 
 
 
@@ -94,10 +103,9 @@ public class CatUpdateController extends HttpServlet {
 
 
 
-            String imagePath = cat.getImg();
-            Part filePart = request.getPart("image");// lay file anh ma user con tu folder trong laptop
-
             if (filePart != null && filePart.getSize() > 0) {
+
+
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
                 File uploadDir = new File(UPLOAD_DIR);
                 if (!uploadDir.exists()) {
@@ -122,6 +130,21 @@ public class CatUpdateController extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("message", "Update cat failed!");
             request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
+        }
+    }
+    public  boolean isImageFile(Part filePart) {
+        //Trình duyệt khi gửi file lên sẽ đính kèm một thông tin gọi là MIME Type
+        String contentType = filePart.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            return false;
+        }
+        // mở luồng dữ liệu để đọc trực tiếp các byte bên trong file.
+        // nó sẽ cố gắng đọc cấu trúc dữ liệu bên trong file để dựng thành một đối tượng
+        try (java.io.InputStream is = filePart.getInputStream()) {
+            java.awt.image.BufferedImage bi = javax.imageio.ImageIO.read(is);
+            return bi != null; // Trả về true nếu thực sự là ảnh
+        } catch (IOException e) {
+            return false;
         }
     }
 }

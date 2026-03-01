@@ -11,7 +11,7 @@ import java.util.List;
 
 public class TimeSlotDAO extends DBContext {
 
-    // 1️⃣ Lấy slot trống của bác sĩ trong 7 ngày tới (từ hôm nay)
+    //  Lấy slot trống của bác sĩ trong 7 ngày tới (từ hôm nay)
     public List<TimeSlot> getSlotsNext7Days(int vetID) {
 
         List<TimeSlot> list = new ArrayList<>();
@@ -54,51 +54,7 @@ public class TimeSlotDAO extends DBContext {
         return list;
     }
 
-    // 2️⃣ Lấy slot trống theo ngày cụ thể
-    public List<TimeSlot> getSlotsByDoctorAndDate(int vetID, Date date) {
-
-        List<TimeSlot> list = new ArrayList<>();
-
-        String sql =
-                "SELECT * FROM TimeSlots " +
-                        "WHERE VetID = ? " +
-                        "AND Date = ? " +
-                        "AND ( " +
-                        "       Date > CAST(GETDATE() AS DATE) " +
-                        "    OR (Date = CAST(GETDATE() AS DATE) " +
-                        "        AND StartTime > CAST(GETDATE() AS TIME)) " +
-                        "    ) " +
-                        "AND Status = N'Available' " +
-                        "ORDER BY StartTime";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setInt(1, vetID);
-            ps.setDate(2, date);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                TimeSlot slot = new TimeSlot();
-
-                slot.setSlotID(rs.getInt("SlotID"));
-                slot.setVetID(rs.getInt("VetID"));
-                slot.setSlotDate(rs.getDate("Date"));
-                slot.setStartTime(rs.getTime("StartTime"));
-                slot.setEndTime(rs.getTime("EndTime"));
-                slot.setStatus(rs.getString("Status"));
-
-                list.add(slot);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return list;
-    }
-
-    // 3️⃣ Lấy slot theo ID
+    // Lấy slot theo ID
     public TimeSlot getSlotByID(int slotID) {
 
         String sql = "SELECT * FROM TimeSlots WHERE SlotID = ?";
@@ -128,81 +84,4 @@ public class TimeSlotDAO extends DBContext {
         return null;
     }
 
-    // 4️⃣ Tạo slot mới
-    public boolean createSlot(int vetID, Date date,
-                              Time startTime, Time endTime) {
-
-        String sql =
-                "INSERT INTO TimeSlots (VetID, Date, StartTime, EndTime, Status) " +
-                        "VALUES (?, ?, ?, ?, N'Available')";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setInt(1, vetID);
-            ps.setDate(2, date);
-            ps.setTime(3, startTime);
-            ps.setTime(4, endTime);
-
-            return ps.executeUpdate() > 0;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    // 5️⃣ Update trạng thái slot
-    public boolean updateSlotStatus(int slotID, String status) {
-
-        String sql = "UPDATE TimeSlots SET Status = ? WHERE SlotID = ?";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setString(1, status);
-            ps.setInt(2, slotID);
-
-            return ps.executeUpdate() > 0;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-    /** Lấy slot trống của bác sĩ trong 7 ngày từ ngày startDate (tham số vetID = Veterinarians.VetID) */
-    public List<TimeSlot> getSlotsNext7DaysFromDate(int vetID, String startDate) {
-        List<TimeSlot> list = new ArrayList<>();
-        String sql = "SELECT * FROM TimeSlots " +
-                "WHERE VetID = ? " +
-                "AND Date BETWEEN ? AND DATEADD(DAY, 6, ?) " +
-                "AND ( " +
-                "       Date > CAST(GETDATE() AS DATE) " +
-                "    OR (Date = CAST(GETDATE() AS DATE) " +
-                "        AND StartTime > CAST(GETDATE() AS TIME)) " +
-                "    ) " +
-                "AND Status = N'Available' " +
-                "ORDER BY Date, StartTime";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, vetID);
-            ps.setString(2, startDate);
-            ps.setString(3, startDate);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                TimeSlot slot = new TimeSlot();
-                slot.setSlotID(rs.getInt("SlotID"));
-                slot.setVetID(rs.getInt("VetID"));
-                slot.setSlotDate(rs.getDate("Date"));
-                slot.setStartTime(rs.getTime("StartTime"));
-                slot.setEndTime(rs.getTime("EndTime"));
-                slot.setStatus(rs.getString("Status"));
-                list.add(slot);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
 }

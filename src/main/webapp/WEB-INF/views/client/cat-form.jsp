@@ -41,7 +41,7 @@
             <div class="page-title">
                 <h2>
                     <c:choose>
-                        <c:when test="${empty cat}">ADD NEW CAT</c:when>
+                        <c:when test="${empty cat|| cat.catID == 0 }">ADD NEW CAT</c:when>
                         <c:otherwise>CAT PROFILE DETAILS</c:otherwise>
                     </c:choose>
                 </h2>
@@ -52,7 +52,7 @@
         <div class="form-wrapper">
 
             <form method="post"
-                  action="${pageContext.request.contextPath}${empty cat ? '/cats/cat-add' : '/cats/cat-update'}"
+                  action="${pageContext.request.contextPath}${(empty cat || cat.catID == 0) ? '/cats/cat-add' : '/cats/cat-update'}"
                   enctype="multipart/form-data">
                 <input type="hidden" name="from" value="${from}">
                 <div class="profile-box">
@@ -118,7 +118,7 @@
 
                         <div class="btn-group">
                             <button class="btn btn-primary" type="submit">
-                                <c:out value="${empty cat ? 'ADD PET' : 'UPDATE PROFILE CAT'}" />
+                                <c:out value="${(empty cat || cat.catID == 0) ? 'ADD PET' : 'UPDATE PROFILE CAT'}" />
                             </button>
                             <c:choose>
                                 <c:when test="${from eq 'booking'}">

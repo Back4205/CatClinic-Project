@@ -80,6 +80,24 @@ public class CatAddController extends HttpServlet {
             String imagePath = "image/cats/default.jpg";
 
             if (filePart != null && filePart.getSize() > 0) {
+
+
+                if (!isImageFile(filePart)) {
+                    request.setAttribute("from", from);
+                    request.setAttribute("message", "Invalid image! Please upload a real image file.");
+                    Cat cat = new Cat();
+                    cat.setOwnerID(ownerID);
+                    cat.setName(name);
+                    cat.setBreed(breed);
+                    cat.setGender(gender);
+                    cat.setAge(age);
+
+                    request.setAttribute("cat", cat);
+                    request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
+                    return;
+                }
+                // filePart.getSubmittedFileName() lấy tên file mà t đặt trong máy
+                // loại bỏ các đường dẫn dạ . chỉ lấy tên file và đuôi file
                 String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
                 File uploadDir = new File(UPLOAD_DIR);
                 if (!uploadDir.exists()) {
@@ -91,6 +109,7 @@ public class CatAddController extends HttpServlet {
             }
 
             Cat cat = new Cat();
+            cat.setCatID(0);
             cat.setOwnerID(ownerID);
             cat.setName(name);
             cat.setBreed(breed);
@@ -114,6 +133,20 @@ public class CatAddController extends HttpServlet {
             request.setAttribute("from", from);
             request.setAttribute("message", "Add cat failed!");
             request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
+        }
+    }
+
+
+    public  boolean isImageFile(Part filePart) {
+        String contentType = filePart.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            return false;
+        }
+        try (java.io.InputStream is = filePart.getInputStream()) {
+            java.awt.image.BufferedImage bi = javax.imageio.ImageIO.read(is);
+            return bi != null; // Trả về true nếu thực sự là ảnh
+        } catch (IOException e) {
+            return false;
         }
     }
 }

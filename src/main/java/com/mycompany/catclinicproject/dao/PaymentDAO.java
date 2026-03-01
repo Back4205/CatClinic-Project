@@ -19,26 +19,7 @@ public class PaymentDAO extends DBContext{
             e.printStackTrace();
         }
     }
-    public double getTotalPaidAmount(int invoiceID) {
 
-        String sql = "SELECT ISNULL(SUM(TotalAmount), 0) FROM Payments WHERE InvoiceID = ?";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setInt(1, invoiceID);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getDouble(1);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-    }
     public boolean isTransactionExists(String transactionNo) {
 
         String sql = "SELECT 1 FROM Payments WHERE TransactionCode = ?";
@@ -52,5 +33,18 @@ public class PaymentDAO extends DBContext{
         }
 
         return false;
+    }
+    public long getTotalPaidByInvoice(int invoiceID) {
+        String sql = "SELECT ISNULL(SUM(TotalAmount),0) FROM Payments WHERE InvoiceID = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, invoiceID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

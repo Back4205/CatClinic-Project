@@ -208,10 +208,10 @@ public class UserDAO extends DBContext {
     }
     public List<User> getAllVeterinarians() {
         List<User> vets = new ArrayList<>();
-        String sql = "SELECT u.UserID, u.FullName, u.Email, u.Phone, v.Degree, v.ExperienceYear " +
+        String sql = "SELECT u.*, v.ExperienceYear " +
                 "FROM Users u " +
                 "INNER JOIN Veterinarians v ON u.UserID = v.UserID " +
-                "WHERE u.RoleID = 2 AND u.IsActive = 1";  // RoleID=2 là Veterinarian
+                "WHERE u.RoleID = 2 AND u.IsActive = 1";
 
         try (
              PreparedStatement ps = c.prepareStatement(sql);
@@ -220,8 +220,15 @@ public class UserDAO extends DBContext {
             while (rs.next()) {
                 User u = new User();
                 u.setUserID(rs.getInt("UserID"));
+                u.setUserName(rs.getString("UserName"));
+                u.setPassword(rs.getString("PassWord"));
                 u.setFullName(rs.getString("FullName"));
-                // set các field khác nếu cần...
+                u.setMale(rs.getBoolean("Male"));
+                u.setEmail(rs.getString("Email"));
+                u.setRoleID(rs.getInt("RoleID"));
+                u.setActive(rs.getBoolean("IsActive"));
+                u.setPhone(rs.getString("Phone"));
+                u.setGoogleID(rs.getString("GoogleID"));
                 vets.add(u);
             }
         } catch (SQLException e) {
@@ -230,26 +237,7 @@ public class UserDAO extends DBContext {
         return vets;
     }
 
-    public Integer getRandomCareStaffID() {
-        String sql = "SELECT TOP 1 s.StaffID " +
-                "FROM Staffs s " +
-                "INNER JOIN Users u ON s.UserID = u.UserID " +
-                "WHERE s.Position LIKE '%Care%' OR s.Position LIKE '%Nurse%' " +  // điều chỉnh theo data
-                "AND u.IsActive = 1 " +
-                "ORDER BY NEWID()";  // random
 
-        try (
-             PreparedStatement ps = c.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            if (rs.next()) {
-                return rs.getInt("StaffID");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
     public Integer getRandomStaffByPosition(String positionKeyword) {
 
         String sql =
@@ -276,6 +264,39 @@ public class UserDAO extends DBContext {
         }
 
         return null; // Không tìm thấy staff phù hợp
+    }
+
+    public List<User> getStaffByPosition(String position) {
+        String sql = " SELECT u.*FROM Users u JOIN Staffs s ON u.UserID = s.UserID WHERE s.Position = ? ";
+
+        List<User> list = new ArrayList<>();
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, position);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                User u = new User();
+                u.setUserID(rs.getInt("UserID"));
+                u.setUserName(rs.getString("UserName"));
+                u.setPassword(rs.getString("PassWord"));
+                u.setFullName(rs.getString("FullName"));
+                u.setMale(rs.getBoolean("Male"));
+                u.setEmail(rs.getString("Email"));
+                u.setRoleID(rs.getInt("RoleID"));
+                u.setActive(rs.getBoolean("IsActive"));
+                u.setPhone(rs.getString("Phone"));
+                u.setGoogleID(rs.getString("GoogleID"));
+
+                list.add(u);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 
 }
