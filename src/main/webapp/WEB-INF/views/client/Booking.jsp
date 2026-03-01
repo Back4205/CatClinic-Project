@@ -200,9 +200,19 @@
                         </c:if>
 
                         <label class="slot ${param.slotID == slot.slotID ? 'active-slot' : ''}">
-                            <input type="radio" name="slotID" value="${slot.slotID}"
+<%--                            <input type="radio" name="slotID" value="${slot.slotID}"--%>
+<%--                                ${param.slotID == slot.slotID ? 'checked' : ''}--%>
+<%--                                   onchange="updateConfirmButton()" required>--%>
+<%--                                ${fn:substring(slot.startTime.toString(), 0, 5)}--%>
+
+                            <input type="radio"
+                                   name="slotID"
+                                   value="${slot.slotID}"
+                                   data-date="<fmt:formatDate value='${slot.slotDate}' pattern='dd/MM/yyyy'/>"
+                                   data-time="${fn:substring(slot.startTime.toString(), 0, 5)}"
                                 ${param.slotID == slot.slotID ? 'checked' : ''}
-                                   onchange="updateConfirmButton()" required>
+                                   onchange="updateConfirmButton()"
+                                   required>
                                 ${fn:substring(slot.startTime.toString(), 0, 5)}
                         </label>
 
@@ -255,5 +265,13 @@
     </div>
 </footer>
 </body>
+<script>
+
+    const isBoardingMode = ${isBoarding ? 'true' : 'false'};
+    const isCheckupMode = ${isCheckup ? 'true' : 'false'};
+    const needsVetMode = ${needsVet ? 'true' : 'false'};
+    const contextPath = '${pageContext.request.contextPath}';
+
+</script>
 
 </html>

@@ -1,19 +1,4 @@
 
-const isBoardingMode = $
-{
-    isBoarding ? 'true' : 'false'
-}
-;
-const isCheckupMode = $
-{
-    isCheckup ? 'true' : 'false'
-}
-;
-const needsVetMode = $
-{
-    needsVet ? 'true' : 'false'
-}
-;
 
 
 /* ==============================
@@ -170,49 +155,51 @@ function calculatePrice() {
 }
 
 
-/* ==============================
-6. UPDATE CONFIRM BUTTON
-============================== */
 function updateConfirmButton() {
 
     const btn = document.getElementById('confirmBtn');
-    const date = document.getElementById('startDate')?.value;
-
-    if (!btn || !date) return;
+    if (!btn) return;
 
     let time = "";
+    let formattedDate = "";
 
+    // ===== BOARDING / CHECKUP =====
     if (isBoardingMode || isCheckupMode) {
-        time = document.getElementById('checkInTime')
-            ?.value?.substring(0, 5) || "";
-    } else if (needsVetMode) {
+
+        const date = document.getElementById('startDate')?.value;
+        const timeSelect = document.getElementById('checkInTime')?.value;
+
+        if (date && timeSelect) {
+            const parts = date.split("-");
+            formattedDate = parts[2] + "/" + parts[1] + "/" + parts[0];
+            time = timeSelect.substring(0, 5);
+        }
+
+    }
+    // ===== VET SLOT =====
+    else if (needsVetMode) {
 
         const sel = document.querySelector(
             'input[name="slotID"]:checked'
         );
 
         if (sel) {
-            const slotLabel = sel.closest('.slot');
-            time = slotLabel ? slotLabel.textContent.trim() : "";
+            formattedDate = sel.dataset.date;
+            time = sel.dataset.time;
         }
     }
 
-    const d = new Date(date);
+    if (time && formattedDate) {
 
-    const formattedDate =
-        d.getDate().toString().padStart(2, '0') + '/' +
-        (d.getMonth() + 1).toString().padStart(2, '0');
-
-    if (time) {
         btn.innerHTML =
             '<i class="bi bi-check-circle-fill"></i> Confirm: ' +
             time + ' - ' + formattedDate;
 
         btn.classList.add('ready');
-    } else {
-        btn.innerHTML =
-            'Confirm Appointment (' + formattedDate + ')';
 
+    } else {
+
+        btn.innerHTML = 'Confirm Appointment';
         btn.classList.remove('ready');
     }
 }
