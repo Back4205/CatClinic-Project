@@ -2,19 +2,19 @@ package com.mycompany.catclinicproject.dao;
 
 import com.mycompany.catclinicproject.model.Booking;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
-
+import java.sql.PreparedStatement;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class BookingDAO extends DBContext {
 
 
     public List<BookingHistoryDTO> getHistoryByUserID(int userID) {
-
         List<BookingHistoryDTO> list = new ArrayList<>();
-
-        String sql = "SELECT b.BookingID, c.Name AS CatName, c.Breed, "
+        String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, "
                 + "b.AppointmentDate, b.EndDate, b.AppointmentTime, b.Status, "
                 + "s.NameService, bd.PriceAtBooking "
                 + "FROM Bookings b "
@@ -27,11 +27,11 @@ public class BookingDAO extends DBContext {
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, userID);
-
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(new BookingHistoryDTO(
                             rs.getInt("BookingID"),
+                            rs.getInt("SlotID"),
                             rs.getString("CatName"),
                             rs.getString("Breed"),
                             rs.getDate("AppointmentDate"),
@@ -39,18 +39,164 @@ public class BookingDAO extends DBContext {
                             rs.getTime("AppointmentTime"),
                             rs.getString("NameService"),
                             rs.getDouble("PriceAtBooking"),
-                            rs.getString("Status")
+                            rs.getString("Status"),
+                            null, "", "", "" // 4 tham số bổ sung cho DTO
                     ));
                 }
             }
-
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
-
         return list;
     }
+    // Hàm 1: Đếm số lượng 6 trạng thái cho Dashboard
+    public Map<String, Integer> getBookingDashboardStats() {
+        Map<String, Integer> stats = new HashMap<>();
+        stats.put("Pending", 0);
+        stats.put("Confirmed", 0);
+        stats.put("Waiting", 0);
+        stats.put("In Treatment", 0);
+        stats.put("Completed", 0);
+        stats.put("Cancelled", 0);
 
+        String sql = "SELECT Status, COUNT(*) as Total FROM Bookings GROUP BY Status";
+
+        // Đã đổi 'connection' thành 'c' cho khớp với các hàm khác của cậu
+        try (PreparedStatement st = c.prepareStatement(sql);
+             ResultSet rs = st.executeQuery()) {
+            while (rs.next()) {
+                String status = rs.getString("Status");
+                int total = rs.getInt("Total");
+                if(stats.containsKey(status)) {
+                    stats.put(status, total);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stats;
+    }
+
+    // Hàm 2: Lấy danh sách lịch hẹn và tìm kiếm cho Lễ tân
+    public List<BookingHistoryDTO> getReceptionBookingList(String keyword) {
+        List<BookingHistoryDTO> list = new ArrayList<>();
+        // Sử dụng INNER JOIN cho User và Cat để chắc chắn lấy được thông tin cơ bản
+        String sql = "SELECT b.BookingID, b.AppointmentDate, b.AppointmentTime, b.Status, " +
+                "u_owner.FullName AS CustomerName, u_owner.Phone AS CustomerPhone, " +
+                "c.Name AS CatName " +
+                "FROM Bookings b " +
+                "JOIN Cats c ON b.CatID = c.CatID " +
+                "JOIN Owners o ON c.OwnerID = o.OwnerID " +
+                "JOIN Users u_owner ON o.UserID = u_owner.UserID " +
+                "WHERE 1=1 ";
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql += " AND (u_owner.FullName LIKE ? OR u_owner.Phone LIKE ? OR c.Name LIKE ?) ";
+        }
+        sql += " ORDER BY b.AppointmentDate DESC, b.AppointmentTime DESC";
+
+        try (PreparedStatement st = c.prepareStatement(sql)) { // Sử dụng connection 'c' của cậu
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String p = "%" + keyword.trim() + "%";
+                st.setString(1, p);
+                st.setString(2, p);
+                st.setString(3, p);
+            }
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    BookingHistoryDTO d = new BookingHistoryDTO();
+                    d.setBookingID(rs.getInt("BookingID"));
+                    d.setAppointmentDate(rs.getDate("AppointmentDate"));
+                    d.setAppointmentTime(rs.getTime("AppointmentTime"));
+                    d.setStatus(rs.getString("Status"));
+                    d.setCustomerName(rs.getString("CustomerName"));
+                    d.setCustomerPhone(rs.getString("CustomerPhone"));
+                    d.setCatName(rs.getString("CatName"));
+                    list.add(d);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    public void updateBookingStatusSimple(int id, String status) {
+        String sql = "UPDATE Bookings SET Status = ? WHERE BookingID = ?";
+        try (PreparedStatement st = c.prepareStatement(sql)) { // Biến 'c' là connection của cậu
+            st.setString(1, status);
+            st.setInt(2, id);
+            st.executeUpdate();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+    public BookingHistoryDTO getBookingDetailByID(int bookingID) {
+        // Câu SQL đầy đủ để lấy cả thông tin chủ nuôi và dịch vụ
+        String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, "
+                + "b.EndDate, b.AppointmentTime, b.Status, b.Note, s.NameService, "
+                + "ad.PriceAtBooking, u_vet.FullName AS VetName, "
+                + "u_owner.FullName AS OwnerName, u_owner.Phone "
+                + "FROM Bookings b "
+                + "JOIN Cats c ON b.CatID = c.CatID "
+                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+                + "JOIN Users u_owner ON o.UserID = u_owner.UserID "
+                + "LEFT JOIN Veterinarians v ON b.VetID = v.VetID "
+                + "LEFT JOIN Users u_vet ON v.UserID = u_vet.UserID "
+                + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
+                + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
+                + "WHERE b.BookingID = ?";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, bookingID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    BookingHistoryDTO d = new BookingHistoryDTO();
+                    d.setBookingID(rs.getInt("BookingID"));
+                    d.setCatName(rs.getString("CatName"));
+                    d.setCatBreed(rs.getString("Breed"));
+                    d.setAppointmentDate(rs.getDate("AppointmentDate"));
+                    d.setAppointmentTime(rs.getTime("AppointmentTime"));
+                    d.setStatus(rs.getString("Status"));
+                    d.setNote(rs.getString("Note"));
+
+                    // Gán đúng tên dịch vụ và giá cho JSP
+                    d.setServiceName(rs.getString("NameService"));
+                    d.setPrice(rs.getDouble("PriceAtBooking"));
+
+                    d.setVetName(rs.getString("VetName"));
+                    d.setCustomerName(rs.getString("OwnerName"));
+                    d.setCustomerPhone(rs.getString("Phone"));
+                    return d;
+                }
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return null;
+    }
+    // Hàm Hủy lịch duy nhất: Cập nhật Status = Cancelled và lưu thông tin Bank vào Note
+    public boolean cancelAndRequestRefund(int bookingID, String refundNote, int slotID) {
+        String updateBookingSQL = "UPDATE Bookings SET Status = N'Cancelled', Note = ? WHERE BookingID = ?";
+        String releaseSlotSQL = "UPDATE TimeSlots SET Status = N'Available' WHERE SlotID = ?";
+
+        try {
+            c.setAutoCommit(false);
+            try (PreparedStatement ps1 = c.prepareStatement(updateBookingSQL)) {
+                ps1.setString(1, refundNote); // Ghi thông tin refund vào Note
+                ps1.setInt(2, bookingID);
+                ps1.executeUpdate();
+            }
+            if (slotID > 0) {
+                try (PreparedStatement ps2 = c.prepareStatement(releaseSlotSQL)) {
+                    ps2.setInt(1, slotID);
+                    ps2.executeUpdate();
+                }
+            }
+            c.commit();
+            return true;
+        } catch (SQLException e) {
+            try { c.rollback(); } catch (SQLException ex) {}
+            e.printStackTrace();
+            return false;
+        } finally {
+            try { c.setAutoCommit(true); } catch (SQLException e) {}
+        }
+    }
     public int getCatIdByBookingID(int bookingID) {
 
         String sql = "SELECT CatID FROM Bookings WHERE BookingID = ?";

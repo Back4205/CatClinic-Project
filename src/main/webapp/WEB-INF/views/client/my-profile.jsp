@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/base.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/sidebar.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/my-profile.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/my-profile.css?v=1.2">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
@@ -37,7 +37,7 @@
                 <a href="edit" class="edit-btn"><i class="bi bi-pencil"></i> Edit Profile</a>
             </div>
             <div class="info-grid">
-                <div><label>Full Name</label><p>${user.userName}</p></div>
+                <div><label>Full Name</label><p>${user.fullName}</p></div>
                 <div><label>Email</label><p>${user.email}</p></div>
                 <div><label>Phone</label><p>${user.phone}</p></div>
                 <div><label>Address</label><p>${user.address}</p></div>
@@ -57,7 +57,7 @@
             </div>
 
             <div id="passwordForm">
-                <form action="${pageContext.request.contextPath}/accessprofile" method="post">
+                <form action="${pageContext.request.contextPath}/profile" method="post">
                     <input type="hidden" name="action" value="changePassword">
 
                     <input type="password"
@@ -89,7 +89,7 @@
         </div>
     </main>
 </div>
-</div> <%-- CHÈN DÒNG NÀY VÀO ?ÂY --%>
+</div> <%-- CH�N D�NG N�Y V�O ?�Y --%>
 <footer style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 25px 0; text-align: center; color: #64748b; font-size: 14px; margin-top: auto;">
     <div class="footer-content">
         &copy; 2026 CatClinic. All rights reserved.

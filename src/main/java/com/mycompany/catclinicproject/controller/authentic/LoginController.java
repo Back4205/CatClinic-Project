@@ -91,7 +91,7 @@ public class LoginController extends HttpServlet {
                         response.sendRedirect("vet/schedule");
                         break;
                     case 3:
-                        response.sendRedirect("reception/home");
+                        response.sendRedirect("reception/view-booking-list");
                         break;
                     case 4:
                         response.sendRedirect("staff/tasks");
