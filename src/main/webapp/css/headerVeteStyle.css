@@ -3,11 +3,9 @@
 .header {
     width: 100%;                  /* full ngang main */
     height: 80px;                 /* chiều cao header */
-
     display: flex;
     justify-content: space-between;
     align-items: center;
-
     padding: 0 40px;              /* khoảng cách 2 bên */
     background-color: #fff;    /* nền giống ảnh bạn gửi */
 

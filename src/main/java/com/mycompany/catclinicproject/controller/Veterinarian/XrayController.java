@@ -4,6 +4,9 @@
  */
 package com.mycompany.catclinicproject.controller.Veterinarian;
 
+import com.mycompany.catclinicproject.dao.homeDao.BookingDaoVeterinarian;
+import com.mycompany.catclinicproject.model.EMRDTO;
+import com.mycompany.catclinicproject.model.TestOrderDTO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,13 +14,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
  * @author Son
  */
-@WebServlet(name = "AssignCaseController", urlPatterns = {"/assignedCases"})
-public class AssignCaseController extends HttpServlet {
+@WebServlet(name = "XrayController", urlPatterns = {"/xray"})
+public class XrayController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +40,10 @@ public class AssignCaseController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AssignCaseController</title>");
+            out.println("<title>Servlet XrayController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AssignCaseController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet XrayController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,9 +61,19 @@ public class AssignCaseController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("activePage", "dashboard");
-        request.getRequestDispatcher("WEB-INF/views/veterinarian/assigncase.jsp")
+        int medicalRecordID = Integer.parseInt(request.getParameter("medicalRecordID"));
+        BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
+
+        EMRDTO emr = dao.getEMRDetail(medicalRecordID);
+        List<TestOrderDTO> testOrders
+                = dao.getTestOrdersByMedicalRecordID(medicalRecordID);
+
+        request.setAttribute("emr", emr);
+        request.setAttribute("testOrders", testOrders);
+        request.setAttribute("activePage", "assigned");
+        request.getRequestDispatcher("WEB-INF/views/veterinarian/testxray.jsp")
                 .forward(request, response);
+
     }
 
     /**
@@ -73,7 +87,12 @@ public class AssignCaseController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String idParam = request.getParameter("medicalRecordID");
+        int medicalRecordID = Integer.parseInt(idParam);
+        BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
+        dao.insertTestOrder(medicalRecordID);
+
+        response.sendRedirect("xray?medicalRecordID=" + medicalRecordID);
     }
 
     /**

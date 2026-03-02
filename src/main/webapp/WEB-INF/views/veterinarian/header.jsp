@@ -1,6 +1,6 @@
 <div class="header">
     <div class="header-left">
-        <h1>Dashboard</h1>
+        <h1>Pet Clinic</h1>
         <span class="today-date">${todayDate}</span>
     </div>
 

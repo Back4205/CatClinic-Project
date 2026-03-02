@@ -1,0 +1,489 @@
+/* ===== Container ===== */
+.emr-container {
+    padding: 30px;
+    background: #fffaf5;
+}
+
+/* ===== Back Link ===== */
+.back-link {
+    margin-bottom: 20px;
+}
+
+.back-link a {
+    text-decoration: none;
+    color: #f97316;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.back-link a:hover {
+    color: #ea580c;
+}
+
+/* ===== Card ===== */
+.emr-card {
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(249, 115, 22, 0.08);
+    border-top: 5px solid #f97316;
+}
+
+/* ===== Header ===== */
+.emr-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 25px;
+}
+
+.emr-header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #ea580c;
+}
+
+.ref {
+    font-size: 13px;
+    color: #9a3412;
+}
+
+.clinic-info {
+    text-align: right;
+}
+
+.clinic-label {
+    font-size: 12px;
+    color: #fb923c;
+}
+
+.clinic-name {
+    font-weight: 600;
+    color: #f97316;
+}
+
+/* ===== Info Section ===== */
+.emr-info {
+    display: flex;
+    gap: 25px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.info-box {
+    flex: 1;
+    min-width: 280px;
+    background: #fff7ed;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #fed7aa;
+}
+
+.info-box h4 {
+    margin-bottom: 15px;
+    color: #ea580c;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.info-grid label {
+    font-size: 12px;
+    color: #9a3412;
+    display: block;
+}
+
+.info-grid p {
+    margin: 3px 0 0;
+    font-weight: 600;
+    color: #7c2d12;
+}
+
+/* ===== Divider ===== */
+.divider {
+    margin: 30px 0;
+    border: none;
+    height: 2px;
+    background: linear-gradient(to right, #f97316, #fdba74);
+}
+
+/* ===== Section Title ===== */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f97316;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.section-title h2 {
+    margin: 0;
+    color: #ea580c;
+}
+
+/* ===== Form ===== */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #9a3412;
+}
+
+textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #fed7aa;
+    resize: vertical;
+    font-size: 14px;
+    transition: 0.2s;
+    background: #fff;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #f97316;
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+}
+
+/* ===== Button ===== */
+.form-actions {
+    margin-top: 25px;
+    text-align: right;
+}
+
+.btn-next {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-next:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(249, 115, 22, 0.3);
+}
+/* ===== LAB REQUEST BOX ===== */
+.lab-request-box {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+/* Icon tròn */
+.lab-icon {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 0, 0, 0.08);
+    border-radius: 50%;
+    margin: 0 auto 30px auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lab-icon i {
+    font-size: 40px;
+    color: #e11d48;
+}
+
+/* Title */
+.lab-request-box h3 {
+    font-size: 22px;
+    margin-bottom: 40px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* Buttons */
+.lab-actions {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.btn-skip {
+    padding: 14px 30px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    background: #f8fafc;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-skip:hover {
+    background: #e2e8f0;
+}
+
+.btn-request {
+    padding: 14px 30px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #9333ea, #7c3aed);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(147, 51, 234, 0.3);
+    transition: 0.3s;
+}
+
+.btn-request:hover {
+    transform: translateY(-2px);
+}/* Khung chứa bao quanh */
+.floating-nav {
+    display: flex;
+    justify-content: space-between; /* Đẩy 2 phần tử về 2 đầu */
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff; /* Nền trắng sạch sẽ */
+    border-top: 1px solid #eee; /* Đường kẻ mờ phía trên */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05); /* Đổ bóng nhẹ để tạo hiệu ứng "nổi" */
+    border-radius: 8px;
+}
+
+/* Định dạng chung cho các nút */
+.btn-floating {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+}
+
+/* Nút Previous - Chữ cam, viền cam, nền trắng */
+.btn-prev {
+    background-color: #ffffff;
+    color: #ff6600; /* Màu cam chủ đạo */
+    border: 2px solid #ff6600;
+}
+
+.btn-prev:hover {
+    background-color: #fff5ed; /* Cam cực nhạt khi hover */
+    transform: translateX(-5px); /* Hiệu ứng nhích nhẹ sang trái */
+}
+
+/* Nút Save & Next - Nền cam, chữ trắng */
+.btn-next {
+    background-color: #ff6600;
+    color: #ffffff;
+    border: 2px solid #ff6600;
+}
+
+.btn-next:hover {
+    background-color: #e65c00; /* Cam đậm hơn một chút khi hover */
+    border-color: #e65c00;
+    box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
+    transform: translateX(5px); /* Hiệu ứng nhích nhẹ sang phải */
+}
+
+/* Khoảng cách cho icon */
+.btn-floating i {
+    margin: 0 8px;
+}
+
+/* Loại bỏ style mặc định của form để không làm lệch layout */
+form {
+    margin: 0;
+}/* ===== LAB REQUEST BOX ===== */
+.lab-request-box {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-top: 20px;
+}
+
+.lab-request-box h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    border-left: 5px solid #4CAF50;
+    padding-left: 10px;
+}
+
+/* ===== EACH TEST INFO ===== */
+.info-box {
+    background: #f9fbfd;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    transition: 0.2s ease;
+    border: 1px solid #e0e6ed;
+}
+
+.info-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+}
+
+.info-box p {
+    margin: 6px 0;
+    font-size: 14px;
+    color: #34495e;
+}
+
+.info-box strong {
+    color: #2c3e50;
+}
+
+/* ===== STATUS STYLE ===== */
+.info-box p:nth-child(2) {
+    font-weight: 600;
+}
+
+/* Status Pending */
+.info-box p:nth-child(2):contains("Pending") {
+    color: #e67e22;
+}
+
+/* Nếu bạn muốn xử lý màu chuẩn hơn thì nên thêm class từ backend */
+
+/* ===== RESULT TEXT ===== */
+.info-box p:last-child {
+    font-style: italic;
+    color: #7f8c8d;
+}
+
+/* Divider */
+.lab-request-box hr {
+    border: none;
+    border-top: 1px dashed #dcdcdc;
+    margin: 10px 0 20px 0;
+}/* ===== HOSPITALIZATION BOX ===== */
+
+.lab-request-box {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    text-align: center;
+    margin-top: 20px;
+}
+
+.lab-icon {
+    font-size: 40px;
+    color: #3b82f6;
+    margin-bottom: 10px;
+}
+
+.lab-request-box h3 {
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* ===== TEXTAREA ===== */
+
+.form-group {
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+    color: #444;
+}
+
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #dcdcdc;
+    font-size: 14px;
+    resize: none;
+    transition: 0.3s;
+}
+
+.form-group textarea:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.15);
+}
+
+/* ===== BUTTONS ===== */
+
+.lab-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.btn-request {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-request:hover {
+    background-color: #2563eb;
+}
+
+.btn-skip {
+    background-color: #e5e7eb;
+    color: #333;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-skip:hover {
+    background-color: #d1d5db;
+}
+
+/* ===== STATUS COLORS ===== */
+
+.status-active {
+    color: #f59e0b;
+    font-weight: 600;
+}
+
+.status-completed {
+    color: #10b981;
+    font-weight: 600;
+}

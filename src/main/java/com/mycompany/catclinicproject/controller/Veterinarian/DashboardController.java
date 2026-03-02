@@ -6,6 +6,7 @@ package com.mycompany.catclinicproject.controller.Veterinarian;
 
 import com.mycompany.catclinicproject.dao.homeDao.BookingDaoVeterinarian;
 import com.mycompany.catclinicproject.model.AssignCaseDTO;
+import com.mycompany.catclinicproject.model.DetailBookingDTO;
 import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -85,18 +86,19 @@ public class DashboardController extends HttpServlet {
             return;
         }
 
-        // ===== LẤY PARAMETER =====
         String dateFrom = request.getParameter("dateFrom");
         String dateTo = request.getParameter("dateTo");
 
-// Chuẩn hóa rỗng -> null
-        if (dateFrom != null && dateFrom.isEmpty()) {
-            dateFrom = null;
+        LocalDate today = LocalDate.now();
+        String todayStr = today.toString();
+
+        if (dateFrom == null || dateFrom.isEmpty()) {
+            dateFrom = todayStr;
         }
-        if (dateTo != null && dateTo.isEmpty()) {
-            dateTo = null;
+
+        if (dateTo == null || dateTo.isEmpty()) {
+            dateTo = todayStr;
         }
-// Swap nếu ngược ngày
         if (dateFrom != null && dateTo != null) {
             if (dateFrom.compareTo(dateTo) > 0) {
                 String temp = dateFrom;
@@ -104,6 +106,7 @@ public class DashboardController extends HttpServlet {
                 dateTo = temp;
             }
         }
+        
         int page = 1;
         int pageSize = 5;
 
@@ -121,29 +124,37 @@ public class DashboardController extends HttpServlet {
         List<AssignCaseDTO> assignList
                 = dao.getAssignCasesPaging(vetID, dateFrom, dateTo, page, pageSize);
         int confirmedCount = dao.countByStatusWithDate(
-                vetID, "Confirmed", dateFrom, dateTo);
+                vetID, "Completed", dateFrom, dateTo);
         int inTreatmentCount = dao.countByStatusWithDate(
-                vetID, "InTreatment", dateFrom, dateTo);
+                vetID, "In Treatment", dateFrom, dateTo);
         int completedCount = dao.countByStatusWithDate(
                 vetID, "Completed", dateFrom, dateTo);
-        LocalDate today = LocalDate.now();
         DateTimeFormatter formatter
                 = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy", Locale.ENGLISH);
+        String bookingIDRaw = request.getParameter("bookingID");
+        String raw = request.getParameter("bookingID");
 
+        if (raw != null && !raw.trim().isEmpty()) {
+            int bookingID = Integer.parseInt(raw.trim());
+        }
+        if (bookingIDRaw != null) {
+            int bookingID = Integer.parseInt(bookingIDRaw);
+
+            DetailBookingDTO detail = dao.getBookingDetail(bookingID);
+            request.setAttribute("selectedCase", detail);
+        }
         String formattedDate = today.format(formatter);
-
         request.setAttribute("todayDate", formattedDate);
         request.setAttribute("confirmedCount", confirmedCount);
         request.setAttribute("inTreatmentCount", inTreatmentCount);
         request.setAttribute("completedCount", completedCount);
-        // ===== SET ATTRIBUTE =====
         request.setAttribute("assignList", assignList);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
+        
         request.setAttribute("dateFrom", dateFrom);
         request.setAttribute("dateTo", dateTo);
         request.setAttribute("activePage", "dashboard");
-
         request.getRequestDispatcher("WEB-INF/views/veterinarian/dashboard.jsp")
                 .forward(request, response);
     }
