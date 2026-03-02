@@ -1,0 +1,229 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jan 29, 2026, 9:33:41 PM
+    Author     : Son
+*/
+
+/* ================= HEADER / NAVBAR ================= */
+.navbar {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo */
+/* ===== LOGO PETCLINIC ===== */
+/* ===== LOGO PETCLINIC ===== */
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo span a {
+    font-size: 26px;
+    font-weight: 700;
+    color: #f97316;          /* cam chủ đạo */
+    text-decoration: none;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.logo span a:hover {
+    color: #ea580c;          /* cam đậm khi hover */
+}
+
+
+
+/* ================= MAIN NAV ================= */
+.main-nav {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Nav links */
+.main-nav > a,
+.main-nav .nav-item > a {
+    padding: 8px 14px;
+    text-decoration: none;
+    color: #f97316;
+    font-weight: 500;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    font-size: 16px;
+}
+.services-link .arrow {
+    opacity: 0;
+    visibility: hidden;
+    margin-left: 0;
+    transform: translateY(-2px);
+    transition: all 0.25s ease;
+}
+
+.nav-item:hover .services-link .arrow {
+    opacity: 1;
+    visibility: visible;
+    margin-left: 6px;
+    transform: translateY(0);
+}
+
+.main-nav > a:hover,
+.main-nav > a.active,
+.main-nav .nav-item > a:hover {
+    background: #fff7ed;
+    color: #f97316;
+}
+
+/* ================= DROPDOWN ================= */
+.nav-item {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 120%;
+    left: 0;
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+    background: #fff;
+    border-radius: 12px;
+    min-width: 210px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: all 0.2s ease;
+    z-index: 999;
+}
+
+/* Show dropdown on hover */
+.nav-item:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-menu li {
+    list-style: none;
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 10px 18px;
+    text-decoration: none;
+    color: #0f172a;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.dropdown-menu li a:hover {
+    background: #f1f5f9;
+    color: #0f9d75;
+    padding-left: 22px;
+}
+
+/* ================= AUTH ================= */
+.auth {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;   /* Bắt buộc để dropdown bám theo */
+}
+
+/* Icon user */
+.auth i {
+    font-size: 18px;
+    cursor: pointer;
+    color: #222;
+    padding: 6px;
+    border-radius: 50%;
+    transition: all 0.25s ease;
+}
+
+.auth i:hover {
+    background: #e8f7f2;
+    color: #0f9d75;
+}
+
+/* Login */
+.auth .login {
+    text-decoration: none;
+    color: #222;
+    padding: 8px 12px;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+}
+
+.auth .login:hover {
+    background: #e8f7f2;
+    color: #0f9d75;
+}
+
+/* Register */
+.auth .register {
+    background: #f97316;
+    color: #fff;
+    text-decoration: none;
+    padding: 9px 20px;
+    border-radius: 999px;
+    font-weight: 600;
+    box-shadow: 0 6px 16px rgba(15,157,117,0.3);
+    transition: all 0.25s ease;
+}
+
+.auth .register:hover {
+    background: #f97316;
+    transform: translateY(-2px);
+}
+
+/* ================= DROPDOWN USER ================= */
+
+.dropdown-user {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    background: #fff;
+    border-radius: 10px;
+    min-width: 160px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    list-style: none;
+    padding: 8px 0;
+    margin: 0;
+
+    /* Ẩn mặc định */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    z-index: 9999;
+}
+
+.dropdown-user li a {
+    display: block;
+    padding: 10px 16px;
+    color: #222;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.dropdown-user li a:hover {
+    background: #f1f5f9;
+    color: #0f9d75;
+}
+
+/* Hover icon thì hiện dropdown */
+.auth:hover .dropdown-user {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}

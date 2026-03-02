@@ -1,0 +1,103 @@
+package com.mycompany.catclinicproject.controller.managerController;
+
+import com.mycompany.catclinicproject.dao.homeDao.UserDao;
+import com.mycompany.catclinicproject.model.User;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
+
+@WebServlet(name = "authorController", urlPatterns = {"/author"})
+
+public class authorController extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("acc") == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        User user = (User) session.getAttribute("acc");
+        if (user.getRoleID() != 1) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        String userName = request.getParameter("userName");
+        String idRaw = request.getParameter("userID");
+        if (idRaw.equalsIgnoreCase("1")) {
+            session.setAttribute("error_account", "Can't update admin role");
+            response.sendRedirect("account");
+
+            return;
+        }
+        if (idRaw == null) {
+            response.sendRedirect("account");
+            return;
+        }
+
+        try {
+            int userID = Integer.parseInt(idRaw);
+            request.setAttribute("userID", userID);
+            request.setAttribute("userName", userName);
+            request.getRequestDispatcher("/WEB-INF/views/manager/authorAccount.jsp")
+                    .forward(request, response);
+
+        } catch (NumberFormatException e) {
+            response.sendRedirect("listAccount");
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        UserDao dao = new UserDao();
+
+        try {
+            int userID = Integer.parseInt(request.getParameter("userID"));
+            String roleName = request.getParameter("role");
+            if (roleName == null) {
+                session.setAttribute("error", "Please select a role.");
+                response.sendRedirect("author?userID=" + userID);
+                return;
+            }
+            if (roleName.equalsIgnoreCase("1")) {
+                session.setAttribute("error", "Can't update admin role");
+                response.sendRedirect("author?userID=" + userID);
+                return;
+            }
+            session.removeAttribute("error");
+            session.removeAttribute("success");
+
+            int newRoleID = dao.getRoleID(roleName);
+            int currentRoleID = dao.getRoleIdByUserId(userID);
+
+            if (newRoleID == currentRoleID) {
+                session.setAttribute("error", "User already has this role.");
+                response.sendRedirect("author?userID=" + userID);
+                return;
+            }
+
+            boolean updated = dao.updateUserRole(userID, newRoleID);
+
+            if (updated) {
+                session.setAttribute("success", "Role updated successfully.");
+            } else {
+                session.setAttribute("error", "Update failed.");
+            }
+
+            response.sendRedirect("author?userID=" + userID);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("error", "System error!");
+            response.sendRedirect("listAccount");
+        }
+    }
+}

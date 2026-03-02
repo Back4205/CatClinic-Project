@@ -1,0 +1,97 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f3f3f3;
+}
+
+/* SECTION */
+.service-detail-section {
+    padding: 100px 10%;
+}
+
+/* CONTAINER 2 COLUMN */
+.detail-container {
+    display: flex;
+    align-items: stretch;   /* Quan trọng */
+    gap: 80px;
+}
+
+/* LEFT CONTENT */
+.detail-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Đẩy button xuống đáy */
+}
+
+/* TEXT GROUP */
+.detail-text {
+    margin-top: 0;
+}
+
+.tag {
+    display: inline-block;
+    background: #e6efe9;
+    color: #f97316;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.detail-content h1 {
+    font-size: 52px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: #111;
+}
+
+.short-desc {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+.info p {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* BUTTON */
+.btn-booking {
+    align-self: flex-start;
+    background: #f97316;
+    color: white;
+    padding: 16px 45px;
+    font-size: 18px;
+    font-weight: 600;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.btn-booking:hover {
+    background: #ea580c;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(249, 115, 22, 0.35);
+}
+
+/* RIGHT IMAGE */
+.detail-image {
+    flex: 1;
+}
+
+.detail-image img {
+    width: 100%;
+    border-radius: 30px;
+    object-fit: cover;
+    height: 100%;
+}

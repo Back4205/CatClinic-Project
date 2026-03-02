@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #ffffff;
+    color: #333;
+    padding: 40px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 28px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+h2 {
+    margin-bottom: 24px;
+    color: #111;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    width: 35%;
+    background: #f97316;
+    color: #fff;
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+.status-active {
+    color: green;
+    font-weight: 600;
+}
+
+.status-inactive {
+    color: #999;
+    font-weight: 600;
+}
+
+.actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-edit {
+    background: #f97316;
+    color: white;
+}
+
+.btn-back {
+    border: 1px solid #f97316;
+    color: #f97316;
+}
