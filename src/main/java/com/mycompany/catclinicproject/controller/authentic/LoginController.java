@@ -59,7 +59,13 @@ public class LoginController extends HttpServlet {
 
             request.setAttribute("username", u);
             request.getRequestDispatcher("WEB-INF/views/auth/login.jsp").forward(request, response);
-        } else {
+        }else if (!account.isActive()) {
+            // Trường hợp 2: Đúng tài khoản, mật khẩu nhưng bị Admin khóa (isActive = 0)
+            request.setAttribute("mess", "Your account has been deactivated by Admin! Please contact support.");
+            request.setAttribute("username", u);
+            request.getRequestDispatcher("WEB-INF/views/auth/login.jsp").forward(request, response);
+        }
+        else {
 
             HttpSession session = request.getSession();
             session.setAttribute("acc", account);
@@ -88,7 +94,16 @@ public class LoginController extends HttpServlet {
                     response.sendRedirect("reception/home");
                     break;
                 case 4:
-                    response.sendRedirect("staff/tasks");
+                    String position = dao.getStaffPosition(account.getUserID());
+
+                    if ("Care".equalsIgnoreCase(position)) {
+                        response.sendRedirect("care/tasks"); // Chuyển về trang của Thảo
+                        break;
+                    }
+                    if("Technician".equalsIgnoreCase(position)) {
+                        response.sendRedirect("technician/dashboard"); // Thay bằng URL màn hình của Quí
+                        break;
+                    }
                     break;
                 case 5:
                       CategoryDao cdao = new CategoryDao();

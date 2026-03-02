@@ -10,7 +10,7 @@ import java.sql.Statement;
 public class UserDAO extends DBContext {
 
     public User checkLogin(String userOrEmail, String password) {
-        String sql = "SELECT * FROM Users WHERE (UserName = ? OR Email = ?) AND PassWord = ? AND IsActive = 1";
+        String sql = "SELECT * FROM Users WHERE (UserName = ? OR Email = ?) AND PassWord = ?";
         try {
             if (c == null || c.isClosed()) {
 
@@ -237,5 +237,23 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
         return false;
+    }
+    // Hàm lấy chức vụ (Position) của Staff dựa vào UserID
+    public String getStaffPosition(int userId) {
+        String sql = "SELECT Position FROM Staffs WHERE UserID = ?";
+        try {
+            if (c == null || c.isClosed()) {
+                new DBContext();
+            }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("Position");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +22,10 @@ public class CareStaffDAO extends DBContext {
         return -1;
     }
 
-    // Lấy danh sách mèo nội trú (Cột trái)
+    // Danh sách mèo đang nội trú
     public List<Map<String, Object>> getInpatientCats() {
         List<Map<String, Object>> list = new ArrayList<>();
-        String sql = "SELECT b.BookingID, b.CatID, c.Name AS CatName, c.Breed, c.Age, o.OwnerID, u.FullName AS OwnerName " +
+        String sql = "SELECT b.BookingID, b.CatID, c.Name AS CatName, c.Breed, c.Age, u.FullName AS OwnerName " +
                 "FROM Bookings b " +
                 "JOIN Cats c ON b.CatID = c.CatID " +
                 "JOIN Owners o ON c.OwnerID = o.OwnerID " +
@@ -49,12 +50,41 @@ public class CareStaffDAO extends DBContext {
         return list;
     }
 
-    // UC40 & UC42: Lấy danh sách Task và trạng thái Pending/Completed trong ngày HÔM NAY của 1 bé mèo
+    // UC: View Pet Details (Lấy toàn bộ thông tin chi tiết mèo và chủ)
+    public Map<String, Object> getPetDetail(int catId) {
+        Map<String, Object> map = new HashMap<>();
+        String sql = "SELECT c.Name, c.Breed, c.Age, c.Gender, c.Image, u.FullName, u.Phone, u.Email, o.Address " +
+                "FROM Cats c " +
+                "JOIN Owners o ON c.OwnerID = o.OwnerID " +
+                "JOIN Users u ON o.UserID = u.UserID " +
+                "WHERE c.CatID = ?";
+        try {
+            if (c == null || c.isClosed()) c = new DBContext().c;
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, catId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                map.put("CatName", rs.getString("Name"));
+                map.put("Breed", rs.getString("Breed"));
+                map.put("Age", rs.getInt("Age"));
+                // Xử lý Gender kiểu BIT
+                map.put("Gender", rs.getBoolean("Gender") ? "Male" : "Female");
+                map.put("OwnerName", rs.getString("FullName"));
+                map.put("Phone", rs.getString("Phone"));
+                map.put("Email", rs.getString("Email"));
+                map.put("Address", rs.getString("Address"));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return map;
+    }
+
+    // UC: View Care Task & Task Tracking (Lấy qua bảng trung gian)
     public List<Map<String, Object>> getDailyTasksStatus(int catId) {
         List<Map<String, Object>> list = new ArrayList<>();
         String sql = "SELECT t.CareTaskID, t.TaskName, " +
-                "(SELECT TOP 1 CareJID FROM CareJourneys j " +
-                " WHERE j.CareTaskID = t.CareTaskID AND j.CatID = ? " +
+                "(SELECT TOP 1 jd.CareJID FROM CareJourneys j " +
+                " JOIN CareJourney_Task_Detail jd ON j.CareJID = jd.CareJID " +
+                " WHERE jd.CareTaskID = t.CareTaskID AND j.CatID = ? " +
                 " AND CAST(j.RecordTime AS DATE) = CAST(GETDATE() AS DATE)) AS CompletedJID " +
                 "FROM CareTasks t";
         try {
@@ -66,8 +96,6 @@ public class CareStaffDAO extends DBContext {
                 Map<String, Object> map = new HashMap<>();
                 map.put("CareTaskID", rs.getInt("CareTaskID"));
                 map.put("TaskName", rs.getString("TaskName"));
-
-                // Nếu có log trong hôm nay -> Completed, Nếu không -> Pending
                 boolean isCompleted = rs.getInt("CompletedJID") > 0;
                 map.put("Status", isCompleted ? "Completed" : "Pending");
                 list.add(map);
@@ -76,12 +104,51 @@ public class CareStaffDAO extends DBContext {
         return list;
     }
 
-    // UC41: Lấy lịch sử Ghi chú (Observations Log) của 1 bé mèo
+    // UC: Record Care Diary (Thêm nhật ký & gán Task bằng Transaction 2 bảng)
+    public boolean addCareJourney(int catId, int bookingId, int staffId, int taskId, String note) {
+        String sqlJourney = "INSERT INTO CareJourneys (CatID, BookingID, RecordTime, StaffID, Note) VALUES (?, ?, GETDATE(), ?, ?)";
+        String sqlDetail = "INSERT INTO CareJourney_Task_Detail (CareJID, CareTaskID) VALUES (?, ?)";
+
+        try {
+            if (c == null || c.isClosed()) c = new DBContext().c;
+            c.setAutoCommit(false); // Bắt đầu Transaction
+
+            // 1. Insert vào CareJourneys
+            PreparedStatement ps1 = c.prepareStatement(sqlJourney, Statement.RETURN_GENERATED_KEYS);
+            ps1.setInt(1, catId);
+            ps1.setInt(2, bookingId);
+            ps1.setInt(3, staffId);
+            ps1.setString(4, note);
+            ps1.executeUpdate();
+
+            // 2. Lấy ID vừa tạo
+            ResultSet rs = ps1.getGeneratedKeys();
+            int careJID = 0;
+            if (rs.next()) careJID = rs.getInt(1);
+
+            // 3. Insert vào bảng trung gian
+            PreparedStatement ps2 = c.prepareStatement(sqlDetail);
+            ps2.setInt(1, careJID);
+            ps2.setInt(2, taskId);
+            ps2.executeUpdate();
+
+            c.commit(); // Lưu thay đổi
+            c.setAutoCommit(true);
+            return true;
+        } catch (Exception e) {
+            try { if (c != null) c.rollback(); } catch (Exception ex) {}
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Lấy lịch sử Record Care Diary
     public List<Map<String, Object>> getObservations(int catId) {
         List<Map<String, Object>> list = new ArrayList<>();
         String sql = "SELECT t.TaskName, j.RecordTime, j.Note, u.FullName AS StaffName " +
                 "FROM CareJourneys j " +
-                "JOIN CareTasks t ON j.CareTaskID = t.CareTaskID " +
+                "JOIN CareJourney_Task_Detail jd ON j.CareJID = jd.CareJID " +
+                "JOIN CareTasks t ON jd.CareTaskID = t.CareTaskID " +
                 "JOIN Staffs s ON j.StaffID = s.StaffID " +
                 "JOIN Users u ON s.UserID = u.UserID " +
                 "WHERE j.CatID = ? ORDER BY j.RecordTime DESC";
@@ -104,23 +171,6 @@ public class CareStaffDAO extends DBContext {
         return list;
     }
 
-    // Dùng chung cho UC41 (Log Entry) và UC42 (Mark Completed)
-    public boolean addCareJourney(int catId, int bookingId, int staffId, int taskId, String note) {
-        String sql = "INSERT INTO CareJourneys (CatID, BookingID, RecordTime, StaffID, CareTaskID, Note) VALUES (?, ?, GETDATE(), ?, ?, ?)";
-        try {
-            if (c == null || c.isClosed()) c = new DBContext().c;
-            PreparedStatement ps = c.prepareStatement(sql);
-            ps.setInt(1, catId);
-            ps.setInt(2, bookingId);
-            ps.setInt(3, staffId);
-            ps.setInt(4, taskId);
-            ps.setString(5, note);
-            return ps.executeUpdate() > 0;
-        } catch (Exception e) { e.printStackTrace(); }
-        return false;
-    }
-
-    // Lấy list CareTasks (dành cho popup Log)
     public List<Map<String, Object>> getAllCareTasks() {
         List<Map<String, Object>> list = new ArrayList<>();
         String sql = "SELECT CareTaskID, TaskName FROM CareTasks";

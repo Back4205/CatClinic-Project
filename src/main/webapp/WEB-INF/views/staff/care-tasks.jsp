@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <title>Care Tasks | Cat Clinic</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- LINK ĐẾN FILE CSS VỪA TẠO BÊN TRÊN -->
+    <!-- ĐÃ LINK GỌN GÀNG TỚI CSS ĐỘC LẬP -->
     <link href="${pageContext.request.contextPath}/css/carestaff-style.css" rel="stylesheet">
 </head>
 <body>
@@ -23,7 +23,7 @@
 
         <div class="cat-list">
             <c:forEach items="${inpatientCats}" var="cat">
-                <a href="${pageContext.request.contextPath}/staff/tasks?catId=${cat.CatID}&bookingId=${cat.BookingID}"
+                <a href="${pageContext.request.contextPath}/care/tasks?catId=${cat.CatID}&bookingId=${cat.BookingID}"
                    class="cat-item ${param.catId == cat.CatID ? 'active' : ''}">
                     <div class="cat-avatar"><i class="fa-solid fa-cat"></i></div>
                     <div class="cat-info">
@@ -44,11 +44,11 @@
     <!-- CỘT PHẢI: CHI TIẾT CHĂM SÓC -->
     <div class="main-content">
         <c:choose>
-            <c:when test="${empty selectedCat}">
+            <c:when test="${empty petDetail}">
                 <div style="text-align: center; margin-top: 150px; color: #9ca3af;">
                     <i class="fa-solid fa-hand-pointer" style="font-size: 50px; margin-bottom: 20px; color: #fdba74;"></i>
                     <h2>Select a Patient</h2>
-                    <p>Click on a hospitalized cat from the left menu to view their care schedule.</p>
+                    <p>Click on a hospitalized cat from the left menu to view their care tasks.</p>
                 </div>
             </c:when>
 
@@ -59,39 +59,39 @@
                         <div class="avatar-large"><i class="fa-solid fa-cat" style="color: white; font-size: 40px; margin: 20px;"></i></div>
                         <div>
                             <h2 style="margin: 0; font-size: 24px; color: #1f2937;">
-                                    ${selectedCat.CatName}
-                                <span style="background: #ffedd5; color: #ea580c; font-size: 11px; padding: 4px 8px; border-radius: 12px; vertical-align: middle; margin-left: 10px;">INPATIENT</span>
+                                    ${petDetail.CatName}
+                                <span style="background: #ffedd5; color: #ea580c; font-size: 11px; padding: 4px 8px; border-radius: 12px; margin-left: 10px;">INPATIENT</span>
                             </h2>
                             <p style="margin: 5px 0 10px 0; color: #6b7280; font-size: 14px;">
-                                    ${selectedCat.Breed} • ${selectedCat.Age} years • Owner: ${selectedCat.OwnerName}
+                                    ${petDetail.Breed} • ${petDetail.Age} years • Owner: ${petDetail.OwnerName}
                             </p>
-                        </div>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="background: #dcfce7; color: #059669; font-weight: 700; padding: 8px 20px; border-radius: 20px; font-size: 15px;">
-                            STATUS: STABLE
+                            <!-- NÚT BẤM CHO <<EXTEND>> VIEW PET DETAILS -->
+                            <button onclick="document.getElementById('petDetailModal').style.display='block'"
+                                    style="background: white; border: 1px solid #f97316; color: #f97316; padding: 5px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600;">
+                                <i class="fa-solid fa-address-card"></i> View Pet Details
+                            </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid-2">
-                    <!-- CỘT 1: CARE SCHEDULE (UC40 & UC42) -->
+                    <!-- CỘT 1: VIEW CARE TASK & TASK TRACKING -->
                     <div>
                         <h3 style="color: #f97316; margin-bottom: 20px; font-size: 18px;">
-                            <i class="fa-solid fa-clipboard-list"></i> Care Schedule (Today)
+                            <i class="fa-solid fa-clipboard-list"></i> View Care Task (Today)
                         </h3>
 
                         <c:forEach items="${dailyTasks}" var="task">
                             <div class="task-card">
-                                <form action="${pageContext.request.contextPath}/staff/tasks" method="POST" style="margin:0;">
+                                <form action="${pageContext.request.contextPath}/care/tasks" method="POST" style="margin:0;">
                                     <input type="hidden" name="action" value="markTask">
-                                    <input type="hidden" name="catId" value="${selectedCat.CatID}">
-                                    <input type="hidden" name="bookingId" value="${param.bookingId}">
+                                    <input type="hidden" name="catId" value="${selectedCatId}">
+                                    <input type="hidden" name="bookingId" value="${selectedBookingId}">
                                     <input type="hidden" name="taskId" value="${task.CareTaskID}">
 
-                                    <!-- UC42: NÚT CHECK HOÀN THÀNH -->
+                                    <!-- UC: TASK TRACKING (NÚT CHECK) -->
                                     <button type="submit" class="btn-check ${task.Status == 'Completed' ? 'completed' : ''}"
-                                        ${task.Status == 'Completed' ? 'disabled' : ''} title="Mark as Completed">
+                                        ${task.Status == 'Completed' ? 'disabled' : ''} title="Update status">
                                         <i class="fa-solid fa-check"></i>
                                     </button>
                                 </form>
@@ -105,18 +105,17 @@
                         </c:forEach>
                     </div>
 
-                    <!-- CỘT 2: OBSERVATIONS LOG (UC41) -->
+                    <!-- CỘT 2: RECORD CARE DIARY -->
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <h3 style="color: #f97316; font-size: 18px; margin: 0;">
-                                <i class="fa-solid fa-heart-pulse"></i> Observations Log
+                                <i class="fa-solid fa-heart-pulse"></i> Record Care Diary
                             </h3>
 
-                            <!-- FORM ADD LOG NHANH -->
-                            <form action="${pageContext.request.contextPath}/staff/tasks" method="POST" style="display: flex; gap: 10px;">
+                            <form action="${pageContext.request.contextPath}/care/tasks" method="POST" style="display: flex; gap: 10px;">
                                 <input type="hidden" name="action" value="addLog">
-                                <input type="hidden" name="catId" value="${selectedCat.CatID}">
-                                <input type="hidden" name="bookingId" value="${param.bookingId}">
+                                <input type="hidden" name="catId" value="${selectedCatId}">
+                                <input type="hidden" name="bookingId" value="${selectedBookingId}">
 
                                 <select name="taskId" style="padding: 6px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none;" required>
                                     <c:forEach items="${careTasks}" var="t">
@@ -124,13 +123,13 @@
                                     </c:forEach>
                                 </select>
 
-                                <input type="text" name="note" placeholder="Quick note..." style="padding: 6px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; width: 140px;" required>
+                                <input type="text" name="note" placeholder="Note behavior..." style="padding: 6px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; width: 140px;" required>
                                 <button type="submit" class="btn-orange">+ Add Log</button>
                             </form>
                         </div>
 
                         <c:if test="${empty observations}">
-                            <div style="text-align: center; color: #9ca3af; padding: 20px;">No observations recorded yet.</div>
+                            <div style="text-align: center; color: #9ca3af; padding: 20px;">No diaries recorded yet.</div>
                         </c:if>
 
                         <c:forEach items="${observations}" var="obs">
@@ -145,6 +144,22 @@
                         </c:forEach>
                     </div>
                 </div>
+
+                <!-- POPUP MODAL HTML -->
+                <div id="petDetailModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-btn" onclick="document.getElementById('petDetailModal').style.display='none'">&times;</span>
+                        <h2 style="color: #f97316; margin-bottom: 20px;"><i class="fa-solid fa-paw"></i> Pet Details</h2>
+                        <div class="detail-row"><strong>Name:</strong> <span>${petDetail.CatName}</span></div>
+                        <div class="detail-row"><strong>Breed:</strong> <span>${petDetail.Breed}</span></div>
+                        <div class="detail-row"><strong>Gender:</strong> <span>${petDetail.Gender}</span></div>
+                        <div class="detail-row"><strong>Age:</strong> <span>${petDetail.Age} years</span></div>
+                        <div class="detail-row"><strong>Owner Name:</strong> <span>${petDetail.OwnerName}</span></div>
+                        <div class="detail-row"><strong>Contact:</strong> <span>${petDetail.Phone} - ${petDetail.Email}</span></div>
+                        <div class="detail-row"><strong>Address:</strong> <span>${petDetail.Address}</span></div>
+                    </div>
+                </div>
+
             </c:otherwise>
         </c:choose>
     </div>
