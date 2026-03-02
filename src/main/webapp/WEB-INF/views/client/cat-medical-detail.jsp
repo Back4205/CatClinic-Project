@@ -28,7 +28,10 @@
 <div class="container">
 
     <c:set var="activePage" value="cats" />
-    <%@include file="sidebar.jsp" %>
+
+    <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID == 5}">
+        <%@include file="sidebar.jsp" %>
+    </c:if>
 
     <main class="content">
 

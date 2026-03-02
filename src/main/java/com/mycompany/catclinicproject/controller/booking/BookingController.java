@@ -223,7 +223,10 @@ public class BookingController extends HttpServlet {
                         Integer vetID = userDAO.getVetIDByUserID(vetUserID);
 
                         if (vetID != null) {
-                            List<TimeSlot> slotList = slotDAO.getSlotsNext7Days(vetID);
+                            java.sql.Date fromDate = java.sql.Date.valueOf(startDateStr);
+
+                            List<TimeSlot> slotList = slotDAO.getSlotsNext7Days1(vetID, fromDate);
+
                             request.setAttribute("slotList", slotList);
                         }
                     } catch (Exception e) {

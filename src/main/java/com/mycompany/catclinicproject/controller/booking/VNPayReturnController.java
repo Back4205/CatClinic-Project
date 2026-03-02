@@ -22,7 +22,7 @@ public class VNPayReturnController extends HttpServlet {
 
         try {
 
-            /* ========= 1. VERIFY ========= */
+            // VERIFY
             Map<String, String> fields = new HashMap<>();
             for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements();) {
                 String fieldName = params.nextElement();
@@ -41,7 +41,7 @@ public class VNPayReturnController extends HttpServlet {
                 return;
             }
 
-            /* ========= 2. LẤY DATA ========= */
+            //LẤY DATA
             String responseCode = request.getParameter("vnp_ResponseCode");
             String txnRef = request.getParameter("vnp_TxnRef");
             String amountStr = request.getParameter("vnp_Amount");
@@ -62,28 +62,28 @@ public class VNPayReturnController extends HttpServlet {
 
             int bookingID = invoice.getBookingID();
 
-            /* ========= 3. CANCEL ========= */
+            // CANCEL
             if ("24".equals(responseCode)) {
                 request.setAttribute("msg", "failed");
                 request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
                 return;
             }
 
-            /* ========= 4. FAIL ========= */
+            // 4. FAIL
             if (!"00".equals(responseCode)) {
                 request.setAttribute("msg", "failed");
                 request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
                 return;
             }
 
-            /* ========= 5. CHỐNG DOUBLE ========= */
+            // CHỐNG DOUBLE
             if (paymentDAO.isTransactionExists(transactionNo)) {
                 request.setAttribute("msg", "success");
                 request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
                 return;
             }
 
-            /* ========= 6. INSERT PAYMENT ========= */
+            // INSERT PAYMENT
 
             long amountPaid = Long.parseLong(amountStr) / 100;
 
@@ -125,7 +125,6 @@ public class VNPayReturnController extends HttpServlet {
                 // Thanh toán đủ 100%
                 invoiceDAO.updatePaymentStatus(invoiceID, "Paid");
 
-                // Booking đã confirm từ lần đầu rồi
             }
 
 

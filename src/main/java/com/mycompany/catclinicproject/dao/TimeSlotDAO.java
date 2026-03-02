@@ -84,4 +84,60 @@ public class TimeSlotDAO extends DBContext {
         return null;
     }
 
+    public List<TimeSlot> getSlotsNext7Days1(int vetID, Date fromDate) {
+
+        List<TimeSlot> list = new ArrayList<>();
+
+        boolean isToday = fromDate.toLocalDate()
+                .equals(java.time.LocalDate.now());
+
+        String sql;
+
+        if (isToday) {
+            sql =
+                    "SELECT * FROM TimeSlots " +
+                            "WHERE VetID = ? " +
+                            "AND Date BETWEEN ? AND DATEADD(DAY, 6, ?) " +
+                            "AND Status = N'Available' " +
+                            "AND (Date > CAST(GETDATE() AS DATE) " +
+                            "     OR (Date = CAST(GETDATE() AS DATE) " +
+                            "         AND StartTime > CAST(GETDATE() AS TIME))) " +
+                            "ORDER BY Date, StartTime";
+        } else {
+            sql =
+                    "SELECT * FROM TimeSlots " +
+                            "WHERE VetID = ? " +
+                            "AND Date BETWEEN ? AND DATEADD(DAY, 6, ?) " +
+                            "AND Status = N'Available' " +
+                            "ORDER BY Date, StartTime";
+        }
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setInt(1, vetID);
+            ps.setDate(2, fromDate);
+            ps.setDate(3, fromDate);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                TimeSlot slot = new TimeSlot();
+
+                slot.setSlotID(rs.getInt("SlotID"));
+                slot.setVetID(rs.getInt("VetID"));
+                slot.setSlotDate(rs.getDate("Date"));
+                slot.setStartTime(rs.getTime("StartTime"));
+                slot.setEndTime(rs.getTime("EndTime"));
+                slot.setStatus(rs.getString("Status"));
+
+                list.add(slot);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
 }
