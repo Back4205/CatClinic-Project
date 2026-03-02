@@ -32,7 +32,7 @@
                 <h2>BOOKING HISTORY</h2>
                 <p>MANAGEMENT LOG FOR MEDICAL AND GROOMING SERVICES.</p>
             </div>
-            <a href="booking-services" class="btn-new-booking">
+            <a href="${pageContext.request.contextPath}/Booking" class="btn-new-booking">
                 <i class="bi bi-plus-circle-fill"></i> New Booking
             </a>
         </div>
@@ -50,7 +50,7 @@
                 <div class="stat-icon icon-pending"><i class="bi bi-credit-card"></i></div>
                 <div class="stat-info">
                     <h3>${pendingPaymentCount}</h3>
-                    <p>Unpaid</p>
+                    <p>PendingPayment</p>
                 </div>
             </div>
 
@@ -104,7 +104,7 @@
 
                     <button type="submit" name="status" value="Confirmed"
                             class="${currentStatus == 'Confirmed' ? 'active' : ''}">
-                        UPCOMING
+                        CONFIRMED
                     </button>
 
                     <button type="submit" name="status" value="Cancelled"
@@ -166,7 +166,7 @@
                             ${b.status == 'Cancelled' ? 'status-cancelled' : ''}
                             ${b.status == 'In Progress' ? 'status-inprogress' : ''}
                             ${b.status == 'PendingPayment' ? 'status-pendingpayment' : ''}">
-                                ${b.status == 'PendingPayment' ? 'Unpaid' : b.status}
+                                ${b.status == 'PendingPayment' ? 'PendingPayment' : b.status}
                         </span>
                         </td>
 

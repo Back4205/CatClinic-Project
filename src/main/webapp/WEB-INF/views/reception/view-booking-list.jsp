@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/view-booking-list.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -17,14 +16,17 @@
 
 <div class="app-container">
     <c:set var="activePage" value="dashboard" scope="request" />
-
     <%@include file="sidebar.jsp" %>
 
     <main class="main-content">
+
+        <!-- TOP SEARCH -->
         <div class="top-bar">
             <form action="view-booking-list" method="GET" class="search-bar">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" name="searchQuery" value="${param.searchQuery}" placeholder="Search by cat name, phone, or owner...">
+                <input type="text" name="searchQuery"
+                       value="${param.searchQuery}"
+                       placeholder="Search by cat name, phone, or owner...">
             </form>
             <a href="counter-booking" class="btn-new-booking">+ New Booking</a>
         </div>
@@ -34,6 +36,7 @@
             <p>Welcome back, ${sessionScope.acc.fullName}. Here is your control center for today.</p>
         </div>
 
+        <!-- STAT CARDS (GIỮ NGUYÊN) -->
         <div class="stat-cards">
             <div class="stat-card card-blue">
                 <div class="stat-icon icon-blue"><i class="fa-regular fa-calendar-plus"></i></div>
@@ -67,12 +70,51 @@
             </div>
         </div>
 
+        <!-- TABLE SECTION -->
         <div class="table-section">
+
             <div class="table-header">
                 <h3>View Booking List</h3>
                 <p>Overview of today's patient flow</p>
             </div>
 
+            <!-- FIXED FILTER FORM (KHÔNG PHÁ LAYOUT) -->
+            <form action="view-booking-list" method="GET" class="filter-bar">
+
+                <input type="hidden" name="page" value="1">
+
+
+                <div class="filter-buttons">
+
+                    <button type="submit" name="status" value="ALL"
+                            class="${empty currentStatus || currentStatus == 'ALL' ? 'active' : ''}">
+                        ALL STATUS
+                    </button>
+
+                    <button type="submit" name="status" value="PendingPayment"
+                            class="${currentStatus == 'PendingPayment' ? 'active' : ''}">
+                        PENDING PAYMENT
+                    </button>
+
+                    <button type="submit" name="status" value="Completed"
+                            class="${currentStatus == 'Completed' ? 'active' : ''}">
+                        COMPLETED
+                    </button>
+
+                    <button type="submit" name="status" value="Confirmed"
+                            class="${currentStatus == 'Confirmed' ? 'active' : ''}">
+                        CONFIRMED
+                    </button>
+
+                    <button type="submit" name="status" value="Cancelled"
+                            class="${currentStatus == 'Cancelled' ? 'active' : ''}">
+                        CANCELLED
+                    </button>
+
+                </div>
+            </form>
+
+            <!-- TABLE -->
             <table class="modern-table">
                 <thead>
                 <tr>
@@ -83,6 +125,7 @@
                 </tr>
                 </thead>
                 <tbody>
+
                 <c:forEach items="${bookingList}" var="b">
                     <tr>
                         <td>
@@ -95,24 +138,37 @@
                             </div>
                         </td>
                         <td>
-                            <span class="date-text"><i class="fa-regular fa-calendar table-icon"></i>${b.appointmentDate}</span><br>
-                            <span class="time-text"><i class="fa-regular fa-clock table-icon"></i>${b.appointmentTime}</span>
+                            <span class="date-text">
+                                <i class="fa-regular fa-calendar table-icon"></i>${b.appointmentDate}
+                            </span><br>
+                            <span class="time-text">
+                                <i class="fa-regular fa-clock table-icon"></i>${b.appointmentTime}
+                            </span>
                         </td>
                         <td>
-                            <span class="badge ${b.status.toLowerCase().replace(' ', '-')}">${b.status}</span>
+                            <span class="badge ${b.status.toLowerCase().replace(' ', '-')}">
+                                    ${b.status}
+                            </span>
                         </td>
                         <td class="col-actions">
+
                             <c:if test="${b.status == 'Pending'}">
-                                <a href="update-status?id=${b.bookingID}&status=Confirmed" class="btn-text action-confirm">Confirm</a>
-                            </c:if>
-                            <c:if test="${b.status == 'Confirmed'}">
-                                <a href="update-status?id=${b.bookingID}&status=Waiting" class="btn-text action-checkin">Check-in</a>
+                                <a href="update-status?id=${b.bookingID}&status=Confirmed"
+                                   class="btn-text action-confirm">Confirm</a>
                             </c:if>
 
-                            <a href="appointment-detail?id=${b.bookingID}" class="btn-text">Details ></a>
+                            <c:if test="${b.status == 'Confirmed'}">
+                                <a href="update-status?id=${b.bookingID}&status=Waiting"
+                                   class="btn-text action-checkin">Check-in</a>
+                            </c:if>
+
+                            <a href="appointment-detail?id=${b.bookingID}"
+                               class="btn-text">Details ></a>
+
                         </td>
                     </tr>
                 </c:forEach>
+
                 <c:if test="${empty bookingList}">
                     <tr>
                         <td colspan="4" class="empty-message">
@@ -120,13 +176,40 @@
                         </td>
                     </tr>
                 </c:if>
+
                 </tbody>
             </table>
+
+            <!-- PAGINATION -->
+            <c:if test="${totalPage > 1}">
+                <div class="pagination-wrapper">
+                    <div class="pagination">
+
+                        <c:if test="${currentPage > 1}">
+                            <a href="view-booking-list?page=${currentPage - 1}&status=${currentStatus}&search=${currentSearch}"
+                               class="page-btn">«</a>
+                        </c:if>
+
+                        <c:forEach begin="1" end="${totalPage}" var="i">
+                            <a href="view-booking-list?page=${i}&status=${currentStatus}&search=${currentSearch}"
+                               class="page-btn ${i == currentPage ? 'active-page' : ''}">
+                                    ${i}
+                            </a>
+                        </c:forEach>
+
+                        <c:if test="${currentPage < totalPage}">
+                            <a href="view-booking-list?page=${currentPage + 1}&status=${currentStatus}&search=${currentSearch}"
+                               class="page-btn">»</a>
+                        </c:if>
+
+                    </div>
+                </div>
+            </c:if>
+
         </div>
     </main>
 </div>
 
 <%@include file="footer.jsp" %>
-
 </body>
 </html>

@@ -84,7 +84,7 @@
                         </c:when>
 
                     <c:when test="${booking.status == 'PendingPayment'}">
-                        <a href="pay-deposit?id=${booking.bookingID}" class="btn-custom btn-pay">
+                        <a href="${pageContext.request.contextPath}//vnpay?bookingID=${booking.bookingID}" class="btn-custom btn-pay">
                             <i class="bi bi-credit-card"></i> Pay Deposit Now
                         </a>
                     </c:when>

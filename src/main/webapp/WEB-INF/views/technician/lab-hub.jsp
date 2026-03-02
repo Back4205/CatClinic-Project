@@ -52,6 +52,8 @@
         <div class="queue-header">
             <h3><i class="fas fa-clock"></i> Laboratory Queue</h3>
         </div>
+
+        <!-- FILTER -->
         <div class="filter-tabs">
             <a href="lab-hub?status=All"
                class="filter-btn ${currentStatus == 'All' ? 'active' : ''}">
@@ -73,6 +75,8 @@
                 Completed
             </a>
         </div>
+
+        <!-- TABLE -->
         <table class="lab-table">
             <thead>
             <tr>
@@ -84,34 +88,86 @@
             </tr>
             </thead>
             <tbody>
+
             <c:forEach items="${labQueue}" var="t">
-            <tr>
-                <td class="cat-cell"><span class="avatar" style="width: 35px; height: 35px; background: #ffe0b2; color: #e65100; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; margin-right: 10px;">${t.catName.substring(0,1)}</span>
-                    <strong>${t.catName}</strong>
-                </td>
-                <td>${t.testName}</td>
-                <td>Dr. ${t.doctorName}</td>
-                <td>
-                    <span class="badge ${t.status.toLowerCase().replace(' ', '-')}">${t.status}</span>
-                </td>
-                <td>
-                    <c:choose>
-                        <c:when test="${t.status == 'Pending'}">
-                            <a href="${pageContext.request.contextPath}/technician/update-test?id=${t.testOrderID}&status=In-progress&filter=${currentStatus}"
-                               class="btn btn-orange">
-                                Start Test
-                            </a>                        </c:when>
-                        <c:otherwise>
-                            <a href="report-result?id=${t.testOrderID}" class="btn btn-blue">Report Result</a>
-                        </c:otherwise>
-                    </c:choose>
-                </td>
-            </tr>
+                <tr>
+                    <td class="cat-cell">
+                        <span class="avatar"
+                              style="width: 35px; height: 35px; background: #ffe0b2; color: #e65100; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; margin-right: 10px;">
+                                ${t.catName.substring(0,1)}
+                        </span>
+                        <strong>${t.catName}</strong>
+                    </td>
+                    <td>${t.testName}</td>
+                    <td>Dr. ${t.doctorName}</td>
+                    <td>
+                        <span class="badge ${t.status.toLowerCase().replace(' ', '-')}">
+                                ${t.status}
+                        </span>
+                    </td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${t.status == 'Pending'}">
+                                <a href="${pageContext.request.contextPath}/technician/update-test?id=${t.testOrderID}&status=In-progress&filter=${currentStatus}"
+                                   class="btn btn-orange">
+                                    Start Test
+                                </a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="report-result?id=${t.testOrderID}" class="btn btn-blue">
+                                    Report Result
+                                </a>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                </tr>
             </c:forEach>
+
+            <c:if test="${empty labQueue}">
+                <tr>
+                    <td colspan="5" style="text-align:center; padding:20px;">
+                        No records found.
+                    </td>
+                </tr>
+            </c:if>
+
             </tbody>
         </table>
+
+        <!-- PAGINATION -->
+        <c:if test="${totalPage > 1}">
+            <div style="margin-top:20px; text-align:center;">
+
+                <!-- Previous -->
+                <c:if test="${currentPage > 1}">
+                    <a href="lab-hub?page=${currentPage - 1}&status=${currentStatus}"
+                       class="filter-btn">
+                        «
+                    </a>
+                </c:if>
+
+                <!-- Page numbers -->
+                <c:forEach begin="1" end="${totalPage}" var="i">
+                    <a href="lab-hub?page=${i}&status=${currentStatus}"
+                       class="filter-btn ${i == currentPage ? 'active' : ''}">
+                            ${i}
+                    </a>
+                </c:forEach>
+
+                <!-- Next -->
+                <c:if test="${currentPage < totalPage}">
+                    <a href="lab-hub?page=${currentPage + 1}&status=${currentStatus}"
+                       class="filter-btn">
+                        »
+                    </a>
+                </c:if>
+
+            </div>
+        </c:if>
+
     </div>
 </div>
+
 <%@include file="footer.jsp" %>
 </body>
 </html>
