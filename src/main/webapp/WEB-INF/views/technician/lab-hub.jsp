@@ -114,7 +114,7 @@
                                 </a>
                             </c:when>
                             <c:otherwise>
-                                <a href="report-result?id=${t.testOrderID}" class="btn btn-blue">
+                                <a href="${pageContext.request.contextPath}/ReportResultController?id=${t.testOrderID}" class="btn btn-blue">
                                     Report Result
                                 </a>
                             </c:otherwise>

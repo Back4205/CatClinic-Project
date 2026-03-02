@@ -1,7 +1,9 @@
 package com.mycompany.catclinicproject.dao;
 
 import com.mycompany.catclinicproject.dao.DBContext;
+import com.mycompany.catclinicproject.model.Category;
 import com.mycompany.catclinicproject.model.LabTestDTO;
+import com.mycompany.catclinicproject.model.TestOrders;
 import java.sql.*;
 import java.util.*;
 
@@ -113,4 +115,59 @@ public class LabDAO extends DBContext {
         } catch (Exception e) { e.printStackTrace(); }
         return null;
     }
+    public TestOrders getTestOrderById(int testOrderID){
+        String sql = "select * from TestOrders where TestOrderID = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, testOrderID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                TestOrders d = new TestOrders();
+                d.setTestOrderID(rs.getInt("TestOrderID"));
+                d.setMedicalRecordID(rs.getInt("MedicalRecordID"));
+                d.setTestName(rs.getString("TestName"));
+                d.setResultName(rs.getString("ResultName"));
+                d.setResult(rs.getString("Result"));
+                d.setStatus(rs.getString("Status"));
+                d.setStaffID(rs.getInt("StaffID"));
+                return d;
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return null;
+    }
+//    public boolean saveDraft(int testOrderID, String resultName, String resultPath) {
+//        String sql = "UPDATE TestOrders SET ResultName = ?, Result = ? WHERE TestOrderID = ?";
+//        try (PreparedStatement ps = c.prepareStatement(sql)) {
+//            ps.setString(1, resultName);
+//            ps.setString(2, resultPath);
+//            ps.setInt(3, testOrderID);
+//            return ps.executeUpdate() > 0;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return false;
+//    }
+    public void saveDraft(int testOrderID, String resultName, String resultPath) {
+        String sql = "UPDATE TestOrders SET ResultName = ?, Result = ? WHERE TestOrderID = ?"          
+        ;
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, resultName);
+            ps.setString(2, resultPath);
+            ps.setInt(3, testOrderID);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public void submitResult(int testOrderID, String resultName, String resultPath) {
+    String sql = "UPDATE TestOrders SET ResultName = ?, Result = ?, Status = 'Completed' WHERE TestOrderID = ?";
+    try (PreparedStatement ps = c.prepareStatement(sql)) {
+        ps.setString(1, resultName);
+        ps.setString(2, resultPath);
+        ps.setInt(3, testOrderID);
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 }
