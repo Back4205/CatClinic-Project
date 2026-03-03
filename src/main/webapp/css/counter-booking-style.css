@@ -1,0 +1,57 @@
+.booking-container { padding: 20px; }
+.booking-grid { display: flex; gap: 30px; align-items: flex-start; }
+.booking-col {
+    flex: 1; background: var(--white); padding: 30px;
+    border-radius: 12px; border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.section-title {
+    font-size: 13px; font-weight: 700; text-transform: uppercase;
+    color: var(--text-dark); letter-spacing: 0.5px;
+    margin-bottom: 20px; border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+}
+
+.form-group { margin-bottom: 20px; }
+.form-label {
+    display: block; font-size: 12px; color: var(--text-muted);
+    margin-bottom: 8px; text-transform: uppercase; font-weight: 600;
+}
+.form-control {
+    width: 100%; padding: 12px 16px; border: 1px solid #e5e7eb;
+    border-radius: 8px; font-size: 14px; outline: none;
+    transition: 0.2s; background-color: #fff;
+}
+.form-control:focus {
+    border-color: var(--primary-orange);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+.row-flex { display: flex; gap: 20px; }
+
+
+.time-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+}
+.time-slot {
+    padding: 10px 0; text-align: center; border: 1px solid #e5e7eb;
+    border-radius: 6px; font-size: 13px; font-weight: 600;
+    color: var(--text-dark); cursor: pointer; transition: 0.2s; background: var(--white);
+}
+.time-slot:hover {
+    border-color: var(--primary-orange); color: var(--primary-orange);
+}
+.time-slot.active {
+    background: var(--primary-orange); color: var(--white);
+    border-color: var(--primary-orange);
+}
+
+.btn-submit-booking {
+    width: 100%; padding: 16px; background: var(--primary-orange);
+    color: var(--white); border: none; border-radius: 8px;
+    font-weight: 700; font-size: 14px; margin-top: 20px;
+    cursor: pointer; transition: 0.2s;
+}
+.btn-submit-booking:hover {
+    background: #ea580c; transform: translateY(-1px);
+}
