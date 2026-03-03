@@ -6,8 +6,10 @@
     <title>Receptionist Dashboard | CatClinic</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/base.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css">
+<%--    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css">--%>
+    <link href="${pageContext.request.contextPath}/css/receptiondashboard-style.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/view-booking-list.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
