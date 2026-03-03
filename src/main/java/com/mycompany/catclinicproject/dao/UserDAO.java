@@ -6,9 +6,121 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDAO extends DBContext {
 
+
+    public Integer getVetIDByUserID(int userId) {
+        String sql = "SELECT VetID FROM Veterinarians WHERE UserID = ?";
+
+        try (
+                PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("VetID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public List<User> getAllVeterinarians() {
+        List<User> vets = new ArrayList<>();
+        String sql = "SELECT u.*, v.ExperienceYear " +
+                "FROM Users u " +
+                "INNER JOIN Veterinarians v ON u.UserID = v.UserID " +
+                "WHERE u.RoleID = 2 AND u.IsActive = 1";
+
+        try (
+                PreparedStatement ps = c.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                User u = new User();
+                u.setUserID(rs.getInt("UserID"));
+                u.setUserName(rs.getString("UserName"));
+                u.setPassword(rs.getString("PassWord"));
+                u.setFullName(rs.getString("FullName"));
+                u.setMale(rs.getBoolean("Male"));
+                u.setEmail(rs.getString("Email"));
+                u.setRoleID(rs.getInt("RoleID"));
+                u.setActive(rs.getBoolean("IsActive"));
+                u.setPhone(rs.getString("Phone"));
+                u.setGoogleID(rs.getString("GoogleID"));
+                vets.add(u);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return vets;
+    }
+
+
+    public Integer getRandomStaffByPosition(String positionKeyword) {
+
+        String sql =
+                "SELECT TOP 1 s.StaffID " +
+                        "FROM Staffs s " +
+                        "INNER JOIN Users u ON s.UserID = u.UserID " +
+                        "WHERE s.Position LIKE ? " +
+                        "AND u.IsActive = 1 " +
+                        "ORDER BY NEWID()";  // NEWID() để random trong SQL Server
+
+        try (
+                PreparedStatement ps = c.prepareStatement(sql)) {
+
+
+            ps.setString(1, "%" + positionKeyword + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("StaffID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Thay bằng logger trong production
+        }
+
+        return null; // Không tìm thấy staff phù hợp
+    }
+
+    public List<User> getStaffByPosition(String position) {
+        String sql = " SELECT u.*FROM Users u JOIN Staffs s ON u.UserID = s.UserID WHERE s.Position = ? ";
+
+        List<User> list = new ArrayList<>();
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, position);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                User u = new User();
+                u.setUserID(rs.getInt("UserID"));
+                u.setUserName(rs.getString("UserName"));
+                u.setPassword(rs.getString("PassWord"));
+                u.setFullName(rs.getString("FullName"));
+                u.setMale(rs.getBoolean("Male"));
+                u.setEmail(rs.getString("Email"));
+                u.setRoleID(rs.getInt("RoleID"));
+                u.setActive(rs.getBoolean("IsActive"));
+                u.setPhone(rs.getString("Phone"));
+                u.setGoogleID(rs.getString("GoogleID"));
+
+                list.add(u);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
     public User checkLogin(String userOrEmail, String password) {
         String sql = "SELECT * FROM Users WHERE (UserName = ? OR Email = ?) AND PassWord = ? AND IsActive = 1";
         try {
@@ -187,4 +299,75 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
     }
+    // Hàm lấy chức vụ (Position) của Staff dựa vào UserID
+    public String getStaffPosition(int userId) {
+        String sql = "SELECT Position FROM Staffs WHERE UserID = ?";
+        try {
+            if (c == null || c.isClosed()) {
+                new DBContext();
+            }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("Position");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    // Hàm kiểm tra xem Email có tồn tại trong hệ thống không
+    public boolean checkEmailExists(String email) {
+        String sql = "SELECT UserID FROM Users WHERE Email = ?";
+        try {
+            if (c == null || c.isClosed()) {
+                new DBContext();
+            }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Hàm cập nhật mật khẩu mới theo Email
+    public boolean updatePasswordByEmail(String email, String newPassword) {
+        String sql = "UPDATE Users SET PassWord = ? WHERE Email = ?";
+        try {
+            if (c == null || c.isClosed()) {
+                new DBContext();
+            }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, newPassword);
+            ps.setString(2, email);
+            int result = ps.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    // Hàm kích hoạt tài khoản (Update IsActive = 1)
+    public boolean activateUser(String email) {
+        String sql = "UPDATE Users SET IsActive = 1 WHERE Email = ?";
+        try {
+            if (c == null || c.isClosed()) {
+                new DBContext();
+            }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, email);
+            int result = ps.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 }
