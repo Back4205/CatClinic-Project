@@ -120,16 +120,11 @@ public class DashboardController extends HttpServlet {
             }
         }
         // ===== GỌI DAO =====
-        int totalRecords = dao.countAssignCases(vetID, dateFrom, dateTo);
+        int totalRecords = dao.countAssignCases(vetID, dateFrom, dateTo, keyword);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
         List<AssignCaseDTO> assignList
                 = dao.getAssignCasesPaging(vetID, dateFrom, dateTo, keyword, page, pageSize);
-        int confirmedCount = dao.countByStatusWithDate(
-                vetID, "Completed", dateFrom, dateTo);
-        int inTreatmentCount = dao.countByStatusWithDate(
-                vetID, "In Treatment", dateFrom, dateTo);
-        int completedCount = dao.countByStatusWithDate(
-                vetID, "Completed", dateFrom, dateTo);
+    
         DateTimeFormatter formatter
                 = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy", Locale.ENGLISH);
         String bookingIDRaw = request.getParameter("bookingID");
@@ -146,9 +141,7 @@ public class DashboardController extends HttpServlet {
         }
         String formattedDate = today.format(formatter);
         request.setAttribute("todayDate", formattedDate);
-        request.setAttribute("confirmedCount", confirmedCount);
-        request.setAttribute("inTreatmentCount", inTreatmentCount);
-        request.setAttribute("completedCount", completedCount);
+       
         request.setAttribute("assignList", assignList);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);

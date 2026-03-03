@@ -60,69 +60,67 @@ public class TreatmentRecordController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-   @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-    HttpSession session = request.getSession();
-    User user = (User) session.getAttribute("acc");
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
 
-    if (user == null) {
-        response.sendRedirect("login.jsp");
-        return;
+        if (user == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        String dateFrom = request.getParameter("dateFrom");
+        String dateTo = request.getParameter("dateTo");
+
+        LocalDate today = LocalDate.now();
+        String todayStr = today.toString();
+
+        if (dateFrom == null || dateFrom.isEmpty()) {
+            dateFrom = todayStr;
+        }
+
+        if (dateTo == null || dateTo.isEmpty()) {
+            dateTo = todayStr;
+        }
+
+        if (dateFrom.compareTo(dateTo) > 0) {
+            String temp = dateFrom;
+            dateFrom = dateTo;
+            dateTo = temp;
+        }
+
+        int page = 1;
+        int pageSize = 5;
+
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            page = Integer.parseInt(pageParam);
+        }
+
+        BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
+        String keyword = request.getParameter("keyword");
+        String status = request.getParameter("status");
+        int vetID = dao.getVetIDByUserID(user.getUserID());
+        int totalRecords = dao.countAssignedCasesByVetID(vetID, keyword, status);
+        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+        List<AssignCaseDTO2> list
+                = dao.getAssignedCasesByVetID(vetID, keyword, status, page, pageSize);
+        request.setAttribute("assignedCases", list);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("dateFrom", dateFrom);
+        request.setAttribute("activePage", "assigned");
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("status", status);
+
+        request.setAttribute("dateTo", dateTo);
+
+        request.getRequestDispatcher("WEB-INF/views/veterinarian/treatmentrecords.jsp")
+                .forward(request, response);
     }
-
-    String dateFrom = request.getParameter("dateFrom");
-    String dateTo = request.getParameter("dateTo");
-
-    LocalDate today = LocalDate.now();
-    String todayStr = today.toString();
-
-    if (dateFrom == null || dateFrom.isEmpty()) {
-        dateFrom = todayStr;
-    }
-
-    if (dateTo == null || dateTo.isEmpty()) {
-        dateTo = todayStr;
-    }
-
-    if (dateFrom.compareTo(dateTo) > 0) {
-        String temp = dateFrom;
-        dateFrom = dateTo;
-        dateTo = temp;
-    }
-
-    int page = 1;
-    int pageSize = 5;
-
-    String pageParam = request.getParameter("page");
-    if (pageParam != null) {
-        page = Integer.parseInt(pageParam);
-    }
-
-    BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
-
-    int vetID = dao.getVetIDByUserID(user.getUserID());
-
-    int totalRecords = dao. countAssignedCases(vetID);
-    int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
-    String keyword = request.getParameter("keyword");
-            String status = request.getParameter("status");
-    List<AssignCaseDTO2> list =
-            dao.getAssignedCasesByVetID(vetID, keyword, status, page, pageSize);
-    request.setAttribute("assignedCases", list);
-    request.setAttribute("currentPage", page);
-    request.setAttribute("totalPages", totalPages);
-    request.setAttribute("dateFrom", dateFrom);
-    request.setAttribute("activePage", "assigned");
-    request.setAttribute("keyword", keyword);
-    request.setAttribute("status", status);
-
-    request.setAttribute("dateTo", dateTo);
-
-    request.getRequestDispatcher("WEB-INF/views/veterinarian/treatmentrecords.jsp")
-            .forward(request, response);
-}
 
     /**
      * Handles the HTTP <code>POST</code> method.

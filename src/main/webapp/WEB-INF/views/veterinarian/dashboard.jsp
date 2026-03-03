@@ -82,7 +82,7 @@
                                                     <td class="action-buttons">
                                                         <a href="addemr?&bookingID=${c.bookingID}" 
                                                            class="btn-start">
-                                                            Start
+                                                            EMR
                                                         </a>
                                                         <a href="DashboardController?bookingID=${c.bookingID}&page=${currentPage}&dateFrom=${dateFrom}&dateTo=${dateTo}" 
                                                            class="btn-detail">

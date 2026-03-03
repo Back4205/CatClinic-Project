@@ -82,54 +82,85 @@ public class BookingDaoVeterinarian extends DBContext {
         return -1;
     }
 
-    public int countAssignCases(
-            int vetID,
-            String dateFrom,
-            String dateTo) {
+   public int countAssignCases(
+        int vetID,
+        String dateFrom,
+        String dateTo,
+        String keyword) {
 
-        if (dateFrom == null || dateFrom.isEmpty()) {
-            dateFrom = null;
-        }
-        if (dateTo == null || dateTo.isEmpty()) {
-            dateTo = null;
-        }
+    int total = 0;
 
-        StringBuilder sql = new StringBuilder(
-                "SELECT COUNT(*) "
-                + "FROM Bookings b "
-                + "WHERE b.VetID = ? "
-                + "AND b.Status IN ('Confirmed','InTreatment','Completed') "
-        );
-
-        if (dateFrom != null && dateTo != null) {
-            sql.append("AND b.AppointmentDate BETWEEN ? AND ? ");
-        } else {
-            sql.append("AND b.AppointmentDate BETWEEN "
-                    + "DATEADD(MONTH, -1, CAST(GETDATE() AS DATE)) "
-                    + "AND CAST(GETDATE() AS DATE) ");
-        }
-
-        try (PreparedStatement ps = c.prepareStatement(sql.toString())) {
-
-            int index = 1;
-            ps.setInt(index++, vetID);
-
-            if (dateFrom != null && dateTo != null) {
-                ps.setString(index++, dateFrom);
-                ps.setString(index++, dateTo);
-            }
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return 0;
+    if (dateFrom == null || dateFrom.trim().isEmpty()) {
+        dateFrom = null;
     }
+
+    if (dateTo == null || dateTo.trim().isEmpty()) {
+        dateTo = null;
+    }
+
+    if (keyword == null || keyword.trim().isEmpty()) {
+        keyword = null;
+    }
+
+    StringBuilder sql = new StringBuilder(
+            "SELECT COUNT(*) "
+            + "FROM Bookings b "
+            + "JOIN Cats c ON b.CatID = c.CatID "
+            + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+            + "JOIN Users u ON o.UserID = u.UserID "
+            + "WHERE b.VetID = ? "
+            + "AND b.Status IN ('Confirmed','In Treatment','Completed') "
+    );
+
+    // Date filter
+    if (dateFrom != null && dateTo != null) {
+        sql.append("AND b.AppointmentDate BETWEEN ? AND ? ");
+    } else {
+        sql.append("AND b.AppointmentDate BETWEEN ")
+           .append("DATEADD(MONTH, -1, CAST(GETDATE() AS DATE)) ")
+           .append("AND CAST(GETDATE() AS DATE) ");
+    }
+
+    // Keyword filter
+    if (keyword != null) {
+        sql.append("AND (")
+           .append("CAST(b.BookingID AS VARCHAR) LIKE ? ")
+           .append("OR c.Name LIKE ? ")
+           .append("OR u.FullName LIKE ?) ");
+    }
+
+    try (PreparedStatement ps = c.prepareStatement(sql.toString())) {
+
+        int index = 1;
+
+        // 1. vetID
+        ps.setInt(index++, vetID);
+
+        // 2. Date
+        if (dateFrom != null && dateTo != null) {
+            ps.setString(index++, dateFrom);
+            ps.setString(index++, dateTo);
+        }
+
+        // 3. Keyword
+        if (keyword != null) {
+            String search = "%" + keyword + "%";
+            ps.setString(index++, search);
+            ps.setString(index++, search);
+            ps.setString(index++, search);
+        }
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            total = rs.getInt(1);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return total;
+}
 
     public List<AssignCaseDTO> getAssignCasesPaging(
             int vetID,
@@ -469,29 +500,76 @@ public class BookingDaoVeterinarian extends DBContext {
         return false;
     }
 
-    public int countAssignedCases(int vetID) {
+  public int countAssignedCasesByVetID(
+        int vetID,
+        String keyword,
+        String status) {
 
-        String sql
-                = "SELECT COUNT(*) "
-                + "FROM MedicalRecords mr "
-                + "JOIN Bookings b ON mr.BookingID = b.BookingID "
-                + "WHERE b.VetID = ?";
+    int total = 0;
 
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
+    if (keyword == null || keyword.trim().isEmpty()) {
+        keyword = null;
+    }
+    if (status == null || status.trim().isEmpty() || status.equals("ALL")) {
+        status = null;
+    }
 
-            ps.setInt(1, vetID);
-            ResultSet rs = ps.executeQuery();
+    StringBuilder sql = new StringBuilder(
+            "SELECT COUNT(*) "
+            + "FROM MedicalRecords mr "
+            + "JOIN Bookings b ON mr.BookingID = b.BookingID "
+            + "JOIN Cats c ON b.CatID = c.CatID "
+            + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+            + "JOIN Users u ON o.UserID = u.UserID "
+            + "WHERE b.VetID = ? "
+    );
 
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
+    // ===== STATUS FILTER =====
+    if (status != null) {
+        sql.append("AND mr.Status = ? ");
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+    // ===== SEARCH =====
+    if (keyword != null) {
+        sql.append("AND (")
+                .append("c.Name LIKE ? ")
+                .append("OR u.FullName LIKE ? ")
+                .append("OR u.Phone LIKE ? ")
+                .append("OR CAST(mr.MedicalRecordID AS VARCHAR) LIKE ? ")
+                .append(") ");
+    }
+
+    try (PreparedStatement ps = c.prepareStatement(sql.toString())) {
+
+        int index = 1;
+
+        ps.setInt(index++, vetID);
+
+        // status
+        if (status != null) {
+            ps.setString(index++, status);
         }
 
-        return 0;
+        // search
+        if (keyword != null) {
+            String search = "%" + keyword + "%";
+            ps.setString(index++, search);
+            ps.setString(index++, search);
+            ps.setString(index++, search);
+            ps.setString(index++, search);
+        }
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            total = rs.getInt(1);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return total;
+}
 
     public EMRDTO getEMRDetail(int medicalRecordID) {
 
