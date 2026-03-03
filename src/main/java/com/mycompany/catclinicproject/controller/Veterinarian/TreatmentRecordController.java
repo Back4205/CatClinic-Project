@@ -17,11 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.util.List;
-
-/**
- *
- * @author Son
- */
 @WebServlet(name = "AssignCaseController", urlPatterns = {"/assignedCases"})
 public class TreatmentRecordController extends HttpServlet {
 
@@ -63,7 +58,6 @@ public class TreatmentRecordController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("acc");
 
@@ -71,7 +65,6 @@ public class TreatmentRecordController extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
-
         String dateFrom = request.getParameter("dateFrom");
         String dateTo = request.getParameter("dateTo");
 
@@ -81,17 +74,14 @@ public class TreatmentRecordController extends HttpServlet {
         if (dateFrom == null || dateFrom.isEmpty()) {
             dateFrom = todayStr;
         }
-
         if (dateTo == null || dateTo.isEmpty()) {
             dateTo = todayStr;
         }
-
         if (dateFrom.compareTo(dateTo) > 0) {
             String temp = dateFrom;
             dateFrom = dateTo;
             dateTo = temp;
         }
-
         int page = 1;
         int pageSize = 5;
 
