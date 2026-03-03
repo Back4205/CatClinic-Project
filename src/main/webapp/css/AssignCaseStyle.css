@@ -288,3 +288,91 @@ a {
     font-size: 16px;
     letter-spacing: -2px; /* ép << sát lại */
 }
+/* Pagination */
+.pagination {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    background: white;
+    margin-left: 0px;
+    
+}
+.pagination {
+    margin-top: auto;
+}
+
+.pagination a {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4px;
+    border-radius: 8px;
+    color: #718096;
+    text-decoration: none;
+    border: 1px solid #edf2f7;
+}
+
+.pagination a.active-page {
+    background: #ff7a31;
+    color: white;
+    border-color: #ff7a31;
+}
+/* Container của các nút */
+.actions-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Khoảng cách giữa các nút */
+}
+
+/* Style chung cho các nút có chữ (EMR, Rx) */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Màu riêng cho nút EMR (Xanh dương nhạt) */
+.btn-emr {
+    background-color: #eef4ff;
+    color: #3b82f6;
+}
+
+.btn-emr:hover {
+    background-color: #dbeafe;
+}
+
+/* Màu riêng cho nút Rx (Cam nhạt) */
+.btn-rx {
+    background-color: #fff4ed;
+    color: #f97316;
+}
+
+.btn-rx:hover {
+    background-color: #ffedd5;
+}
+
+/* Style cho các icon đơn lẻ (X-ray, Blood test) */
+.btn-icon {
+    color: #94a3b8; /* Màu xám trung tính */
+    font-size: 18px;
+    text-decoration: none;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.btn-icon:hover {
+    color: #64748b;
+}
+
+/* Tinh chỉnh icon bên trong nút có chữ */
+.btn-action i {
+    font-size: 14px;
+}

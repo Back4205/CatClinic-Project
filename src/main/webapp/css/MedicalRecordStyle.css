@@ -487,3 +487,70 @@ form {
     color: #10b981;
     font-weight: 600;
 }
+/* Pagination */
+.pagination {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    background: white;
+    margin-left: 0px;
+    
+}
+.pagination {
+    margin-top: auto;
+}
+
+.pagination a {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4px;
+    border-radius: 8px;
+    color: #718096;
+    text-decoration: none;
+    border: 1px solid #edf2f7;
+}
+
+.pagination a.active-page {
+    background: #ff7a31;
+    color: white;
+    border-color: #ff7a31;
+}
+/* Container chứa nút để căn lề */
+.btn-wrapper {
+    margin: 20px 0;
+    display: flex;
+    justify-content: flex-start; /* Hoặc center tùy vị trí bạn muốn */
+}
+
+/* Style cho nút Medical Record History */
+.complete-btn {
+    display: inline-block;
+    padding: 10px 24px;
+    background-color: #ffffff; /* Nền trắng để nổi bật trên nền xám nhẹ */
+    color: #2563eb; /* Màu xanh dương giống trong hình */
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    border: 2px solid #2563eb;
+    border-radius: 8px; /* Bo góc hiện đại */
+    transition: all 0.3s ease; /* Hiệu ứng mượt mà */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    text-transform: uppercase; /* Chữ in hoa nhẹ nhàng */
+    letter-spacing: 0.5px;
+}
+
+/* Hiệu ứng khi di chuột vào (Hover) */
+.complete-btn:hover {
+    background-color: #2563eb; /* Đổi nền sang xanh */
+    color: #ffffff; /* Đổi chữ sang trắng */
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    transform: translateY(-2px); /* Nhấc nhẹ nút lên */
+}
+
+/* Hiệu ứng khi nhấn giữ (Active) */
+.complete-btn:active {
+    transform: translateY(0);
+}

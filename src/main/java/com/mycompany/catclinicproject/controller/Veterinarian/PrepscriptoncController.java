@@ -17,6 +17,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import static jakarta.ws.rs.core.Response.status;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,13 +72,14 @@ public class PrepscriptoncController extends HttpServlet {
         EMRDTO emr = dao.getEMRDetail(medicalRecordID);
         request.setAttribute("emr", emr);
         DrugDAO daod = new DrugDAO();
-
+        String status = dao.getStatusByMedicalRecordID(medicalRecordID);
+        request.setAttribute("status", status);
         List<DrugDTO> drugList = daod.getAllDrug();
         List<PrescriptionView> preList = daod.getPrescriptionByMedicalRecordID(medicalRecordID);
         request.setAttribute("drugList", drugList);
         request.setAttribute("prescriptionList", preList);
         request.setAttribute("medicalRecordID", medicalRecordID);
-    request.setAttribute("activePage", "assigned");
+        request.setAttribute("activePage", "assigned");
 
         request.getRequestDispatcher("WEB-INF/views/veterinarian/prescription.jsp")
                 .forward(request, response);
@@ -108,24 +111,30 @@ public class PrepscriptoncController extends HttpServlet {
             response.getWriter().println("Create Prescription failed!");
             return;
         }
-
+String status = null;
+        String action = request.getParameter("action");
+        if (action.equalsIgnoreCase("complete")) {
+            BookingDaoVeterinarian daob = new BookingDaoVeterinarian();
+            daob.completeMedicalRecord(medicalRecordID);
+             status = daob.getStatusByMedicalRecordID(medicalRecordID);
+           
+        }
         String[] drugIDs = request.getParameterValues("drugID");
 
         if (drugIDs != null) {
 
             for (String dID : drugIDs) {
                 response.getWriter().println("rong roi!" + dID);
-
                 int drugID = Integer.parseInt(dID);
-
                 String qRaw = request.getParameter("quantity_" + drugID);
-
                 if (qRaw == null || qRaw.isEmpty()) {
                     continue;
                 }
-
                 int quantity = Integer.parseInt(qRaw);
 
+                if (action.equalsIgnoreCase("complete")) {
+                    dao.updateStockAfterPrescription(drugID, quantity);
+                }
                 String instruction
                         = request.getParameter("instruction_" + drugID);
 
@@ -136,14 +145,13 @@ public class PrepscriptoncController extends HttpServlet {
                         instruction
                 );
             }
+
         } else {
             response.getWriter().println("rong roi!");
             return;
         }
 
-        // 👉 redirect lại EMR
-        response.sendRedirect("preController?medicalRecordID=" + medicalRecordID);
-
+     response.sendRedirect("preController?medicalRecordID=" + medicalRecordID + "&status=" + URLEncoder.encode(status, "UTF-8"));
     }
 
     /**

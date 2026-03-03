@@ -28,14 +28,28 @@
 
                     <!-- ===== FILTER ===== -->
                     <div class="filter-bar">
-                        <form method="get" action="DashboardController">
-                            <label>From:</label>
-                            <input type="date" name="dateFrom" value="${dateFrom}">
+                        <form method="get" action="DashboardController" class="filter-form">
 
-                            <label>To:</label>
-                            <input type="date" name="dateTo" value="${dateTo}">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text"
+                                       name="keyword"
+                                       placeholder="Search pet, owner, or ID..."
+                                       value="${keyword}">
+                            </div>
 
-                            <button type="submit">Filter</button>
+                            <div class="date-group">
+                                <label>From</label>
+                                <input type="date" name="dateFrom" value="${dateFrom}">
+                            </div>
+
+                            <div class="date-group">
+                                <label>To</label>
+                                <input type="date" name="dateTo" value="${dateTo}">
+                            </div>
+
+                            <button type="submit" class="filter-btn">Filter</button>
+
                         </form>
                     </div>
 
@@ -153,40 +167,34 @@
                 <!-- PAGINATION -->
                 <div class="pagination">
 
-                    <!-- Nút << (Previous block) -->
                     <c:if test="${currentPage > 1}">
-                        <a href="DashboardController?page=${currentPage - 1}&dateFrom=${dateFrom}&dateTo=${dateTo}">
+                        <a href="DashboardController?page=${currentPage - 1}&dateFrom=${dateFrom}&dateTo=${dateTo}&keyword=${keyword}">
                             &laquo;
                         </a>
                     </c:if>
 
-                    <!-- Tính startPage và endPage -->
                     <c:set var="startPage" value="${currentPage - 1}" />
                     <c:set var="endPage" value="${currentPage + 1}" />
 
-                    <!-- Fix nếu startPage < 1 -->
                     <c:if test="${startPage < 1}">
                         <c:set var="startPage" value="1"/>
                         <c:set var="endPage" value="${startPage + 2}"/>
                     </c:if>
 
-                    <!-- Fix nếu endPage > totalPages -->
                     <c:if test="${endPage > totalPages}">
                         <c:set var="endPage" value="${totalPages}"/>
                         <c:set var="startPage" value="${endPage - 2 > 0 ? endPage - 2 : 1}"/>
                     </c:if>
 
-                    <!-- Hiển thị tối đa 3 trang -->
                     <c:forEach begin="${startPage}" end="${endPage}" var="i">
-                        <a href="DashboardController?page=${i}&dateFrom=${dateFrom}&dateTo=${dateTo}"
+                        <a href="DashboardController?page=${i}&dateFrom=${dateFrom}&dateTo=${dateTo}&keyword=${keyword}"
                            class="${i == currentPage ? 'active-page' : ''}">
                             ${i}
                         </a>
                     </c:forEach>
 
-                    <!-- Nút >> (Next block) -->
                     <c:if test="${currentPage < totalPages}">
-                        <a href="DashboardController?page=${currentPage + 1}&dateFrom=${dateFrom}&dateTo=${dateTo}">
+                        <a href="DashboardController?page=${currentPage + 1}&dateFrom=${dateFrom}&dateTo=${dateTo}&keyword=${keyword}">
                             &raquo;
                         </a>
                     </c:if>

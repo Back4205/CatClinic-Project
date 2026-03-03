@@ -62,11 +62,14 @@ public class EmrController extends HttpServlet {
         String idParam = request.getParameter("medicalRecordID");
 
         try {
+            
             int medicalRecordID = Integer.parseInt(idParam);
             BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
             EMRDTO emr = dao.getEMRDetail(medicalRecordID);
+            int catID = dao.getCatIDByMedicalRecordID(medicalRecordID);
             request.setAttribute("emr", emr);
             request.setAttribute("activePage", "assigned");
+            request.setAttribute("catId", catID);
 
             request.getRequestDispatcher("WEB-INF/views/veterinarian/medicalrecord.jsp")
                     .forward(request, response);

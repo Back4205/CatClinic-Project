@@ -59,51 +59,60 @@ public class TestListController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+   
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
 
-    
-    HttpSession session = request.getSession();
-    User user = (User) session.getAttribute("acc");
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("acc") : null;
 
-    if (user == null) {
-        response.sendRedirect("login.jsp");
-        return;
+        if (user == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
+        BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
+        int vetID = dao.getVetIDByUserID(user.getUserID());
+
+        String keyword = request.getParameter("keyword");
+        String status = request.getParameter("status");
+
+        int page = 1;
+        int pageSize =5;
+        String pageParam = request.getParameter("page");
+
+        if (pageParam != null) {
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (Exception e) {
+                page = 1;
+            }
+        }
+
+        if (page < 1) page = 1;
+
+
+        int totalRecord = dao.countTestOrdersByVetID(vetID, keyword, status);
+        int totalPages = (int) Math.ceil((double) totalRecord / pageSize);
+
+        if (totalPages > 0 && page > totalPages) {
+            page = totalPages;
+        }
+
+        List<TestOrderViewDTO> list =
+                dao.getTestOrdersByVetID(vetID, keyword, status, page, pageSize);
+
+        request.setAttribute("testList", list);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("status", status);
+
+        request.getRequestDispatcher("WEB-INF/views/veterinarian/testrequest.jsp")
+                .forward(request, response);
     }
-    BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
 
-    int vetID = dao.getVetIDByUserID(user.getUserID());
-
-    int page = 1;
-    int pageSize = 5;
-
-    String pageParam = request.getParameter("page");
-
-    if (pageParam != null) {
-        page = Integer.parseInt(pageParam);
-    }
-
-
-    List<TestOrderViewDTO> list =
-            dao.getTestOrdersByVetID(vetID, page, pageSize);
-
-    int totalRecord = dao.countTestOrdersByVetID(vetID);
-
-    int totalPage = totalRecord / pageSize;
-    if (totalRecord % pageSize != 0) {
-        totalPage++;
-    }
-
-    request.setAttribute("testList", list);
-    request.setAttribute("currentPage", page);
-    request.setAttribute("totalPage", totalPage);
-        request.setAttribute("activePage", "testlist");
-
-
-    request.getRequestDispatcher("WEB-INF/views/veterinarian/testrequest.jsp")
-            .forward(request, response);
-}
 
     /**
      * Handles the HTTP <code>POST</code> method.

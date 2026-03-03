@@ -186,10 +186,11 @@
                             <form action="bloodtest" method="get">
                                 <input type="hidden" name="medicalRecordID"
                                        value="${emr.medicalRecordID}" />
+                               
                                 <input type="hidden" name="action" value="saveNext" />
 
                                 <button type="submit" class="btn-floating btn-next">
-                                    Save & Next <i class="fa fa-arrow-right"></i>
+                                    Next <i class="fa fa-arrow-right"></i> Blood Test
                                 </button>
                             </form>
 

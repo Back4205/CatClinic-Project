@@ -85,7 +85,8 @@ public class DashboardController extends HttpServlet {
             response.sendRedirect("login");
             return;
         }
-
+        String keyword = request.getParameter("keyword");
+        request.setAttribute("keyword", keyword);
         String dateFrom = request.getParameter("dateFrom");
         String dateTo = request.getParameter("dateTo");
 
@@ -106,7 +107,7 @@ public class DashboardController extends HttpServlet {
                 dateTo = temp;
             }
         }
-        
+
         int page = 1;
         int pageSize = 5;
 
@@ -122,7 +123,7 @@ public class DashboardController extends HttpServlet {
         int totalRecords = dao.countAssignCases(vetID, dateFrom, dateTo);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
         List<AssignCaseDTO> assignList
-                = dao.getAssignCasesPaging(vetID, dateFrom, dateTo, page, pageSize);
+                = dao.getAssignCasesPaging(vetID, dateFrom, dateTo, keyword, page, pageSize);
         int confirmedCount = dao.countByStatusWithDate(
                 vetID, "Completed", dateFrom, dateTo);
         int inTreatmentCount = dao.countByStatusWithDate(
@@ -151,7 +152,6 @@ public class DashboardController extends HttpServlet {
         request.setAttribute("assignList", assignList);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
-        
         request.setAttribute("dateFrom", dateFrom);
         request.setAttribute("dateTo", dateTo);
         request.setAttribute("activePage", "dashboard");

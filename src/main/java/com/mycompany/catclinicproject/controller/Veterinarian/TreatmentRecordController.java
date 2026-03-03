@@ -116,7 +116,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
     request.setAttribute("dateFrom", dateFrom);
     request.setAttribute("activePage", "assigned");
     request.setAttribute("keyword", keyword);
-        request.setAttribute("status", status);
+    request.setAttribute("status", status);
 
     request.setAttribute("dateTo", dateTo);
 

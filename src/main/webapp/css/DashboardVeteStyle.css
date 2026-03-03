@@ -7,7 +7,7 @@
 }
 
 body {
-    background: #f5efe8;
+    background: #fff;
 }
 
 a {
@@ -202,6 +202,7 @@ a {
     border-radius: 15px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    height: 420px;
 }
 
 .case-detail-card {
@@ -212,7 +213,15 @@ a {
     border-top: 4px solid #FF8C00;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
-
+.case-table-card h3,
+.case-detail-card h3 {
+    font-size: 21px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    color: #e67e22;
+}
 /* ================= TABLE ================= */
 .case-table-card table {
     width: 100%;
@@ -400,46 +409,131 @@ a {
     border-bottom: 1px solid #eee;
 }/* ===== PAGINATION WHITE - ORANGE THEME ===== */
 
+/* Pagination */
 .pagination {
-    margin-top: 30px;
-    text-align: center;
-}
-
-/* Nút chung */
-.pagination a {
-    display: inline-block;
-    min-width: 38px;
-    padding: 8px 12px;
-    margin: 0 5px;
-    border-radius: 12px;
-
+    padding: 20px;
+    display: flex;
+    justify-content: center;
     background: white;
-    color: #ff8c00;              /* cam chủ đạo */
-    border: 2px solid #ff8c00;
+    margin-left: 0px;
+    
+}
+.pagination {
+    margin-top: auto;
+}
 
+.pagination a {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4px;
+    border-radius: 8px;
+    color: #718096;
     text-decoration: none;
-    font-weight: 600;
-    transition: all 0.25s ease;
+    border: 1px solid #edf2f7;
 }
 
-/* Hover */
-.pagination a:hover {
-    background: #ff8c00;
+.pagination a.active-page {
+    background: #ff7a31;
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(255,140,0,0.3);
+    border-color: #ff7a31;
+}
+.filter-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-/* Trang đang active */
-.active-page {
-    background: #ff8c00 !important;
-    color: white !important;
-    box-shadow: 0 4px 12px rgba(255,140,0,0.4);
+/* ===== SEARCH BOX ===== */
+.search-box {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
 }
 
-/* Nút << >> */
-.pagination a:first-child,
-.pagination a:last-child {
-    font-weight: bold;
-    padding: 8px 14px;
+.search-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 14px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 12px 10px 35px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* ===== DATE GROUP ===== */
+.date-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 150px;
+}
+
+.date-group label {
+    font-size: 13px;
+    color: #555;
+}
+
+.date-group input {
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.date-group input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* ===== BUTTON ===== */
+.filter-btn {
+    padding: 9px 18px;
+    background: #4CAF50;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.filter-btn:hover {
+    background: #43a047;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-btn {
+        width: 100%;
+    }
+}
+/* ===== FILTER BAR ===== */
+.filter-bar {
+    background: #fff;   /* trùng màu body */
+    padding: 0px 2px;
+    border-radius: 10px;
+    margin-top: 13px;
+    box-shadow: none;      /* bỏ shadow cho đồng màu */
 }

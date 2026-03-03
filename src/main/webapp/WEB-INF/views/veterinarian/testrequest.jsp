@@ -8,11 +8,12 @@
 
         <link rel="stylesheet" href="css/DashboardVeteStyle.css">
         <link href="css/sidebar.css" rel="stylesheet">
-        <link href="css/TestRequestStyle.css" rel="stylesheet" type="text/css"/>
         <link href="css/headerVeteStyle.css" rel="stylesheet">
         <link href="css/EMRStyle.css" rel="stylesheet">
         <link href="css/MedicalRecordStyle.css" rel="stylesheet" type="text/css"/>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+        <link href="css/TestRequestStyle.css" rel="stylesheet" type="text/css"/>
+
     </head>
 
     <body>
@@ -24,6 +25,9 @@
                 <jsp:include page="header.jsp"/>
 
                 <div class="emr-container">
+                    <div class="page-title">
+                        <h2>REQUEST TEST LAB</h2>
+                    </div>
                     <div class="filter-bar">
                         <form action="testlist" method="get">
 
@@ -50,12 +54,6 @@
                         </form>
                     </div>
                     <div class="emr-card">
-
-                        <div class="emr-header">
-                            <h1>LAB TEST ORDERS</h1>
-                        </div>
-
-
                         <table class="custom-table">
                             <thead>
                                 <tr>
@@ -126,14 +124,46 @@
                         </table>
 
                         <!-- ===== PAGINATION ===== -->
-                        <div class="pagination">
-                            <c:forEach begin="1" end="${totalPage}" var="i">
-                                <a href="testlist?page=${i}"
-                                   class="${i == currentPage ? 'active-page' : ''}">
-                                    ${i}
-                                </a>
-                            </c:forEach>
-                        </div>
+
+
+                    </div>
+                    <div class="pagination">
+
+                        <c:set var="startPage" value="${currentPage - 1}" />
+                        <c:set var="endPage" value="${currentPage + 1}" />
+
+                        <c:if test="${startPage < 1}">
+                            <c:set var="startPage" value="1" />
+                            <c:set var="endPage" value="3" />
+                        </c:if>
+
+                        <c:if test="${endPage > totalPages}">
+                            <c:set var="endPage" value="${totalPages}" />
+                            <c:set var="startPage" value="${totalPages - 2}" />
+                        </c:if>
+
+                        <c:if test="${startPage < 1}">
+                            <c:set var="startPage" value="1" />
+                        </c:if>
+
+                        <c:if test="${startPage > 1}">
+                            <a href="testlist?page=${startPage - 1}&status=${statusFilter}&keyword=${keyword}">
+                                &laquo;
+                            </a>
+                        </c:if>
+
+                        <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                            <a href="testlist?page=${i}&status=${statusFilter}&keyword=${keyword}"
+                               class="${i == currentPage ? 'active-page' : ''}">
+                                ${i}
+                            </a>
+                        </c:forEach>
+
+                        <c:if test="${endPage < totalPages}">
+                            <a href="testlist?page=${endPage + 1}&status=${statusFilter}&keyword=${keyword}">
+                                &raquo;
+                            </a>
+                        </c:if>
 
                     </div>
                 </div>

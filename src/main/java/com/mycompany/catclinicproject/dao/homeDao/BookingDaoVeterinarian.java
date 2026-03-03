@@ -135,17 +135,23 @@ public class BookingDaoVeterinarian extends DBContext {
             int vetID,
             String dateFrom,
             String dateTo,
+            String keyword,
             int page,
             int pageSize) {
 
         List<AssignCaseDTO> list = new ArrayList<>();
         int offset = (page - 1) * pageSize;
 
-        if (dateFrom == null || dateFrom.isEmpty()) {
+        if (dateFrom == null || dateFrom.trim().isEmpty()) {
             dateFrom = null;
         }
-        if (dateTo == null || dateTo.isEmpty()) {
+
+        if (dateTo == null || dateTo.trim().isEmpty()) {
             dateTo = null;
+        }
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            keyword = null;
         }
 
         StringBuilder sql = new StringBuilder(
@@ -158,12 +164,21 @@ public class BookingDaoVeterinarian extends DBContext {
                 + "AND b.Status IN ('Confirmed','In Treatment','Completed') "
         );
 
+        // Date filter
         if (dateFrom != null && dateTo != null) {
             sql.append("AND b.AppointmentDate BETWEEN ? AND ? ");
         } else {
-            sql.append("AND b.AppointmentDate BETWEEN "
-                    + "DATEADD(MONTH, -1, CAST(GETDATE() AS DATE)) "
-                    + "AND CAST(GETDATE() AS DATE) ");
+            sql.append("AND b.AppointmentDate BETWEEN ")
+                    .append("DATEADD(MONTH, -1, CAST(GETDATE() AS DATE)) ")
+                    .append("AND CAST(GETDATE() AS DATE) ");
+        }
+
+        // Keyword search
+        if (keyword != null) {
+            sql.append("AND (")
+                    .append("CAST(b.BookingID AS VARCHAR) LIKE ? ")
+                    .append("OR c.Name LIKE ? ")
+                    .append("OR u.FullName LIKE ?) ");
         }
 
         sql.append("ORDER BY b.AppointmentDate DESC ");
@@ -172,13 +187,25 @@ public class BookingDaoVeterinarian extends DBContext {
         try (PreparedStatement ps = c.prepareStatement(sql.toString())) {
 
             int index = 1;
+
+            // 1. vetID
             ps.setInt(index++, vetID);
 
+            // 2. Date
             if (dateFrom != null && dateTo != null) {
                 ps.setString(index++, dateFrom);
                 ps.setString(index++, dateTo);
             }
 
+            // 3. Keyword
+            if (keyword != null) {
+                String search = "%" + keyword + "%";
+                ps.setString(index++, search);
+                ps.setString(index++, search);
+                ps.setString(index++, search);
+            }
+
+            // 4. Pagination
             ps.setInt(index++, offset);
             ps.setInt(index++, pageSize);
 
@@ -252,103 +279,107 @@ public class BookingDaoVeterinarian extends DBContext {
     }
 
     public List<AssignCaseDTO2> getAssignedCasesByVetID(
-        int vetID,
-        String keyword,
-        String status,
-        int page,
-        int pageSize) {
+            int vetID,
+            String keyword,
+            String status,
+            int page,
+            int pageSize) {
 
-    List<AssignCaseDTO2> list = new ArrayList<>();
-    int offset = (page - 1) * pageSize;
+        List<AssignCaseDTO2> list = new ArrayList<>();
+        int offset = (page - 1) * pageSize;
 
-    if (keyword == null || keyword.trim().isEmpty()) keyword = null;
-    if (status == null || status.trim().isEmpty() || status.equals("ALL")) status = null;
+        if (keyword == null || keyword.trim().isEmpty()) {
+            keyword = null;
+        }
+        if (status == null || status.trim().isEmpty() || status.equals("ALL")) {
+            status = null;
+        }
 
-    StringBuilder sql = new StringBuilder(
-            "SELECT "
-            + "mr.MedicalRecordID, "
-            + "c.Name AS CatName, "
-            + "c.Breed, "
-            + "u.FullName, "
-            + "u.Phone, "
-            + "b.Note, "
-            + "b.AppointmentDate, "
-            + "mr.Status, "
-            + "mr.Diagnosis "
-            + "FROM MedicalRecords mr "
-            + "JOIN Bookings b ON mr.BookingID = b.BookingID "
-            + "JOIN Cats c ON b.CatID = c.CatID "
-            + "JOIN Owners o ON c.OwnerID = o.OwnerID "
-            + "JOIN Users u ON o.UserID = u.UserID "
-            + "WHERE b.VetID = ? "
-    );
+        StringBuilder sql = new StringBuilder(
+                "SELECT "
+                + "mr.MedicalRecordID, "
+                + "c.Name AS CatName, "
+                + "c.Breed, "
+                + "u.FullName, "
+                + "u.Phone, "
+                + "b.Note, "
+                + "b.AppointmentDate, "
+                + "mr.Status, "
+                + "mr.Diagnosis "
+                + "FROM MedicalRecords mr "
+                + "JOIN Bookings b ON mr.BookingID = b.BookingID "
+                + "JOIN Cats c ON b.CatID = c.CatID "
+                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+                + "JOIN Users u ON o.UserID = u.UserID "
+                + "WHERE b.VetID = ? "
+        );
 
-    // ===== STATUS FILTER =====
-    if (status != null) {
-        sql.append("AND mr.Status = ? ");
-    }
-
-    // ===== SEARCH =====
-    if (keyword != null) {
-        sql.append("AND (")
-           .append("c.Name LIKE ? ")
-           .append("OR u.FullName LIKE ? ")
-           .append("OR u.Phone LIKE ? ")
-           .append("OR CAST(mr.MedicalRecordID AS VARCHAR) LIKE ? ")
-           .append(") ");
-    }
-
-    sql.append("ORDER BY mr.MedicalRecordID DESC ");
-    sql.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
-
-    try (PreparedStatement ps = c.prepareStatement(sql.toString())) {
-
-        int index = 1;
-
-        ps.setInt(index++, vetID);
-
-        // status
+        // ===== STATUS FILTER =====
         if (status != null) {
-            ps.setString(index++, status);
+            sql.append("AND mr.Status = ? ");
         }
 
-        // search
+        // ===== SEARCH =====
         if (keyword != null) {
-            String search = "%" + keyword + "%";
-            ps.setString(index++, search);
-            ps.setString(index++, search);
-            ps.setString(index++, search);
-            ps.setString(index++, search);
+            sql.append("AND (")
+                    .append("c.Name LIKE ? ")
+                    .append("OR u.FullName LIKE ? ")
+                    .append("OR u.Phone LIKE ? ")
+                    .append("OR CAST(mr.MedicalRecordID AS VARCHAR) LIKE ? ")
+                    .append(") ");
         }
 
-        // paging
-        ps.setInt(index++, offset);
-        ps.setInt(index++, pageSize);
+        sql.append("ORDER BY mr.MedicalRecordID DESC ");
+        sql.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
 
-        ResultSet rs = ps.executeQuery();
+        try (PreparedStatement ps = c.prepareStatement(sql.toString())) {
 
-        while (rs.next()) {
-            AssignCaseDTO2 dto = new AssignCaseDTO2();
+            int index = 1;
 
-            dto.setMedicalRecordID(rs.getInt("MedicalRecordID"));
-            dto.setCatName(rs.getString("CatName"));
-            dto.setBreed(rs.getString("Breed"));
-            dto.setOwnerName(rs.getString("FullName"));
-            dto.setPhone(rs.getString("Phone"));
-            dto.setNote(rs.getString("Note"));
-            dto.setAppointmentDate(rs.getString("AppointmentDate"));
-            dto.setStatus(rs.getString("Status"));
-            dto.setDiagnosis(rs.getString("Diagnosis"));
+            ps.setInt(index++, vetID);
 
-            list.add(dto);
+            // status
+            if (status != null) {
+                ps.setString(index++, status);
+            }
+
+            // search
+            if (keyword != null) {
+                String search = "%" + keyword + "%";
+                ps.setString(index++, search);
+                ps.setString(index++, search);
+                ps.setString(index++, search);
+                ps.setString(index++, search);
+            }
+
+            // paging
+            ps.setInt(index++, offset);
+            ps.setInt(index++, pageSize);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                AssignCaseDTO2 dto = new AssignCaseDTO2();
+
+                dto.setMedicalRecordID(rs.getInt("MedicalRecordID"));
+                dto.setCatName(rs.getString("CatName"));
+                dto.setBreed(rs.getString("Breed"));
+                dto.setOwnerName(rs.getString("FullName"));
+                dto.setPhone(rs.getString("Phone"));
+                dto.setNote(rs.getString("Note"));
+                dto.setAppointmentDate(rs.getString("AppointmentDate"));
+                dto.setStatus(rs.getString("Status"));
+                dto.setDiagnosis(rs.getString("Diagnosis"));
+
+                list.add(dto);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-    } catch (Exception e) {
-        e.printStackTrace();
+        return list;
     }
-
-    return list;
-}
 
     public DetailBookingDTO getBookingDetail(int bookingID) {
 
@@ -666,8 +697,9 @@ public class BookingDaoVeterinarian extends DBContext {
         }
 
         return false;
-       
+
     }
+
     public boolean insertTestOrderBloodTest(int medicalRecordID) {
 
         String sql = "INSERT INTO TestOrders "
@@ -692,44 +724,67 @@ public class BookingDaoVeterinarian extends DBContext {
 
         return false;
     }
-    
-    
-   public List<TestOrderViewDTO> getTestOrdersByVetID(int vetID, int pageIndex, int pageSize) {
+
+    public List<TestOrderViewDTO> getTestOrdersByVetID(
+        int vetID,
+        String keyword,
+        String status,
+        int pageIndex,
+        int pageSize) {
 
     List<TestOrderViewDTO> list = new ArrayList<>();
+    StringBuilder sql = new StringBuilder();
 
-    String sql = "SELECT t.TestOrderID, mr.MedicalRecordID, " +
-                 "u.FullName, c.Name AS CatName, " +
-                 "t.TestName, t.Status " +
-                 "FROM TestOrders t " +
-                 "JOIN MedicalRecords mr ON t.MedicalRecordID = mr.MedicalRecordID " +
-                 "JOIN Bookings b ON mr.BookingID = b.BookingID " +
-                 "JOIN Cats c ON b.CatID = c.CatID " +
-                 "JOIN Owners o ON c.OwnerID = o.OwnerID " +
-                 "JOIN Users u ON o.UserID = u.UserID " +
-                 "WHERE b.VetID = ? " +
-                 "ORDER BY t.TestOrderID " +
-                 "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+    sql.append("SELECT t.TestOrderID, mr.MedicalRecordID, ");
+    sql.append("u.FullName, c.Name AS CatName, ");
+    sql.append("t.TestName, t.Status ");
+    sql.append("FROM TestOrders t ");
+    sql.append("JOIN MedicalRecords mr ON t.MedicalRecordID = mr.MedicalRecordID ");
+    sql.append("JOIN Bookings b ON mr.BookingID = b.BookingID ");
+    sql.append("JOIN Cats c ON b.CatID = c.CatID ");
+    sql.append("JOIN Owners o ON c.OwnerID = o.OwnerID ");
+    sql.append("JOIN Users u ON o.UserID = u.UserID ");
+    sql.append("WHERE b.VetID = ? ");
+
+    if (keyword != null && !keyword.trim().isEmpty()) {
+        sql.append("AND (u.FullName LIKE ? OR c.Name LIKE ?) ");
+    }
+
+    if (status != null && !status.trim().isEmpty()) {
+        sql.append("AND t.Status = ? ");
+    }
+
+    sql.append("ORDER BY t.TestOrderID ");
+    sql.append("OFFSET ? ROWS FETCH NEXT ? ROWS ONLY");
 
     try {
-        PreparedStatement ps = c.prepareStatement(sql);
+        PreparedStatement ps = c.prepareStatement(sql.toString());
+        int index = 1;
 
-        ps.setInt(1, vetID);
-        ps.setInt(2, (pageIndex - 1) * pageSize);
-        ps.setInt(3, pageSize);
+        ps.setInt(index++, vetID);
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            ps.setString(index++, "%" + keyword + "%");
+            ps.setString(index++, "%" + keyword + "%");
+        }
+
+        if (status != null && !status.trim().isEmpty()) {
+            ps.setString(index++, status);
+        }
+
+        ps.setInt(index++, (pageIndex - 1) * pageSize);
+        ps.setInt(index++, pageSize);
 
         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
             TestOrderViewDTO t = new TestOrderViewDTO();
-
             t.setTestOrderID(rs.getInt("TestOrderID"));
             t.setMedicalRecordID(rs.getInt("MedicalRecordID"));
             t.setFullName(rs.getString("FullName"));
             t.setCatName(rs.getString("CatName"));
             t.setTestName(rs.getString("TestName"));
             t.setStatus(rs.getString("Status"));
-
             list.add(t);
         }
 
@@ -739,19 +794,42 @@ public class BookingDaoVeterinarian extends DBContext {
 
     return list;
 }
-   public int countTestOrdersByVetID(int vetID) {
+    public int countTestOrdersByVetID(int vetID, String keyword, String status) {
 
-    String sql = "SELECT COUNT(*) " +
-                 "FROM TestOrders t " +
-                 "JOIN MedicalRecords mr ON t.MedicalRecordID = mr.MedicalRecordID " +
-                 "JOIN Bookings b ON mr.BookingID = b.BookingID " +
-                 "WHERE b.VetID = ?";
+    StringBuilder sql = new StringBuilder();
+    sql.append("SELECT COUNT(*) ");
+    sql.append("FROM TestOrders t ");
+    sql.append("JOIN MedicalRecords mr ON t.MedicalRecordID = mr.MedicalRecordID ");
+    sql.append("JOIN Bookings b ON mr.BookingID = b.BookingID ");
+    sql.append("JOIN Cats c ON b.CatID = c.CatID ");
+    sql.append("JOIN Owners o ON c.OwnerID = o.OwnerID ");
+    sql.append("JOIN Users u ON o.UserID = u.UserID ");
+    sql.append("WHERE b.VetID = ? ");
+
+    if (keyword != null && !keyword.trim().isEmpty()) {
+        sql.append("AND (u.FullName LIKE ? OR c.Name LIKE ?) ");
+    }
+
+    if (status != null && !status.trim().isEmpty()) {
+        sql.append("AND t.Status = ? ");
+    }
 
     try {
-        PreparedStatement ps = c.prepareStatement(sql);
-        ps.setInt(1, vetID);
-        ResultSet rs = ps.executeQuery();
+        PreparedStatement ps = c.prepareStatement(sql.toString());
+        int index = 1;
 
+        ps.setInt(index++, vetID);
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            ps.setString(index++, "%" + keyword + "%");
+            ps.setString(index++, "%" + keyword + "%");
+        }
+
+        if (status != null && !status.trim().isEmpty()) {
+            ps.setString(index++, status);
+        }
+
+        ResultSet rs = ps.executeQuery();
         if (rs.next()) {
             return rs.getInt(1);
         }
@@ -762,5 +840,97 @@ public class BookingDaoVeterinarian extends DBContext {
 
     return 0;
 }
-   
+
+    public int countTestOrdersByVetID(int vetID) {
+
+        String sql = "SELECT COUNT(*) "
+                + "FROM TestOrders t "
+                + "JOIN MedicalRecords mr ON t.MedicalRecordID = mr.MedicalRecordID "
+                + "JOIN Bookings b ON mr.BookingID = b.BookingID "
+                + "WHERE b.VetID = ?";
+
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, vetID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+    
+    public boolean completeMedicalRecord(int medicalRecordID) {
+
+    String sql = "UPDATE MedicalRecords "
+               + "SET Status = ? "
+               + "WHERE MedicalRecordID = ?";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setString(1, "Completed");
+        ps.setInt(2, medicalRecordID);
+
+        int rows = ps.executeUpdate();
+
+        return rows > 0;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    
+    
+
+    return false;
+}
+   public String getStatusByMedicalRecordID(int medicalRecordID) {
+
+    String sql = "SELECT Status FROM MedicalRecords "
+               + "WHERE MedicalRecordID = ?";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setInt(1, medicalRecordID);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            return rs.getString("Status");
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return null;
+}
+   public int getCatIDByMedicalRecordID(int medicalRecordID) {
+
+    String sql = "SELECT b.CatID "
+               + "FROM MedicalRecords m "
+               + "JOIN Bookings b ON m.BookingID = b.BookingID "
+               + "WHERE m.MedicalRecordID = ?";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setInt(1, medicalRecordID);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt("CatID");
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return -1; 
+} 
+
 }

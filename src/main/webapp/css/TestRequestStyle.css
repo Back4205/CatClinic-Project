@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 body {
-    background-color: #fcfcfc;
+    background-color: #fff;
     font-family: 'Inter', sans-serif;
     color: #333;
     margin: 0;
@@ -10,6 +10,9 @@ body {
 
 .emr-container {
     padding: 40px;
+    background-color: #fff;
+    height: 420px;
+
 }
 
 /* Tiêu đề có vạch cam đặc trưng */
@@ -37,6 +40,7 @@ body {
     padding: 0; /* Để bảng sát mép card */
     overflow: hidden;
     border: 1px solid #f0f0f0;
+    height: 450px
 }
 
 /* Style Table chuẩn bài */
@@ -141,6 +145,11 @@ body {
     display: flex;
     justify-content: center;
     background: white;
+    margin-left: 0px;
+    
+}
+.pagination {
+    margin-top: auto;
 }
 
 .pagination a {
@@ -166,6 +175,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    background-color: #fff;
 }
 
 .filter-bar form {
@@ -199,7 +209,7 @@ body {
 .filter-bar button {
     padding: 8px 16px;
     border: none;
-    background-color: #4e73df;
+    background-color: #FF8C00;
     color: white;
     border-radius: 6px;
     cursor: pointer;

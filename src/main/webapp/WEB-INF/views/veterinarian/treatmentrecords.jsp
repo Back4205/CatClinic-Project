@@ -29,7 +29,7 @@
 
                     <!-- ===== TITLE ===== -->
                     <div class="page-title">
-                        <h2>Assigned Cases</h2>
+                        <h2>TREATMENT RECORD</h2>
                     </div>
 
                     <!-- ===== FILTER ===== -->
@@ -121,8 +121,18 @@
                                                class="btn-emr">
                                                 <i class="fa-regular fa-file-lines"></i> EMR
                                             </a>
-                                            <i class="fa-solid fa-flask icon-action"></i>
-                                            <i class="fa-solid fa-table-cells-large icon-action"></i>
+                                            <a href="xray?medicalRecordID=${c.medicalRecordID}"
+                                               class="btn-view">
+                                                <i class="fa-solid fa-flask icon-action"></i>
+                                            </a>
+                                            <a href="bloodtest?medicalRecordID=${c.medicalRecordID}"
+                                               class="btn-view">
+                                                <i class="fa-solid fa-table-cells-large icon-action"></i>
+                                            </a>
+                                                <a href="preController?medicalRecordID=${c.medicalRecordID}"
+                                               class="btn-view">
+                                                <i class="fa-solid fa-pills"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -158,13 +168,13 @@
                     <!-- Nút << -->
                     <c:if test="${startPage > 1}">
                         <a href="assignedCases?page=${startPage - 1}&status=${statusFilter}">
-                            <<
+                            &laquo;
                         </a>
                     </c:if>
 
                     <!-- Hiển thị tối đa 3 trang -->
                     <c:forEach begin="${startPage}" end="${endPage}" var="i">
-                        <a href="assignedCases?page=${i}&status=${statusFilter}"
+                        <a href="assignedCases?page=${i}&status=${status}&keyword=${keyword}"
                            class="${i == currentPage ? 'active-page' : ''}">
                             ${i}
                         </a>
@@ -172,8 +182,8 @@
 
                     <!-- Nút >> -->
                     <c:if test="${endPage < totalPages}">
-                        <a href="assignedCases?page=${endPage + 1}&status=${statusFilter}">
-                            >>
+                        <a href="assignedCases?page=${endPage + 1}&status=${status}">
+                            &raquo;
                         </a>
                     </c:if>
 
