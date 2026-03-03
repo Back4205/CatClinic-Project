@@ -7,11 +7,13 @@
         <meta charset="UTF-8">
         <title>Account List</title>
         <link href="css/AccountListStyle.css" rel="stylesheet" type="text/css"/>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/slidebar-admin.css">
+        <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     </head>
     <body>
-
+        <jsp:include page="slidebar.jsp" />
         <div class="account-container">
-
             <!-- ===== HEADER ===== -->
             <div class="top-bar">
                 <div>

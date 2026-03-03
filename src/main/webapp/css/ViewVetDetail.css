@@ -1,0 +1,115 @@
+/* ===== WRAPPER ===== */
+.vet-profile {
+    padding: 80px 8%;
+    background: #fffaf5;
+}
+
+/* ===== CARD ===== */
+.vet-profile .vet-card {
+    display: flex;
+    align-items: center;
+    gap: 70px;
+
+    background: #ffffff;
+    padding: 60px;
+    border-radius: 30px;
+
+    box-shadow: 0 20px 50px rgba(255, 107, 0, 0.08);
+}
+
+/* ===== LEFT ===== */
+.vet-profile .vet-left {
+    flex: 1;
+}
+
+.vet-profile .vet-badge {
+    display: inline-block;
+    background: #fff1e6;
+    color: #ff6b00;
+    padding: 8px 20px;
+    border-radius: 40px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.vet-profile .vet-name {
+    font-size: 44px;
+    font-weight: 800;
+    margin: 20px 0 10px;
+    color: #222;
+}
+
+.vet-profile .vet-degree {
+    color: #ff6b00;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.vet-profile .vet-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px 25px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: #444;
+}
+
+.vet-profile .vet-bio {
+    background: #fff6ef;
+    padding: 18px;
+    border-radius: 12px;
+    border-left: 4px solid #ff6b00;
+    margin-top: 15px;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+/* ===== BUTTON ===== */
+.vet-profile .vet-btn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 14px 45px;
+    background: linear-gradient(90deg, #ff7a18, #ff6b00);
+    color: white;
+    text-decoration: none;
+    border-radius: 40px;
+    font-weight: 600;
+    transition: 0.3s ease;
+    box-shadow: 0 10px 25px rgba(255, 107, 0, 0.25);
+}
+
+.vet-profile .vet-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(255, 107, 0, 0.35);
+}
+
+/* ===== RIGHT ===== */
+.vet-profile .vet-right {
+    flex: 1;
+    text-align: center;
+}
+
+.vet-profile .vet-right img {
+    width: 100%;
+    max-width: 480px;
+    border-radius: 25px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    transition: 0.4s ease;
+}
+
+.vet-profile .vet-right img:hover {
+    transform: scale(1.05);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+    .vet-profile .vet-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .vet-profile .vet-info {
+        grid-template-columns: 1fr;
+    }
+}

@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.dao;
 
 import com.mycompany.catclinicproject.model.Booking;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
+import com.mycompany.catclinicproject.model.CancelBookingDTO;
 import java.sql.PreparedStatement;
 import java.sql.*;
 import java.util.ArrayList;
@@ -164,7 +165,7 @@ public class BookingDAO extends DBContext {
         return null;
     }
     public boolean cancelAndRequestRefund(int bookingID, String refundNote, int slotID) {
-        String updateBookingSQL = "UPDATE Bookings SET Status = N'Cancelled', Note = ? WHERE BookingID = ?";
+        String updateBookingSQL = "UPDATE Bookings SET Status = N'PendingCancel', Note = ? WHERE BookingID = ?";
         String releaseSlotSQL = "UPDATE TimeSlots SET Status = N'Available' WHERE SlotID = ?";
 
         try {
@@ -550,6 +551,105 @@ public class BookingDAO extends DBContext {
         }
         return false;
     }
+    public List<CancelBookingDTO> getAllCancelBookings() {
+    List<CancelBookingDTO> list = new ArrayList<>();
 
+    String sql = "SELECT b.BookingID, b.Status, b.Note, a.PriceAtBooking "
+               + "FROM Bookings b "
+               + "INNER JOIN Appointment_Service a "
+               + "ON b.BookingID = a.BookingID "
+               + "WHERE b.Status = 'PendingCancel'";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            CancelBookingDTO dto = new CancelBookingDTO(
+                    rs.getInt("BookingID"),
+                    rs.getString("Status"),
+                    rs.getString("Note"),
+                    rs.getDouble("PriceAtBooking")
+            );
+
+            list.add(dto);
+        }
+
+        rs.close();
+        ps.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public CancelBookingDTO getPendingCancelBookingById(int bookingID) {
+
+        String sql = "SELECT b.BookingID, b.Status, b.Note, a.PriceAtBooking "
+                + "FROM Bookings b "
+                + "INNER JOIN Appointment_Service a "
+                + "ON b.BookingID = a.BookingID "
+                + "WHERE b.Status = 'PendingCancel' AND b.BookingID = ?";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, bookingID);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                CancelBookingDTO dto = new CancelBookingDTO(
+                        rs.getInt("BookingID"),
+                        rs.getString("Status"),
+                        rs.getString("Note"),
+                        rs.getDouble("PriceAtBooking")
+                );
+
+                rs.close();
+                ps.close();
+
+                return dto;
+            }
+
+            rs.close();
+            ps.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // nếu không tìm thấy
+    }
+    public void rejectRefund(int bookingID) {
+    String sql = "UPDATE Bookings SET Status = 'Reject', "
+               + "Note = 'Please verify your refund details and try again.' "
+               + "WHERE BookingID = ?";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setInt(1, bookingID);
+        ps.executeUpdate();
+        ps.close();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    }
+    public void approveRefund(int bookingID,String imageUrl) {
+    String sql = "UPDATE Bookings SET Status = 'Cancelled', "
+               + "Note = ? "
+               + "WHERE BookingID = ?";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setString(1, imageUrl);
+        ps.setInt(2, bookingID);
+        ps.executeUpdate();
+        ps.close();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    
+}
 
 }

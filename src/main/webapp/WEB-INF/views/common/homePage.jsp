@@ -74,7 +74,7 @@
                 <div class="section-header">
                     <h2>
                         <span class="big-number">03</span>
-                        Reasons to Choose <span class="brand">GAIA</span>
+                        Reasons to Choose <span class="brand">PetClinic</span>
                     </h2>
                     <div class="underline"></div>
                 </div>
@@ -110,7 +110,7 @@
                         </div>
                         <h3>Comprehensive and convenient service.</h3>
                         <p>
-                            GAIA offers a comprehensive pet care solution:including medical check-ups, vaccinations, spa treatments, pet hotel services,and immigration assistance – all in one system.
+                            PetClinic offers a comprehensive pet care solution:including medical check-ups, vaccinations, spa treatments, pet hotel services,and immigration assistance – all in one system.
                         </p>
                     </div>
 

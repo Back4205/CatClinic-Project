@@ -13,14 +13,10 @@ body {
 
 /* ===== CONTAINER ===== */
 .account-container {
-    width: 95%;
-    margin: 30px auto;
-    background: #ffffff;
-    padding: 24px 28px;
-    border-radius: 14px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+    margin-left: 240px;   /* bằng width sidebar */
+    padding: 30px;
+    min-height: 100vh;
 }
-
 /* ===== HEADER ===== */
 .top-bar {
     display: flex;
@@ -283,16 +279,13 @@ body {
     height: 60px;        /* chiều cao mỗi row */
 }
 
-.account-table tbody {
-    min-height: 300px;   /* 5 x 60px */
-    display: block;
+.account-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.account-table thead,
 .account-table tbody tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
+    height: 60px;
 }
 .error_account {
     color: #b71c1c;

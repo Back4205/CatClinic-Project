@@ -6,75 +6,79 @@
 <head>
     <title>Service List</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/category-list.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/slidebar-admin.css">
+    <link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
+    <div class="layout">
+        <jsp:include page="slidebar.jsp" />
+        <div class="container">
+            <div class="header">
+                <h2 class="title">Category List</h2>
 
-<div class="container">
-    <div class="header">
-    <h2 class="title">Category List</h2>
+                <a class="btn-primary"
+                   href="${pageContext.request.contextPath}/CreateCategory">
+                    + Add New Category
+                </a>
+            </div>
 
-    <a class="btn-primary"
-       href="${pageContext.request.contextPath}/CreateCategory">
-        + Add New Category
-    </a>
-</div>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Banner</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
 
-    <table class="styled-table">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Banner</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Action</th>
-        </tr>
-        </thead>
+                <tbody>
+                    <c:forEach var="s" items="${categoryList}">
+                        <tr>
+                            <td>${s.categoryID}</td>
+                            <td>${s.categoryName}</td>
+                            <td>
+                                <img class="banner-img" src="${s.banner}">
+                            </td>
+                            <td>${s.description}</td>
+                            <td>
+                                <span class="${s.active ? 'status-active' : 'status-inactive'}">
+                                    ${s.active ? 'Active' : 'Inactive'}
+                                </span>
+                            </td>
+                            <td class="action-buttons">
+                                <a class="btn-view"
+                                   href="${pageContext.request.contextPath}/ViewServiceList?id=${s.categoryID}">
+                                    View Service
+                                </a>
 
-        <tbody>
-        <c:forEach var="s" items="${categoryList}">
-            <tr>
-                <td>${s.categoryID}</td>
-                <td>${s.categoryName}</td>
-                <td>
-                    <img class="banner-img" src="${s.banner}">
-                </td>
-                <td>${s.description}</td>
-                <td>
-                    <span class="${s.active ? 'status-active' : 'status-inactive'}">
-                        ${s.active ? 'Active' : 'Inactive'}
-                    </span>
-                </td>
-                <td class="action-buttons">
-                    <a class="btn-view"
-                       href="${pageContext.request.contextPath}/ViewServiceList?id=${s.categoryID}">
-                        View Service
-                    </a>
+                                <a class="btn-edit"
+                                   href="${pageContext.request.contextPath}/EditCategory?id=${s.categoryID}">
+                                    Edit
+                                </a>
 
-                    <a class="btn-edit"
-                       href="${pageContext.request.contextPath}/EditCategory?id=${s.categoryID}">
-                        Edit
-                    </a>
+                                <form action="${pageContext.request.contextPath}/HideCategory"
+                                      method="post"
+                                      onsubmit="return confirmAction(this)">
+                                    <input type="hidden" name="id" value="${s.categoryID}">
+                                    <input type="hidden" name="action"
+                                           value="${s.active ? 'hide' : 'show'}">
 
-                    <form action="${pageContext.request.contextPath}/HideCategory"
-                          method="post"
-                          onsubmit="return confirmAction(this)">
-                        <input type="hidden" name="id" value="${s.categoryID}">
-                        <input type="hidden" name="action"
-                               value="${s.active ? 'hide' : 'show'}">
-
-                        <button type="submit"
-                                class="${s.active ? 'btn-hide' : 'btn-show'}">
-                            ${s.active ? 'Hide' : 'Show'}
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        </c:forEach>
-        </tbody>
-    </table>
-</div>
-
+                                    <button type="submit"
+                                            class="${s.active ? 'btn-hide' : 'btn-show'}">
+                                        ${s.active ? 'Hide' : 'Show'}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </div>
+    </div>
 <script src="${pageContext.request.contextPath}/js/service.js"></script>
 </body>
 </html>
