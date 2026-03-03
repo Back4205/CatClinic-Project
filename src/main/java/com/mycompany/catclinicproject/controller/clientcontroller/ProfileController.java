@@ -27,8 +27,6 @@ public class ProfileController extends HttpServlet {
      }
      int userID = user.getUserID();
 
-//        int userID = 5;
-
         ProfileDAO dao = new ProfileDAO();
         UserDTO userProfile = dao.getUserProfile(userID);
 
@@ -40,7 +38,6 @@ public class ProfileController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-//        int userID = 5;
          HttpSession session = request.getSession(false);
      User user = (User)session.getAttribute("acc");
      if(user == null){

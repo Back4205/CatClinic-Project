@@ -30,47 +30,47 @@ public class ReportResultController extends HttpServlet {
         LabDAO ldao = new LabDAO();
         TestOrders testOrder = ldao.getTestOrderById(id);
         request.setAttribute("testOrder", testOrder);
-      request.getRequestDispatcher("/WEB-INF/views/technician/report-result.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/technician/report-result.jsp").forward(request, response);
     }
 
 
     @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-    int testOrderID = Integer.parseInt(request.getParameter("testOrderID"));
-    String resultName = request.getParameter("resultName");
-    String action = request.getParameter("action");
+        int testOrderID = Integer.parseInt(request.getParameter("testOrderID"));
+        String resultName = request.getParameter("resultName");
+        String action = request.getParameter("action");
 
-    Part filePart = request.getPart("resultFile");
-    String result;
+        Part filePart = request.getPart("resultFile");
+        String result;
 
-    LabDAO ldao = new LabDAO();
+        LabDAO ldao = new LabDAO();
 
-    // Nếu có upload file mới
-    if (filePart != null && filePart.getSize() > 0) {
-        String fileName = "test_" + System.currentTimeMillis();
-        result = CloudinaryUntil.uploadImage(filePart, fileName);
+        // Nếu có upload file mới
+        if (filePart != null && filePart.getSize() > 0) {
+            String fileName = "test_" + System.currentTimeMillis();
+            result = CloudinaryUntil.uploadImage(filePart, fileName);
 
-        if (result == null) {
-            request.setAttribute("error", "Upload failed!");
-            request.getRequestDispatcher("/WEB-INF/views/technician/report-result.jsp")
-                   .forward(request, response);
-            return;
+            if (result == null) {
+                request.setAttribute("error", "Upload failed!");
+                request.getRequestDispatcher("/WEB-INF/views/technician/report-result.jsp")
+                        .forward(request, response);
+                return;
+            }
+        } else {
+            // Lấy ảnh cũ từ DB (an toàn hơn hidden field)
+            TestOrders old = ldao.getTestOrderById(testOrderID);
+            result = old.getResult();
         }
-    } else {
-        // Lấy ảnh cũ từ DB (an toàn hơn hidden field)
-        TestOrders old = ldao.getTestOrderById(testOrderID);
-        result = old.getResult();
-    }
 
-    if ("draft".equals(action)) {
-        ldao.saveDraft(testOrderID, resultName, result);
-    } 
-    else if ("submit".equals(action)) {
-        ldao.submitResult(testOrderID, resultName, result);
-    }
+        if ("draft".equals(action)) {
+            ldao.saveDraft(testOrderID, resultName, result);
+        }
+        else if ("submit".equals(action)) {
+            ldao.submitResult(testOrderID, resultName, result);
+        }
 
-    response.sendRedirect(request.getContextPath() + "/technician/home");
-}
+        response.sendRedirect(request.getContextPath() + "/technician/home");
+    }
 }

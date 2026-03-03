@@ -35,17 +35,15 @@ public class ProfileDAO extends DBContext {
         return null;
     }
     public String checkDuplicate(String email, String phone, int userID) {
-        // SQL: Tìm xem có AI KHÁC (UserID != ?) đang dùng Email hoặc Phone này không
         String sql = "SELECT Email, Phone FROM Users WHERE (Email = ? OR Phone = ?) AND UserID != ?";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, email);
             ps.setString(2, phone);
-            ps.setInt(3, userID); // Đây là ID của chính cậu, để loại trừ mình ra
+            ps.setInt(3, userID);
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                // Kiểm tra chính xác trùng cái nào để báo lỗi cho đúng
                 if (email.equalsIgnoreCase(rs.getString("Email"))) {
                     return "Email is already in use by another account!";
                 }
@@ -56,7 +54,7 @@ public class ProfileDAO extends DBContext {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null; // Không trùng với ai cả -> Hợp lệ
+        return null;
     }
     public boolean updateProfile(UserDTO u) {
         try {

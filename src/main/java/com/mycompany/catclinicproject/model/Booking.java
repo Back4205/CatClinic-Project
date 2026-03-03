@@ -9,10 +9,7 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.Date;
 
-/**
- *
- * @author Vuong Bach
- */
+
 public class Booking {
 
     private int bookingID;

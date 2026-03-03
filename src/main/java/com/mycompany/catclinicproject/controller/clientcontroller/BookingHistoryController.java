@@ -23,7 +23,6 @@ public class BookingHistoryController extends HttpServlet {
             throws ServletException, IOException {
 
 
-        // --- HARDCODED USER ID = 5 ---
         //  int userID = 5;
         HttpSession session = request.getSession(false);
         User user = (User)session.getAttribute("acc");
@@ -31,7 +30,6 @@ public class BookingHistoryController extends HttpServlet {
             response.sendRedirect(request.getContextPath()+"/login");
             return;
         }
-        // Giả sử link của cậu là: booking-history?action=detail&id=123
         String action = request.getParameter("action");
         if ("detail".equals(action)) {
             int id = Integer.parseInt(request.getParameter("id"));

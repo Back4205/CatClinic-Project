@@ -19,7 +19,7 @@ import java.util.List;
         })
 public class LabManagementController extends HttpServlet {
 
-    private static final int PAGE_SIZE = 5; // mỗi trang 5 record
+    private static final int PAGE_SIZE = 5;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -28,9 +28,6 @@ public class LabManagementController extends HttpServlet {
         String path = request.getServletPath();
         LabDAO dao = new LabDAO();
 
-        // ========================
-        // 1️⃣ UPDATE TEST
-        // ========================
         if (path.equals("/technician/update-test")) {
 
             int id = Integer.parseInt(request.getParameter("id"));
@@ -49,16 +46,11 @@ public class LabManagementController extends HttpServlet {
             return;
         }
 
-        // ========================
-        // 2️⃣ LOAD DASHBOARD + PAGINATION
-        // ========================
-
         String status = request.getParameter("status");
         if (status == null || status.isEmpty()) {
             status = "All";
         }
 
-        // Lấy page
         int page = 1;
         try {
             String pageParam = request.getParameter("page");
@@ -70,13 +62,11 @@ public class LabManagementController extends HttpServlet {
             page = 1;
         }
 
-        // Lấy full list từ DAO (không phân trang trong DAO)
         List<?> fullList = dao.getLabQueue(status);
 
         int totalRecords = fullList.size();
         int totalPage = (int) Math.ceil((double) totalRecords / PAGE_SIZE);
 
-        // Nếu page vượt quá tổng trang
         if (page > totalPage && totalPage != 0) {
             page = totalPage;
         }

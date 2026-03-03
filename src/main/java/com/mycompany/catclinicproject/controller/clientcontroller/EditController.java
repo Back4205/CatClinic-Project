@@ -49,7 +49,6 @@ public class EditController extends HttpServlet {
             return;
         }
 
-        // 1. Lấy và làm sạch dữ liệu (giống RegisterController)
         String fullName = request.getParameter("fullName").trim();
         String email = request.getParameter("email").trim();
         String phone = request.getParameter("phone").trim();
@@ -57,8 +56,6 @@ public class EditController extends HttpServlet {
 
         String error = null;
 
-        // 2. Sử dụng bộ Regex chuẩn mà cô đã khen
-        // 2. Sử dụng bộ Regex chuẩn mà cô đã khen
         if (!Pattern.matches("^[\\p{L} .'-]+$", fullName)) {
             error = "Full Name must allow letters only and cannot contain numbers!";
         } else if (fullName.length() < 2) {
@@ -68,28 +65,22 @@ public class EditController extends HttpServlet {
         } else if (!Pattern.matches("^\\d{10}$", phone)) {
             error = "Phone number must be exactly 10 digits!";
         } else {
-            // 3. Kiểm tra trùng lặp trong Database - CHỈ CHẠY KHI ĐỊNH DẠNG ĐÃ ĐÚNG
             ProfileDAO dao = new ProfileDAO();
             error = dao.checkDuplicate(email, phone, user.getUserID());
         }
 
-        // 4. Xử lý khi có lỗi - ĐẢM BẢO DỪNG LẠI TẠI ĐÂY
         if (error != null) {
             request.setAttribute("message", error);
             request.setAttribute("messageType", "error");
 
-            // Giữ lại dữ liệu người dùng vừa nhập để sửa
             UserDTO u = new UserDTO();
             u.setFullName(fullName); u.setPhone(phone); u.setEmail(email); u.setAddress(address);
             request.setAttribute("user", u);
 
             request.getRequestDispatcher("/WEB-INF/views/client/edit-profile.jsp").forward(request, response);
-            return; // Dừng xử lý, tuyệt đối không cho xuống bước 5 cập nhật DB
+            return;
         }
 
-        // 5. Cập nhật Database - CHỈ CHẠY KHI error == null
-
-        // 5. Cập nhật Database
         UserDTO updateDTO = new UserDTO();
         updateDTO.setUserID(user.getUserID());
         updateDTO.setFullName(fullName);
@@ -99,7 +90,6 @@ public class EditController extends HttpServlet {
 
         ProfileDAO dao = new ProfileDAO();
         if (dao.updateProfile(updateDTO)) {
-            // Đồng bộ Session ngay lập tức
             user.setFullName(fullName);
             user.setEmail(email);
             user.setPhone(phone);

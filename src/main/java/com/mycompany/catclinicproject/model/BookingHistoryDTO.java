@@ -15,9 +15,9 @@ public class BookingHistoryDTO {
     private String serviceType;
     private double price;
     private String status;
-    private String vetName;     // Lấy từ Users.FullName (của bác sĩ)
-    private String note;        // Lấy từ Bookings.Note
-    private String ownerName;   // Lấy từ Users.FullName (của chủ nuôi)
+    private String vetName;
+    private String note;
+    private String ownerName;
     private String ownerPhone;
     private String customerName;
     private String customerPhone;

@@ -11,7 +11,6 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/header.css">
   <style>
-    /* === RESET & LAYOUT === */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; color: #374151; min-height: 100vh; }
     .submitting { opacity: 0.5; pointer-events: none; }
@@ -20,7 +19,6 @@
 
     .booking-wrapper { display: flex; gap: 30px; align-items: flex-start; }
 
-    /* Panels */
     .left-panel { flex: 1; min-width: 480px; position: sticky; top: 20px; align-self: flex-start; }
     .right-panel { flex: 1.3; min-width: 650px; }
 
@@ -28,7 +26,6 @@
     .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f3f4f6; padding-bottom: 12px; }
     .card-header h4 { margin: 0; color: #1f2937; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-    /* Tables & Pagination */
     table { width: 100%; border-collapse: collapse; }
     th { background: #f9fafb; padding: 12px; text-align: left; font-size: 11px; color: #6b7280; text-transform: uppercase; }
     td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 13px; vertical-align: middle; }
@@ -46,7 +43,6 @@
     .selection-grid select, .selection-grid input { width: 100%; padding: 11px; border-radius: 8px; border: 1.5px solid #e5e7eb; font-size: 13px; outline: none; transition: 0.2s; }
     .selection-grid select:focus, .selection-grid input:focus { border-color: #ff6600; box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1); }
 
-    /* Slots Grid */
     .schedule-scroll { max-height: 400px; overflow-y: auto; padding: 15px; border: 1px solid #f3f4f6; border-radius: 10px; background: #fafafa; }
     .day-title { font-size: 13px; font-weight: 800; color: #ff6600; margin: 15px 0 10px 0; display: block; }
     .day-title:first-of-type { margin-top: 0; }
@@ -56,7 +52,6 @@
     .slot input { display: none; }
     .slot.active-slot { background: #ff6600 !important; border-color: #ff6600 !important; color: #fff !important; }
 
-    /* Buttons & Summary */
     .boarding-summary { padding: 20px; background: #fff7f0; border: 1px solid #ffd8bf; border-radius: 10px; margin-top: 25px; }
     .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px; }
     .summary-total { display: flex; justify-content: space-between; border-top: 1px dashed #ffd8bf; padding-top: 10px; margin-top: 10px; font-size: 16px; font-weight: 800; color: #ff6600; }

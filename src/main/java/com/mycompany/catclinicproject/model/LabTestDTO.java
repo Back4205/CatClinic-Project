@@ -1,19 +1,17 @@
 package com.mycompany.catclinicproject.model;
 
 public class LabTestDTO {
-    private int testOrderID;     // Map với TestOrderID
-    private String catName;      // Tên mèo từ bảng Cats
-    private String testName;     // Loại xét nghiệm (X-Ray, Blood Test...)
-    private String resultName;   // Tên file kết quả hoặc tiêu đề kết quả
-    private String result;       // Nội dung kết quả chi tiết
-    private String status;       // Trạng thái (Pending, In-progress, Completed)
-    private String doctorName;   // Tên bác sĩ yêu cầu xét nghiệm
+    private int testOrderID;
+    private String catName;
+    private String testName;
+    private String resultName;
+    private String result;
+    private String status;
+    private String doctorName;
 
-    // Constructor mặc định
     public LabTestDTO() {
     }
 
-    // Constructor đầy đủ tham số
     public LabTestDTO(int testOrderID, String catName, String testName, String resultName, String result, String status, String doctorName) {
         this.testOrderID = testOrderID;
         this.catName = catName;
@@ -24,7 +22,6 @@ public class LabTestDTO {
         this.doctorName = doctorName;
     }
 
-    // --- GETTERS & SETTERS ---
     public int getTestOrderID() {
         return testOrderID;
     }

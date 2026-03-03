@@ -1,20 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+
 package com.mycompany.catclinicproject.model;
 
-/**
- *
- * @author ADMIN
- */
 public class TestOrders {
-    private int testOrderID;     
-    private int medicalRecordID;      
-    private String testName;     
-    private String resultName;   
-    private String result;       
-    private String status;       
+    private int testOrderID;
+    private int medicalRecordID;
+    private String testName;
+    private String resultName;
+    private String result;
+    private String status;
     private int staffID;
 
     public TestOrders() {
@@ -86,8 +79,8 @@ public class TestOrders {
         this.staffID = staffID;
     }
 
-    
 
-    
-    
+
+
+
 }

@@ -20,14 +20,8 @@
 
     <main class="main-content">
 
-        <!-- TOP SEARCH -->
+        <!-- TOP BAR -->
         <div class="top-bar">
-            <form action="view-booking-list" method="GET" class="search-bar">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" name="searchQuery"
-                       value="${param.searchQuery}"
-                       placeholder="Search by cat name, phone, or owner...">
-            </form>
             <a href="counter-booking" class="btn-new-booking">+ New Booking</a>
         </div>
 
@@ -36,33 +30,38 @@
             <p>Welcome back, ${sessionScope.acc.fullName}. Here is your control center for today.</p>
         </div>
 
-        <!-- STAT CARDS (GIỮ NGUYÊN) -->
+        <!-- STAT CARDS -->
         <div class="stat-cards">
             <div class="stat-card card-blue">
                 <div class="stat-icon icon-blue"><i class="fa-regular fa-calendar-plus"></i></div>
                 <div class="stat-title">COUNTER BOOKING</div>
                 <p class="stat-number">0</p>
             </div>
+
             <div class="stat-card card-orange">
                 <div class="stat-icon icon-orange"><i class="fa-regular fa-clock"></i></div>
                 <div class="stat-title">PENDING</div>
                 <p class="stat-number">${stats['Pending'] != null ? stats['Pending'] : 0}</p>
             </div>
+
             <div class="stat-card card-sky">
                 <div class="stat-icon icon-sky"><i class="fa-solid fa-clipboard-user"></i></div>
                 <div class="stat-title">WAITING</div>
                 <p class="stat-number">${stats['Waiting'] != null ? stats['Waiting'] : 0}</p>
             </div>
+
             <div class="stat-card card-purple">
                 <div class="stat-icon icon-purple"><i class="fa-solid fa-stethoscope"></i></div>
                 <div class="stat-title">IN TREATMENT</div>
                 <p class="stat-number">${stats['In Treatment'] != null ? stats['In Treatment'] : 0}</p>
             </div>
+
             <div class="stat-card card-green">
                 <div class="stat-icon icon-green"><i class="fa-regular fa-circle-check"></i></div>
                 <div class="stat-title">COMPLETED</div>
                 <p class="stat-number">${stats['Completed'] != null ? stats['Completed'] : 0}</p>
             </div>
+
             <div class="stat-card card-red">
                 <div class="stat-icon icon-red"><i class="fa-solid fa-xmark"></i></div>
                 <div class="stat-title">CANCELLED</div>
@@ -78,38 +77,48 @@
                 <p>Overview of today's patient flow</p>
             </div>
 
-            <!-- FIXED FILTER FORM (KHÔNG PHÁ LAYOUT) -->
-            <form action="view-booking-list" method="GET" class="filter-bar">
+            <form action="view-booking-list" method="GET">
+                <div class="table-toolbar">
 
-                <input type="hidden" name="page" value="1">
+                    <div class="table-search">
+                        <input type="hidden" name="page" value="1">
 
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" name="search"
+                               value="${currentSearch}"
+                               placeholder="Search by cat name, phone or owner...">
+                    </div>
 
-                <div class="filter-buttons">
+                    <div class="filter-bar">
+                        <div class="filter-buttons">
 
-                    <button type="submit" name="status" value="ALL"
-                            class="${empty currentStatus || currentStatus == 'ALL' ? 'active' : ''}">
-                        ALL STATUS
-                    </button>
+                            <button type="submit" name="status" value="ALL"
+                                    class="${empty currentStatus || currentStatus == 'ALL' ? 'active' : ''}">
+                                ALL STATUS
+                            </button>
 
-                    <button type="submit" name="status" value="PendingPayment"
-                            class="${currentStatus == 'PendingPayment' ? 'active' : ''}">
-                        PENDING PAYMENT
-                    </button>
+                            <button type="submit" name="status" value="PendingPayment"
+                                    class="${currentStatus == 'PendingPayment' ? 'active' : ''}">
+                                PENDING PAYMENT
+                            </button>
 
-                    <button type="submit" name="status" value="Completed"
-                            class="${currentStatus == 'Completed' ? 'active' : ''}">
-                        COMPLETED
-                    </button>
+                            <button type="submit" name="status" value="Completed"
+                                    class="${currentStatus == 'Completed' ? 'active' : ''}">
+                                COMPLETED
+                            </button>
 
-                    <button type="submit" name="status" value="Confirmed"
-                            class="${currentStatus == 'Confirmed' ? 'active' : ''}">
-                        CONFIRMED
-                    </button>
+                            <button type="submit" name="status" value="Confirmed"
+                                    class="${currentStatus == 'Confirmed' ? 'active' : ''}">
+                                CONFIRMED
+                            </button>
 
-                    <button type="submit" name="status" value="Cancelled"
-                            class="${currentStatus == 'Cancelled' ? 'active' : ''}">
-                        CANCELLED
-                    </button>
+                            <button type="submit" name="status" value="Cancelled"
+                                    class="${currentStatus == 'Cancelled' ? 'active' : ''}">
+                                CANCELLED
+                            </button>
+
+                        </div>
+                    </div>
 
                 </div>
             </form>
@@ -137,33 +146,44 @@
                                 </div>
                             </div>
                         </td>
+
                         <td>
                             <span class="date-text">
-                                <i class="fa-regular fa-calendar table-icon"></i>${b.appointmentDate}
+                                <i class="fa-regular fa-calendar table-icon"></i>
+                                ${b.appointmentDate}
                             </span><br>
                             <span class="time-text">
-                                <i class="fa-regular fa-clock table-icon"></i>${b.appointmentTime}
+                                <i class="fa-regular fa-clock table-icon"></i>
+                                ${b.appointmentTime}
                             </span>
                         </td>
+
                         <td>
                             <span class="badge ${b.status.toLowerCase().replace(' ', '-')}">
                                     ${b.status}
                             </span>
                         </td>
+
                         <td class="col-actions">
 
                             <c:if test="${b.status == 'Pending'}">
                                 <a href="update-status?id=${b.bookingID}&status=Confirmed"
-                                   class="btn-text action-confirm">Confirm</a>
+                                   class="btn-text action-confirm">
+                                    Confirm
+                                </a>
                             </c:if>
 
                             <c:if test="${b.status == 'Confirmed'}">
                                 <a href="update-status?id=${b.bookingID}&status=Waiting"
-                                   class="btn-text action-checkin">Check-in</a>
+                                   class="btn-text action-checkin">
+                                    Check-in
+                                </a>
                             </c:if>
 
                             <a href="appointment-detail?id=${b.bookingID}"
-                               class="btn-text">Details ></a>
+                               class="btn-text">
+                                Details >
+                            </a>
 
                         </td>
                     </tr>

@@ -48,21 +48,18 @@ public class CancelBookingController extends HttpServlet {
         int bookingID = Integer.parseInt(request.getParameter("bookingID"));
         int slotID = Integer.parseInt(request.getParameter("slotID"));
 
-        // Hứng thêm lý do hủy từ JSP
         String cancelReason = request.getParameter("cancelReason");
 
         String bankName = request.getParameter("bankName");
         String accNum = request.getParameter("accNum");
         String accName = request.getParameter("accName");
 
-        // Nối thêm Lý do hủy vào Note hoàn tiền
         String refundNote = "Reason: " + cancelReason + " | Refund Request: " + bankName + " - " + accNum + " - " + accName;
 
         BookingDAO dao = new BookingDAO();
         boolean success = dao.cancelAndRequestRefund(bookingID, refundNote, slotID);
 
         if (success) {
-            // Chuyển hướng kèm ID để hiện thành công
             response.sendRedirect("cancel-booking?step=success&id=" + bookingID);
         } else {
             response.sendRedirect("booking-detail?id=" + bookingID);

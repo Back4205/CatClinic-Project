@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-// Thêm đường dẫn chi tiết vào urlPatterns
 @WebServlet(name = "ViewBookingListController", urlPatterns = {
         "/reception/view-booking-list",
         "/reception/home",
@@ -39,18 +38,17 @@ public class ViewBookingListController extends HttpServlet {
         String path = request.getServletPath();
         BookingDAO dao = new BookingDAO();
 
-        // NHÁNH 1: Xử lý Xem chi tiết (UC49)
         if (path.contains("appointment-detail")) {
             try {
                 int bookingID = Integer.parseInt(request.getParameter("id"));
                 BookingHistoryDTO detail = dao.getBookingDetailByID(bookingID);
                 if (detail != null) {
-                    request.setAttribute("booking", detail); // Tên biến khớp với JSP
+                    request.setAttribute("booking", detail);
                     request.getRequestDispatcher("/WEB-INF/views/reception/appointment-detail.jsp").forward(request, response);
                 } else {
                     response.sendRedirect("home");
                 }
-                return; // Ngắt hàm tại đây sau khi forward
+                return;
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendRedirect("home");
@@ -58,7 +56,6 @@ public class ViewBookingListController extends HttpServlet {
             }
         }
 
-        // NHÁNH 2: Xử lý Cập nhật trạng thái (Confirm/Check-in)
         else if (path.contains("update-status")) {
             try {
                 int id = Integer.parseInt(request.getParameter("id"));
@@ -71,8 +68,6 @@ public class ViewBookingListController extends HttpServlet {
             }
         }
 
-        // ================= DASHBOARD =================
-
         String searchQuery = request.getParameter("searchQuery");
         String keyword = request.getParameter("search");
         String filterStatus = request.getParameter("status");
@@ -83,10 +78,8 @@ public class ViewBookingListController extends HttpServlet {
 
         Map<String, Integer> stats = dao.getBookingDashboardStats();
 
-// LẤY FULL LIST CHO RECEPTION
         List<BookingHistoryDTO> fullList = dao.getReceptionBookingList(searchQuery);
 
-// ================= FILTER =================
         List<BookingHistoryDTO> filteredList = new ArrayList<>();
 
         for (BookingHistoryDTO b : fullList) {
@@ -94,7 +87,6 @@ public class ViewBookingListController extends HttpServlet {
             boolean isMatchKeyword = true;
             boolean isMatchStatus = true;
 
-            // Filter keyword
             if (keyword != null && !keyword.trim().isEmpty()) {
                 String k = keyword.toLowerCase().trim();
                 String catName = b.getCatName() != null ? b.getCatName().toLowerCase() : "";
@@ -105,7 +97,6 @@ public class ViewBookingListController extends HttpServlet {
                 }
             }
 
-            // Filter status
             if (!filterStatus.equals("ALL")) {
                 if (b.getStatus() == null || !b.getStatus().equalsIgnoreCase(filterStatus)) {
                     isMatchStatus = false;
@@ -117,7 +108,6 @@ public class ViewBookingListController extends HttpServlet {
             }
         }
 
-// ================= PAGINATION =================
 
         int pageSize = 5;
         int currentPage = 1;
@@ -147,7 +137,6 @@ public class ViewBookingListController extends HttpServlet {
             pagedList = filteredList.subList(start, end);
         }
 
-// ================= SEND DATA TO JSP =================
 
         request.setAttribute("stats", stats);
         request.setAttribute("bookingList", pagedList);

@@ -49,7 +49,6 @@ public class BookingDAO extends DBContext {
         }
         return list;
     }
-    // Hàm 1: Đếm số lượng 6 trạng thái cho Dashboard
     public Map<String, Integer> getBookingDashboardStats() {
         Map<String, Integer> stats = new HashMap<>();
         stats.put("Pending", 0);
@@ -61,7 +60,6 @@ public class BookingDAO extends DBContext {
 
         String sql = "SELECT Status, COUNT(*) as Total FROM Bookings GROUP BY Status";
 
-        // Đã đổi 'connection' thành 'c' cho khớp với các hàm khác của cậu
         try (PreparedStatement st = c.prepareStatement(sql);
              ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
@@ -77,10 +75,8 @@ public class BookingDAO extends DBContext {
         return stats;
     }
 
-    // Hàm 2: Lấy danh sách lịch hẹn và tìm kiếm cho Lễ tân
     public List<BookingHistoryDTO> getReceptionBookingList(String keyword) {
         List<BookingHistoryDTO> list = new ArrayList<>();
-        // Sử dụng INNER JOIN cho User và Cat để chắc chắn lấy được thông tin cơ bản
         String sql = "SELECT b.BookingID, b.AppointmentDate, b.AppointmentTime, b.Status, " +
                 "u_owner.FullName AS CustomerName, u_owner.Phone AS CustomerPhone, " +
                 "c.Name AS CatName " +
@@ -128,7 +124,6 @@ public class BookingDAO extends DBContext {
         } catch (Exception e) { e.printStackTrace(); }
     }
     public BookingHistoryDTO getBookingDetailByID(int bookingID) {
-        // Câu SQL đầy đủ để lấy cả thông tin chủ nuôi và dịch vụ
         String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, "
                 + "b.EndDate, b.AppointmentTime, b.Status, b.Note, s.NameService, "
                 + "ad.PriceAtBooking, u_vet.FullName AS VetName, "
@@ -156,7 +151,6 @@ public class BookingDAO extends DBContext {
                     d.setStatus(rs.getString("Status"));
                     d.setNote(rs.getString("Note"));
 
-                    // Gán đúng tên dịch vụ và giá cho JSP
                     d.setServiceName(rs.getString("NameService"));
                     d.setPrice(rs.getDouble("PriceAtBooking"));
 
@@ -169,7 +163,6 @@ public class BookingDAO extends DBContext {
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
     }
-    // Hàm Hủy lịch duy nhất: Cập nhật Status = Cancelled và lưu thông tin Bank vào Note
     public boolean cancelAndRequestRefund(int bookingID, String refundNote, int slotID) {
         String updateBookingSQL = "UPDATE Bookings SET Status = N'Cancelled', Note = ? WHERE BookingID = ?";
         String releaseSlotSQL = "UPDATE TimeSlots SET Status = N'Available' WHERE SlotID = ?";
@@ -177,7 +170,7 @@ public class BookingDAO extends DBContext {
         try {
             c.setAutoCommit(false);
             try (PreparedStatement ps1 = c.prepareStatement(updateBookingSQL)) {
-                ps1.setString(1, refundNote); // Ghi thông tin refund vào Note
+                ps1.setString(1, refundNote);
                 ps1.setInt(2, bookingID);
                 ps1.executeUpdate();
             }
@@ -220,7 +213,6 @@ public class BookingDAO extends DBContext {
     }
 
 
-    // tao Booking ,  Booking detail và invoice
     public int createBookingWithInvoice(Booking booking, List<Integer> serviceIDs, List<Double> prices, double totalAmount) {
 
         int bookingID = -1;
@@ -239,21 +231,19 @@ public class BookingDAO extends DBContext {
                 + "(BookingID, TotalAmount, PaymentStatus, CreatedDate) VALUES (?, ?, ?,GETDATE())";
 
         try {
-            c.setAutoCommit(false); // tắt chế độ lưu vào DB tự động . mọi thay đổi chỉ được lưu trong bộ nhớ
-            //  LOCK SLOT (if medical service)
+            c.setAutoCommit(false);
             if (booking.getSlotID() > 0) {
                 try (PreparedStatement psLock = c.prepareStatement(lockSlotSQL)) {
                     psLock.setInt(1, booking.getSlotID());
                     int affected = psLock.executeUpdate();
 
                     if (affected == 0) {
-                        c.rollback(); // hủy tất cả những thay đổi từ khi setAutoCommit(false)
+                        c.rollback();
                         return -1;
                     }
                 }
             }
 
-            //  tạo Bôking                                                   yêu cầu JDBC trả về các data mà DB tự sinh ra
             try (PreparedStatement ps = c.prepareStatement(insertBookingSQL, Statement.RETURN_GENERATED_KEYS)) {
 
                 ps.setInt(1, booking.getCatID());
@@ -274,26 +264,23 @@ public class BookingDAO extends DBContext {
                     }
                 }
             }
-            // khong tạo được booking
             if (bookingID == -1) {
-                c.rollback(); // hủy transaction
+                c.rollback();
                 return -1;
             }
 
-            //  tạo bookingDetail
             try (PreparedStatement psDetail = c.prepareStatement(insertDetailSQL)) {
 
                 for (int i = 0; i < serviceIDs.size(); i++) {
                     psDetail.setInt(1, bookingID);
                     psDetail.setInt(2, serviceIDs.get(i));
                     psDetail.setDouble(3, prices.get(i));
-                    psDetail.addBatch(); // Thu gom vào batch để insert nhiều dòng 1 lần
+                    psDetail.addBatch();
                 }
 
-                psDetail.executeBatch();// Thực thi toàn bộ batch cùng lúc
+                psDetail.executeBatch();
             }
 
-            //  tạo hóa đơn
             try (PreparedStatement psInvoice = c.prepareStatement(insertInvoiceSQL)) {
                 psInvoice.setInt(1, bookingID);
                 psInvoice.setDouble(2, totalAmount);
@@ -301,7 +288,7 @@ public class BookingDAO extends DBContext {
                 psInvoice.executeUpdate();
             }
 
-            c.commit(); // update toàn bộ thay đổi lên trên DB
+            c.commit();
 
         } catch (SQLException e) {
             try {
