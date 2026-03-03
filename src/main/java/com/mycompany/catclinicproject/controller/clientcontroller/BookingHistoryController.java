@@ -22,15 +22,27 @@ public class BookingHistoryController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // --- HARDCODED USER ID = 5 ---
-      //  int userID = 5;
+
+        //  int userID = 5;
         HttpSession session = request.getSession(false);
-     User user = (User)session.getAttribute("acc");
-     if(user == null){
-         response.sendRedirect(request.getContextPath()+"/login");
-         return;
-     }
-     int userID = user.getUserID();
+        User user = (User)session.getAttribute("acc");
+        if(user == null){
+            response.sendRedirect(request.getContextPath()+"/login");
+            return;
+        }
+        String action = request.getParameter("action");
+        if ("detail".equals(action)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            BookingDAO dao = new BookingDAO();
+            BookingHistoryDTO booking = dao.getBookingDetailByID(id);
+
+            if (booking != null) {
+                request.setAttribute("booking", booking);
+                request.getRequestDispatcher("/WEB-INF/views/client/booking-detail.jsp").forward(request, response);
+                return; // Quan trọng: dừng lại không chạy tiếp phần danh sách
+            }
+        }
+        int userID = user.getUserID();
 
 
         String keyword = request.getParameter("search");
@@ -61,18 +73,25 @@ public class BookingHistoryController extends HttpServlet {
         int total = fullList.size();
         int scheduled = 0;
         int completed = 0;
+        int pendingPaymentCount = 0;
+        int cancelledCount = 0; // Thêm biến này
 
         for (BookingHistoryDTO b : fullList) {
             String s = b.getStatus();
-
             if (s != null) {
-                if (s.equalsIgnoreCase("Confirmed") || s.equalsIgnoreCase("Pending") || s.equalsIgnoreCase("Upcoming")) {
+                if (s.equalsIgnoreCase("PendingPayment")) {
+                    pendingPaymentCount++;
+                } else if (s.equalsIgnoreCase("Confirmed") || s.equalsIgnoreCase("Upcoming")) {
                     scheduled++;
-                } else if (s.equalsIgnoreCase("Completed") || s.equalsIgnoreCase("Done")) {
+                } else if (s.equalsIgnoreCase("Completed")) {
                     completed++;
+                } else if (s.equalsIgnoreCase("Cancelled")) {
+                    cancelledCount++; // Đếm các ca đã hủy
                 }
             }
         }
+
+
 
         List<BookingHistoryDTO> filteredList = new ArrayList<>();
         for (BookingHistoryDTO b : fullList) {
@@ -98,7 +117,7 @@ public class BookingHistoryController extends HttpServlet {
             }
         }
         // ===== PAGINATION =====
-        int pageSize = 5;
+        int pageSize = 5; // mỗi trang 5 record
 
         int currentPage = 1;
         String pageParam = request.getParameter("page");
@@ -132,6 +151,8 @@ public class BookingHistoryController extends HttpServlet {
         request.setAttribute("bookingList", pagedList);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPage", totalPage);
+        request.setAttribute("pendingPaymentCount", pendingPaymentCount);
+        request.setAttribute("cancelledCount", cancelledCount);
         request.setAttribute("total", total);
         request.setAttribute("scheduled", scheduled);
         request.setAttribute("completed", completed);

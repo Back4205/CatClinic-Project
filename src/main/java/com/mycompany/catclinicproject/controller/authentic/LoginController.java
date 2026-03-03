@@ -91,10 +91,21 @@ public class LoginController extends HttpServlet {
                         response.sendRedirect("vet/schedule");
                         break;
                     case 3:
-                        response.sendRedirect("reception/home");
+                        response.sendRedirect("reception/view-booking-list");
                         break;
                     case 4:
-                        response.sendRedirect("staff/tasks");
+                        // Kiểm tra UserID để phân luồng Staff
+                        int userId = account.getUserID();
+
+                        if (userId == 22) { // Technician 1 (Medical Technician)
+                            response.sendRedirect("technician/home");
+                        }
+                        else if (userId == 21) { // Care Staff 1
+                            response.sendRedirect("care/tasks"); // Đường dẫn cho bạn Care
+                        }
+                        else {
+                            response.sendRedirect("staff/tasks"); // Đường dẫn mặc định cũ
+                        }
                         break;
                     case 5:
                         ServiceDao sdao = new ServiceDao();

@@ -8,16 +8,17 @@ import java.sql.ResultSet;
 public class ProfileDAO extends DBContext {
 
     public UserDTO getUserProfile(int id) {
-        String sql = "SELECT u.*, o.Address "
-                + "FROM Users u "
-                + "LEFT JOIN Owners o ON u.UserID = o.UserID "
-                + "WHERE u.UserID = ?";
+        String sql = "SELECT u.UserID, u.UserName, u.FullName, u.Email, u.Phone, o.Address \n" +
+                "FROM Users u \n" +
+                "LEFT JOIN Owners o ON u.UserID = o.UserID \n" +
+                "WHERE u.UserID = ?";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 UserDTO u = new UserDTO();
+                u.setFullName(rs.getString("FullName"));
                 u.setUserID(rs.getInt("UserID"));
                 u.setUserName(rs.getString("UserName"));
                 u.setEmail(rs.getString("Email"));
@@ -33,12 +34,33 @@ public class ProfileDAO extends DBContext {
         }
         return null;
     }
+    public String checkDuplicate(String email, String phone, int userID) {
+        String sql = "SELECT Email, Phone FROM Users WHERE (Email = ? OR Phone = ?) AND UserID != ?";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, phone);
+            ps.setInt(3, userID);
 
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                if (email.equalsIgnoreCase(rs.getString("Email"))) {
+                    return "Email is already in use by another account!";
+                }
+                if (phone.equals(rs.getString("Phone"))) {
+                    return "Phone number is already in use by another account!";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public boolean updateProfile(UserDTO u) {
         try {
             String sqlUser = "UPDATE Users SET FullName = ?, Phone = ?, Email = ? WHERE UserID = ?";
             PreparedStatement psUser = c.prepareStatement(sqlUser);
-            psUser.setString(1, u.getUserName());
+            psUser.setString(1, u.getFullName());
             psUser.setString(2, u.getPhone());
             psUser.setString(3, u.getEmail());
             psUser.setInt(4, u.getUserID());

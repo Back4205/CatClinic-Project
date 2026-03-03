@@ -27,9 +27,14 @@
 
     <main class="content">
 
-        <div class="page-title">
-            <h2>BOOKING HISTORY</h2>
-            <p>MANAGEMENT LOG FOR MEDICAL AND GROOMING SERVICES.</p>
+        <div class="page-header-actions">
+            <div class="page-title">
+                <h2>BOOKING HISTORY</h2>
+                <p>MANAGEMENT LOG FOR MEDICAL AND GROOMING SERVICES.</p>
+            </div>
+            <a href="${pageContext.request.contextPath}/Booking" class="btn-new-booking">
+                <i class="bi bi-plus-circle-fill"></i> New Booking
+            </a>
         </div>
 
         <div class="stats-container">
@@ -40,6 +45,15 @@
                     <p>Total Visits</p>
                 </div>
             </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-pending"><i class="bi bi-credit-card"></i></div>
+                <div class="stat-info">
+                    <h3>${pendingPaymentCount}</h3>
+                    <p>PendingPayment</p>
+                </div>
+            </div>
+
             <div class="stat-card">
                 <div class="stat-icon icon-scheduled"><i class="bi bi-calendar-check"></i></div>
                 <div class="stat-info">
@@ -47,11 +61,20 @@
                     <p>Scheduled</p>
                 </div>
             </div>
+
             <div class="stat-card">
                 <div class="stat-icon icon-completed"><i class="bi bi-check-circle-fill"></i></div>
                 <div class="stat-info">
                     <h3>${completed}</h3>
                     <p>Completed</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-cancelled"><i class="bi bi-x-circle"></i></div>
+                <div class="stat-info">
+                    <h3>${cancelledCount}</h3>
+                    <p>Cancelled</p>
                 </div>
             </div>
         </div>
@@ -69,6 +92,11 @@
                         ALL STATUS
                     </button>
 
+                    <button type="submit" name="status" value="PendingPayment"
+                            class="${currentStatus == 'PendingPayment' ? 'active' : ''}">
+                        PENDING PAYMENT
+                    </button>
+
                     <button type="submit" name="status" value="Completed"
                             class="${currentStatus == 'Completed' ? 'active' : ''}">
                         COMPLETED
@@ -76,13 +104,14 @@
 
                     <button type="submit" name="status" value="Confirmed"
                             class="${currentStatus == 'Confirmed' ? 'active' : ''}">
-                        UPCOMING
+                        CONFIRMED
                     </button>
 
                     <button type="submit" name="status" value="Cancelled"
                             class="${currentStatus == 'Cancelled' ? 'active' : ''}">
                         CANCELLED
                     </button>
+
                 </div>
             </div>
         </form>
@@ -137,13 +166,13 @@
                             ${b.status == 'Cancelled' ? 'status-cancelled' : ''}
                             ${b.status == 'In Progress' ? 'status-inprogress' : ''}
                             ${b.status == 'PendingPayment' ? 'status-pendingpayment' : ''}">
-                                ${b.status}
+                                ${b.status == 'PendingPayment' ? 'PendingPayment' : b.status}
                         </span>
                         </td>
 
                         <!-- ACTION -->
                         <td>
-                            <a href="booking-detail?id=${b.bookingID}" class="btn-view">
+                            <a href="booking-history?action=detail&id=${b.bookingID}" class="btn-view">
                                 Detail
                             </a>
                         </td>
