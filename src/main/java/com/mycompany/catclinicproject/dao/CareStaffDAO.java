@@ -25,7 +25,7 @@ public class CareStaffDAO extends DBContext {
     // Danh sách mèo đang nội trú
     public List<Map<String, Object>> getInpatientCats() {
         List<Map<String, Object>> list = new ArrayList<>();
-        String sql = "SELECT b.BookingID, b.CatID, c.Name AS CatName, c.Breed, c.Age, u.FullName AS OwnerName " +
+        String sql = "SELECT b.BookingID, b.CatID, c.Name AS CatName,c.Image AS CatImg,  c.Breed, c.Age, u.FullName AS OwnerName " +
                 "FROM Bookings b " +
                 "JOIN Cats c ON b.CatID = c.CatID " +
                 "JOIN Owners o ON c.OwnerID = o.OwnerID " +
@@ -41,6 +41,7 @@ public class CareStaffDAO extends DBContext {
                 map.put("BookingID", rs.getInt("BookingID"));
                 map.put("CatID", rs.getInt("CatID"));
                 map.put("CatName", rs.getString("CatName"));
+                map.put("CatImg", rs.getString("CatImg"));
                 map.put("Breed", rs.getString("Breed"));
                 map.put("Age", rs.getInt("Age"));
                 map.put("OwnerName", rs.getString("OwnerName"));
@@ -65,6 +66,7 @@ public class CareStaffDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 map.put("CatName", rs.getString("Name"));
+                map.put("Image", rs.getString("Image"));
                 map.put("Breed", rs.getString("Breed"));
                 map.put("Age", rs.getInt("Age"));
                 // Xử lý Gender kiểu BIT

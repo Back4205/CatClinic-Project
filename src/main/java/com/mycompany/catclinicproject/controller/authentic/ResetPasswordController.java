@@ -40,7 +40,6 @@ public class ResetPasswordController extends HttpServlet {
         String sessionToken = (String) session.getAttribute("resetToken");
         String sessionEmail = (String) session.getAttribute("resetEmail");
 
-        // 1. Kiểm tra Token
         if (token == null || sessionToken == null || !token.equals(sessionToken)) {
             request.setAttribute("errorMess", "The reset link is invalid or has expired!");
             request.getRequestDispatcher("WEB-INF/views/auth/reset-password.jsp").forward(request, response);
@@ -49,7 +48,6 @@ public class ResetPasswordController extends HttpServlet {
 
         String errorMsg = null;
 
-        // 2. Logic Kiểm tra Mật khẩu của bạn
         if (newPass == null || newPass.isEmpty() || confirmPass == null || confirmPass.isEmpty()) {
             errorMsg = "Please enter all password fields!";
         } else if (!newPass.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{6,}$")) {
@@ -65,7 +63,6 @@ public class ResetPasswordController extends HttpServlet {
             return;
         }
 
-        // 3. Cập nhật vào Database
         try {
             UserDAO dao = new UserDAO();
             if (dao.updatePasswordByEmail(sessionEmail, newPass)) {

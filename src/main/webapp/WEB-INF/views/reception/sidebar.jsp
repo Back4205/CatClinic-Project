@@ -13,12 +13,8 @@
         <a href="${pageContext.request.contextPath}/reception/counter-cancellation" class="nav-item ${activePage == 'counter-cancellation' ? 'active' : ''}">
             <i class="fa-regular fa-rectangle-xmark"></i> Counter Cancellation
         </a>
-        <!-- Đây là trang Dashboard của Quí -->
-        <a href="${pageContext.request.contextPath}/reception/home" class="nav-item ${activePage == 'dashboard' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/reception/" class="nav-item ${activePage == 'dashboard' ? 'active' : ''}">
             <i class="fa-solid fa-table-cells-large"></i> View Booking List
-        </a>
-        <a href="${pageContext.request.contextPath}/reception/check-in" class="nav-item ${activePage == 'check-in' ? 'active' : ''}">
-            <i class="fa-regular fa-circle-check"></i> Check-in Patient
         </a>
     </nav>
     <a href="${pageContext.request.contextPath}/logout" class="logout-btn">

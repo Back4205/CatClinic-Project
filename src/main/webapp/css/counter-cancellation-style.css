@@ -17,7 +17,6 @@
     display: none;
 }
 
-/* Ghi đè màu avatar thành màu đỏ cho trang hủy lịch */
 .avatar-danger {
     background-color: #fef2f2 !important;
     color: #ef4444 !important;

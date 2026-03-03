@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Forgot Password</title>
-    <!-- Nhúng file CSS riêng lẻ -->
+
     <link href="${pageContext.request.contextPath}/css/forgot-password-style.css" rel="stylesheet">
 </head>
 <body>

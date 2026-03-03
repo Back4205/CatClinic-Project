@@ -6,12 +6,12 @@
     <meta charset="UTF-8">
     <title>Care Tasks | Cat Clinic</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- ĐÃ LINK GỌN GÀNG TỚI CSS ĐỘC LẬP -->
+
     <link href="${pageContext.request.contextPath}/css/carestaff-style.css" rel="stylesheet">
 </head>
 <body>
 <div class="layout-wrapper">
-    <!-- CỘT TRÁI: HOSPITALIZED CATS -->
+
     <div class="sidebar-left">
         <div class="sidebar-header">
             <h2 style="color: #f97316; font-size: 22px;"><i class="fa-solid fa-cat"></i> Cat Clinic</h2>
@@ -25,7 +25,11 @@
             <c:forEach items="${inpatientCats}" var="cat">
                 <a href="${pageContext.request.contextPath}/care/tasks?catId=${cat.CatID}&bookingId=${cat.BookingID}"
                    class="cat-item ${param.catId == cat.CatID ? 'active' : ''}">
-                    <div class="cat-avatar"><i class="fa-solid fa-cat"></i></div>
+                    <div class="cat-avatar">
+                        <img src="${pageContext.request.contextPath}/${cat.CatImg}"
+                             alt="${cat.CatName}"
+                             style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                    </div>
                     <div class="cat-info">
                         <h4>${cat.CatName}</h4>
                         <p>Breed: ${cat.Breed}</p>
@@ -41,7 +45,7 @@
         </div>
     </div>
 
-    <!-- CỘT PHẢI: CHI TIẾT CHĂM SÓC -->
+
     <div class="main-content">
         <c:choose>
             <c:when test="${empty petDetail}">
@@ -53,10 +57,10 @@
             </c:when>
 
             <c:otherwise>
-                <!-- THẺ THÔNG TIN MÈO (HEADER) -->
+
                 <div class="patient-card">
                     <div class="patient-details">
-                        <div class="avatar-large"><i class="fa-solid fa-cat" style="color: white; font-size: 40px; margin: 20px;"></i></div>
+                        <div class="avatar-large"><img src="${pageContext.request.contextPath}/${petDetail.Image}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px;"></div>
                         <div>
                             <h2 style="margin: 0; font-size: 24px; color: #1f2937;">
                                     ${petDetail.CatName}
@@ -65,7 +69,7 @@
                             <p style="margin: 5px 0 10px 0; color: #6b7280; font-size: 14px;">
                                     ${petDetail.Breed} • ${petDetail.Age} years • Owner: ${petDetail.OwnerName}
                             </p>
-                            <!-- NÚT BẤM CHO <<EXTEND>> VIEW PET DETAILS -->
+
                             <button onclick="document.getElementById('petDetailModal').style.display='block'"
                                     style="background: white; border: 1px solid #f97316; color: #f97316; padding: 5px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 600;">
                                 <i class="fa-solid fa-address-card"></i> View Pet Details
@@ -75,7 +79,7 @@
                 </div>
 
                 <div class="grid-2">
-                    <!-- CỘT 1: VIEW CARE TASK & TASK TRACKING -->
+
                     <div>
                         <h3 style="color: #f97316; margin-bottom: 20px; font-size: 18px;">
                             <i class="fa-solid fa-clipboard-list"></i> View Care Task (Today)
@@ -89,7 +93,7 @@
                                     <input type="hidden" name="bookingId" value="${selectedBookingId}">
                                     <input type="hidden" name="taskId" value="${task.CareTaskID}">
 
-                                    <!-- UC: TASK TRACKING (NÚT CHECK) -->
+
                                     <button type="submit" class="btn-check ${task.Status == 'Completed' ? 'completed' : ''}"
                                         ${task.Status == 'Completed' ? 'disabled' : ''} title="Update status">
                                         <i class="fa-solid fa-check"></i>
@@ -105,7 +109,7 @@
                         </c:forEach>
                     </div>
 
-                    <!-- CỘT 2: RECORD CARE DIARY -->
+
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <h3 style="color: #f97316; font-size: 18px; margin: 0;">
@@ -123,7 +127,7 @@
                                     </c:forEach>
                                 </select>
 
-                                <input type="text" name="note" placeholder="Note behavior..." style="padding: 6px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; width: 140px;" required>
+                                <input type="text" name="note" placeholder="Note behavior..." style="padding: 6px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; flex:1;" required>
                                 <button type="submit" class="btn-orange">+ Add Log</button>
                             </form>
                         </div>
@@ -145,7 +149,6 @@
                     </div>
                 </div>
 
-                <!-- POPUP MODAL HTML -->
                 <div id="petDetailModal" class="modal">
                     <div class="modal-content">
                         <span class="close-btn" onclick="document.getElementById('petDetailModal').style.display='none'">&times;</span>

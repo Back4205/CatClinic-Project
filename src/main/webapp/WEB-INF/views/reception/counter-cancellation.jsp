@@ -15,7 +15,6 @@
 
 <main class="main-wrapper">
     <header class="top-header">
-        <!-- Form tìm kiếm -->
         <form action="${pageContext.request.contextPath}/reception/counter-cancellation" method="GET" class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
             <input type="text" name="search" value="${searchKeyword}" placeholder="Nhập SĐT, Tên khách, hoặc Tên mèo để tìm...">

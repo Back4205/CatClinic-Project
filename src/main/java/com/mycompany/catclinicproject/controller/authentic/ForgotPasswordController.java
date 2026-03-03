@@ -30,16 +30,16 @@ public class ForgotPasswordController extends HttpServlet {
         UserDAO dao = new UserDAO();
 
         if (dao.checkEmailExists(email)) {
-            // 1. Sinh Token bằng UUID
+
             String token = UUID.randomUUID().toString();
 
-            // 2. LƯU TOKEN VÀO SESSION (Để không phải sửa DB)
+
             HttpSession session = request.getSession();
             session.setAttribute("resetToken", token);
             session.setAttribute("resetEmail", email);
-            session.setMaxInactiveInterval(900); // Tồn tại 15 phút
+            session.setMaxInactiveInterval(900);
 
-            // 3. Tạo link gửi qua mail
+
             String resetLink = request.getScheme() + "://" + request.getServerName() + ":"
                     + request.getServerPort() + request.getContextPath()
                     + "/reset-password?token=" + token;

@@ -29,7 +29,7 @@
 }
 .row-flex { display: flex; gap: 20px; }
 
-/* NÚT THỜI GIAN (AJAX SLOTS) */
+
 .time-grid {
     display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
 }

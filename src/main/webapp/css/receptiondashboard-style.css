@@ -199,7 +199,6 @@ body {
     color: var(--text-muted);
 }
 
-/* ---------------- STATS GRID (Dành cho trang của Quí) ---------------- */
 .stats-grid {
     display: flex;
     gap: 16px;

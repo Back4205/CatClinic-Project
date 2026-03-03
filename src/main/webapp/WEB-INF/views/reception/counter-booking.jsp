@@ -21,46 +21,46 @@
     </header>
 
     <div class="dashboard-content booking-container">
-        <c:if test="${not empty param.error}">
-            <div style="color: red; margin-bottom: 15px; padding: 10px; background: #fef2f2; border-radius: 6px;">
-                <b>Error:</b> ${param.error}
-            </div>
-        </c:if>
 
         <form action="${pageContext.request.contextPath}/reception/counter-booking" method="POST" id="bookingForm">
             <div class="booking-grid">
 
-                <!-- CỘT TRÁI: KHÁCH HÀNG & THÚ CƯNG -->
                 <div class="booking-col">
+
                     <div class="section-title">
                         <span>Customer Information</span>
                     </div>
+
                     <div class="form-group">
                         <label class="form-label">Phone Number *</label>
-                        <input type="text" name="phone" class="form-control" placeholder="09xxxxxxx" required>
+                        <input type="text" name="phone" class="form-control" required>
                     </div>
+
                     <div class="form-group">
                         <label class="form-label">Full Name *</label>
-                        <input type="text" name="fullName" class="form-control" placeholder="Ex: John Doe" required>
+                        <input type="text" name="fullName" class="form-control" required>
                     </div>
 
                     <div class="section-title" style="margin-top: 30px;">
                         <span>Pet Information</span>
                     </div>
+
                     <div class="form-group">
                         <label class="form-label">Pet Name *</label>
-                        <input type="text" name="petName" class="form-control" placeholder="Ex: Mochi" required>
+                        <input type="text" name="petName" class="form-control" required>
                     </div>
+
                     <div class="row-flex">
                         <div class="form-group" style="flex: 1;">
                             <label class="form-label">Breed *</label>
-                            <input type="text" name="breed" class="form-control" placeholder="British Shorthair" required>
+                            <input type="text" name="breed" class="form-control" required>
                         </div>
                         <div class="form-group" style="flex: 1;">
-                            <label class="form-label">Age (Years) *</label>
-                            <input type="number" name="age" class="form-control" min="0" placeholder="2" required>
+                            <label class="form-label">Age *</label>
+                            <input type="number" name="age" class="form-control" min="0" required>
                         </div>
                     </div>
+
                     <div class="form-group">
                         <label class="form-label">Gender *</label>
                         <select name="gender" class="form-control" required>
@@ -68,58 +68,98 @@
                             <option value="Female">Female</option>
                         </select>
                     </div>
+
                 </div>
 
-                <!-- CỘT PHẢI: LỊCH HẸN VÀ AJAX TIME SLOT -->
                 <div class="booking-col">
+
                     <div class="section-title">
                         <span>Appointment Details</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Select Category *</label>
+                        <select name="category" id="category" class="form-control" required>
+                            <option value="" disabled selected>-- Choose Category --</option>
+                            <c:forEach items="${categoryList}" var="cat">
+                                <option value="${cat.categoryID}">
+                                        ${cat.categoryName}
+                                </option>
+                            </c:forEach>
+                        </select>
                     </div>
 
                     <div class="row-flex">
                         <div class="form-group" style="flex: 1;">
                             <label class="form-label">Select Service *</label>
-                            <select name="service" class="form-control" required>
-                                <option value="" disabled selected>-- Choose Service --</option>
-                                <c:forEach items="${serviceList}" var="srv">
-                                    <option value="${srv.ServiceID}">${srv.NameService} ($${srv.Price})</option>
-                                </c:forEach>
+                            <select name="service" id="service" class="form-control" required>
+                                <option value="" disabled selected>
+                                    -- Choose Service --
+                                </option>
                             </select>
                         </div>
-                        <div class="form-group" style="flex: 1;">
+
+                        <div class="form-group" id="doctorGroup" style="flex: 1;">
                             <label class="form-label">Select Doctor *</label>
                             <select name="doctor" id="doctor" class="form-control" required>
-                                <option value="" disabled selected>-- Choose Doctor --</option>
+                                <option value="" disabled selected>
+                                    -- Choose Doctor --
+                                </option>
                                 <c:forEach items="${vetList}" var="vet">
-                                    <option value="${vet.VetID}">Dr. ${vet.FullName}</option>
+                                    <option value="${vet.VetID}">
+                                         ${vet.FullName}
+                                    </option>
                                 </c:forEach>
                             </select>
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-top: 20px;">
+                    <div class="form-group" id="staffGroup" style="display:none;">
+                        <label class="form-label">Assign Staff *</label>
+                        <select name="staffId" id="staffSelect" class="form-control">
+                            <option value="" disabled selected>
+                                -- Choose Staff --
+                            </option>
+                        </select>
+                    </div>
+
+                    <div id="boardingExtra" style="display:none;">
+                        <div class="form-group">
+                            <label class="form-label">Check In Time *</label>
+                            <input type="time" name="checkInTime" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">End Date *</label>
+                            <input type="date" name="endDate" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label class="form-label">Appointment Date *</label>
                         <input type="date" id="appointmentDate" name="appointmentDate" class="form-control" required>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="timeSlotGroup">
                         <label class="form-label">Doctor's Schedule</label>
-                        <div id="slotContainer" class="time-grid" style="margin-top: 10px;">
-                            <p style="font-size: 13px; color: #9ca3af; font-style: italic;">
+                        <div id="slotContainer" class="time-grid">
+                            <p style="font-size:13px;color:#9ca3af;font-style:italic;">
                                 Please select Doctor and Date to view available slots.
                             </p>
                         </div>
-                        <!-- Lưu Giờ & SlotID để submit -->
-                        <input type="hidden" name="appointmentTime" id="selectedTime" required>
-                        <input type="hidden" name="slotId" id="selectedSlotId" required>
+                        <input type="hidden" name="appointmentTime" id="selectedTime">
+                        <input type="hidden" name="slotId" id="selectedSlotId">
                     </div>
 
-                    <div class="form-group" style="margin-top: 20px;">
+                    <div class="form-group">
                         <label class="form-label">Symptom Notes</label>
-                        <textarea name="note" class="form-control" rows="3" placeholder="Describe the pet's condition..."></textarea>
+                        <textarea name="note" class="form-control" rows="3"></textarea>
                     </div>
 
-                    <button type="submit" class="btn-submit-booking" id="btnSubmit">CONFIRM BOOKING</button>
+                    <button type="submit" class="btn-submit-booking" id="btnSubmit">
+                        CONFIRM BOOKING
+                    </button>
+
                 </div>
             </div>
         </form>
@@ -127,70 +167,129 @@
 </main>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const dateInput = document.getElementById('appointmentDate');
-        const doctorSelect = document.getElementById('doctor');
-        const slotContainer = document.getElementById('slotContainer');
-        const hiddenTime = document.getElementById('selectedTime');
-        const hiddenSlotId = document.getElementById('selectedSlotId');
-        const btnSubmit = document.getElementById('btnSubmit');
+    document.addEventListener("DOMContentLoaded", function(){
+        const category = document.getElementById("category");
+        const service = document.getElementById("service");
+        const staffGroup = document.getElementById("staffGroup");
+        const staffSelect = document.getElementById("staffSelect");
+        const boardingExtra = document.getElementById("boardingExtra");
+        const doctor = document.getElementById("doctor");
+        const dateInput = document.getElementById("appointmentDate");
+        const slotContainer = document.getElementById("slotContainer");
+        const hiddenTime = document.getElementById("selectedTime");
+        const hiddenSlotId = document.getElementById("selectedSlotId");
 
-        // Set Min Date = Today
-        const today = new Date().toISOString().split('T');
-        dateInput.setAttribute('min', today);
 
-        function fetchSlots() {
-            const vetId = doctorSelect.value;
-            const date = dateInput.value;
-            hiddenTime.value = '';
-            hiddenSlotId.value = '';
-            btnSubmit.innerText = 'CONFIRM BOOKING';
+        const today = new Date().toISOString().split("T");
+        dateInput.setAttribute("min", today);
 
-            if (vetId && date) {
-                slotContainer.innerHTML = '<p style="font-size:13px; color:#6b7280;">Loading available slots...</p>';
 
-                fetch(`${pageContext.request.contextPath}/reception/counter-booking?action=getSlots&vetId=${vetId}&date=${date}`)
-                    .then(response => response.json())
-                    .then(slots => {
-                        slotContainer.innerHTML = '';
-                        if (slots.length === 0) {
-                            slotContainer.innerHTML = '<p style="color:#dc2626; font-size:13px; font-weight:600;">No available slots for this doctor on selected date.</p>';
-                            return;
-                        }
+        category.addEventListener("change", function(){
+            const categoryId = this.value;
+            service.innerHTML = "<option disabled selected>Loading...</option>";
 
-                        slots.forEach(slot => {
-                            const btn = document.createElement('div');
-                            btn.className = 'time-slot';
-                            btn.innerText = slot.startTime;
+            staffGroup.style.display = "none";
+            boardingExtra.style.display = "none";
+            document.getElementById("doctorGroup").style.display = "block";
+            document.getElementById("timeSlotGroup").style.display = "block";
 
-                            btn.onclick = function() {
-                                document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('active'));
-                                this.classList.add('active');
-                                hiddenTime.value = slot.startTime;
-                                hiddenSlotId.value = slot.slotId;
-                                btnSubmit.innerText = 'BOOK APPOINTMENT AT ' + slot.startTime;
-                            };
-                            slotContainer.appendChild(btn);
-                        });
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        slotContainer.innerHTML = '<p style="color:#dc2626; font-size:13px;">Error loading schedule.</p>';
+            doctor.setAttribute("required", "true");
+
+            fetch('${pageContext.request.contextPath}/reception/counter-booking?action=getServicesByCategory&categoryId=' + categoryId)
+                .then(res => res.json())
+                .then(data => {
+                    service.innerHTML = "<option value='' disabled selected>-- Choose Service --</option>";
+                    data.forEach(s => {
+                        service.innerHTML += '<option value="' + s.serviceID + '">' + s.nameService + ' (' + s.price + ' VND)</option>';
                     });
-            }
-        }
+                })
+                .catch(err => console.error("Error:", err));
 
-        doctorSelect.addEventListener('change', fetchSlots);
-        dateInput.addEventListener('change', fetchSlots);
+            if(categoryId == 3 || categoryId == 4){
+                document.getElementById("doctorGroup").style.display = "none";
+                document.getElementById("timeSlotGroup").style.display = "none";
+                doctor.removeAttribute("required");
 
-        // Validate form trước khi gửi
-        document.getElementById('bookingForm').addEventListener('submit', function(e) {
-            if(hiddenSlotId.value === '') {
-                e.preventDefault();
-                alert("Please select a time slot from the Doctor's Schedule!");
+                staffGroup.style.display = "block";
+
+                if(categoryId == 3) {
+                    loadStaff("Technician");
+                } else if (categoryId == 4) {
+                    boardingExtra.style.display = "block";
+                    loadStaff("Care");
+                }
             }
         });
+
+        function loadStaff(position){
+            fetch('${pageContext.request.contextPath}/reception/counter-booking?action=getStaffByPosition&position=' + position)
+                .then(res => res.json())
+                .then(data => {
+                    staffSelect.innerHTML = "<option value='' disabled selected>-- Choose Staff --</option>";
+                    data.forEach(st => {
+                        staffSelect.innerHTML += '<option value="' + st.staffID + '">' + st.fullName + '</option>';
+                    });
+                })
+                .catch(err => console.error("Error:", err));
+        }
+
+        function loadSlots() {
+            const vetId = doctor.value;
+            const dateVal = dateInput.value;
+
+            if (!vetId || !dateVal) {
+                slotContainer.innerHTML = '<p style="font-size:13px;color:#9ca3af;font-style:italic;">Please select Doctor and Date to view available slots.</p>';
+                return;
+            }
+
+            slotContainer.innerHTML = '<p style="font-size:13px;color:#f97316;">Loading slots...</p>';
+
+            fetch('${pageContext.request.contextPath}/reception/counter-booking?action=getSlots&vetId=' + vetId + '&date=' + dateVal)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.length === 0) {
+                        slotContainer.innerHTML = '<p style="font-size:13px;color:#dc2626;">No slots available for this date.</p>';
+                        return;
+                    }
+
+                    let html = '<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">';
+                    data.forEach(slot => {
+                        html += '<label class="slot-item" style="padding: 8px 15px; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer; background: #fff; transition: 0.2s;">';
+                        html += '<input type="radio" name="slotRadio" value="' + slot.slotId + '" data-time="' + slot.startTime + '" style="margin-right: 5px;" required> ';
+                        html += '<b>' + slot.startTime + '</b>';
+                        html += '</label>';
+                    });
+                    html += '</div>';
+
+                    slotContainer.innerHTML = html;
+
+                    const radios = slotContainer.querySelectorAll('input[type="radio"]');
+                    radios.forEach(radio => {
+                        radio.addEventListener('change', function() {
+                            hiddenSlotId.value = this.value;
+                            hiddenTime.value = this.getAttribute('data-time');
+
+                            slotContainer.querySelectorAll('.slot-item').forEach(lbl => {
+                                lbl.style.borderColor = '#d1d5db';
+                                lbl.style.backgroundColor = '#fff';
+                                lbl.style.color = '#374151';
+                            });
+                            this.parentElement.style.borderColor = '#f97316';
+                            this.parentElement.style.backgroundColor = '#fff7ed';
+                            this.parentElement.style.color = '#f97316';
+                        });
+                    });
+                })
+                .catch(err => {
+                    console.error("Error loading slots:", err);
+                    slotContainer.innerHTML = '<p style="font-size:13px;color:#dc2626;">Error loading slots.</p>';
+                });
+        }
+
+        doctor.addEventListener("change", loadSlots);
+        dateInput.addEventListener("change", loadSlots);
     });
 </script>
+
 </body>
 </html>

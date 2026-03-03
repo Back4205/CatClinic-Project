@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reset Password</title>
-    <!-- Chỉ giữ lại link icon ổ khóa và CSS của bạn -->
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="${pageContext.request.contextPath}/css/reset-password-style.css" rel="stylesheet">
 </head>

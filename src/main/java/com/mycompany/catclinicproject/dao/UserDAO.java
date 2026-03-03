@@ -256,4 +256,21 @@ public class UserDAO extends DBContext {
         }
         return "";
     }
+    public User getUserByPhone(String phone) {
+        String sql = "SELECT * FROM Users WHERE Phone = ? AND RoleID = 5 AND IsActive = 1";
+        try {
+            if (c == null || c.isClosed()) new DBContext();
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, phone);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new User(rs.getInt("UserID"), rs.getString("UserName"), rs.getString("PassWord"),
+                        rs.getString("FullName"), rs.getString("Email"), rs.getString("Phone"),
+                        rs.getBoolean("Male"), rs.getInt("RoleID"), rs.getBoolean("IsActive"), rs.getString("GoogleID"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

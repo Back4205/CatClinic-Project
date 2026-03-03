@@ -37,15 +37,15 @@ public class CareStaffController extends HttpServlet {
         if (catIdParam != null && !catIdParam.isEmpty()) {
             int catId = Integer.parseInt(catIdParam);
 
-            // Lấy thông tin Pet Detail (UC: View Pet Details)
+
             request.setAttribute("petDetail", dao.getPetDetail(catId));
             request.setAttribute("selectedCatId", catId);
             request.setAttribute("selectedBookingId", bookingIdParam);
 
-            // Lấy Task (UC: View Care Task & Task Tracking)
+
             request.setAttribute("dailyTasks", dao.getDailyTasksStatus(catId));
 
-            // Lấy Log (UC: Record Care Diary)
+
             request.setAttribute("observations", dao.getObservations(catId));
         }
 
@@ -67,21 +67,21 @@ public class CareStaffController extends HttpServlet {
             int bookingId = Integer.parseInt(request.getParameter("bookingId"));
             int taskId = Integer.parseInt(request.getParameter("taskId"));
 
-            // UC: Task Tracking
+
             if ("markTask".equals(action)) {
                 dao.addCareJourney(catId, bookingId, staffId, taskId, "Task marked as Completed.");
             }
-            // UC: Record Care Diary
+
             else if ("addLog".equals(action)) {
                 String note = request.getParameter("note");
                 dao.addCareJourney(catId, bookingId, staffId, taskId, note);
             }
 
-            response.sendRedirect(request.getContextPath() + "/staff/tasks?catId=" + catId + "&bookingId=" + bookingId);
+            response.sendRedirect(request.getContextPath() + "/care/tasks?catId=" + catId + "&bookingId=" + bookingId);
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/staff/tasks?error=Invalid+Input");
+            response.sendRedirect(request.getContextPath() + "/care/tasks?error=Invalid+Input");
         }
     }
 }

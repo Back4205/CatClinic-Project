@@ -24,12 +24,12 @@ public class GoogleLoginController extends HttpServlet {
         String code = request.getParameter("code");
 
         if (code != null && !code.isEmpty()) {
-            // Lấy động đường dẫn URI hiện tại
+
             String redirectUri = request.getScheme() + "://" + request.getServerName() + ":"
                     + request.getServerPort() + request.getContextPath() + "/login-google";
 
             AuthService auth = new AuthService();
-            // Truyền biến redirectUri vào hàm getToken
+
             String accessToken = auth.getToken(code, redirectUri);
 
             User googleUser = auth.getUserInfo(accessToken);
@@ -38,25 +38,23 @@ public class GoogleLoginController extends HttpServlet {
                 UserDAO dao = new UserDAO();
                 User userInDB = dao.checkLoginGoogle(googleUser.getEmail(), googleUser.getGoogleID());
 
-                // Nếu chưa có tài khoản trong DB thì tạo mới
+
                 if (userInDB == null) {
                     dao.createGoogleUser(googleUser);
                     userInDB = dao.checkLoginGoogle(googleUser.getEmail(), googleUser.getGoogleID());
                 }
 
-                // 👉 1. CHÈN THÊM BƯỚC CHECK TÀI KHOẢN BỊ KHÓA Ở ĐÂY
+
                 if (!userInDB.isActive()) {
                     request.setAttribute("mess", "Your account has been deactivated by Admin! Please contact support.");
                     request.getRequestDispatcher("WEB-INF/views/auth/login.jsp").forward(request, response);
-                    return; // Dừng luôn, không cho chạy xuống đoạn switch-case bên dưới
+                    return;
                 }
 
-                // Đăng nhập hợp lệ -> Lưu Session
                 HttpSession session = request.getSession();
                 session.setAttribute("acc", userInDB);
                 int roleId = userInDB.getRoleID();
 
-                // Luồng phân quyền của bạn
                 switch (roleId) {
                     case 1:
                         request.getRequestDispatcher("WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
