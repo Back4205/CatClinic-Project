@@ -32,3 +32,11 @@ body {
 .content {
     flex: 1;
 }
+.main-content {
+    flex: 1;
+}.app-container {
+     display: flex;
+     gap: 30px;
+     padding: 30px;
+     flex: 1;
+ }

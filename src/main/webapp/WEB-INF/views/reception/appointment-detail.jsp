@@ -5,11 +5,13 @@
 <head>
     <title>Appointment Details | Receptionist</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/base.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reception-detail.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+<%@include file="header.jsp" %>
 <div class="app-container">
     <c:set var="activePage" value="dashboard" scope="request" />
     <%@include file="sidebar.jsp" %>
@@ -71,9 +73,23 @@
             </div>
 
             <div class="info-section">
-                <span class="section-label">Customer Notes</span>
+                <span class="section-label">Notes & Status Alert</span>
+
+                <%-- Thông báo của hệ thống --%>
+                <c:if test="${booking.status == 'Cancelled' && booking.note.contains('No-show')}">
+                    <div class="system-alert-box">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <div>
+                            <strong>System Alert:</strong> This appointment was auto-cancelled due to expiration.
+                            <br>Policy: <strong>Non-refundable for no-show cases.</strong>
+                        </div>
+                    </div>
+                </c:if>
+
+                <%-- Note gốc của khách --%>
                 <div class="note-area">
-                    "${empty booking.note ? 'No additional requests provided for this visit.' : booking.note}"
+                    <i class="fa-solid fa-quote-left" style="font-size: 10px; opacity: 0.3; margin-right: 5px;"></i>
+                    ${empty booking.note ? 'No additional requests provided for this visit.' : booking.note}
                 </div>
             </div>
 
@@ -91,5 +107,6 @@
         </div>
     </main>
 </div>
+<%@include file="footer.jsp" %>
 </body>
 </html>

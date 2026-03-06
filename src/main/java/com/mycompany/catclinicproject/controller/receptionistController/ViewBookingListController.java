@@ -37,7 +37,7 @@ public class ViewBookingListController extends HttpServlet {
 
         String path = request.getServletPath();
         BookingDAO dao = new BookingDAO();
-
+        dao.cancelNoShowBookings();
         if (path.contains("appointment-detail")) {
             try {
                 int bookingID = Integer.parseInt(request.getParameter("id"));

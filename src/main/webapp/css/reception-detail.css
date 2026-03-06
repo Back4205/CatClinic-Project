@@ -1,13 +1,3 @@
-/* Container chính mô phỏng Modal */
-.appointment-card {
-    max-width: 550px;
-    margin: 40px auto;
-    background: #fff;
-    border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-    overflow: hidden;
-    font-family: 'Inter', sans-serif;
-}
 
 /* Phần Header với Avatar mèo */
 .card-header {
@@ -109,4 +99,63 @@
     font-style: italic;
     color: #9A3412;
     font-size: 14px;
+}
+
+.app-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f8fafc;
+    position: relative; /* Tạo điểm tựa cho các lớp bên trong */
+}
+.sidebar {
+    width: 260px !important; /* Thay bằng độ rộng thực tế của sidebar cậu */
+    flex-shrink: 0;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex-grow: 1;
+    width: calc(100% - 260px); /* Tự động tính toán phần còn lại */
+    display: flex;
+    justify-content: center; /* Căn giữa card theo chiều ngang */
+    align-items: flex-start; /* Cho card nằm lên trên cùng */
+    padding-top: 50px;       /* Khoảng cách từ Header xuống */
+    padding-bottom: 50px;
+}
+.appointment-card {
+    margin: 0 !important;
+    width: 100%;
+    max-width: 550px;
+}
+/* Style cho khung thông báo đỏ */
+.system-alert-box {
+    background: #fee2e2; /* Màu đỏ nhạt */
+    color: #b91c1c;      /* Chữ đỏ đậm */
+    border: 1px solid #fecaca;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.system-alert-box i {
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.system-alert-box strong {
+    color: #991b1b;
+    text-transform: uppercase;
+}
+
+/* Đảm bảo trạng thái Cancelled có màu xám đặc trưng */
+.status-cancelled {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+    border: 1px solid #cbd5e1 !important;
 }

@@ -474,6 +474,53 @@ public class BookingDAO extends DBContext {
             e.printStackTrace();
         }
     }
+    public void cancelNoShowBookings() {
+        // 1. Tìm các SlotID của những ca 'Confirmed' đã quá giờ
+        String selectSql = "SELECT SlotID FROM Bookings " +
+                "WHERE Status = 'Confirmed' " +
+                "AND (CAST(AppointmentDate AS DATETIME) + CAST(AppointmentTime AS DATETIME)) < GETDATE()";
+
+        // 2. Cập nhật trạng thái Booking thành Cancelled (Không hoàn tiền)
+        String updateBookingSql = "UPDATE Bookings SET Status = 'Cancelled', Note = N'System: No-show (Non-refundable)' " +
+                "WHERE Status = 'Confirmed' " +
+                "AND (CAST(AppointmentDate AS DATETIME) + CAST(AppointmentTime AS DATETIME)) < GETDATE()";
+
+        try {
+            c.setAutoCommit(false); // Dùng Transaction cho an toàn
+
+            List<Integer> slotIds = new ArrayList<>();
+            try (PreparedStatement psSelect = c.prepareStatement(selectSql);
+                 ResultSet rs = psSelect.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("SlotID");
+                    if (id > 0) slotIds.add(id);
+                }
+            }
+
+            // Cập nhật Booking
+            try (PreparedStatement psUpdate = c.prepareStatement(updateBookingSql)) {
+                psUpdate.executeUpdate();
+            }
+
+            // Nhả Slot về Available để khách khác có thể đặt
+            if (!slotIds.isEmpty()) {
+                String releaseSql = "UPDATE TimeSlots SET Status = 'Available' WHERE SlotID = ?";
+                try (PreparedStatement psRelease = c.prepareStatement(releaseSql)) {
+                    for (Integer id : slotIds) {
+                        psRelease.setInt(1, id);
+                        psRelease.executeUpdate();
+                    }
+                }
+            }
+
+            c.commit();
+        } catch (Exception e) {
+            try { c.rollback(); } catch (SQLException ex) {}
+            e.printStackTrace();
+        } finally {
+            try { c.setAutoCommit(true); } catch (SQLException e) {}
+        }
+    }
     //    public boolean isCatTimeOverlapping(int catID, int slotID) {
 //
 //        String sql = " SELECT 1 FROM Bookings b JOIN TimeSlots ts_old ON b.SlotID = ts_old.SlotID JOIN TimeSlots ts_new ON ts_new.SlotID = ? WHERE b.CatID = ? AND b.Status IN ('PendingPayment','Confirmed') AND ts_old.Date = ts_new.Date AND ts_old.StartTime < ts_new.EndTimeAND ts_old.EndTime > ts_new.StartTime";

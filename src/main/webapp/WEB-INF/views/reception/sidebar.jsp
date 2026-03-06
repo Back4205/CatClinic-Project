@@ -1,34 +1,23 @@
-
-
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <aside class="sidebar">
-    <div class="profile-card">
-        <div class="avatar large">
-            <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">
-        </div>
-        <h3>${acc.fullName}</h3>
-        <p>CATCLINIC PORTAL</p>
+    <div class="profile-section">
+        <img src="https://cdn-icons-png.flaticon.com/512/4140/4140047.png" alt="Avatar" class="profile-img">
+        <h3 class="profile-name">${sessionScope.acc.fullName != null ? sessionScope.acc.fullName : 'Receptionist'}</h3>
+        <span class="profile-role">CATCLINIC PORTAL</span>
     </div>
-    <nav class="menu">
-        <a href="${pageContext.request.contextPath}/reception/counter-booking" class="${activePage == 'counter-booking' ? 'active' : ''}">
+    <nav class="nav-menu">
+        <a href="${pageContext.request.contextPath}/reception/counter-booking" class="nav-item ${activePage == 'counter-booking' ? 'active' : ''}">
             <i class="fa-regular fa-calendar-plus"></i> Counter Booking
         </a>
-
-        <a href="${pageContext.request.contextPath}/reception/counter-cancellation" class="${activePage == 'counter-cancellation' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/reception/counter-cancellation" class="nav-item ${activePage == 'counter-cancellation' ? 'active' : ''}">
             <i class="fa-regular fa-rectangle-xmark"></i> Counter Cancellation
         </a>
-
-        <a href="${pageContext.request.contextPath}/reception/home" class="${activePage == 'dashboard' ? 'active' : ''}">
+        <a href="${pageContext.request.contextPath}/reception/" class="nav-item ${activePage == 'dashboard' ? 'active' : ''}">
             <i class="fa-solid fa-table-cells-large"></i> View Booking List
         </a>
-
-        <a href="${pageContext.request.contextPath}/reception/check-in" class="${activePage == 'check-in' ? 'active' : ''}">
-            <i class="fa-regular fa-circle-check"></i> Check-in Patient
-        </a>
-        <a href="${pageContext.request.contextPath}/loadinfo" class="${activePage == 'home' ? 'active' : ''}">
-            <i class="bi bi-house"></i> Home
-        </a>
-        <a href="${pageContext.request.contextPath}/logout" style="color: red; margin-top: 20px;">
-            <i class="bi bi-box-arrow-right"></i> Logout
-        </a>
     </nav>
+    <a href="${pageContext.request.contextPath}/logout" class="logout-btn">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+    </a>
 </aside>
