@@ -110,10 +110,7 @@ public class LoginController extends HttpServlet {
                         }
                         break;
                     case 5:
-                        CategoryDao cdao = new CategoryDao();
-                        List<Category> list = cdao.getAllCategory();
-                        request.setAttribute("CategoryList", list);
-                        request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
+                        
                         break;
                     default:
                         request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
