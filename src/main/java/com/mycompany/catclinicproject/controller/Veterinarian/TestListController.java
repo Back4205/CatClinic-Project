@@ -5,8 +5,7 @@
 package com.mycompany.catclinicproject.controller.Veterinarian;
 
 import com.mycompany.catclinicproject.dao.BookingDaoVeterinarian;
-import com.mycompany.catclinicproject.model.AssignCaseDTO;
-import com.mycompany.catclinicproject.model.DetailBookingDTO;
+import com.mycompany.catclinicproject.model.TestOrderViewDTO;
 import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,17 +15,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 /**
  *
  * @author Son
  */
-@WebServlet(name = "DashboardController", urlPatterns = {"/DashboardController"})
-public class DashboardController extends HttpServlet {
+@WebServlet(name = "TestListController", urlPatterns = {"/testlist"})
+public class TestListController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +41,10 @@ public class DashboardController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DashboardController</title>");
+            out.println("<title>Servlet TestListController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DashboardController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet TestListController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,55 +59,29 @@ public class DashboardController extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+   
     @Override
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("acc");
 
-        // Nếu chưa login
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("acc") : null;
+
         if (user == null) {
-            response.sendRedirect("login");
+            response.sendRedirect("login.jsp");
             return;
         }
 
         BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
-
-        // Lấy VetID từ UserID
         int vetID = dao.getVetIDByUserID(user.getUserID());
 
-        if (vetID == -1) {
-            response.sendRedirect("login");
-            return;
-        }
         String keyword = request.getParameter("keyword");
-        request.setAttribute("keyword", keyword);
-        String dateFrom = request.getParameter("dateFrom");
-        String dateTo = request.getParameter("dateTo");
-
-        LocalDate today = LocalDate.now();
-        String todayStr = today.toString();
-
-        if (dateFrom == null || dateFrom.isEmpty()) {
-            dateFrom = todayStr;
-        }
-
-        if (dateTo == null || dateTo.isEmpty()) {
-            dateTo = todayStr;
-        }
-        if (dateFrom != null && dateTo != null) {
-            if (dateFrom.compareTo(dateTo) > 0) {
-                String temp = dateFrom;
-                dateFrom = dateTo;
-                dateTo = temp;
-            }
-        }
+        String status = request.getParameter("status");
 
         int page = 1;
-        int pageSize = 5;
-
+        int pageSize =5;
         String pageParam = request.getParameter("page");
+
         if (pageParam != null) {
             try {
                 page = Integer.parseInt(pageParam);
@@ -119,38 +89,30 @@ public class DashboardController extends HttpServlet {
                 page = 1;
             }
         }
-        // ===== GỌI DAO =====
-        int totalRecords = dao.countAssignCases(vetID, dateFrom, dateTo, keyword);
-        int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
-        List<AssignCaseDTO> assignList
-                = dao.getAssignCasesPaging(vetID, dateFrom, dateTo, keyword, page, pageSize);
-    
-        DateTimeFormatter formatter
-                = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy", Locale.ENGLISH);
-        String bookingIDRaw = request.getParameter("bookingID");
-        String raw = request.getParameter("bookingID");
 
-        if (raw != null && !raw.trim().isEmpty()) {
-            int bookingID = Integer.parseInt(raw.trim());
-        }
-        if (bookingIDRaw != null) {
-            int bookingID = Integer.parseInt(bookingIDRaw);
+        if (page < 1) page = 1;
 
-            DetailBookingDTO detail = dao.getBookingDetail(bookingID);
-            request.setAttribute("selectedCase", detail);
+
+        int totalRecord = dao.countTestOrdersByVetID(vetID, keyword, status);
+        int totalPages = (int) Math.ceil((double) totalRecord / pageSize);
+
+        if (totalPages > 0 && page > totalPages) {
+            page = totalPages;
         }
-        String formattedDate = today.format(formatter);
-        request.setAttribute("todayDate", formattedDate);
-       
-        request.setAttribute("assignList", assignList);
+
+        List<TestOrderViewDTO> list =
+                dao.getTestOrdersByVetID(vetID, keyword, status, page, pageSize);
+
+        request.setAttribute("testList", list);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
-        request.setAttribute("dateFrom", dateFrom);
-        request.setAttribute("dateTo", dateTo);
-        request.setAttribute("activePage", "dashboard");
-        request.getRequestDispatcher("WEB-INF/views/veterinarian/dashboard.jsp")
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("status", status);
+
+        request.getRequestDispatcher("WEB-INF/views/veterinarian/testrequest.jsp")
                 .forward(request, response);
     }
+
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -163,7 +125,7 @@ public class DashboardController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
     }
 
     /**

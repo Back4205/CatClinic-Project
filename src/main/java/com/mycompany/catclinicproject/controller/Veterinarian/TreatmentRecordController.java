@@ -5,8 +5,7 @@
 package com.mycompany.catclinicproject.controller.Veterinarian;
 
 import com.mycompany.catclinicproject.dao.BookingDaoVeterinarian;
-import com.mycompany.catclinicproject.model.AssignCaseDTO;
-import com.mycompany.catclinicproject.model.DetailBookingDTO;
+import com.mycompany.catclinicproject.model.AssignCaseDTO2;
 import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,16 +16,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
-
-/**
- *
- * @author Son
- */
-@WebServlet(name = "DashboardController", urlPatterns = {"/DashboardController"})
-public class DashboardController extends HttpServlet {
+@WebServlet(name = "AssignCaseController", urlPatterns = {"/assignedCases"})
+public class TreatmentRecordController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -45,10 +37,10 @@ public class DashboardController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DashboardController</title>");
+            out.println("<title>Servlet AssignCaseController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DashboardController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AssignCaseController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -64,91 +56,55 @@ public class DashboardController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("acc");
 
-        // Nếu chưa login
         if (user == null) {
-            response.sendRedirect("login");
+            response.sendRedirect("login.jsp");
             return;
         }
-
-        BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
-
-        // Lấy VetID từ UserID
-        int vetID = dao.getVetIDByUserID(user.getUserID());
-
-        if (vetID == -1) {
-            response.sendRedirect("login");
-            return;
-        }
-        String keyword = request.getParameter("keyword");
-        request.setAttribute("keyword", keyword);
         String dateFrom = request.getParameter("dateFrom");
         String dateTo = request.getParameter("dateTo");
-
         LocalDate today = LocalDate.now();
         String todayStr = today.toString();
-
         if (dateFrom == null || dateFrom.isEmpty()) {
             dateFrom = todayStr;
         }
-
         if (dateTo == null || dateTo.isEmpty()) {
             dateTo = todayStr;
         }
-        if (dateFrom != null && dateTo != null) {
-            if (dateFrom.compareTo(dateTo) > 0) {
-                String temp = dateFrom;
-                dateFrom = dateTo;
-                dateTo = temp;
-            }
+        if (dateFrom.compareTo(dateTo) > 0) {
+            String temp = dateFrom;
+            dateFrom = dateTo;
+            dateTo = temp;
         }
-
         int page = 1;
         int pageSize = 5;
-
         String pageParam = request.getParameter("page");
         if (pageParam != null) {
-            try {
-                page = Integer.parseInt(pageParam);
-            } catch (Exception e) {
-                page = 1;
-            }
+            page = Integer.parseInt(pageParam);
         }
-        // ===== GỌI DAO =====
-        int totalRecords = dao.countAssignCases(vetID, dateFrom, dateTo, keyword);
+        BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
+        String keyword = request.getParameter("keyword");
+        String status = request.getParameter("status");
+        int vetID = dao.getVetIDByUserID(user.getUserID());
+        int totalRecords = dao.countAssignedCasesByVetID(vetID, keyword, status);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
-        List<AssignCaseDTO> assignList
-                = dao.getAssignCasesPaging(vetID, dateFrom, dateTo, keyword, page, pageSize);
-    
-        DateTimeFormatter formatter
-                = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy", Locale.ENGLISH);
-        String bookingIDRaw = request.getParameter("bookingID");
-        String raw = request.getParameter("bookingID");
-
-        if (raw != null && !raw.trim().isEmpty()) {
-            int bookingID = Integer.parseInt(raw.trim());
-        }
-        if (bookingIDRaw != null) {
-            int bookingID = Integer.parseInt(bookingIDRaw);
-
-            DetailBookingDTO detail = dao.getBookingDetail(bookingID);
-            request.setAttribute("selectedCase", detail);
-        }
-        String formattedDate = today.format(formatter);
-        request.setAttribute("todayDate", formattedDate);
-       
-        request.setAttribute("assignList", assignList);
+        List<AssignCaseDTO2> list
+                = dao.getAssignedCasesByVetID(vetID, keyword, status, page, pageSize);
+        request.setAttribute("assignedCases", list);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("dateFrom", dateFrom);
+        request.setAttribute("activePage", "assigned");
+        request.setAttribute("keyword", keyword);
+        request.setAttribute("status", status);
+
         request.setAttribute("dateTo", dateTo);
-        request.setAttribute("activePage", "dashboard");
-        request.getRequestDispatcher("WEB-INF/views/veterinarian/dashboard.jsp")
+
+        request.getRequestDispatcher("WEB-INF/views/veterinarian/treatmentrecords.jsp")
                 .forward(request, response);
     }
 
