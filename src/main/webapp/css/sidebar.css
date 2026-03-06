@@ -1,58 +1,67 @@
-
 .sidebar {
-    width: 260px;
+    width: 250px;
     background: #ffffff;
-    border-radius: 14px;
-    padding: 20px;
+    padding: 25px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #eee;
 }
 
-.profile-card {
-    text-align: center;
-    margin-bottom: 25px;
+/* Logo */
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ff7a00;
+    margin-bottom: 40px;
 }
 
-.profile-card h3 {
-    margin-bottom: 4px;
+.logo i {
+    margin-right: 8px;
 }
 
-.profile-card p {
-    font-size: 12px;
-    color: var(--gray);
+/* Menu */
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.avatar.large {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 10px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #f1f5f9;
+.menu-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    border: 2px solid #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.avatar.large img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.menu a {
-    display: block;
-    padding: 12px 14px;
-    margin-bottom: 8px;
+    gap: 10px;
     text-decoration: none;
-    color: #374151;
-    border-radius: 10px;
-    transition: 0.2s;
+    color: #555;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: 0.2s ease;
 }
 
-.menu a:hover,
-.menu a.active {
-    background: var(--primary-light);
-    color: var(--primary);
+.menu-item:hover {
+    background: #fff2e6;
+    color: #ff7a00;
+}
+
+.menu-item.active {
+    background: linear-gradient(90deg, #ff7a00, #ffa64d);
+    color: white;
+}
+
+/* Bottom section */
+.bottom-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Logout FIX */
+.logout {
+    color: #e53935;
+    font-weight: 500;
+}
+
+.logout:hover {
+    background: #ffe5e5;
 }
