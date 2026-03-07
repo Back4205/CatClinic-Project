@@ -110,7 +110,7 @@ public class LoginController extends HttpServlet {
                         }
                         break;
                     case 5:
-                        
+                        response.sendRedirect("loadinfo");
                         break;
                     default:
                         request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);

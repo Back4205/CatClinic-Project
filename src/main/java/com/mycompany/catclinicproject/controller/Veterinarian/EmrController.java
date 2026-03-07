@@ -106,7 +106,7 @@ public class EmrController extends HttpServlet {
         dao.updateMedicalRecord(medicalRecordID, diagnosis, symptoms, treatmentPlan);
 
         if (button.equalsIgnoreCase("next")) {
-            response.sendRedirect("/xray?medicalRecordID=" + medicalRecordID);
+            response.sendRedirect("xray?medicalRecordID=" + medicalRecordID);
         } else if (button.equalsIgnoreCase("save")) {
             response.sendRedirect("EmrController/?medicalRecordID=" + medicalRecordID);
 
