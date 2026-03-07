@@ -3,6 +3,8 @@ package com.mycompany.catclinicproject.dao;
 import com.mycompany.catclinicproject.model.Booking;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import com.mycompany.catclinicproject.model.CancelBookingDTO;
+import com.mycompany.catclinicproject.model.NotificationBooking;
+
 import java.sql.PreparedStatement;
 import java.sql.*;
 import java.util.ArrayList;
@@ -551,6 +553,89 @@ public class BookingDAO extends DBContext {
         }
         return false;
     }
+
+    public int getLatestBookingID() {
+        String sql = "SELECT MAX(BookingID) FROM Bookings";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int countNewBookings(int lastSeenID) {
+        String sql = "SELECT COUNT(*) FROM Bookings WHERE BookingID > ?";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, lastSeenID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+
+    public List<NotificationBooking> getLatestBookingNotifications(int lastSeenID) {
+
+        List<NotificationBooking> list = new ArrayList<>();
+
+        String sql = "SELECT TOP 5\n" +
+                "    b.BookingID,\n" +
+                "  \n" +
+                "    u.FullName AS OwnerName,\n" +
+                "    u.Phone,\n" +
+                "    b.AppointmentDate,\n" +
+                "    b.AppointmentTime,\n" +
+                "    b.Status\n" +
+                "FROM Bookings b\n" +
+                "JOIN Cats c ON b.CatID = c.CatID\n" +
+                "JOIN Owners o ON c.OwnerID = o.OwnerID\n" +
+                "JOIN Users u ON o.UserID = u.UserID\n" +
+                " WHERE b.BookingID > ? "+
+                "ORDER BY b.BookingID DESC ";
+
+        try {
+
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, lastSeenID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                NotificationBooking n = new NotificationBooking();
+
+                n.setId(rs.getInt("BookingID"));
+                n.setOwnerName(rs.getString("OwnerName"));
+                n.setPhone(rs.getString("Phone"));
+                n.setAppointmentDate(rs.getDate("AppointmentDate"));
+                n.setAppointmentTime(rs.getTime("AppointmentTime"));
+                n.setStatus(rs.getString("Status"));
+
+                list.add(n);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+
+
+
+
     public List<CancelBookingDTO> getAllCancelBookings() {
     List<CancelBookingDTO> list = new ArrayList<>();
 

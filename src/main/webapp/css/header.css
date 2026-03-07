@@ -41,3 +41,75 @@
     height: 100%;
     object-fit: cover;
 }
+
+
+.right-section{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.notification{
+    position:relative;
+    cursor:pointer;
+}
+
+.bell-icon{
+    font-size:22px;
+}
+
+.noti-count{
+    position:absolute;
+    top:-6px;
+    right:-8px;
+    background:red;
+    color:white;
+    font-size:12px;
+    padding:2px 6px;
+    border-radius:50%;
+}
+
+/* dropdown */
+
+.noti-dropdown{
+    display:none;
+    position:absolute;
+    right:0;
+    top:30px;
+    width:300px;
+    background:white;
+    border:1px solid #ddd;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* hover để hiện */
+
+.notification:hover .noti-dropdown{
+    display:block;
+}
+
+/* header */
+
+.noti-header{
+    padding:10px;
+    font-weight:bold;
+    border-bottom:1px solid #eee;
+}
+
+/* scroll */
+
+.noti-list{
+    max-height:300px;
+    overflow-y:auto;
+}
+
+/* item */
+
+.noti-item{
+    padding:10px;
+    border-bottom:1px solid #eee;
+}
+
+.noti-item:hover{
+    background:#f5f5f5;
+}

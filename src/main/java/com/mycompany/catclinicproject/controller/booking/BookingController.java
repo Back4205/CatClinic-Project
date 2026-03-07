@@ -18,10 +18,10 @@ public class BookingController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
-        User user = (session != null) ? (User) session.getAttribute("acc") : null;
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
 
-        if (user == null) {
+        if (user == null || user.getRoleID() != 5) {
             response.sendRedirect(request.getContextPath() + "/login?from=booking");
             return;
         }
@@ -36,13 +36,14 @@ public class BookingController extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        HttpSession session = request.getSession(false);
-        User user = (session != null) ? (User) session.getAttribute("acc") : null;
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
 
-        if (user == null) {
+        if (user == null || user.getRoleID() != 5) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
+
 
         String action = request.getParameter("action");
         Integer staffId = null ;

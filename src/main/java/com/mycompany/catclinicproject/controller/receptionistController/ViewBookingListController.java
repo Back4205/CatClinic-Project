@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.controller.receptionistController;
 
 import com.mycompany.catclinicproject.dao.BookingDAO;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
+import com.mycompany.catclinicproject.model.NotificationBooking;
 import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,7 +22,8 @@ import java.util.Map;
         "/reception/view-booking-list",
         "/reception/home",
         "/reception/update-status",
-        "/reception/appointment-detail"
+        "/reception/appointment-detail" ,
+        "/reception/clear-notification"
 })
 public class ViewBookingListController extends HttpServlet {
 
@@ -37,6 +39,15 @@ public class ViewBookingListController extends HttpServlet {
 
         String path = request.getServletPath();
         BookingDAO dao = new BookingDAO();
+        if (path.contains("clear-notification")) {
+
+            int latestID = dao.getLatestBookingID();
+
+            session.setAttribute("lastSeenBookingID", latestID);
+
+            response.sendRedirect(request.getContextPath() + "/reception/home");
+            return;
+        }
 
         if (path.contains("appointment-detail")) {
             try {
@@ -136,7 +147,18 @@ public class ViewBookingListController extends HttpServlet {
         if (totalRecord > 0 && start < totalRecord) {
             pagedList = filteredList.subList(start, end);
         }
+        Integer lastSeen = (Integer) session.getAttribute("lastSeenBookingID");
 
+        if (lastSeen == null) {
+            lastSeen = dao.getLatestBookingID();
+            session.setAttribute("lastSeenBookingID", lastSeen);
+        }
+
+        int notificationCount = dao.countNewBookings(lastSeen);
+        List<NotificationBooking> notifications = dao.getLatestBookingNotifications(lastSeen);
+
+        session.setAttribute("notificationCount", notificationCount);
+        session.setAttribute("notifications", notifications);
 
         request.setAttribute("stats", stats);
         request.setAttribute("bookingList", pagedList);

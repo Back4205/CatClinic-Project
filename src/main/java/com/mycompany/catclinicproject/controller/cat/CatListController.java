@@ -25,10 +25,11 @@ public class CatListController extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("acc");
 
-        if (user == null) {
+        if (user == null  || user.getRoleID() != 5) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
+
 
         CatDAO catDAO = new CatDAO();
 
