@@ -9,6 +9,11 @@
         <p>CATCLINIC PORTAL</p>
     </div>
     <nav class="menu">
+
+        <a href="${pageContext.request.contextPath}/profile" class="${activePage == 'profile' ? 'active' : ''}">
+            <i class="bi bi-person-gear"></i> Profile & Security
+        </a>
+
         <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID == 5}">
             <a href="${pageContext.request.contextPath}/cats" class="${activePage == 'cats' ? 'active' : ''}">
                 <i class="bi bi-grid-fill"></i> Cat List
@@ -20,9 +25,7 @@
         </c:if>
 
 
-        <a href="${pageContext.request.contextPath}/profile" class="${activePage == 'profile' ? 'active' : ''}">
-            <i class="bi bi-person-gear"></i> Profile & Security
-        </a>
+
         <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID == 5}">
             <a href="${pageContext.request.contextPath}/loadinfo" class="${activePage == 'home' ? 'active' : ''}">
                 <i class="bi bi-house"></i> Home
