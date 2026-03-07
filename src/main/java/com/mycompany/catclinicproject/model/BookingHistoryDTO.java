@@ -21,6 +21,10 @@ public class BookingHistoryDTO {
     private String ownerPhone;
     private String customerName;
     private String customerPhone;
+    private boolean isCancellable; // Dùng để check điều kiện 2 tiếng bên JSP
+
+    public boolean isIsCancellable() { return isCancellable; }
+    public void setIsCancellable(boolean isCancellable) { this.isCancellable = isCancellable; }
 
     public BookingHistoryDTO() {
     }

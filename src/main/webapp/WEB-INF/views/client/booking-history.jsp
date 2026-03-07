@@ -160,21 +160,48 @@
 
                         <!-- STATUS -->
                         <td>
-                        <span class="status-badge
-                            ${b.status == 'Completed' || b.status == 'Done' ? 'status-completed' : ''}
-                            ${b.status == 'Confirmed' || b.status == 'Upcoming' || b.status == 'Pending' ? 'status-upcoming' : ''}
-                            ${b.status == 'Cancelled' ? 'status-cancelled' : ''}
-                            ${b.status == 'In Progress' ? 'status-inprogress' : ''}
-                            ${b.status == 'PendingPayment' ? 'status-pendingpayment' : ''}">
-                                ${b.status == 'PendingPayment' ? 'PendingPayment' : b.status}
-                        </span>
+<span class="status-badge
+    ${b.status == 'Completed' || b.status == 'Done' ? 'status-completed' : ''}
+    ${b.status == 'Confirmed' || b.status == 'Upcoming' ? 'status-upcoming' : ''}
+    ${b.status == 'Cancelled' ? 'status-cancelled' : ''}
+    ${b.status == 'Pending Refund' ? 'status-pending-refund' : ''} <%-- Thêm dòng này --%>
+    ${b.status == 'In Progress' ? 'status-inprogress' : ''}
+    ${b.status == 'PendingPayment' ? 'status-pendingpayment' : ''}">
+        ${b.status}
+</span>
                         </td>
 
                         <!-- ACTION -->
-                        <td>
-                            <a href="booking-history?action=detail&id=${b.bookingID}" class="btn-view">
+                        <td style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+                            <a href="booking-history?action=detail&id=${b.bookingID}" class="btn-view" style="width: 80px; text-align: center;">
                                 Detail
                             </a>
+
+                            <c:choose>
+                                <%-- TRƯỜNG HỢP 1: Đủ điều kiện hủy (Trạng thái Confirmed & > 2 tiếng) --%>
+                                <c:when test="${b.isCancellable}">
+                                    <a href="cancel-booking?id=${b.bookingID}"
+                                       class="btn-cancel"
+                                       onclick="return confirm('Are you sure you want to cancel? You will receive a refund request.')"
+                                       style="background: #fee2e2; color: #dc2626; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: 600; width: 80px; text-align: center; border: 1px solid #fecaca;">
+                                        Cancel
+                                    </a>
+                                </c:when>
+
+                                <%-- TRƯỜNG HỢP 2: Đã bấm hủy và đang đợi Admin xử lý hoàn tiền --%>
+                                <c:when test="${b.status == 'Pending Refund'}">
+            <span style="font-size: 11px; color: #d97706; background: #fef3c7; padding: 4px 8px; border-radius: 6px; font-weight: 700;">
+                <i class="bi bi-hourglass-split"></i> Refund...
+            </span>
+                                </c:when>
+
+                                <%-- TRƯỜNG HỢP 3: Vẫn là Confirmed nhưng đã sát giờ (< 2 tiếng) -> Khóa nút --%>
+                                <c:when test="${b.status == 'Confirmed' && !b.isCancellable}">
+            <span style="font-size: 10px; color: #94a3b8; font-style: italic;">
+                Non-cancellable
+            </span>
+                                </c:when>
+                            </c:choose>
                         </td>
                     </tr>
                 </c:forEach>

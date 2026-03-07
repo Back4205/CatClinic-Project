@@ -46,24 +46,19 @@
 }
 
 /* ================= STATS GRID ================= */
+/* Sửa lại đoạn này để hiển thị đủ 6 ô (Total, PendingPay, Scheduled, Completed, Cancelled, PendingRefund) */
 .stats-container {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    grid-template-columns: repeat(3, 1fr); /* Chia 3 cột đều nhau */
+    gap: 20px;
     margin-bottom: 30px;
 }
-/* Hàng trên 3 cột */
-.stats-row.top {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
-}
 
-/* Hàng dưới 2 cột */
-.stats-row.bottom {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 30px;
+/* Thêm màu sắc cho Icon Refund mới */
+.icon-refund {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fef3c7;
 }
 
 .stat-card {
@@ -298,6 +293,24 @@
     color: #059669;
     border: 1px solid #d1fae5;
 }
+/* Thêm vào dưới đoạn .status-inprogress */
+.status-pending-refund {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fef3c7;
+    font-weight: 800;
+}
+
+/* Hiệu ứng nhấp nháy nhẹ để khách biết tiền đang được xử lý (Tùy chọn) */
+@keyframes pulse-yellow {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+.status-pending-refund {
+    animation: pulse-yellow 2s infinite;
+}
 
 /* ================= BUTTON ================= */
 
@@ -387,4 +400,23 @@
     background: #111827;
     color: white;
     border-color: #111827;
+}
+/* Cập nhật lại style cho nút Cancel */
+.btn-cancel {
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    background: #fef2f2;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.2s;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-cancel:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
 }

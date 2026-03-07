@@ -159,3 +159,52 @@
     color: #64748b !important;
     border: 1px solid #cbd5e1 !important;
 }
+/* Khung thông báo chung cho hệ thống */
+.system-alert-box {
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Trường hợp 1: Cảnh báo đỏ cho No-show (Quá giờ) */
+.alert-danger-custom {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+/* Trường hợp 2: Cảnh báo vàng cho Pending Refund */
+.alert-warning-custom {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fef3c7;
+}
+
+.system-alert-box i {
+    font-size: 18px;
+    margin-top: 2px;
+}
+
+.system-alert-box strong {
+    display: block;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+/* Note area sạch sẽ không lạm dụng style */
+.note-display {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 12px;
+    color: #475569;
+    font-style: italic;
+    border: 1px solid #e2e8f0;
+}
+/* Bổ sung thêm vào file CSS để khớp với các status khác */
+.status-waiting { background: #E0F2FE; color: #0369A1; } /* Xanh dương cho ca đang chờ khám */
+.status-pending-refund { background: #FEF3C7; color: #D97706; } /* Vàng cam cho hoàn tiền */
+.status-pendingpayment { background: #F1F5F9; color: #475569; border: 1px solid #E2E8F0; }

@@ -13,6 +13,10 @@ public class BookingDAO extends DBContext {
 
 
     public List<BookingHistoryDTO> getHistoryByUserID(int userID) {
+        // 1. Tự động dọn dẹp các ca No-show hoặc quá hạn thanh toán trước khi lấy dữ liệu
+        cancelNoShowBookings();
+        autoCancelExpiredBookings();
+
         List<BookingHistoryDTO> list = new ArrayList<>();
         String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, "
                 + "b.AppointmentDate, b.EndDate, b.AppointmentTime, b.Status, "
@@ -29,7 +33,8 @@ public class BookingDAO extends DBContext {
             ps.setInt(1, userID);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    list.add(new BookingHistoryDTO(
+                    // Tạo đối tượng DTO
+                    BookingHistoryDTO dto = new BookingHistoryDTO(
                             rs.getInt("BookingID"),
                             rs.getInt("SlotID"),
                             rs.getString("CatName"),
@@ -40,8 +45,21 @@ public class BookingDAO extends DBContext {
                             rs.getString("NameService"),
                             rs.getDouble("PriceAtBooking"),
                             rs.getString("Status"),
-                            null, "", "", "" // 4 tham số bổ sung cho DTO
-                    ));
+                            null, "", "", ""
+                    );
+
+                    // 2. Logic tính toán mốc 2 tiếng để cho phép khách Cancel
+                    // Kết hợp Ngày + Giờ hẹn từ Database
+                    long apptMillis = rs.getDate("AppointmentDate").getTime() + rs.getTime("AppointmentTime").getTime();
+                    long nowMillis = System.currentTimeMillis();
+
+                    // Hiệu số thời gian tính bằng giờ
+                    double diffHours = (apptMillis - nowMillis) / (1000.0 * 60 * 60);
+
+                    // Gán quyền Cancel: Chỉ khi 'Confirmed' và còn >= 2 tiếng
+                    dto.setIsCancellable(dto.getStatus().equals("Confirmed") && diffHours >= 2.0);
+
+                    list.add(dto);
                 }
             }
         } catch (SQLException e) {
@@ -57,6 +75,7 @@ public class BookingDAO extends DBContext {
         stats.put("In Treatment", 0);
         stats.put("Completed", 0);
         stats.put("Cancelled", 0);
+        stats.put("Pending Refund", 0);
 
         String sql = "SELECT Status, COUNT(*) as Total FROM Bookings GROUP BY Status";
 

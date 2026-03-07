@@ -75,22 +75,47 @@
             <div class="info-section">
                 <span class="section-label">Notes & Status Alert</span>
 
-                <%-- Thông báo của hệ thống --%>
+                <%-- Thông báo quá giờ (No-show) --%>
                 <c:if test="${booking.status == 'Cancelled' && booking.note.contains('No-show')}">
-                    <div class="system-alert-box">
+                    <div class="system-alert-box alert-danger-custom">
                         <i class="fa-solid fa-circle-exclamation"></i>
                         <div>
                             <strong>System Alert:</strong> This appointment was auto-cancelled due to expiration.
-                            <br>Policy: <strong>Non-refundable for no-show cases.</strong>
+                            <span>Policy: Non-refundable for no-show cases.</span>
                         </div>
                     </div>
                 </c:if>
 
-                <%-- Note gốc của khách --%>
-                <div class="note-area">
+                <%-- Thông báo chờ hoàn tiền --%>
+                <c:if test="${booking.status == 'Pending Refund'}">
+                    <div class="system-alert-box alert-warning-custom">
+                        <i class="fa-solid fa-hourglass-half"></i>
+                        <div>
+                            <strong>Refund Request:</strong> Customer cancelled this booking (> 2 hours notice).
+                            <span>Waiting for Admin to process refund.</span>
+                        </div>
+                    </div>
+                </c:if>
+
+                <%-- Hiển thị ghi chú của khách --%>
+                <div class="note-display">
                     <i class="fa-solid fa-quote-left" style="font-size: 10px; opacity: 0.3; margin-right: 5px;"></i>
                     ${empty booking.note ? 'No additional requests provided for this visit.' : booking.note}
                 </div>
+            </div>
+
+            <div class="action-buttons-container" style="padding: 0 30px 30px; display: flex; justify-content: center; gap: 15px;">
+                <a href="home" class="btn-secondary-custom" style="background: #f1f5f9; color: #64748B; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 25px; border-radius: 12px;">
+                    Close
+                </a>
+
+                <c:if test="${booking.status == 'Confirmed'}">
+                    <a href="update-status?id=${booking.bookingID}&status=Waiting"
+                       class="btn-primary-custom"
+                       style="background: #22C55E; color: white; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 25px; border-radius: 12px;">
+                        Check-in Now
+                    </a>
+                </c:if>
             </div>
 
             <div style="padding: 0 30px 30px; display: flex; justify-content: center; gap: 15px;">

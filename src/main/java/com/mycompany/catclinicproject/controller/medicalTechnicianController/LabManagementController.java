@@ -1,5 +1,6 @@
 package com.mycompany.catclinicproject.controller.medicalTechnicianController;
 
+import com.mycompany.catclinicproject.dao.BookingDAO; // Import thêm BookingDAO
 import com.mycompany.catclinicproject.dao.LabDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -26,26 +27,38 @@ public class LabManagementController extends HttpServlet {
             throws ServletException, IOException {
 
         String path = request.getServletPath();
+
+        // --- BẮT ĐẦU ĐOẠN CẬP NHẬT TỰ ĐỘNG DỌN DẸP ---
+        // Khởi tạo BookingDAO để quét các ca No-show và quá hạn thanh toán
+        BookingDAO bookingDao = new BookingDAO();
+        bookingDao.cancelNoShowBookings();      // Hủy ca 'Confirmed' quá giờ hẹn
+        bookingDao.autoCancelExpiredBookings(); // Hủy ca 'PendingPayment' quá 5 phút
+        // --- KẾT THÚC ĐOẠN CẬP NHẬT ---
+
         LabDAO dao = new LabDAO();
 
+        // Xử lý cập nhật trạng thái xét nghiệm
         if (path.equals("/technician/update-test")) {
+            try {
+                int id = Integer.parseInt(request.getParameter("id"));
+                String status = request.getParameter("status");
+                String filter = request.getParameter("filter");
 
-            int id = Integer.parseInt(request.getParameter("id"));
-            String status = request.getParameter("status");
-            String filter = request.getParameter("filter");
+                dao.updateTestStatus(id, status);
 
-            dao.updateTestStatus(id, status);
+                if (filter == null || filter.isEmpty()) {
+                    filter = "All";
+                }
 
-            if (filter == null || filter.isEmpty()) {
-                filter = "All";
+                response.sendRedirect(request.getContextPath()
+                        + "/technician/lab-hub?status=" + filter);
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            response.sendRedirect(request.getContextPath()
-                    + "/technician/lab-hub?status=" + filter);
-
-            return;
         }
 
+        // Xử lý hiển thị danh sách và phân trang
         String status = request.getParameter("status");
         if (status == null || status.isEmpty()) {
             status = "All";
@@ -62,6 +75,7 @@ public class LabManagementController extends HttpServlet {
             page = 1;
         }
 
+        // Lấy danh sách từ DAO (Hàm này nên được cập nhật WHERE b.Status <> 'Cancelled' trong SQL)
         List<?> fullList = dao.getLabQueue(status);
 
         int totalRecords = fullList.size();
@@ -75,7 +89,6 @@ public class LabManagementController extends HttpServlet {
         int toIndex = Math.min(fromIndex + PAGE_SIZE, totalRecords);
 
         List<?> pagedList;
-
         if (totalRecords == 0) {
             pagedList = new ArrayList<>();
         } else {

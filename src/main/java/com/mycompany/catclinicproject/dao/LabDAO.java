@@ -18,10 +18,12 @@ public class LabDAO extends DBContext {
                 "JOIN Bookings b ON m.BookingID = b.BookingID " +
                 "JOIN Cats c ON b.CatID = c.CatID " +
                 "JOIN Veterinarians v ON b.VetID = v.VetID " +
-                "JOIN Users u ON v.UserID = u.UserID ";
+                "JOIN Users u ON v.UserID = u.UserID "+
+                "WHERE b.Status <> 'Cancelled' ";;
+
 
         if (status != null && !status.equals("All")) {
-            sql += " WHERE t.Status = ? ";
+            sql += " AND t.Status = ? ";
         }
 
         sql += " ORDER BY t.TestOrderID DESC";
@@ -57,10 +59,13 @@ public class LabDAO extends DBContext {
         Map<String, Integer> stats = new HashMap<>();
         String sql = "SELECT " +
                 "COUNT(*) as Total, " +
-                "SUM(CASE WHEN Status = 'Pending' THEN 1 ELSE 0 END) as Pending, " +
-                "SUM(CASE WHEN Status = 'In-progress' THEN 1 ELSE 0 END) as InProgress, " +
-                "SUM(CASE WHEN Status = 'Completed' THEN 1 ELSE 0 END) as Completed " +
-                "FROM TestOrders";
+                "SUM(CASE WHEN t.Status = 'Pending' THEN 1 ELSE 0 END) as Pending, " +
+                "SUM(CASE WHEN t.Status = 'In-progress' THEN 1 ELSE 0 END) as InProgress, " +
+                "SUM(CASE WHEN t.Status = 'Completed' THEN 1 ELSE 0 END) as Completed " +
+                "FROM TestOrders t " +
+                "JOIN MedicalRecords m ON t.MedicalRecordID = m.MedicalRecordID " +
+                "JOIN Bookings b ON m.BookingID = b.BookingID " +
+                "WHERE b.Status <> 'Cancelled'";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             ResultSet rs = ps.executeQuery();
