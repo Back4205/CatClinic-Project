@@ -73,8 +73,7 @@ public class LoginController extends HttpServlet {
             Cookie cu = new Cookie("cUser", u);
             Cookie cp = new Cookie("cPass", p);
 
-            if (r != null) {
-                cu.setMaxAge(60 * 60 * 24 * 7);
+            if (r != null) {cu.setMaxAge(60 * 60 * 24 * 7);
                 cp.setMaxAge(60 * 60 * 24 * 7);
             } else {
                 cu.setMaxAge(0);
@@ -95,7 +94,7 @@ public class LoginController extends HttpServlet {
                         response.sendRedirect("DashboardController");
                         break;
                     case 3:
-                        response.sendRedirect("reception/home");
+                        response.sendRedirect("view-booking-list");
                         break;
                     case 4:
                         String position = dao.getStaffPosition(account.getUserID());
@@ -105,7 +104,7 @@ public class LoginController extends HttpServlet {
                             break;
                         }
                         if ("Technician".equalsIgnoreCase(position)) {
-                            response.sendRedirect("technician/dashboard");
+                            response.sendRedirect("technician/lab-hub");
                             break;
                         }
                         break;
@@ -119,4 +118,3 @@ public class LoginController extends HttpServlet {
         }
     }
 }
-

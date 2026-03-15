@@ -1,29 +1,31 @@
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>Appointment Details | Receptionist</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/base.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reception-detail.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/receptiondashboard-style.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/view-booking-list.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="css/reception-detail.css" rel="stylesheet" type="text/css"/>
 </head>
+
 <body>
 <div class="app-container">
     <c:set var="activePage" value="dashboard" scope="request" />
     <%@include file="sidebar.jsp" %>
-
     <main class="main-content">
         <div class="appointment-card">
             <div class="card-header">
                 <div class="pet-icon-bg"><i class="fa-solid fa-cat"></i></div>
-                <div style="flex: 1;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <h2 style="margin:0; font-size: 22px; color: #1e293b;">${booking.catName}</h2>
+                <div class="card-header-info">
+                    <div class="card-title">
+                        <h2>${booking.catName}</h2>
                         <span class="status-tag status-${booking.status.toLowerCase()}">${booking.status}</span>
                     </div>
-                    <p style="margin: 5px 0; color: #64748b; font-size: 14px;">${booking.catBreed} • Booking ID: #BD-${booking.bookingID}</p>
+                    <p class="booking-id">${booking.catBreed} • Booking ID: #BD-${booking.bookingID}</p>
                 </div>
             </div>
 
@@ -31,27 +33,24 @@
                 <span class="section-label">Visit Information</span>
                 <div class="info-box">
                     <div class="info-row">
-                        <div class="label-with-icon"><i class="fa-regular fa-calendar" style="color:#FF7E32"></i> APPOINTMENT DATE</div>
+                        <div class="label-with-icon"><i class="fa-regular fa-calendar icon"></i> APPOINTMENT DATE</div>
                         <div class="value-text">${booking.appointmentDate}</div>
                     </div>
                     <div class="info-row">
-                        <div class="label-with-icon"><i class="fa-regular fa-clock" style="color:#FF7E32"></i> TIME SLOT</div>
+                        <div class="label-with-icon"><i class="fa-regular fa-clock icon"></i> TIME SLOT</div>
                         <div class="value-text">${booking.appointmentTime}</div>
                     </div>
                     <div class="info-row">
-                        <div class="label-with-icon"><i class="fa-solid fa-notes-medical" style="color:#FF7E32"></i> SERVICE TYPE</div>
+                        <div class="label-with-icon"><i class="fa-solid fa-notes-medical icon"></i> SERVICE TYPE</div>
                         <div class="value-text">${booking.serviceName}</div>
                     </div>
                     <div class="info-row">
-                        <div class="label-with-icon"><i class="fa-solid fa-user-doctor" style="color:#FF7E32"></i> VETERINARIAN</div>
+                        <div class="label-with-icon"><i class="fa-solid fa-user-doctor icon"></i> VETERINARIAN</div>
                         <div class="value-text">${empty booking.vetName ? 'Assigning...' : booking.vetName}</div>
                     </div>
-
-                    <div class="info-row" style="margin-top: 10px; border-top: 1px dashed #e2e8f0; padding-top: 12px;">
-                        <div class="label-with-icon"><i class="fa-solid fa-money-bill-wave" style="color:#FF7E32"></i> TOTAL PRICE</div>
-                        <div class="value-text" style="color: #FF7E32; font-size: 16px; font-weight: 800;">
-                            <fmt:formatNumber value="${booking.price}" type="number"/> VND
-                        </div>
+                    <div class="info-row price-row">
+                        <div class="label-with-icon"><i class="fa-solid fa-money-bill-wave icon"></i> TOTAL PRICE</div>
+                        <div class="value-text price"><fmt:formatNumber value="${booking.price}" type="number"/> VND</div>
                     </div>
                 </div>
             </div>
@@ -60,11 +59,11 @@
                 <span class="section-label">Owner Contact</span>
                 <div class="info-box">
                     <div class="info-row">
-                        <div class="label-with-icon"><i class="fa-solid fa-user" style="color:#FF7E32"></i> Owner Name</div>
+                        <div class="label-with-icon"><i class="fa-solid fa-user icon"></i> Owner Name</div>
                         <div class="value-text">${booking.customerName}</div>
                     </div>
                     <div class="info-row">
-                        <div class="label-with-icon"><i class="fa-solid fa-phone" style="color:#FF7E32"></i> Phone Number</div>
+                        <div class="label-with-icon"><i class="fa-solid fa-phone icon"></i> Phone Number</div>
                         <div class="value-text">${booking.customerPhone}</div>
                     </div>
                 </div>
@@ -77,19 +76,121 @@
                 </div>
             </div>
 
-            <div style="padding: 0 30px 30px; display: flex; justify-content: center; gap: 15px;">
-                <a href="home" style="background: #f1f5f9; color: #64748B; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 25px; border-radius: 12px;">
-                    Close
-                </a>
+            <c:if test="${not empty boarding}">
+                <div class="info-section">
+                    <span class="section-label">Boarding Records</span>
+                    <div class="boarding-summary">
+                        <div class="record-title"><i class="fa-solid fa-file-medical"></i> ADMISSION</div>
+                        <div class="info-row">
+                            <div class="label-with-icon"><i class="fa-solid fa-clock-rotate-left"></i> Check-in Time</div>
+                            <div class="value-text">
+                                    ${boarding.checkInTime.length() > 16 ? boarding.checkInTime.substring(0, 16) : boarding.checkInTime}
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="label-with-icon"><i class="fa-solid fa-notes-medical"></i> Condition</div>
+                            <div class="value-text italic">"${boarding.checkInCondition}"</div>
+                        </div>
+
+                        <c:if test="${not empty boarding.checkOutTime}">
+                            <hr class="modal-divider">
+                            <div class="record-title success-text"><i class="fa-solid fa-house-chimney"></i> RELEASED</div>
+                            <div class="info-row">
+                                <div class="label-with-icon"><i class="fa-solid fa-hand-holding-heart"></i> Check-out Time</div>
+                                <div class="value-text">
+                                        ${boarding.checkOutTime.length() > 16 ? boarding.checkOutTime.substring(0, 16) : boarding.checkOutTime}
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="label-with-icon"><i class="fa-solid fa-clipboard-check"></i> Condition</div>
+                                <div class="value-text italic">"${boarding.checkOutCondition}"</div>
+                            </div>
+                        </c:if>
+                    </div>
+                </div>
+            </c:if>
+
+            <div class="button-group">
+                <a href="view-booking-list" class="btn-action btn-close"><i class="fa-solid fa-arrow-left"></i> &nbsp; Close</a>
+
                 <c:if test="${booking.status == 'Confirmed'}">
-                    <a href="update-status?id=${booking.bookingID}&status=Waiting"
-                       style="background: #22C55E; color: white; text-decoration: none; font-weight: 700; font-size: 14px; padding: 12px 25px; border-radius: 12px;">
-                        Check-in Now
-                    </a>
+                    <button type="button" onclick="openCheckinModal()" class="btn-action btn-orange-fixed"><i class="fa-solid fa-check"></i> &nbsp; Check-in Now</button>
+                </c:if>
+
+                <c:if test="${booking.status == 'Completed'}">
+                    <c:choose>
+                        <c:when test="${empty boarding.checkOutTime}">
+                            <button type="button" onclick="openCheckoutModal()" class="btn-action btn-orange-fixed"><i class="fa-solid fa-door-open"></i> &nbsp; Check-out Now</button>
+                        </c:when>
+                        <c:otherwise>
+                            <div class="status-completed-tag"><i class="fa-solid fa-circle-check"></i> &nbsp; Pet Released</div>
+                        </c:otherwise>
+                    </c:choose>
                 </c:if>
             </div>
         </div>
     </main>
 </div>
+
+<div id="checkinModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header-orange">
+            <h3>Confirm Check-In</h3>
+            <p>Patient: ${booking.catName}</p>
+        </div>
+        <div class="modal-body">
+            <label>CHECK-IN CONDITION:</label>
+            <textarea id="checkinNote" placeholder="Ví dụ: Bé khỏe mạnh, hơi ho..."></textarea>
+            <div class="modal-footer">
+                <button type="button" onclick="closeCheckinModal()" class="btn-modal-cancel">Cancel</button>
+                <button type="button" onclick="submitCheckinForm(${booking.bookingID})" class="btn-modal-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="checkoutModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header-orange">
+            <h3>Confirm Check-Out</h3>
+            <p>Patient: ${booking.catName}</p>
+        </div>
+        <div class="modal-body">
+            <label>CONDITION AT RELEASE:</label>
+            <textarea id="checkoutNote" placeholder="Ví dụ: Bé khỏe mạnh, đã hoàn thành điều trị..."></textarea>
+            <div class="modal-footer">
+                <button type="button" onclick="closeCheckoutModal()" class="btn-modal-cancel">Cancel</button>
+                <button type="button" onclick="submitCheckoutForm(${booking.bookingID})" class="btn-modal-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openCheckinModal() { document.getElementById('checkinModal').style.display = 'flex'; }
+    function closeCheckinModal() { document.getElementById('checkinModal').style.display = 'none'; }
+    function submitCheckinForm(bookingId) {
+        var note = document.getElementById('checkinNote').value;
+        if (!note.trim()) { alert("Vui lòng ghi nhận tình trạng bé mèo lúc tiếp nhận!"); return; }
+        window.location.href = "checkin?id=" + bookingId + "&status=Completed&condition=" + encodeURIComponent(note);
+    }
+    function openCheckoutModal() { document.getElementById('checkoutModal').style.display = 'flex'; }
+    function closeCheckoutModal() { document.getElementById('checkoutModal').style.display = 'none'; }
+    function submitCheckoutForm(bookingId) {
+        var note = document.getElementById('checkoutNote').value;
+        if (!note.trim()) { alert("Vui lòng nhập tình trạng bé lúc trả!"); return; }
+        window.location.href = "checkout?id=" + bookingId + "&condition=" + encodeURIComponent(note);
+    }
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('status') === 'checkin_success') {
+            alert("✅ Check-in thành công! Hồ sơ nội trú đã được khởi tạo.");
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (urlParams.get('status') === 'success') {
+            alert("✨ Thành công! Bé mèo đã được làm thủ tục trả (Check-out).");
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    };
+</script>
 </body>
 </html>

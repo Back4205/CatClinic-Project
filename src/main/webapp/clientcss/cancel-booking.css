@@ -1,4 +1,4 @@
-/* --- CĂN GIỮA TUYỆT ĐỐI --- */
+
 html, body {
     height: 100%;
     margin: 0;
@@ -10,13 +10,12 @@ html, body {
     justify-content: center !important;
     align-items: center !important;
     min-height: calc(100vh - 100px);
-    background-color: #FFFBF9 !important; /* Nền cam nhạt */
+    background-color: #FFFBF9 !important;
     padding: 40px 20px;
     width: 100%;
     box-sizing: border-box;
 }
 
-/* --- CARD CHÍNH --- */
 .cancel-container {
     width: 100%;
     max-width: 480px;
@@ -55,7 +54,7 @@ html, body {
     font-weight: 600;
 }
 
-/* --- PHẦN FORM & THÔNG TIN --- */
+
 .refund-form {
     padding: 30px;
 }
@@ -117,7 +116,7 @@ input[type="text"]:focus { outline: none; border-color: #FF5C00; background: whi
 .reason-option:hover { border-color: #FF5C00; background: #FFF7ED; }
 .reason-option input { margin-right: 12px; accent-color: #FF5C00; width: 18px; height: 18px;}
 
-/* --- NÚT BẤM --- */
+
 .btn-full {
     width: 100%;
     padding: 16px;
@@ -139,7 +138,7 @@ input[type="text"]:focus { outline: none; border-color: #FF5C00; background: whi
 .btn-dark { background: #0F172A; color: white; margin-top: 10px;}
 .btn-dark:hover { background: #1E293B; }
 
-/* --- TRANG THÀNH CÔNG (TÍCH XANH) --- */
+
 .success-state { text-align: center; padding: 40px 30px; }
 .success-icon-circle {
     width: 80px; height: 80px; background: #22C55E; color: white;

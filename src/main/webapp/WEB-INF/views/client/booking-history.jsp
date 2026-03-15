@@ -57,8 +57,8 @@
             <div class="stat-card">
                 <div class="stat-icon icon-scheduled"><i class="bi bi-calendar-check"></i></div>
                 <div class="stat-info">
-                    <h3>${scheduled}</h3>
-                    <p>Scheduled</p>
+                    <h3>${confirmedCount}</h3>
+                    <p>Confirmed</p>
                 </div>
             </div>
 
@@ -129,6 +129,7 @@
                     <th>Action</th>
                 </tr>
                 </thead>
+
                 <tbody>
 
                 <c:forEach var="b" items="${bookingList}">
@@ -172,9 +173,7 @@
 
                         <!-- ACTION -->
                         <td>
-                            <a href="booking-history?action=detail&id=${b.bookingID}" class="btn-view">
-                                Detail
-                            </a>
+                            <a href="booking-detail?id=${b.bookingID}" class="btn-view">Detail</a>
                         </td>
                     </tr>
                 </c:forEach>
@@ -191,32 +190,52 @@
 
         </div>
         <c:if test="${totalPage > 1}">
-            <div class="pagination">
+            <div class="pagination-container">
+                <div class="pagination">
 
+                        <%-- 1. Nút Prev --%>
+                    <c:if test="${currentPage > 1}">
+                        <a href="booking-history?page=${currentPage - 1}&search=${currentSearch}&status=${currentStatus}" class="page-item">
+                            &laquo;
+                        </a>
+                    </c:if>
 
-                <c:if test="${currentPage > 1}">
-                    <a href="booking-history?page=${currentPage - 1}&search=${currentSearch}&status=${currentStatus}"
-                       class="page-btn">
-                        Prev
-                    </a>
-                </c:if>
+                        <%-- 2. THUẬT TOÁN TRƯỢT SỐ TRANG (Max hiển thị 3 trang) --%>
+                    <c:set var="maxVisible" value="3" />
+                    <c:set var="startPage" value="${currentPage - 1}" />
+                    <c:set var="endPage" value="${currentPage + 1}" />
 
+                        <%-- Xử lý nếu lùi quá trang 1 --%>
+                    <c:if test="${startPage < 1}">
+                        <c:set var="startPage" value="1" />
+                        <c:set var="endPage" value="${startPage + maxVisible - 1}" />
+                    </c:if>
 
-                <c:forEach begin="1" end="${totalPage}" var="i">
-                    <a href="booking-history?page=${i}&search=${currentSearch}&status=${currentStatus}"
-                       class="page-btn ${i == currentPage ? 'active' : ''}">
-                            ${i}
-                    </a>
-                </c:forEach>
+                        <%-- Xử lý nếu tiến quá tổng số trang --%>
+                    <c:if test="${endPage > totalPage}">
+                        <c:set var="endPage" value="${totalPage}" />
+                        <c:set var="startPage" value="${endPage - maxVisible + 1}" />
+                        <c:if test="${startPage < 1}">
+                            <c:set var="startPage" value="1" />
+                        </c:if>
+                    </c:if>
 
+                        <%-- 3. In các nút số dựa theo khoảng start - end vừa tính --%>
+                    <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                        <a href="booking-history?page=${i}&search=${currentSearch}&status=${currentStatus}"
+                           class="page-item ${i == currentPage ? 'active' : ''}">
+                                ${i}
+                        </a>
+                    </c:forEach>
 
-                <c:if test="${currentPage < totalPage}">
-                    <a href="booking-history?page=${currentPage + 1}&search=${currentSearch}&status=${currentStatus}"
-                       class="page-btn">
-                        Next
-                    </a>
-                </c:if>
+                        <%-- 4. Nút Next --%>
+                    <c:if test="${currentPage < totalPage}">
+                        <a href="booking-history?page=${currentPage + 1}&search=${currentSearch}&status=${currentStatus}" class="page-item">
+                            &raquo;
+                        </a>
+                    </c:if>
 
+                </div>
             </div>
         </c:if>
     </main>

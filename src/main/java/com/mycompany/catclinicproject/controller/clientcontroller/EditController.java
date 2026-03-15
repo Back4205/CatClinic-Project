@@ -21,7 +21,6 @@ public class EditController extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        //      int userID = 5;
         HttpSession session = request.getSession(false);
         User user = (User)session.getAttribute("acc");
         if(user == null){
@@ -40,7 +39,7 @@ public class EditController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8"); // Đảm bảo không lỗi font tiếng Việt
+        request.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession(false);
         User user = (User) session.getAttribute("acc");
 

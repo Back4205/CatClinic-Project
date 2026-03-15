@@ -33,7 +33,6 @@ public class CancelBookingController extends HttpServlet {
 
             if (booking != null) {
                 request.setAttribute("booking", booking);
-                // Mọi step đều dùng chung 1 file JSP này
                 request.getRequestDispatcher("/WEB-INF/views/client/cancel-booking.jsp").forward(request, response);
                 return;
             }
