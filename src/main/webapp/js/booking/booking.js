@@ -1,20 +1,27 @@
 
+function highlightSlot(radioInput) {
+
+    document.querySelectorAll('.slot').forEach(slot => {
+        slot.classList.remove('active-slot');
+    });
 
 
-/* ==============================
-1. SUBMIT FORM
-============================== */
+    if (radioInput && radioInput.checked) {
+        const slotLabel = radioInput.closest('.slot');
+        if (slotLabel) {
+            slotLabel.classList.add('active-slot');
+        }
+    }
+}
+
+
 function submitForm() {
     document.body.classList.add('submitting');
     document.getElementById('bookingForm').submit();
 }
 
 
-/* ==============================
-2. CHANGE CAT PAGE
-============================== */
 function changePage(page) {
-
     const form = document.getElementById('bookingForm');
     const formData = new FormData(form);
     const params = new URLSearchParams();
@@ -26,19 +33,12 @@ function changePage(page) {
     }
 
     params.set('catPage', page);
-
     document.body.classList.add('submitting');
-
-    window.location.href =
-        '${pageContext.request.contextPath}/Booking?' + params.toString();
+    window.location.href = contextPath + '/Booking?' + params.toString();
 }
 
 
-/* ==============================
-3. UPDATE END DATE MIN
-============================== */
 function updateEndDateMin() {
-
     const startDate = document.getElementById('startDate');
     const endDate = document.getElementById('endDate');
 
@@ -52,11 +52,7 @@ function updateEndDateMin() {
 }
 
 
-/* ==============================
-4. FILTER FUTURE TIME (UI ONLY)
-============================== */
 function filterFutureTime() {
-
     if (!isBoardingMode && !isCheckupMode) return;
 
     const dateInput = document.getElementById('startDate');
@@ -68,7 +64,6 @@ function filterFutureTime() {
     if (!selectedDate) return;
 
     const now = new Date();
-
     const today =
         now.getFullYear() + '-' +
         String(now.getMonth() + 1).padStart(2, '0') + '-' +
@@ -78,28 +73,21 @@ function filterFutureTime() {
     const currentMinute = now.getMinutes();
 
     Array.from(timeSelect.options).forEach(option => {
-
         if (!option.value) return;
 
         const hour = parseInt(option.value.split(':')[0]);
 
         if (selectedDate === today) {
-
-            if (
-                hour < currentHour ||
-                (hour === currentHour && currentMinute > 0)
-            ) {
+            if (hour < currentHour || (hour === currentHour && currentMinute > 0)) {
                 option.style.display = 'none';
             } else {
                 option.style.display = 'block';
             }
-
         } else {
             option.style.display = 'block';
         }
     });
 
-    // reset nếu giờ hiện tại bị ẩn
     const selected = timeSelect.selectedOptions[0];
     if (selected && selected.style.display === 'none') {
         timeSelect.value = "";
@@ -107,11 +95,7 @@ function filterFutureTime() {
 }
 
 
-/* ==============================
-5. CALCULATE PRICE
-============================== */
 function calculatePrice() {
-
     const sel = document.getElementById('serviceSelect');
     const area = document.getElementById('costSummaryArea');
 
@@ -124,17 +108,13 @@ function calculatePrice() {
     let total = price;
 
     if (isBoardingMode) {
-
         const start = document.getElementById('startDate')?.value;
         const end = document.getElementById('endDate')?.value;
 
         if (start && end) {
-
             const startDate = new Date(start);
             const endDate = new Date(end);
-
-            const days =
-                Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+            const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
             if (days > 0) total = price * days;
         }
@@ -143,29 +123,36 @@ function calculatePrice() {
     if (!area) return;
 
     area.style.display = 'block';
+    document.getElementById('priceBaseDisplay').textContent = price.toLocaleString('vi-VN') + " VND";
+    document.getElementById('totalDisplay').textContent = total.toLocaleString('vi-VN') + " VND";
+    document.getElementById('depositDisplay').textContent = (total * 0.2).toLocaleString('vi-VN') + " VND";
+}
 
-    document.getElementById('priceBaseDisplay').textContent =
-        price.toLocaleString('vi-VN') + " VND";
 
-    document.getElementById('totalDisplay').textContent =
-        total.toLocaleString('vi-VN') + " VND";
+function setSlotDate() {
+    const checkedSlot = document.querySelector('input[name="slotID"]:checked');
 
-    document.getElementById('depositDisplay').textContent =
-        (total * 0.2).toLocaleString('vi-VN') + " VND";
+    if (checkedSlot) {
+        const slotDate = checkedSlot.dataset.slotDate;
+        const vetID = checkedSlot.dataset.vetId;
+
+        document.getElementById('slotDate').value = slotDate;
+        document.getElementById('vetID').value = vetID;
+
+        console.log(' Slot Date set to:', slotDate);
+        console.log(' Vet ID set to:', vetID);
+    }
 }
 
 
 function updateConfirmButton() {
-
     const btn = document.getElementById('confirmBtn');
     if (!btn) return;
 
     let time = "";
     let formattedDate = "";
 
-    // ===== BOARDING / CHECKUP =====
     if (isBoardingMode || isCheckupMode) {
-
         const date = document.getElementById('startDate')?.value;
         const timeSelect = document.getElementById('checkInTime')?.value;
 
@@ -174,14 +161,8 @@ function updateConfirmButton() {
             formattedDate = parts[2] + "/" + parts[1] + "/" + parts[0];
             time = timeSelect.substring(0, 5);
         }
-
-    }
-    // ===== VET SLOT =====
-    else if (needsVetMode) {
-
-        const sel = document.querySelector(
-            'input[name="slotID"]:checked'
-        );
+    } else if (needsVetMode) {
+        const sel = document.querySelector('input[name="slotID"]:checked');
 
         if (sel) {
             formattedDate = sel.dataset.date;
@@ -190,26 +171,16 @@ function updateConfirmButton() {
     }
 
     if (time && formattedDate) {
-
-        btn.innerHTML =
-            '<i class="bi bi-check-circle-fill"></i> Confirm: ' +
-            time + ' - ' + formattedDate;
-
+        btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Confirm: ' + time + ' - ' + formattedDate;
         btn.classList.add('ready');
-
     } else {
-
         btn.innerHTML = 'Confirm Appointment';
         btn.classList.remove('ready');
     }
 }
 
 
-/* ==============================
-7. INIT ON LOAD
-============================== */
 document.addEventListener('DOMContentLoaded', function () {
-
     calculatePrice();
     updateConfirmButton();
     filterFutureTime();
@@ -218,32 +189,25 @@ document.addEventListener('DOMContentLoaded', function () {
         updateEndDateMin();
     }
 
-    // slot click
     document.querySelectorAll('.slot').forEach(el => {
-
         el.addEventListener('click', function () {
-
             const radio = this.querySelector('input');
 
             if (radio) {
-
                 radio.checked = true;
 
-                document.querySelectorAll('.slot')
-                    .forEach(s => s.classList.remove('active-slot'));
+                highlightSlot(radio);
 
-                this.classList.add('active-slot');
-
+                setSlotDate();
                 updateConfirmButton();
             }
         });
     });
 
-    const checkedSlot =
-        document.querySelector('input[name="slotID"]:checked');
+    const checkedSlot = document.querySelector('input[name="slotID"]:checked');
 
     if (checkedSlot) {
-        checkedSlot.closest('.slot')
-            .classList.add('active-slot');
+        highlightSlot(checkedSlot);
+        setSlotDate();
     }
 });

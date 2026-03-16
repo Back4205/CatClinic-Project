@@ -60,7 +60,7 @@
                     <!-- IMAGE -->
                     <div class="profile-image">
                         <c:choose>
-                            <c:when test="${not empty cat.img && not empty cat}">
+                            <c:when test="${not empty cat && not empty cat.img}">
                                 <img id="viewImg" src="${pageContext.request.contextPath}/${cat.img}" alt="Pet Image">
                             </c:when>
                             <c:otherwise>
@@ -106,13 +106,11 @@
                                 <label>Gender</label>
                                 <%--                                <select name="gender" ${not empty cat ? 'disabled' : ''}>--%>
                                 <select name="gender" required>
-                                    <option value="0" ${cat.gender == 0 ? "selected" : ""}>Male</option>
-                                    <option value="1" ${cat.gender == 1 ? "selected" : ""}>Female</option>
+                                    <option value="1" ${cat.gender == 1 ? "selected" : ""}>Male</option>
+                                    <option value="0" ${cat.gender == 0 ? "selected" : ""}>Female</option>
                                 </select>
 
-                                <c:if test="${not empty cat}">
-                                    <input type="hidden" name="gender" value="${cat.gender}">
-                                </c:if>
+
                             </div>
                         </div>
 

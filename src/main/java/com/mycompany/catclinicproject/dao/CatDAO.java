@@ -82,13 +82,15 @@ public class CatDAO extends DBContext {
     }
 
     public boolean updateCat(Cat cat) {
-        String sql = "UPDATE Cats SET  name = ?,  age = ? , Image = ? WHERE catID = ?";
+        String sql = "UPDATE Cats SET  name = ?,  age = ? , Image = ?, gender = ? ,breed= ?    WHERE catID = ?";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setString(1, cat.getName());
             ps.setInt(2, cat.getAge());
             ps.setString(3, cat.getImg());
-            ps.setInt(4, cat.getCatID());
+            ps.setInt(4, cat.getGender());
+            ps.setString(5, cat.getBreed());
+            ps.setInt(6, cat.getCatID());
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (Exception e) {

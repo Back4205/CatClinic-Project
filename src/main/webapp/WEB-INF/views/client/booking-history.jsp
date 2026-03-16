@@ -133,7 +133,7 @@
                         <td>
                         <span class="status-badge
                             ${b.status == 'Completed' || b.status == 'Done' ? 'status-completed' : ''}
-                            ${b.status == 'Confirmed' || b.status == 'Upcoming' || b.status == 'Pending' ? 'status-upcoming' : ''}
+                            ${b.status == 'Confirmed' || b.status == 'Upcoming' || b.status == 'PendingPayment' ? 'status-upcoming' : ''}
                             ${b.status == 'Cancelled' ? 'status-cancelled' : ''}
                             ${b.status == 'In Progress' ? 'status-inprogress' : ''}
                             ${b.status == 'PendingPayment' ? 'status-pendingpayment' : ''}">

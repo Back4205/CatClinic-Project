@@ -5,7 +5,6 @@ import com.mycompany.catclinicproject.model.*;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -17,7 +16,6 @@ public class BookingController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("acc") : null;
 
@@ -45,8 +43,7 @@ public class BookingController extends HttpServlet {
         }
 
         String action = request.getParameter("action");
-        Integer staffId = null ;
-        //  Nếu không phải pay thì chỉ reload form (do onchange submit)
+
         if (!"pay".equals(action)) {
             loadBookingData(request, user);
             request.getRequestDispatcher("/WEB-INF/views/client/Booking.jsp").forward(request, response);
@@ -54,9 +51,6 @@ public class BookingController extends HttpServlet {
         }
 
         try {
-            int categoryID = Integer.parseInt(request.getParameter("categoryID"));
-            int serviceID  = Integer.parseInt(request.getParameter("serviceID"));
-            int catID      = Integer.parseInt(request.getParameter("catID"));
 
             BookingDAO bookingDAO = new BookingDAO();
             CategoryDao categoryDAO = new CategoryDao();
@@ -64,121 +58,170 @@ public class BookingController extends HttpServlet {
             UserDAO userDAO = new UserDAO();
             TimeSlotDAO slotDAO = new TimeSlotDAO();
 
+            int catID = Integer.parseInt(request.getParameter("catID"));
+            int categoryID = Integer.parseInt(request.getParameter("categoryID"));
+            int serviceID = Integer.parseInt(request.getParameter("serviceID"));
+
+            String note = request.getParameter("note");
+
             Category category = categoryDAO.getCategoryById(categoryID);
-            Service service   = serviceDAO.getServiceById(serviceID);
+            Service service = serviceDAO.getServiceById(serviceID);
+
+            if (category == null || service == null) {
+                throw new Exception("Dịch vụ không tồn tại.");
+            }
 
             String categoryName = category.getCategoryName().toLowerCase();
 
             boolean isBoarding = categoryName.contains("boarding");
-            boolean isCheckup  = categoryName.contains("checkup");
-            boolean needsVet   = !isBoarding && !isCheckup;
+            boolean isCheckup = categoryName.contains("checkup");
+            boolean needsVet = !isBoarding && !isCheckup;
 
             Booking booking = new Booking();
+
             booking.setCatID(catID);
-            booking.setNote(request.getParameter("note"));
+            booking.setNote(note);
+            booking.setStatus("PendingPayment");
+            booking.setBookingDate(new java.sql.Date(System.currentTimeMillis()));
 
-            double totalAmount = 0.0;
-
+            double totalAmount = 0;
             if (needsVet) {
 
-                String slotID = request.getParameter("slotID");
-                String vetUserID = request.getParameter("assigneeInfo");
+                int slotID = Integer.parseInt(request.getParameter("slotID"));
+                int vetID = Integer.parseInt(request.getParameter("vetID"));
 
-                if (slotID == null || vetUserID == null)
-                    throw new Exception("Vui lòng chọn bác sĩ và giờ khám.");
-                int slotId = Integer.parseInt(slotID);
+                java.sql.Date appointmentDate =
+                        java.sql.Date.valueOf(request.getParameter("slotDate"));
 
-                // check trufng lich
-                if (bookingDAO.isCatBusyAtSlot(catID, slotId)) {
-                    throw new Exception("Mèo này đã có lịch hẹn với bác sĩ khác vào khung giờ này rồi!");
+                TimeSlot slot = slotDAO.getSlotByID(slotID);
+
+                if (slot == null) {
+                    throw new Exception("Khung giờ không hợp lệ.");
                 }
 
-                TimeSlot slot = slotDAO.getSlotByID(Integer.parseInt(slotID));
-                Integer vetID = userDAO.getVetIDByUserID(Integer.parseInt(vetUserID));
+                if (bookingDAO.isCatBusyAtSlot(catID, appointmentDate, slotID)) {
+                    throw new Exception("Mèo đã có lịch vào khung giờ này.");
+                }
 
                 booking.setVeterinarianID(vetID);
-                booking.setSlotID(slot.getSlotID());
-                booking.setAppointmentDate(slot.getSlotDate());
+                booking.setSlotID(slotID);
+                booking.setAppointmentDate(appointmentDate);
+                booking.setEndDate(appointmentDate);
                 booking.setAppointmentTime(slot.getStartTime());
-                booking.setEndDate(slot.getSlotDate());
 
                 totalAmount = service.getPrice();
             }
             else if (isCheckup) {
 
-                String date = request.getParameter("startDate");
-                String time = request.getParameter("checkInTime");
+                java.sql.Date date =
+                        java.sql.Date.valueOf(request.getParameter("startDate"));
 
-                if (date == null || time == null || time.isEmpty())
-                    throw new Exception("Vui lòng chọn ngày và giờ.");
+                java.sql.Time time =
+                        java.sql.Time.valueOf(request.getParameter("checkInTime") + ":00");
 
-                booking.setAppointmentDate(java.sql.Date.valueOf(date));
-                booking.setEndDate(java.sql.Date.valueOf(date));
-                booking.setAppointmentTime(java.sql.Time.valueOf(time + ":00"));
-
-                staffId = userDAO.getRandomStaffByPosition("Technician");
-                if (staffId == null){
-                    throw new Exception("Không có Technician khả dụng.");
+                if (bookingDAO.isCatBusyAtTime(catID, date, time )) {
+                    throw new Exception("Mèo đã bận vào khung giờ này.");
                 }
-                booking.setStaffID(staffId);
+
+                booking.setAppointmentDate(date);
+                booking.setEndDate(date);
+                booking.setAppointmentTime(time);
+
+                Integer staffID = userDAO.getRandomStaffByPosition("Technician");
+
+                if (staffID == null) {
+                    throw new Exception("Không có kỹ thuật viên khả dụng.");
+                }
+
+                booking.setStaffID(staffID);
 
                 totalAmount = service.getPrice();
             }
 
-
-            else {
+            else if (isBoarding) {
 
                 LocalDate start = LocalDate.parse(request.getParameter("startDate"));
-                LocalDate end   = LocalDate.parse(request.getParameter("endDate"));
+                LocalDate end = LocalDate.parse(request.getParameter("endDate"));
 
-                if (end.isBefore(start))
-                    throw new Exception("Ngày kết thúc không hợp lệ.");
+                if (end.isBefore(start)) {
+                    throw new Exception("Ngày kết thúc phải sau ngày bắt đầu.");
+                }
 
-                if (bookingDAO.isCatHotelConflict(catID, java.sql.Date.valueOf(start), java.sql.Date.valueOf(end))) {
-                    throw new Exception("Mèo đã có lịch lưu trú trùng ngày!");
+                if (bookingDAO.isCatHotelConflict(
+                        catID,
+                        java.sql.Date.valueOf(start),
+                        java.sql.Date.valueOf(end))) {
+
+                    throw new Exception("Thời gian lưu trú bị trùng.");
                 }
 
                 long days = ChronoUnit.DAYS.between(start, end) + 1;
+
                 totalAmount = service.getPrice() * days;
 
                 booking.setAppointmentDate(java.sql.Date.valueOf(start));
                 booking.setEndDate(java.sql.Date.valueOf(end));
-                booking.setAppointmentTime(java.sql.Time.valueOf(request.getParameter("checkInTime") + ":00"));
 
-                staffId = userDAO.getRandomStaffByPosition("Care");
-                if (staffId == null){
-                    throw new Exception("Không có Care Staff khả dụng.");
+                booking.setAppointmentTime(
+                        java.sql.Time.valueOf(request.getParameter("checkInTime") + ":00")
+                );
+
+                Integer staffID = userDAO.getRandomStaffByPosition("Care");
+
+                if (staffID == null) {
+                    throw new Exception("Không có nhân viên chăm sóc.");
                 }
 
-
-                booking.setStaffID(staffId);
+                booking.setStaffID(staffID);
             }
 
+            List<Integer> serviceList = Collections.singletonList(serviceID);
+            List<Double> priceList = Collections.singletonList(totalAmount);
 
-            List<Integer> serviceList = new ArrayList<>();
-            serviceList.add(serviceID);
+            int bookingID =
+                    bookingDAO.createBookingWithInvoice(
+                            booking,
+                            serviceList,
+                            priceList,
+                            totalAmount
+                    );
 
-            List<Double> priceList = new ArrayList<>();
-            priceList.add(totalAmount);
+            if (bookingID > 0) {
 
-            int bookingID = bookingDAO.createBookingWithInvoice(booking, serviceList, priceList, totalAmount);
+                response.sendRedirect(
+                        request.getContextPath() + "/vnpay?bookingID=" + bookingID
+                );
 
-            if (bookingID < 0) {
-                throw new Exception("Có lỗi khi tạo booking.");
+                return;
             }
-            response.sendRedirect(request.getContextPath() + "/vnpay?bookingID=" + bookingID);
 
-        } catch (Exception e) {
+            if (bookingID == -2)
+                throw new Exception("Khung giờ đã được đặt.");
 
-            request.setAttribute("error", "Lỗi: " + e.getMessage());
+            if (bookingID == -1)
+                throw new Exception("Không thể tạo booking.");
+
+            if (bookingID == -4)
+                throw new Exception("Lỗi hệ thống.");
+
+            throw new Exception("Lỗi không xác định.");
+
+        }
+
+        catch (Exception e) {
+
+            e.printStackTrace();
+
+            request.setAttribute("error", e.getMessage());
+
             loadBookingData(request, user);
+
             request.getRequestDispatcher("/WEB-INF/views/client/Booking.jsp")
                     .forward(request, response);
         }
     }
 
     private void loadBookingData(HttpServletRequest request, User user) {
-
         CatDAO catDAO = new CatDAO();
         ServiceDAO serviceDAO = new ServiceDAO();
         UserDAO userDAO = new UserDAO();
@@ -186,55 +229,42 @@ public class BookingController extends HttpServlet {
         CategoryDao categoryDAO = new CategoryDao();
 
         int ownerID = catDAO.getOwnerIdByUserId(user.getUserID());
-
-
         request.setAttribute("catList", catDAO.getCatsByOwnerID(ownerID));
         request.setAttribute("categoryList", categoryDAO.getAllCategories());
         request.setAttribute("currentDate", LocalDate.now().toString());
 
-        String cIDStr = request.getParameter("categoryID");
+        String categoryIDStr = request.getParameter("categoryID");
+        if (categoryIDStr != null) {
+            int categoryID = Integer.parseInt(categoryIDStr);
+            Category category = categoryDAO.getCategoryById(categoryID);
+            request.setAttribute("selectedCategoryID", categoryID);
 
-        if (cIDStr != null && !cIDStr.isEmpty()) {
+            if (category != null) {
+                String name = category.getCategoryName().toLowerCase();
+                boolean isBoarding = name.contains("boarding");
+                boolean isCheckup = name.contains("checkup");
+                boolean needsVet = !isBoarding && !isCheckup;
 
-            int cID = Integer.parseInt(cIDStr);
-            Category category = categoryDAO.getCategoryById(cID);
-            request.setAttribute("selectedCategoryID", cID);
-            String name = category.getCategoryName().toLowerCase();
+                request.setAttribute("isBoarding", isBoarding);
+                request.setAttribute("isCheckup", isCheckup);
+                request.setAttribute("needsVet", needsVet);
+                request.setAttribute("serviceList", serviceDAO.getServicesByCategoryID(categoryID));
 
-            boolean isBoarding = name.contains("boarding");
-            boolean isCheckup  = name.contains("checkup");
-            boolean needsVet   = !isBoarding && !isCheckup;
+                if (needsVet) {
+                    request.setAttribute("listPerson", userDAO.getAllVeterinarians());
+                    String vetUserIDStr = request.getParameter("assigneeInfo");
+                    String startDateStr = request.getParameter("startDate");
 
-            request.setAttribute("isBoarding", isBoarding);
-            request.setAttribute("isCheckup", isCheckup);
-            request.setAttribute("needsVet", needsVet);
-
-            request.setAttribute("serviceList",
-                    serviceDAO.getServicesByCategoryID(cID));
-
-            if (needsVet) {
-                request.setAttribute("listPerson", userDAO.getAllVeterinarians());
-                String vetUserIDStr = request.getParameter("assigneeInfo");
-                String startDateStr = request.getParameter("startDate");
-
-                if (vetUserIDStr != null && !vetUserIDStr.isEmpty() && startDateStr != null && !startDateStr.isEmpty()) {
-                    try {
+                    if (vetUserIDStr != null && !vetUserIDStr.isEmpty() && startDateStr != null && !startDateStr.isEmpty()) {
                         int vetUserID = Integer.parseInt(vetUserIDStr);
-                        Integer vetID = userDAO.getVetIDByUserID(vetUserID);
-
+                        Integer vetID = userDAO.getVetIDByUserId(vetUserID);
                         if (vetID != null) {
                             java.sql.Date fromDate = java.sql.Date.valueOf(startDateStr);
-
-                            List<TimeSlot> slotList = slotDAO.getSlotsNext7Days1(vetID, fromDate);
-
-                            request.setAttribute("slotList", slotList);
+                            request.setAttribute("slotList", slotDAO.getAvailableSlotsNext7Days(vetID, fromDate));
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }
             }
-
         }
     }
 }

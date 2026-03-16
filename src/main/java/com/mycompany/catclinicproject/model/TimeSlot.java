@@ -14,22 +14,21 @@ import java.sql.Time;
 public class TimeSlot {
 
     private int slotID;
-    private int vetID;
-    private Date slotDate;
+
     private Time startTime;
     private Time endTime;
-    private String status;
+    private boolean isActive ;
 
     public TimeSlot() {
     }
 
-    public TimeSlot(int slotID, int vetID, Date slotDate, Time startTime, Time endTime, String status) {
+    public TimeSlot(int slotID, Time startTime, Time endTime, boolean isActive) {
         this.slotID = slotID;
-        this.vetID = vetID;
-        this.slotDate = slotDate;
+
         this.startTime = startTime;
         this.endTime = endTime;
-        this.status = status;
+        this.isActive = isActive;
+
     }
 
     public int getSlotID() {
@@ -40,21 +39,6 @@ public class TimeSlot {
         this.slotID = slotID;
     }
 
-    public int getVetID() {
-        return vetID;
-    }
-
-    public void setVetID(int vetID) {
-        this.vetID = vetID;
-    }
-
-    public Date getSlotDate() {
-        return slotDate;
-    }
-
-    public void setSlotDate(Date slotDate) {
-        this.slotDate = slotDate;
-    }
 
     public Time getStartTime() {
         return startTime;
@@ -72,13 +56,13 @@ public class TimeSlot {
         this.endTime = endTime;
     }
 
-    public String getStatus() {
-        return status;
+    public boolean isActive() {
+        return isActive;
+    }
+    public void setActive(boolean active) {
+        isActive = active;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
 
 

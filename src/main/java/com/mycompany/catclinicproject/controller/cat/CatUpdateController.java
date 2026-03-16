@@ -81,10 +81,10 @@ public class CatUpdateController extends HttpServlet {
                 message = "Age cannot be decreased!";
             } else if (newAge > oldAge + 1) {
                 message = "Age can only increase by 1 year!";
-            }if (breed == null || breed.trim().isEmpty()) {
-                message = "Gender cannot be empty!";
+            }else if (breed == null || breed.trim().isEmpty()) {
+                message = "breed cannot be empty!";
             } else if (!breed.matches(letterOnlyRegex)) {
-                message = "Gender cannot contain numbers or special characters!";
+                message = "breed cannot contain numbers or special characters!";
             }
             else if (filePart != null && filePart.getSize() > 0) {
                 if (!isImageFile(filePart)) {

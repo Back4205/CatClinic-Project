@@ -93,19 +93,19 @@ public class VNPayReturnController extends HttpServlet {
             //  tổng tiền đã thanh toán trước đó
             long alreadyPaid = paymentDAO.getTotalPaidByInvoice(invoiceID);
 
-            //  nếu đã trả đủ rồi thì không cho trả nữa
-            if (alreadyPaid >= totalInvoiceAmount) {
-                request.setAttribute("msg", "already_paid");
-                request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
-                return;
-            }
-
-            //  nếu trả vượt quá số tiền còn lại
-            if (alreadyPaid + amountPaid > totalInvoiceAmount) {
-                request.setAttribute("msg", "over_paid");
-                request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
-                return;
-            }
+//            //  nếu đã trả đủ rồi thì không cho trả nữa
+//            if (alreadyPaid >= totalInvoiceAmount) {
+//                request.setAttribute("msg", "already_paid");
+//                request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
+//                return;
+//            }
+//
+//            //  nếu trả vượt quá số tiền còn lại
+//            if (alreadyPaid + amountPaid > totalInvoiceAmount) {
+//                request.setAttribute("msg", "over_paid");
+//                request.getRequestDispatcher("/WEB-INF/views/client/PaymentResult.jsp").forward(request, response);
+//                return;
+//            }
 
              // insert payment
             paymentDAO.insertPayment(invoiceID, amountPaid, "VNPay", transactionNo);
@@ -113,19 +113,21 @@ public class VNPayReturnController extends HttpServlet {
             long newTotalPaid = alreadyPaid + amountPaid;
 
             if (newTotalPaid < totalInvoiceAmount) {
-
+                bookingDAO.confirmBooking(bookingID);
                 // Thanh toán một phần (20%)
-                invoiceDAO.updatePaymentStatus(invoiceID, "PartiallyPaid");
+                invoiceDAO.updatePaymentStatus(invoiceID, "Partial");
 
                 // Có tiền đặt cọc thì confirm booking
-                bookingDAO.confirmBooking(bookingID);
 
-            } else {
-
-                // Thanh toán đủ 100%
-                invoiceDAO.updatePaymentStatus(invoiceID, "Paid");
 
             }
+
+//            else {
+//
+//                // Thanh toán đủ 100%
+//                invoiceDAO.updatePaymentStatus(invoiceID, "Paid");
+//
+//            }
 
 
 

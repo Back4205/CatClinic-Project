@@ -9,7 +9,6 @@ body {
     font-family: 'Segoe UI', Roboto, sans-serif;
     background: #f5f7fa;
     color: #374151;
-
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -41,7 +40,6 @@ h2 {
     align-items: flex-start;
 }
 
-/* Panels */
 .left-panel {
     flex: 1;
     min-width: 480px;
@@ -208,6 +206,7 @@ td {
     margin-bottom: 20px;
 }
 
+/* ✅ FIX: Slot - Default style (white) */
 .slot {
     padding: 10px;
     border: 1px solid #e5e7eb;
@@ -216,24 +215,34 @@ td {
     text-align: center;
     font-size: 12px;
     font-weight: 700;
-    background: #fff;
+    background: #ffffff;
     color: #4b5563;
-    transition: 0.2s;
+    transition: all 0.2s ease;
+    display: inline-block;
+    width: 100%;
 }
 
 .slot:hover {
     border-color: #ff6600;
+    background: #fff8f0;
     color: #ff6600;
 }
 
-.slot input {
+/* ✅ FIX: Hidden input */
+.slot input[type="radio"] {
     display: none;
 }
 
+/* ✅ FIX: Active-slot - ONLY for selected slot (cùng date + cùng time) */
 .slot.active-slot {
     background: #ff6600 !important;
     border-color: #ff6600 !important;
-    color: #fff !important;
+    color: #ffffff !important;
+}
+
+.slot.active-slot:hover {
+    background: #e68900 !important;
+    border-color: #e68900 !important;
 }
 
 /* Buttons & Summary */

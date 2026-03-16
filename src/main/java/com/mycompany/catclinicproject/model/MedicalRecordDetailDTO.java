@@ -9,15 +9,17 @@ public class MedicalRecordDetailDTO {
     private String doctorName;
     private String diagnosis;
     private String clinicalNote;
+    private String medicalNote;
     public MedicalRecordDetailDTO() {
     }
-    public MedicalRecordDetailDTO(int bookingID, int medicalRecordID, Date visitDate, String doctorName, String diagnosis, String clinicalNote) {
+    public MedicalRecordDetailDTO(int bookingID, int medicalRecordID, Date visitDate, String doctorName, String diagnosis, String clinicalNote, String medicalNote) {
         this.bookingID = bookingID;
         this.medicalRecordID = medicalRecordID;
         this.visitDate = visitDate;
         this.doctorName = doctorName;
         this.diagnosis = diagnosis;
         this.clinicalNote = clinicalNote;
+        this.medicalNote = medicalNote;
     }
     public MedicalRecordDetailDTO(int medicalRecordID, Date visitDate, String doctorName, String diagnosis, String clinicalNote ) {
 
@@ -28,6 +30,7 @@ public class MedicalRecordDetailDTO {
         this.clinicalNote = clinicalNote;
 
     }
+
     public int getBookingID() {
         return bookingID;
     }
@@ -64,6 +67,13 @@ public class MedicalRecordDetailDTO {
     public void setClinicalNote(String clinicalNote) {
         this.clinicalNote = clinicalNote;
     }
+    public String getMedicalNote() {
+        return medicalNote;
+    }
+    public void setMedicalNote(String medicalNote) {
+        this.medicalNote = medicalNote;
+    }
+
 
 
 }

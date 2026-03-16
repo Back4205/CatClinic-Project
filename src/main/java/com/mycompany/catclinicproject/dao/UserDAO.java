@@ -2,6 +2,8 @@ package com.mycompany.catclinicproject.dao;
 
 import com.mycompany.catclinicproject.model.RegisterDTO;
 import com.mycompany.catclinicproject.model.User;
+import com.mycompany.catclinicproject.model.VeterinarianInfo;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -189,23 +191,48 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
     }
-    public Integer getVetIDByUserID(int userId) {
+
+    public Integer getVetIDByUserId(int userID) {
         String sql = "SELECT VetID FROM Veterinarians WHERE UserID = ?";
 
-        try (
-             PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, userID);
 
-            ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt("VetID");
                 }
             }
         } catch (SQLException e) {
+            System.out.println(" Lỗi getVetIDByUserId: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
+
+
+    public List<VeterinarianInfo> getAllVeterinariansWithVetID() {
+        List<VeterinarianInfo> list = new ArrayList<>();
+        String sql = "SELECT u.UserID, u.FullName, v.VetID " +
+                "FROM Users u " +
+                "INNER JOIN Veterinarians v ON u.UserID = v.UserID " +
+                "WHERE u.RoleID = 2 AND u.IsActive = 1";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                VeterinarianInfo info = new VeterinarianInfo();
+                info.setUserID(rs.getInt("UserID"));
+                info.setFullName(rs.getString("FullName"));
+                info.setVetID(rs.getInt("VetID"));  // Lấy cả VetID
+                list.add(info);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public List<User> getAllVeterinarians() {
         List<User> vets = new ArrayList<>();
         String sql = "SELECT u.*, v.ExperienceYear " +
@@ -260,10 +287,32 @@ public class UserDAO extends DBContext {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Thay bằng logger trong production
+            e.printStackTrace();
         }
 
-        return null; // Không tìm thấy staff phù hợp
+        return null;
+    }
+    public int getVetIDByUserID(int userID) {
+
+        int vetID = -1;
+
+        String sql = "SELECT VetID FROM Veterinarians WHERE UserID = ?";
+
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, userID);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                vetID = rs.getInt("VetID");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return vetID;
     }
 
     public List<User> getStaffByPosition(String position) {

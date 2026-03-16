@@ -66,7 +66,7 @@ public class BookingHistoryController extends HttpServlet {
             String s = b.getStatus();
 
             if (s != null) {
-                if (s.equalsIgnoreCase("Confirmed") || s.equalsIgnoreCase("Pending") || s.equalsIgnoreCase("Upcoming")) {
+                if (s.equalsIgnoreCase("Confirmed") || s.equalsIgnoreCase("PendingPayment") || s.equalsIgnoreCase("Upcoming")) {
                     scheduled++;
                 } else if (s.equalsIgnoreCase("Completed") || s.equalsIgnoreCase("Done")) {
                     completed++;

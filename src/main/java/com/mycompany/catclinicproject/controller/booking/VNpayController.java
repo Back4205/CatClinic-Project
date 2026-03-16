@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.controller.booking;
 
 import com.mycompany.catclinicproject.config.VNPayConfig;
 import com.mycompany.catclinicproject.dao.InvoiceDAO;
+import com.mycompany.catclinicproject.dao.PaymentDAO;
 import com.mycompany.catclinicproject.model.Invoice;
 
 import jakarta.servlet.ServletException;
@@ -37,7 +38,7 @@ public class VNpayController extends HttpServlet {
         // Lấy Invoice
         InvoiceDAO invoiceDAO = new InvoiceDAO();
         Invoice invoice = invoiceDAO.getInvoiceByBookingID(bookingIdInt);
-
+        PaymentDAO paymentDAO = new PaymentDAO();
         if (invoice == null) {
 
             request.setAttribute("msg", "Invalid Invoice ID");
@@ -46,10 +47,19 @@ public class VNpayController extends HttpServlet {
         }
 
 
+        double total = invoiceDAO.getTotalServiceAmount(bookingIdInt);
+        double paid = paymentDAO.getPaidAmount(bookingIdInt);
 
+        double amount = 0;
         // Tính tiền đặt cọc 20%
-        long deposit = Math.round(invoice.getTotalAmount() * 0.2);
-        long vnpAmount = deposit * 100; // VNPay yêu cầu nhân 100
+        if (paid == 0.0){
+            amount =  Math.round(total*0.2);
+        }
+//        else {
+//            amount =  total-paid;
+//        }
+
+        long vnpAmount = (long)(amount * 100); // VNPay yêu cầu nhân 100
 
         //Tạo mã giao dịch UNIQUE
         String vnp_TxnRef = invoice.getInvoiceID() + "_" + System.currentTimeMillis();
