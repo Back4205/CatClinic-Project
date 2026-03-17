@@ -11,89 +11,13 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
     <link href="${pageContext.request.contextPath}/css/receptiondashboard-style.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/view-booking-list.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/Invoice/Billing_booking.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 
-<style>
-    .table-toolbar{
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        gap:20px;
-        flex-wrap:wrap;
-    }
 
-    .date-input-custom{
-        padding:8px 12px;
-        border:1px solid #e0e0e0;
-        border-radius:8px;
-        font-size:14px;
-        color:#444;
-        outline:none;
-        background-color:#fff;
-        transition:all 0.3s ease;
-        height:40px;
-    }
-
-    .date-input-custom:focus{
-        border-color:#3498db;
-        box-shadow:0 0 5px rgba(52,152,219,0.1);
-    }
-
-    @media (max-width:768px){
-        .table-toolbar{
-            flex-direction:column;
-            align-items:flex-start;
-        }
-    }
-    /* ===== PAGINATION ===== */
-
-    .pagination{
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        margin-top:25px;
-        gap:8px;
-    }
-
-    .page-btn{
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        min-width:38px;
-        height:38px;
-
-        padding:0 10px;
-
-        border-radius:8px;
-        border:1px solid #e3e6ea;
-
-        background:#fff;
-        color:#555;
-
-        font-size:14px;
-        font-weight:500;
-
-        text-decoration:none;
-
-        transition:all 0.25s ease;
-    }
-
-    .page-btn:hover{
-        background:#f5f7fa;
-        border-color:#3498db;
-        color:#3498db;
-    }
-
-    .page-btn.active{
-        background:#3498db;
-        color:#fff;
-        border-color:#3498db;
-        font-weight:600;
-    }
-</style>
 
 <body>
 
@@ -122,7 +46,7 @@
 
                 <div class="table-toolbar">
 
-                    <div style="display:flex;gap:15px;align-items:center;">
+                    <div style="display:flex;gap:15px;align-items:center;flex-wrap:wrap;">
 
                         <div class="table-search">
                             <input type="hidden" name="page" value="1">
@@ -135,6 +59,9 @@
                         </div>
 
                         <div class="date-filter-wrapper">
+                            <span class="date-label">
+                                <i class="fa-regular fa-calendar-check"></i> End date:
+                            </span>
                             <input type="date"
                                    name="filterDate"
                                    value="${currentDate}"

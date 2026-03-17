@@ -160,7 +160,7 @@ body {
 }
 
 .sidebar {
-    width: 260px;
+    width: 300px;
     background: white;
     min-height: calc(100vh - 80px);
     border-right: 1px solid #E2E8F0;

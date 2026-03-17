@@ -93,7 +93,7 @@ public class PaymentDAO extends DBContext{
         }
 
         if (filterDate != null && !filterDate.isEmpty()) {
-            sql.append(" AND CAST(br.CheckInTime AS DATE) = ? ");
+            sql.append(" AND CAST(br.CheckOutTime AS DATE) = ? ");
         }
 
         sql.append(" ORDER BY br.CheckInTime DESC\n" +

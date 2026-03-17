@@ -1,5 +1,6 @@
 package com.mycompany.catclinicproject.dao;
 
+import com.mycompany.catclinicproject.model.BillingBookingDTO;
 import com.mycompany.catclinicproject.model.Booking;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import com.mycompany.catclinicproject.model.TimeSlotVet;
@@ -439,4 +440,61 @@ public class BookingDAO extends DBContext {
         }
 
         return false;
-    }}
+    }
+    public int getLatestBookingID() {
+        String sql = "SELECT MAX(BookingID) FROM Bookings";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    public List<BillingBookingDTO> getNewBookings(int lastSeenID) {
+        List<BillingBookingDTO> list = new ArrayList<>();
+
+        String sql = "SELECT \n" +
+                "    b.BookingID,\n" +
+                "    u.FullName AS ownerName,\n" +
+                "    u.Phone,\n" +
+                "    b.AppointmentDate,\n" +
+                "    b.AppointmentTime\n" +
+                "FROM Bookings b\n" +
+                "JOIN Cats c ON b.CatID = c.CatID\n" +
+                "JOIN Owners o ON c.OwnerID = o.OwnerID\n" +
+                "JOIN Users u ON o.UserID = u.UserID\n" +
+                "WHERE b.BookingID > ?\n" +
+                "  AND b.Status IN ('Confirmed', 'Completed')\n" +
+                "ORDER BY b.BookingID DESC";
+
+        try (
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setInt(1, lastSeenID);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                BillingBookingDTO b = new BillingBookingDTO();
+
+                b.setBookingID(rs.getInt("BookingID"));
+                b.setOwnerName(rs.getString("ownerName"));
+                b.setPhone(rs.getString("Phone"));
+                b.setAppointmentDate(rs.getDate("AppointmentDate"));
+                b.setAppointmentTime(rs.getTimestamp("AppointmentTime"));
+
+                list.add(b);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+}

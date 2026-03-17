@@ -11,17 +11,23 @@ public class BillingBookingDTO {
     private Timestamp checkInTime;
     private Timestamp checkOutTime;
     private String invoiceStatus;
+    private String phone;
+    private Date appointmentDate;
+    private Timestamp appointmentTime;
 
     public BillingBookingDTO() {
     }
 
-   public BillingBookingDTO(int bookingID, String catName, String ownerName, Timestamp checkInTime,Timestamp checkOutTime, String invoiceStatus) {
+   public BillingBookingDTO(int bookingID, String catName, String ownerName, Timestamp checkInTime,Timestamp checkOutTime, String invoiceStatus , String phone , Date appointmentDate , Timestamp appointmentTime) {
         this.bookingID = bookingID;
         this.catName = catName;
         this.ownerName = ownerName;
         this.checkInTime = checkInTime;
         this.checkOutTime = checkOutTime;
         this.invoiceStatus = invoiceStatus;
+        this.phone = phone;
+        this.appointmentDate = appointmentDate;
+        this.appointmentTime = appointmentTime;
 
    }
 
@@ -62,6 +68,25 @@ public class BillingBookingDTO {
    public void setInvoiceStatus(String invoiceStatus) {
         this.invoiceStatus = invoiceStatus;
    }
+   public String getPhone() {
+        return phone;
+   }
+   public void setPhone(String phone) {
+        this.phone = phone;
+   }
+    public Date getAppointmentDate() {
+        return appointmentDate;
+    }
+    public void setAppointmentDate(Date appointmentDate) {
+        this.appointmentDate = appointmentDate;
+    }
+    public Timestamp getAppointmentTime() {
+        return appointmentTime;
+    }
+    public void setAppointmentTime(Timestamp appointmentTime) {
+        this.appointmentTime = appointmentTime;
+    }
+
 
 
 }

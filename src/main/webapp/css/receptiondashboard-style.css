@@ -3,7 +3,7 @@
 :root {
     --primary-orange: #ff7612;
     --primary-light: #fff3eb;
-    --sidebar-width: 260px;
+    --sidebar-width: 300px;
     --bg-main: #fafafb;
     --text-dark: #1e293b;
     --text-muted: #64748b;
@@ -406,4 +406,11 @@ td {
     text-align: center;
     padding: 60px 0;
     color: #64748b;
+}
+.sidebar {
+    width: 300px;
+    background: white;
+    min-height: calc(100vh - 80px);
+    border-right: 1px solid #E2E8F0;
+    padding: 20px;
 }

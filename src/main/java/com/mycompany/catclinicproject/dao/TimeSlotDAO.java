@@ -107,7 +107,7 @@ public class TimeSlotDAO extends DBContext {
     private Map<String, Boolean> getBookedSlotsMap(int vetID, java.sql.Date fromDate) {
         Map<String, Boolean> map = new HashMap<>();
         String sql = "SELECT SlotID, Date FROM TimeSlot_Vet " +
-                "WHERE VetID = ? AND Date >= ? AND Date < DATEADD(DAY, 7, ?) AND Status = 'Booked'";
+                "WHERE VetID = ? AND Date >= ? AND Date < DATEADD(DAY, 7, ?) AND Status in ( 'Booked' , 'Absent' ) ";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, vetID);

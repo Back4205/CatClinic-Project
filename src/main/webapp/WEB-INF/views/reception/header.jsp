@@ -17,7 +17,7 @@
 <%--    </div>--%>
 <%--</header>--%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <header class="topbar">
   <div class="logo">
     <a  style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
@@ -56,12 +56,9 @@
           <c:forEach var="n" items="${sessionScope.notifications}">
             <div class="noti-item">
 
-              <b>${n.ownerName} - ${n.phone}</b>[${n.appointmentDate} ${n.appointmentTime}]
-
-
-
-
-
+              <b>ID:${n.bookingID}-${n.ownerName} - ${n.phone}</b><br>
+              <fmt:formatDate value="${n.appointmentDate}" pattern="dd/MM/yyyy" /> on
+              <fmt:formatDate value="${n.appointmentTime}" pattern="HH:mm" />
             </div>
           </c:forEach>
 
