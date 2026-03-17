@@ -1,0 +1,176 @@
+/* --- 1. KHUNG CHỨA CHÍNH (CONTAINER) --- */
+.cancel-container {
+    max-width: 550px;
+    min-height: 500px; /* Giúp khung hình ổn định khi chuyển bước */
+    margin: 50px auto;
+    background: #fff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* --- 2. HEADER VÀ ĐIỀU HƯỚNG --- */
+.cancel-header-card {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.cancel-header-card h2 {
+    color: #1e293b;
+    margin: 10px 0;
+    font-size: 24px;
+}
+
+.cancel-header-card p {
+    color: #64748b;
+    font-size: 15px;
+}
+
+.back-link {
+    text-decoration: none !important;
+    color: #94a3b8 !important;
+    font-size: 14px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+    margin-bottom: 15px;
+}
+
+.back-link:hover {
+    color: #FF6B00 !important;
+    transform: translateX(-3px);
+}
+
+/* --- 3. THÔNG TIN BỆNH NHÂN (PATIENT BOX) --- */
+.patient-info-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #fff5f0;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+}
+
+.icon-cat { font-size: 30px; }
+.label-orange { color: #FF6B00; font-weight: 700; font-size: 12px; margin: 0; }
+.patient-name { font-weight: 700; font-size: 18px; margin: 2px 0; }
+.service-name { color: #64748b; font-size: 14px; margin: 0; }
+
+/* --- 4. FORM VÀ LÝ DO HỦY --- */
+.reason-option {
+    display: block;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 15px;
+}
+
+.reason-option:hover {
+    border-color: #FF6B00;
+    background: #fff9f5;
+}
+
+.reason-option input {
+    margin-right: 12px;
+}
+
+.info-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    margin-top: 15px;
+}
+
+.refund-form input[type="text"] {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+/* --- 5. CÁC NÚT BẤM (BUTTONS) --- */
+.btn-full {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 12px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-pay { background: #FF6B00; color: white !important; }
+.btn-pay:hover { background: #e66000; }
+
+.btn-back-history { background: #f1f5f9; color: #475569 !important; }
+.btn-back-history:hover { background: #e2e8f0; }
+
+.btn-dark { background: #1e293b; color: white !important; }
+
+/* Nút Cancel viền đỏ ở trang Detail */
+.btn-cancel-outline {
+    background-color: #fff;
+    color: #dc3545 !important;
+    border: 1px solid #ffc1c1;
+    padding: 10px 18px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    gap: 8px;
+    min-width: fit-content;
+    transition: all 0.2s;
+}
+
+.btn-cancel-outline:hover {
+    background-color: #fff5f5;
+    border-color: #dc3545;
+    color: #dc3545 !important;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.1);
+}
+
+.btn-cancel-outline i {
+    font-size: 1rem;
+}
+
+/* --- 6. TRẠNG THÁI THÀNH CÔNG --- */
+.success-state { text-align: center; }
+.success-icon-circle {
+    width: 80px;
+    height: 80px;
+    background: #f0fdf4;
+    color: #22c55e;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin: 0 auto 20px;
+}
+/* Chỉnh riêng cho nút ở trang thành công để không bị quá dài */
+.success-state .btn-full {
+    width: fit-content;      /* Chỉ dài vừa đủ bằng chữ bên trong */
+    min-width: 200px;        /* Nhưng vẫn đảm bảo độ rộng tối thiểu để dễ bấm */
+    margin: 30px auto 0;     /* Căn giữa nút */
+    padding: 14px 40px;      /* Tăng khoảng trống hai bên cho sang */
+}

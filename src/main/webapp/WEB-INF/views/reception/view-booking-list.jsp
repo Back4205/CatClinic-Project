@@ -48,8 +48,8 @@
             </div>
             <div class="stat-card card-green">
                 <div class="stat-icon icon-green"><i class="fa-regular fa-circle-check"></i></div>
-                <div class="stat-title">PENDING CANCEL REFUND</div>
-                <p class="stat-number">${stats['PendingCancelRefund'] != null ? stats['PendingCancelRefund'] : 0}</p>
+                <div class="stat-title">PENDING CANCEL</div>
+                <p class="stat-number">${stats['PendingCancel'] != null ? stats['PendingCancel'] : 0}</p>
             </div>
             <div class="stat-card card-red">
                 <div class="stat-icon icon-red"><i class="fa-solid fa-xmark"></i></div>
@@ -100,13 +100,18 @@
                             <div class="patient-cell">
                                 <div class="cat-avatar">🐱</div>
                                 <div>
-                                    <p class="patient-name">${b.catName}</p>
+                                    <p class="patient-name"><strong>${b.catName}</strong></p>
                                     <p class="patient-id">Owner: ${b.ownerName} - ${b.ownerPhone}</p>
+                                        <%-- THÊM DÒNG SERVICE NAME Ở ĐÂY --%>
+                                    <p style="color: #FF6B00; font-size: 12px; font-weight: 600; margin-top: 2px;">
+                                        Service: ${empty b.serviceName ? 'General Check' : b.serviceName}
+                                    </p>
                                 </div>
                             </div>
                         </td>
                         <td>
                             <span class="date-text"><i class="fa-regular fa-calendar table-icon"></i> ${b.appointmentDate}</span><br>
+                                <%-- ĐẢM BẢO HIỆN GIỜ KHÁM --%>
                             <span class="time-text"><i class="fa-regular fa-clock table-icon"></i> ${b.appointmentTime}</span>
                         </td>
                         <td>
@@ -114,7 +119,7 @@
                                 <c:when test="${fn:contains(b.status, 'PendingPayment')}"><span class="badge pendingpayment">${b.status}</span></c:when>
                                 <c:when test="${fn:contains(b.status, 'Confirmed')}"><span class="badge confirmed">${b.status}</span></c:when>
                                 <c:when test="${fn:contains(b.status, 'Completed')}"><span class="badge completed">${b.status}</span></c:when>
-                                <c:when test="${fn:contains(b.status, 'PendingCancelRefund')}"><span class="badge pendingcancelrefund">${b.status}</span></c:when>
+                                <c:when test="${fn:contains(b.status, 'PendingCancel')}"><span class="badge pendingcancelrefund">${b.status}</span></c:when>
                                 <c:when test="${fn:contains(b.status, 'Cancelled')}"><span class="badge cancelled">${b.status}</span></c:when>
                                 <c:otherwise><span class="badge">${b.status}</span></c:otherwise>
                             </c:choose>

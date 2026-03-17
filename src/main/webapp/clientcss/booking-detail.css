@@ -354,3 +354,11 @@
     color: #475569;
     line-height: 1.6;
 }
+.btn-invoice {
+    background: #10b981;
+    color: white;
+}
+
+.btn-invoice:hover {
+    background: #059669;
+}

@@ -72,8 +72,7 @@
                 </div>
             </div>
 
-            <c:if test="${booking.status == 'Completed' || booking.status == 'Done'}">
-                <div class="detail-section" style="margin-top: 25px; border-top: 1px dashed #FFE8D9; padding-top: 25px;">
+            <c:if test="${booking.checkOutTime != null}">                <div class="detail-section" style="margin-top: 25px; border-top: 1px dashed #FFE8D9; padding-top: 25px;">
                     <div class="section-title"><i class="bi bi-star-fill" style="color: #FF6B00;"></i> Service Feedback</div>
 
                     <c:choose>
@@ -120,6 +119,11 @@
                 </div>
             </c:if>
             <div class="btn-action-group">
+                <c:if test="${not empty booking.checkOutTime}">
+                    <a href="view-invoice?id=${booking.bookingID}" class="btn-custom btn-invoice">
+                        <i class="bi bi-receipt"></i> View Invoice
+                    </a>
+                </c:if>
                 <a href="booking-history" class="btn-custom btn-back-history">Back to History</a>
 
                 <c:choose>

@@ -77,6 +77,15 @@
                     <p>Cancelled</p>
                 </div>
             </div>
+            <div class="stat-card">
+                <div class="stat-icon icon-cancel">
+                    <i class="bi bi-exclamation-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>${pendingCancelCount}</h3>
+                    <p>Pending Cancel</p>
+                </div>
+            </div>
         </div>
 
         <form action="booking-history" method="GET">
@@ -111,12 +120,16 @@
                             class="${currentStatus == 'Cancelled' ? 'active' : ''}">
                         CANCELLED
                     </button>
+                    <button type="submit" name="status" value="PendingCancel"
+                            class="${currentStatus == 'PendingCancel' ? 'active' : ''}">
+                        PENDING CANCEL
+                    </button>
 
                 </div>
             </div>
         </form>
 
-        <div class="booking-list">
+        <div class="booking-list" id="bookingSection">
 
             <table class="booking-table">
                 <thead>
@@ -124,7 +137,7 @@
                     <th>Cat</th>
                     <th>Day</th>
                     <th>Service</th>
-                    <th>Price Total</th>
+                    <th>Price At Booking</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -161,14 +174,29 @@
 
                         <!-- STATUS -->
                         <td>
-                        <span class="status-badge
-                            ${b.status == 'Completed' || b.status == 'Done' ? 'status-completed' : ''}
-                            ${b.status == 'Confirmed' || b.status == 'Upcoming' || b.status == 'Pending' ? 'status-upcoming' : ''}
-                            ${b.status == 'Cancelled' ? 'status-cancelled' : ''}
-                            ${b.status == 'In Progress' ? 'status-inprogress' : ''}
-                            ${b.status == 'PendingPayment' ? 'status-pendingpayment' : ''}">
-                                ${b.status == 'PendingPayment' ? 'PendingPayment' : b.status}
-                        </span>
+                            <c:choose>
+
+                                <c:when test="${b.status == 'PendingPayment'}">
+                                    <span class="status-badge status-pendingpayment">Pending Payment</span>
+                                </c:when>
+
+                                <c:when test="${b.status == 'Confirmed'}">
+                                    <span class="status-badge status-upcoming">Confirmed</span>
+                                </c:when>
+
+                                <c:when test="${b.status == 'Completed'}">
+                                    <span class="status-badge status-completed">Completed</span>
+                                </c:when>
+
+                                <c:when test="${b.status == 'PendingCancel'}">
+                                    <span class="status-badge status-pendingcancel">Pending Cancel</span>
+                                </c:when>
+
+                                <c:when test="${b.status == 'Cancelled'}">
+                                    <span class="status-badge status-cancelled">Cancelled</span>
+                                </c:when>
+
+                            </c:choose>
                         </td>
 
                         <!-- ACTION -->
@@ -195,7 +223,8 @@
 
                         <%-- 1. Nút Prev --%>
                     <c:if test="${currentPage > 1}">
-                        <a href="booking-history?page=${currentPage - 1}&search=${currentSearch}&status=${currentStatus}" class="page-item">
+                        <a href="booking-history?page=${currentPage - 1}&search=${currentSearch}&status=${currentStatus}#bookingSection"
+                           class="page-item">
                             &laquo;
                         </a>
                     </c:if>
@@ -222,7 +251,7 @@
 
                         <%-- 3. In các nút số dựa theo khoảng start - end vừa tính --%>
                     <c:forEach begin="${startPage}" end="${endPage}" var="i">
-                        <a href="booking-history?page=${i}&search=${currentSearch}&status=${currentStatus}"
+                        <a href="booking-history?page=${i}&search=${currentSearch}&status=${currentStatus}#bookingSection"
                            class="page-item ${i == currentPage ? 'active' : ''}">
                                 ${i}
                         </a>
@@ -230,7 +259,7 @@
 
                         <%-- 4. Nút Next --%>
                     <c:if test="${currentPage < totalPage}">
-                        <a href="booking-history?page=${currentPage + 1}&search=${currentSearch}&status=${currentStatus}" class="page-item">
+                        <a href="booking-history?page=${currentPage + 1}&search=${currentSearch}&status=${currentStatus}#bookingSection" class="page-item">
                             &raquo;
                         </a>
                     </c:if>

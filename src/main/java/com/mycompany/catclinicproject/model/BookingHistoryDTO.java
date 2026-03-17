@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.model;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 
 public class BookingHistoryDTO {
     private int bookingID;
@@ -21,6 +22,8 @@ public class BookingHistoryDTO {
     private String ownerPhone;
     private String customerName;
     private String customerPhone;
+    private Timestamp checkInTime;
+    private Timestamp checkOutTime;
     private Integer rating; // Dùng Integer để có thể nhận giá trị null
     private String feedbackComment;
     public BookingHistoryDTO() {
@@ -90,4 +93,20 @@ public class BookingHistoryDTO {
 
     public String getCustomerPhone() { return customerPhone; }
     public void setCustomerPhone(String customerPhone) { this.customerPhone = customerPhone; }
+
+    public Timestamp getCheckInTime() {
+        return checkInTime;
+    }
+
+    public void setCheckInTime(Timestamp checkInTime) {
+        this.checkInTime = checkInTime;
+    }
+
+    public Timestamp getCheckOutTime() {
+        return checkOutTime;
+    }
+
+    public void setCheckOutTime(Timestamp checkOutTime) {
+        this.checkOutTime = checkOutTime;
+    }
 }

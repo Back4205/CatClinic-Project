@@ -8,8 +8,11 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/receptiondashboard-style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/view-booking-list.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reception-cancel.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="css/reception-detail.css" rel="stylesheet" type="text/css"/>
+
 </head>
 
 <body>
@@ -115,23 +118,39 @@
 
                 <c:if test="${booking.status == 'Confirmed'}">
                     <button type="button" onclick="openCheckinModal()" class="btn-action btn-orange-fixed"><i class="fa-solid fa-check"></i> &nbsp; Check-in Now</button>
+                    <%-- NÚT CANCEL MỚI THÊM --%>
+                    <a href="reception-cancel?id=${booking.bookingID}" class="btn-cancel-outline">
+                        <i class="fa-solid fa-trash-can"></i> &nbsp; Cancel Booking
+                    </a>
                 </c:if>
 
                 <c:if test="${booking.status == 'Completed'}">
                     <c:choose>
-                        <c:when test="${empty boarding.checkOutTime}">
-                            <button type="button" onclick="openCheckoutModal()" class="btn-action btn-orange-fixed"><i class="fa-solid fa-door-open"></i> &nbsp; Check-out Now</button>
+                        <c:when test="${boarding.checkInTime != null and boarding.checkOutTime == null}">
+                            <button type="button" onclick="openCheckoutModal()" class="btn-action btn-orange-fixed">
+                                <i class="fa-solid fa-door-open"></i> &nbsp; Check-out Now
+                            </button>
                         </c:when>
                         <c:otherwise>
-                            <div class="status-completed-tag"><i class="fa-solid fa-circle-check"></i> &nbsp; Pet Released</div>
+                            <div class="status-completed-tag">
+                                <i class="fa-solid fa-circle-check"></i> &nbsp; Pet Released
+                            </div>
                         </c:otherwise>
                     </c:choose>
+                </c:if>
+
+                <%-- Trường hợp ca khám mới đặt chưa confirm cũng cho phép Cancel --%>
+                <c:if test="${booking.status == 'PendingPayment'}">
+                    <a href="reception-cancel?id=${booking.bookingID}" class="btn-cancel-outline">
+                        <i class="fa-solid fa-trash-can"></i> &nbsp; Cancel Booking
+                    </a>
                 </c:if>
             </div>
         </div>
     </main>
 </div>
 
+<%-- GIỮ NGUYÊN TOÀN BỘ MODAL VÀ SCRIPT CŨ CỦA CẬU --%>
 <div id="checkinModal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header-orange">

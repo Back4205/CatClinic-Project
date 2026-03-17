@@ -421,3 +421,7 @@
     border-color: #cbd5e1;
     pointer-events: none;
 }
+.status-pendingcancel{
+    background: #f59e0b;
+    color: white;
+}

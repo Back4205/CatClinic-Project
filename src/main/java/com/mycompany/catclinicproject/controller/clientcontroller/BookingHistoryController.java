@@ -57,6 +57,7 @@ public class BookingHistoryController extends HttpServlet {
         int completed = 0;
         int pendingPaymentCount = 0;
         int cancelledCount = 0;
+        int pendingCancelCount = 0;
 
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
 
@@ -75,6 +76,7 @@ public class BookingHistoryController extends HttpServlet {
                 else if (s.equalsIgnoreCase("Confirmed")) confirmedCount++;
                 else if (s.equalsIgnoreCase("Completed")) completed++;
                 else if (s.equalsIgnoreCase("Cancelled")) cancelledCount++;
+                else if (s.equalsIgnoreCase("PendingCancel")) pendingCancelCount++;
             }
         }
 
@@ -88,6 +90,7 @@ public class BookingHistoryController extends HttpServlet {
         request.setAttribute("total", total);
         request.setAttribute("confirmedCount", confirmedCount);
         request.setAttribute("completed", completed);
+        request.setAttribute("pendingCancelCount", pendingCancelCount);
 
         request.setAttribute("currentSearch", keyword);
         request.setAttribute("currentStatus", filterStatus);

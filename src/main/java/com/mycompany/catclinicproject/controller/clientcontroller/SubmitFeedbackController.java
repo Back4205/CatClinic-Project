@@ -1,6 +1,7 @@
 package com.mycompany.catclinicproject.controller.clientcontroller;
 
 import com.mycompany.catclinicproject.dao.BookingDAO;
+import com.mycompany.catclinicproject.model.FeedbackDTO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,6 +22,24 @@ public class SubmitFeedbackController extends HttpServlet {
             String comment = request.getParameter("comment");
 
             BookingDAO dao = new BookingDAO();
+
+            // 1️⃣ Lấy booking
+            var booking = dao.getBookingDetailByID(bookingID);
+
+            // 2️⃣ Check đã checkout chưa
+            if (booking == null || booking.getCheckOutTime() == null) {
+                response.sendRedirect("booking-detail?id=" + bookingID);
+                return;
+            }
+
+            // 3️⃣ 🔥 CHECK ĐÃ FEEDBACK CHƯA (THÊM Ở ĐÂY)
+            FeedbackDTO fb = dao.getFeedbackByBookingID(bookingID);
+            if (fb != null) {
+                response.sendRedirect("booking-detail?id=" + bookingID);
+                return;
+            }
+
+            // 4️⃣ Insert feedback
             dao.insertFeedback(bookingID, rating, comment);
 
             response.sendRedirect("booking-detail?id=" + bookingID);

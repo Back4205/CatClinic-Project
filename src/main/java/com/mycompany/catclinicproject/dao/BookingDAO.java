@@ -81,45 +81,40 @@ public class BookingDAO extends DBContext {
 
     public List<BookingHistoryDTO> getReceptionBookingList(String keyword) {
         List<BookingHistoryDTO> list = new ArrayList<>();
+        // Thêm b.AppointmentTime vào SELECT
         String sql = "SELECT b.BookingID, b.AppointmentDate, b.AppointmentTime, b.Status, " +
                 "u_owner.FullName AS CustomerName, u_owner.Phone AS CustomerPhone, " +
-                "c.Name AS CatName " +
+                "c.Name AS CatName, s.NameService " +
                 "FROM Bookings b " +
                 "JOIN Cats c ON b.CatID = c.CatID " +
                 "JOIN Owners o ON c.OwnerID = o.OwnerID " +
                 "JOIN Users u_owner ON o.UserID = u_owner.UserID " +
+                "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID " +
+                "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID " +
                 "WHERE 1=1 ";
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            sql += " AND (u_owner.FullName LIKE ? OR u_owner.Phone LIKE ? OR c.Name LIKE ?) ";
-        }
-        sql += " ORDER BY b.AppointmentDate DESC, b.AppointmentTime DESC";
 
-        try (PreparedStatement st = c.prepareStatement(sql)) { // Sử dụng connection 'c' của cậu
-            if (keyword != null && !keyword.trim().isEmpty()) {
-                String p = "%" + keyword.trim() + "%";
-                st.setString(1, p);
-                st.setString(2, p);
-                st.setString(3, p);
-            }
+        // ... (giữ nguyên phần keyword) ...
+
+        try (PreparedStatement st = c.prepareStatement(sql)) {
+            // ... (giữ nguyên phần setString) ...
             try (ResultSet rs = st.executeQuery()) {
                 while (rs.next()) {
                     BookingHistoryDTO d = new BookingHistoryDTO();
                     d.setBookingID(rs.getInt("BookingID"));
                     d.setAppointmentDate(rs.getDate("AppointmentDate"));
-                    d.setAppointmentTime(rs.getTime("AppointmentTime"));
+                    d.setAppointmentTime(rs.getTime("AppointmentTime")); // QUAN TRỌNG: Lấy giờ ở đây
                     d.setStatus(rs.getString("Status"));
                     d.setCustomerName(rs.getString("CustomerName"));
                     d.setCustomerPhone(rs.getString("CustomerPhone"));
                     d.setCatName(rs.getString("CatName"));
+                    d.setServiceName(rs.getString("NameService"));
+
                     list.add(d);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
-
     public void updateBookingStatusSimple(int id, String status) {
         String sql = "UPDATE Bookings SET Status = ? WHERE BookingID = ?";
         try (PreparedStatement st = c.prepareStatement(sql)) { // Biến 'c' là connection của cậu
@@ -135,7 +130,8 @@ public class BookingDAO extends DBContext {
         String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, "
                 + "b.EndDate, b.AppointmentTime, b.Status, b.Note, s.NameService, "
                 + "ad.PriceAtBooking, u_vet.FullName AS VetName, "
-                + "u_owner.FullName AS OwnerName, u_owner.Phone "
+                + "u_owner.FullName AS OwnerName, u_owner.Phone, "
+                + "br.CheckInTime, br.CheckOutTime "
                 + "FROM Bookings b "
                 + "JOIN Cats c ON b.CatID = c.CatID "
                 + "JOIN Owners o ON c.OwnerID = o.OwnerID "
@@ -144,8 +140,8 @@ public class BookingDAO extends DBContext {
                 + "LEFT JOIN Users u_vet ON v.UserID = u_vet.UserID "
                 + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
                 + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
+                + "LEFT JOIN BoardingRecords br ON b.BookingID = br.BookingID "
                 + "WHERE b.BookingID = ?";
-
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, bookingID);
             try (ResultSet rs = ps.executeQuery()) {
@@ -165,6 +161,8 @@ public class BookingDAO extends DBContext {
                     d.setVetName(rs.getString("VetName"));
                     d.setCustomerName(rs.getString("OwnerName"));
                     d.setCustomerPhone(rs.getString("Phone"));
+                    d.setCheckInTime(rs.getTimestamp("CheckInTime"));
+                    d.setCheckOutTime(rs.getTimestamp("CheckOutTime"));
                     return d;
                 }
             }
@@ -757,9 +755,7 @@ public class BookingDAO extends DBContext {
     }
 
     public List<BookingHistoryDTO> getBookingHistory(String search, String status, int offset, int pageSize) {
-
         List<BookingHistoryDTO> list = new ArrayList<>();
-
         String sql =
                 "SELECT "
                         + "b.BookingID, "
@@ -768,12 +764,13 @@ public class BookingDAO extends DBContext {
                         + "c.Breed, "
                         + "b.AppointmentDate, "
                         + "b.EndDate, "
-                        + "t.StartTime AS AppointmentTime, "
+                        + "b.AppointmentTime, "
                         + "b.Status, "
                         + "b.Note, "
                         + "u.FullName AS OwnerName, "
                         + "u.Phone AS OwnerPhone, "
-                        + "vetUser.FullName AS VetName "
+                        + "vetUser.FullName AS VetName, "
+                        + "s.NameService " // Lấy tên dịch vụ
                         + "FROM Bookings b "
                         + "JOIN Cats c ON b.CatID = c.CatID "
                         + "JOIN Owners o ON c.OwnerID = o.OwnerID "
@@ -781,68 +778,54 @@ public class BookingDAO extends DBContext {
                         + "LEFT JOIN Veterinarians v ON b.VetID = v.VetID "
                         + "LEFT JOIN Users vetUser ON v.UserID = vetUser.UserID "
                         + "LEFT JOIN TimeSlots t ON b.SlotID = t.SlotID "
+                        + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
+                        + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
                         + "WHERE 1=1 ";
 
         if (search != null && !search.trim().isEmpty()) {
             sql += " AND (c.Name LIKE ? OR u.FullName LIKE ? OR u.Phone LIKE ?) ";
         }
-
         if (status != null && !status.trim().isEmpty()) {
             sql += " AND b.Status = ? ";
         }
+        sql += " ORDER BY b.AppointmentDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        sql += " ORDER BY b.AppointmentDate DESC "
-                + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
-
-        try {
-
-            PreparedStatement ps = c.prepareStatement(sql);
-
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
             int index = 1;
-
             if (search != null && !search.trim().isEmpty()) {
                 ps.setString(index++, "%" + search + "%");
                 ps.setString(index++, "%" + search + "%");
                 ps.setString(index++, "%" + search + "%");
             }
-
             if (status != null && !status.trim().isEmpty()) {
                 ps.setString(index++, status);
             }
-
-            // pagination
             ps.setInt(index++, offset);
             ps.setInt(index++, pageSize);
 
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    BookingHistoryDTO dto = new BookingHistoryDTO();
+                    dto.setBookingID(rs.getInt("BookingID"));
+                    dto.setCatName(rs.getString("CatName"));
+                    dto.setAppointmentDate(rs.getDate("AppointmentDate"));
 
-            while (rs.next()) {
+                    // --- ĐOẠN QUAN TRỌNG NHẤT ĐÂY CẬU ---
+                    dto.setAppointmentTime(rs.getTime("AppointmentTime")); // Gán giờ vào DTO
+                    dto.setServiceName(rs.getString("NameService"));       // Gán tên dịch vụ vào DTO
+                    // -------------------------------------
 
-                BookingHistoryDTO dto = new BookingHistoryDTO();
-
-                dto.setBookingID(rs.getInt("BookingID"));
-                dto.setSlotID(rs.getInt("SlotID"));
-                dto.setCatName(rs.getString("CatName"));
-                dto.setCatBreed(rs.getString("Breed"));
-                dto.setAppointmentDate(rs.getDate("AppointmentDate"));
-                dto.setEndDate(rs.getDate("EndDate"));
-                dto.setAppointmentTime(rs.getTime("AppointmentTime"));
-                dto.setStatus(rs.getString("Status"));
-                dto.setNote(rs.getString("Note"));
-                dto.setOwnerName(rs.getString("OwnerName"));
-                dto.setOwnerPhone(rs.getString("OwnerPhone"));
-                dto.setVetName(rs.getString("VetName"));
-
-                list.add(dto);
+                    dto.setOwnerName(rs.getString("OwnerName"));
+                    dto.setOwnerPhone(rs.getString("OwnerPhone"));
+                    dto.setStatus(rs.getString("Status"));
+                    list.add(dto);
+                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return list;
     }
-
     public int countBookings(String search, String status) {
 
         int total = 0;
@@ -977,15 +960,19 @@ public class BookingDAO extends DBContext {
 
     public List<BookingHistoryDTO> getClientHistoryPaging(int userID, String search, String status, int offset, int pageSize) {
         List<BookingHistoryDTO> list = new ArrayList<>();
+        // SỬA LẠI SQL: Lấy thêm NameService và PriceAtBooking
         String sql = "SELECT DISTINCT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, b.EndDate, "
-                + "b.AppointmentTime, b.Status, b.Note "
+                + "b.AppointmentTime, b.Status, b.Note, s.NameService, ad.PriceAtBooking, br.CheckOutTime " // Thêm 2 trường này
                 + "FROM Bookings b "
                 + "JOIN Cats c ON b.CatID = c.CatID "
                 + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+                + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
+                + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
+                + " LEFT JOIN BoardingRecords br ON b.BookingID = br.BookingID "
                 + "WHERE o.UserID = ? ";
 
         if (search != null && !search.trim().isEmpty()) {
-            sql += " AND (c.Name LIKE ? OR b.Note LIKE ?) ";
+            sql += " AND (c.Name LIKE ? OR s.NameService LIKE ?) ";
         }
         if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("ALL")) {
             sql += " AND b.Status = ? ";
@@ -1016,6 +1003,10 @@ public class BookingDAO extends DBContext {
                     d.setAppointmentDate(rs.getDate("AppointmentDate"));
                     d.setAppointmentTime(rs.getTime("AppointmentTime"));
                     d.setStatus(rs.getString("Status"));
+                    d.setServiceName(rs.getString("NameService")); // GÁN DỮ LIỆU
+                    d.setPrice(rs.getDouble("PriceAtBooking"));
+                    d.setCheckOutTime(rs.getTimestamp("CheckOutTime"));
+// GÁN DỮ LIỆU
                     list.add(d);
                 }
             }
@@ -1024,7 +1015,6 @@ public class BookingDAO extends DBContext {
         }
         return list;
     }
-
     public int countClientBookings(int userID, String search, String status) {
         int total = 0;
         String sql = "SELECT COUNT(*) FROM Bookings b "
@@ -1093,5 +1083,21 @@ public class BookingDAO extends DBContext {
         }
         return false;
     }
-}
+    public boolean hasCheckout(int bookingId) {
+        String sql = "SELECT checkout_time FROM BoardingRecord WHERE booking_id = ?";
 
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, bookingId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getTimestamp("checkout_time") != null;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+}
