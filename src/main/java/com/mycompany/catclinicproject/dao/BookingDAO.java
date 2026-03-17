@@ -215,7 +215,7 @@ public class BookingDAO extends DBContext {
 
             c.commit();
 
-            System.out.println(" Booking thành công ID: " + bookingID);
+            System.out.println(" Booking Successfuly ID: " + bookingID);
 
             return bookingID;
 
@@ -316,9 +316,6 @@ public class BookingDAO extends DBContext {
                             "AND DATEDIFF(MINUTE, BookingDate, GETDATE()) >= 5";
 
             PreparedStatement psCancel = c.prepareStatement(cancelSql);
-            int cancelledCount = psCancel.executeUpdate();
-
-            System.out.println(" Auto-cancelled " + cancelledCount + " expired bookings");
 
             psCancel.close();
 
