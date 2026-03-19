@@ -1,0 +1,207 @@
+/* MAIN CONTENT (avoid overlap with sidebar) */
+
+.main-content{
+    margin-left:230px;
+    padding:30px;
+    background:#f4f6f9;
+    min-height:100vh;
+}
+
+/* PAGE */
+
+.page-wrapper{
+    background:white;
+    padding:25px;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* TITLE */
+
+.page-title{
+    font-size:22px;
+    font-weight:600;
+    color:#ff7a00;
+    margin-bottom:20px;
+}
+
+/* TABLE CONTAINER */
+
+.table-container{
+    width:100%;
+    overflow-x:auto;
+}
+
+/* TABLE */
+
+.refund-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+/* HEADER */
+
+.refund-table thead{
+    background:#ff7a00;
+    color:white;
+}
+
+.refund-table th{
+    padding:14px;
+    text-align:center;
+    font-size:14px;
+}
+
+/* BODY */
+
+.refund-table td{
+    padding:14px;
+    border-bottom:1px solid #eee;
+    font-size:14px;
+}
+
+.refund-table tbody tr:hover{
+    background:#fafafa;
+}
+
+/* SERVICE */
+
+.service-icon{
+    margin-right:6px;
+    color:#555;
+}
+
+/* STATUS */
+
+.status{
+    padding:6px 12px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.pending{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.approved{
+    background:#d4edda;
+    color:#155724;
+}
+
+.rejected{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+/* NOTE */
+
+.note-text{
+    color:#666;
+}
+
+/* IMAGE */
+
+.refund-img img{
+    width:70px;
+    border-radius:6px;
+    border:1px solid #ddd;
+}
+
+/* PRICE */
+
+.price{
+    color:#ff7a00;
+    font-weight:600;
+}
+
+/* BUTTON */
+
+.btn{
+    padding:6px 12px;
+    border-radius:5px;
+    font-size:13px;
+    text-decoration:none;
+    margin-right:6px;
+}
+
+.approve{
+    background:#28a745;
+    color:white;
+}
+
+.reject{
+    background:#dc3545;
+    color:white;
+}
+
+.approve:hover{
+    background:#218838;
+}
+
+.reject:hover{
+    background:#c82333;
+}
+/* THUMBNAIL */
+
+.refund-thumb{
+    width:70px;
+    border-radius:6px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.refund-thumb:hover{
+    transform:scale(1.1);
+}
+
+/* MODAL */
+
+.modal{
+    display:none;
+    position:fixed;
+    z-index:9999;
+    padding-top:100px;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.8);
+}
+
+.modal-content{
+    display:block;
+    margin:auto;
+    max-width:70%;
+    border-radius:8px;
+}
+
+.close{
+    position:absolute;
+    top:40px;
+    right:60px;
+    color:white;
+    font-size:40px;
+    cursor:pointer;
+}
+/* ACTION COLUMN */
+
+.refund-table td:last-child{
+    white-space:nowrap;
+}
+
+.action-buttons{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+.btn{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:6px 12px;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:500;
+}

@@ -1,55 +1,108 @@
-<%-- 
-    Document   : AdminDashboard
-    Created on : Jan 30, 2026, 4:20:38 PM
-    Author     : Son
---%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" %>
+
+<%
+    int totalAccounts = 20;
+    int totalCategories = 8;
+    int cancelledBookings = 5;
+%>
+
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-        <link href="css/AdminDashboardStyle.css" rel="stylesheet" type="text/css"/>
+<head>
 
-    </head>
-    <body>
-        <header class="admin-header">
-    <div class="header-left">
-        <h2>Admin Dashboard</h2>
-    </div>
-    <div class="header-right">
-        <span>Welcome,some one</span>
-        <div class="user-icon">👤</div>
-    </div>
-</header>
+    <title>Admin Dashboard</title>
 
-<!-- Main Content -->
-<main class="admin-main">
-    <div class="card-container">
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/DashboardAdminStyle.css">
 
-        <!-- Account Management -->
-        <div class="admin-card">
-            <div class="card-icon">👥</div>
-            <h3>Account Management</h3>
-            <p>
-                View, add, edit, or delete user accounts within the system.
-            </p>
-            <a href="account" class="btn-manage">Manage Now</a>
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/sidebar-admin.css">
+
+    <!-- Header CSS -->
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/css/header-admin.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <jsp:include page="sidebar.jsp"/>
+
+    <!-- MAIN CONTENT -->
+    <div class="admin-main">
+
+        <!-- HEADER -->
+        <jsp:include page="header.jsp"/>
+
+        <!-- DASHBOARD CONTENT -->
+        <div class="admin-dashboard">
+
+            <h2 class="admin-title">
+                Admin Dashboard
+            </h2>
+
+            <!-- STATISTIC CARDS -->
+            <div class="admin-cards">
+
+                <div class="admin-card">
+
+                    <i class="fa-solid fa-users"></i>
+
+                    <p>Total Accounts</p>
+
+                    <h3><%= totalAccounts %></h3>
+
+                </div>
+
+                <div class="admin-card">
+
+                    <i class="fa-solid fa-list"></i>
+
+                    <p>Total Categories</p>
+
+                    <h3><%= totalCategories %></h3>
+
+                </div>
+
+                <div class="admin-card">
+
+                    <i class="fa-solid fa-money-bill-wave"></i>
+
+                    <p>Cancelled Bookings</p>
+
+                    <h3><%= cancelledBookings %></h3>
+
+                </div>
+
+            </div>
+
+            <!-- WELCOME BOX -->
+            <div class="admin-welcome">
+
+                <h3>Welcome Admin</h3>
+
+                <p>
+                    This dashboard allows administrators to manage system data
+                    including accounts, service categories, and refund
+                    processing for cancelled bookings.
+                </p>
+
+            </div>
+
         </div>
 
-        <!-- Service Management -->
-        <div class="admin-card">
-            <div class="card-icon">📦</div>
-            <h3>Service Management</h3>
-            <p>
-                View, add, edit, or delete pet clinic services and prices.
-            </p>
-            <a href="${pageContext.request.contextPath}/ViewCategoryList"
-               class="btn-manage">
-                Manage Now
-            </a>
-        </div>
-
     </div>
-    </body>
+
+</div>
+
+</body>
 </html>

@@ -1,0 +1,47 @@
+/* ===== ADMIN HEADER ===== */
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 25px;
+    border-bottom: 1px solid #eee;
+    background: white;
+}
+
+.admin-header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.admin-header-title {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.admin-date {
+    color: #777;
+    font-size: 14px;
+}
+
+.admin-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-user {
+    font-weight: 500;
+}
+
+.admin-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid #ff7a00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff7a00;
+}

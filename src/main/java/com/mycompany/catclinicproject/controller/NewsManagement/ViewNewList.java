@@ -3,10 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package com.mycompany.catclinicproject.controller.ServiceManagement;
+package com.mycompany.catclinicproject.controller.NewsManagement;
 
-import com.mycompany.catclinicproject.dao.ServiceDAO;
-import com.mycompany.catclinicproject.model.Service;
+import com.mycompany.catclinicproject.dao.NewDAO;
+import com.mycompany.catclinicproject.model.News;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -19,69 +19,64 @@ import java.util.List;
  *
  * @author ADMIN
  */
-@WebServlet(name = "ViewServiceList", urlPatterns = {"/ViewServiceList"})
-public class ViewServiceList extends HttpServlet {
-
+@WebServlet(name="ViewNewList", urlPatterns={"/ViewNewList"})
+public class ViewNewList extends HttpServlet {
+   
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        int categoryID = Integer.parseInt(request.getParameter("id"));
-
-        ServiceDAO dao = new ServiceDAO();
-        List<Service> fullList = dao.getServicesByCategoryID(categoryID);
+        NewDAO dao = new NewDAO();
+        List<News> fullList = dao.getAllNew();
 
         String keyword = request.getParameter("search");
         String filterStatus = request.getParameter("status");
 
-        if (keyword == null) keyword = "";
-        if (filterStatus == null) filterStatus = "ALL";
-
         // ===== SEARCH + FILTER =====
-        List<Service> filteredList = new java.util.ArrayList<>();
+        List<News> filteredList = new java.util.ArrayList<>();
 
-        for (Service s : fullList) {
+        for (News c : fullList) {
 
             boolean matchKeyword = true;
             boolean matchStatus = true;
 
-            // SEARCH nameService
-            if (!keyword.trim().isEmpty()) {
-                String k = keyword.toLowerCase();
-                String name = s.getNameService() != null ? s.getNameService().toLowerCase() : "";
+            // SEARCH title
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String k = keyword.toLowerCase().trim();
+                String name = c.getTitle() != null ? c.getTitle().toLowerCase() : "";
 
                 if (!name.contains(k)) {
                     matchKeyword = false;
                 }
             }
-
             // FILTER STATUS
-            if (!filterStatus.equals("ALL")) {
+            if (filterStatus != null && !filterStatus.equals("ALL") && !filterStatus.isEmpty()) {
 
-                if (filterStatus.equals("Active") && !s.isIsActive()) {
+                if (filterStatus.equals("Active") && !c.isIsActive()) {
                     matchStatus = false;
                 }
 
-                if (filterStatus.equals("Inactive") && s.isIsActive()) {
+                if (filterStatus.equals("Inactive") && c.isIsActive()) {
                     matchStatus = false;
                 }
             }
 
             if (matchKeyword && matchStatus) {
-                filteredList.add(s);
+                filteredList.add(c);
             }
         }
 
         // ===== PAGINATION =====
         int pageSize = 5;
-        int currentPage = 1;
 
+        int currentPage = 1;
         String pageParam = request.getParameter("page");
 
         if (pageParam != null) {
             try {
                 currentPage = Integer.parseInt(pageParam);
-            } catch (Exception e) {
+                if (currentPage < 1) currentPage = 1;
+            } catch (NumberFormatException e) {
                 currentPage = 1;
             }
         }
@@ -89,29 +84,27 @@ public class ViewServiceList extends HttpServlet {
         int totalRecord = filteredList.size();
         int totalPage = (int) Math.ceil((double) totalRecord / pageSize);
 
-        if (totalPage == 0) totalPage = 1;
-
-        if (currentPage > totalPage) currentPage = totalPage;
+        if (currentPage > totalPage && totalPage != 0) {
+            currentPage = totalPage;
+        }
 
         int start = (currentPage - 1) * pageSize;
         int end = Math.min(start + pageSize, totalRecord);
 
-        List<Service> pagedList = new java.util.ArrayList<>();
+        List<News> pagedList = new java.util.ArrayList<>();
 
-        if (totalRecord > 0) {
+        if (totalRecord > 0 && start < totalRecord) {
             pagedList = filteredList.subList(start, end);
         }
 
-        // ===== SEND DATA =====
-        request.setAttribute("serviceList", pagedList);
-        request.setAttribute("categoryID", categoryID);
-
+        // ===== SEND TO JSP =====
+        request.setAttribute("newList", pagedList);
+        request.setAttribute("currentPage", currentPage);
+        request.setAttribute("totalPage", totalPage);
         request.setAttribute("currentSearch", keyword);
         request.setAttribute("currentStatus", filterStatus);
 
-        request.setAttribute("currentPage", currentPage);
-        request.setAttribute("totalPage", totalPage);
-
-        request.getRequestDispatcher("WEB-INF/views/manager/serviceList.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/manager/newList.jsp").forward(request, response);
     }
+
 }

@@ -1,0 +1,167 @@
+/* ===== CARD ===== */
+.card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 25px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+    margin-bottom: 25px;
+}
+
+/* ===== HEADER ===== */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.card-header h3 {
+    font-size: 20px;
+    color: #1e293b;
+}
+
+/* ===== EDIT BUTTON ===== */
+.btn-edit {
+    background: #fff7ed;
+    border: 1px solid #ffedd5;
+    color: #f97316;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-edit:hover {
+    background: #f97316;
+    color: white;
+}
+
+/* ===== PROFILE GRID ===== */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.item {
+    background: #fff7ed;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #ffedd5;
+}
+
+.item.full {
+    grid-column: span 2;
+}
+
+.item label {
+    font-size: 12px;
+    color: #9a3412;
+}
+
+.item p {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* ===== PASSWORD FORM ===== */
+.password-form {
+    margin-top: 10px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: #475569;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    margin-top: 5px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #f97316;
+}
+
+/* ===== BUTTON ===== */
+.btn-save {
+    margin-top: 20px;
+    width: 250px;
+    background: #f97316;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    background: #ea580c;
+}
+
+/* ===== MESSAGE ===== */
+.msg-success {
+    color: #16a34a;
+}
+
+.msg-error {
+    color: #dc2626;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.avatar-img {
+    transition: all 0.3s ease;
+}
+
+.avatar-img:hover {
+    transform: scale(1.05);
+}
+/* ===== ACTION BUTTONS ===== */
+.form-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 15px;
+}
+
+/* CANCEL BUTTON */
+.btn-cancel {
+    padding: 14px 20px;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    color: #64748b;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-cancel:hover {
+    background: #f8fafc;
+    border-color: #cbd5f5;
+}
+
+/* SAVE BUTTON (update width cho đẹp) */
+.btn-save {
+    width: 200px;
+}
