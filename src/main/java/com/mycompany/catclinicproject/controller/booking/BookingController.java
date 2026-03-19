@@ -24,6 +24,7 @@ public class BookingController extends HttpServlet {
             return;
         }
 
+
         loadBookingData(request, user);
         request.getRequestDispatcher("/WEB-INF/views/client/Booking.jsp").forward(request, response);
     }
