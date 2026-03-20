@@ -33,14 +33,13 @@ public class BookingDetailController extends HttpServlet {
             try {
                 int id = Integer.parseInt(idParam);
                 BookingDAO dao = new BookingDAO();
-
                 BookingHistoryDTO booking = dao.getBookingDetailByID(id);
-
+                boolean k = dao.isNotCheckedOut(id);
                 if (booking != null) {
                    if ("Completed".equalsIgnoreCase(booking.getStatus()) || "Done".equalsIgnoreCase(booking.getStatus())) {
                        FeedbackDTO feedback = dao.getFeedbackByBookingID(id);                       request.setAttribute("feedback", feedback); // Gửi biến này sang JSP
                     }
-
+                    request.setAttribute("ischeckout",k);
                     request.setAttribute("booking", booking);
                     request.getRequestDispatcher("/WEB-INF/views/client/booking-detail.jsp").forward(request, response);
                     return;

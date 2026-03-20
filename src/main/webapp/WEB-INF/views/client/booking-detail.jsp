@@ -74,7 +74,6 @@
 
             <c:if test="${booking.checkOutTime != null}">                <div class="detail-section" style="margin-top: 25px; border-top: 1px dashed #FFE8D9; padding-top: 25px;">
                     <div class="section-title"><i class="bi bi-star-fill" style="color: #FF6B00;"></i> Service Feedback</div>
-
                     <c:choose>
                         <c:when test="${empty feedback}">
                             <div class="feedback-banner">
@@ -87,9 +86,10 @@
                                         <p>How was your experience with ${booking.catName} today?</p>
                                     </div>
                                 </div>
-                                <button type="button" class="btn-rate-visit" onclick="document.getElementById('rateModal').style.display='flex'">
+                            <button type="button" class="btn-rate-visit" onclick="document.getElementById('rateModal').style.display='flex'">
                                     Rate This Visit
                                 </button>
+
                             </div>
                         </c:when>
 

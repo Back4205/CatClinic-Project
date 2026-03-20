@@ -88,44 +88,21 @@
             </div>
         </div>
 
-        <form action="booking-history" method="GET">
+        <form action="booking-history#bookingSection" method="GET">
             <div class="filter-bar">
-
                 <input type="text" name="search" class="search-input"
-                       placeholder="Search cat name or service..."
-                       value="${currentSearch}">
+                       placeholder="Search cat name or service" value="${currentSearch}">
+                <input type="date" name="dateFilter" class="date-input" value="${currentDate}">
+                <select name="status" class="status-dropdown">
+                    <option value="ALL" ${empty currentStatus || currentStatus == 'ALL' ? 'selected' : ''}>ALL STATUS</option>
+                    <option value="PendingPayment" ${currentStatus == 'PendingPayment' ? 'selected' : ''}>PENDING PAYMENT</option>
+                    <option value="Confirmed" ${currentStatus == 'Confirmed' ? 'selected' : ''}>CONFIRMED</option>
+                    <option value="Completed" ${currentStatus == 'Completed' ? 'selected' : ''}>COMPLETED</option>
+                    <option value="Cancelled" ${currentStatus == 'Cancelled' ? 'selected' : ''}>CANCELLED</option>
+                    <option value="PendingCancel" ${currentStatus == 'PendingCancel' ? 'selected' : ''}>PENDING CANCEL</option>
+                </select>
 
-                <div class="filter-buttons">
-                    <button type="submit" name="status" value="ALL"
-                            class="${empty currentStatus || currentStatus == 'ALL' ? 'active' : ''}">
-                        ALL STATUS
-                    </button>
-
-                    <button type="submit" name="status" value="PendingPayment"
-                            class="${currentStatus == 'PendingPayment' ? 'active' : ''}">
-                        PENDING PAYMENT
-                    </button>
-
-                    <button type="submit" name="status" value="Completed"
-                            class="${currentStatus == 'Completed' ? 'active' : ''}">
-                        COMPLETED
-                    </button>
-
-                    <button type="submit" name="status" value="Confirmed"
-                            class="${currentStatus == 'Confirmed' ? 'active' : ''}">
-                        CONFIRMED
-                    </button>
-
-                    <button type="submit" name="status" value="Cancelled"
-                            class="${currentStatus == 'Cancelled' ? 'active' : ''}">
-                        CANCELLED
-                    </button>
-                    <button type="submit" name="status" value="PendingCancel"
-                            class="${currentStatus == 'PendingCancel' ? 'active' : ''}">
-                        PENDING CANCEL
-                    </button>
-
-                </div>
+                <button type="submit" class="btn-search">Search</button>
             </div>
         </form>
 
@@ -210,9 +187,15 @@
             </table>
 
             <c:if test="${empty bookingList}">
-                <div class="empty-state">
-                    <i class="bi bi-inbox"></i>
-                    <p>No booking history found.</p>
+                <div class="empty-state-container">
+                    <div class="empty-state-content">
+                        <i class="bi bi-search-heart"></i>
+                        <h3>No Bookings Found</h3>
+                        <p>We couldn't find any booking history matching your search or filter.</p>
+                        <a href="${pageContext.request.contextPath}/booking-history#bookingSection" class="btn-reset">
+                            Clear All Filters
+                        </a>
+                    </div>
                 </div>
             </c:if>
 

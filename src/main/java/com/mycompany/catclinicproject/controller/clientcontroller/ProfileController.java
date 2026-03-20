@@ -84,7 +84,8 @@ public class ProfileController extends HttpServlet {
 
             }
         }
-
+        UserDTO userProfile = dao.getUserProfile(userID);
+        request.setAttribute("user", userProfile);
         request.getRequestDispatcher("/WEB-INF/views/client/my-profile.jsp")
                 .forward(request, response);
     }

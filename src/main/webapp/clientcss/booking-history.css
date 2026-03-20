@@ -425,3 +425,105 @@
     background: #f59e0b;
     color: white;
 }
+/* Layout cho thanh filter */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Style cho ô input search */
+.search-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    flex: 1; /* Để ô search dài ra chiếm chỗ trống */
+}
+
+/* Style cho Dropdown giống bên Receptionist */
+.status-dropdown {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    cursor: pointer;
+    min-width: 160px;
+}
+
+/* Style cho nút Search */
+.btn-search {
+    padding: 8px 20px;
+    background-color: #ff6600; /* Màu cam của cậu */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-search:hover {
+    background-color: #e65c00;
+}
+/* Container chính cho trạng thái trống */
+.empty-state-container {
+    padding: 80px 20px;
+    text-align: center;
+    background: #fff;
+    border-radius: 15px;
+    margin-top: 20px;
+    border: 2px dashed #edf2f7; /* Tạo đường viền nét đứt cho đẹp */
+}
+
+.empty-state-content i {
+    font-size: 80px;
+    color: #cbd5e0; /* Màu xám nhạt */
+    margin-bottom: 20px;
+    display: block;
+}
+
+.empty-state-content h3 {
+    font-size: 22px;
+    color: #2d3748;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.empty-state-content p {
+    color: #718096;
+    margin-bottom: 25px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Nút bấm reset bộ lọc */
+.btn-reset {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: #f7fafc;
+    color: #4a5568;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-reset:hover {
+    background-color: #edf2f7;
+    color: #2d3748;
+}
+.date-input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: white;
+    color: #333;
+    outline: none;
+    font-family: inherit;
+}
+
+.date-input:focus {
+    border-color: #ff6600;
+}

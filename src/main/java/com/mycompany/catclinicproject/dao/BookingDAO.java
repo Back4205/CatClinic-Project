@@ -958,31 +958,36 @@ public class BookingDAO extends DBContext {
         return null;
     }
 
-    public List<BookingHistoryDTO> getClientHistoryPaging(int userID, String search, String status, int offset, int pageSize) {
+    public List<BookingHistoryDTO> getClientHistoryPaging(int userID, String search, String status, String dateFilter, int offset, int pageSize) {
         List<BookingHistoryDTO> list = new ArrayList<>();
-        // SỬA LẠI SQL: Lấy thêm NameService và PriceAtBooking
         String sql = "SELECT DISTINCT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, b.EndDate, "
-                + "b.AppointmentTime, b.Status, b.Note, s.NameService, ad.PriceAtBooking, br.CheckOutTime " // Thêm 2 trường này
+                + "b.AppointmentTime, b.Status, b.Note, s.NameService, ad.PriceAtBooking, br.CheckOutTime "
                 + "FROM Bookings b "
                 + "JOIN Cats c ON b.CatID = c.CatID "
                 + "JOIN Owners o ON c.OwnerID = o.OwnerID "
                 + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
                 + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
-                + " LEFT JOIN BoardingRecords br ON b.BookingID = br.BookingID "
+                + "LEFT JOIN BoardingRecords br ON b.BookingID = br.BookingID "
                 + "WHERE o.UserID = ? ";
 
+        // Thêm các điều kiện lọc động
         if (search != null && !search.trim().isEmpty()) {
             sql += " AND (c.Name LIKE ? OR s.NameService LIKE ?) ";
         }
         if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("ALL")) {
             sql += " AND b.Status = ? ";
         }
+        // MỚI: Lọc theo ngày nếu người dùng chọn
+        if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+            sql += " AND b.AppointmentDate = ? ";
+        }
 
-        sql += " ORDER BY b.AppointmentDate DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        sql += " ORDER BY b.BookingID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
+        try (PreparedStatement ps = c.prepareStatement(sql)) { // Chỗ này tớ dùng biến conn của class nhé
             int index = 1;
             ps.setInt(index++, userID);
+
             if (search != null && !search.trim().isEmpty()) {
                 String p = "%" + search.trim() + "%";
                 ps.setString(index++, p);
@@ -991,6 +996,11 @@ public class BookingDAO extends DBContext {
             if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("ALL")) {
                 ps.setString(index++, status);
             }
+            // MỚI: Set tham số cho ngày
+            if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+                ps.setString(index++, dateFilter);
+            }
+
             ps.setInt(index++, offset);
             ps.setInt(index++, pageSize);
 
@@ -1003,10 +1013,9 @@ public class BookingDAO extends DBContext {
                     d.setAppointmentDate(rs.getDate("AppointmentDate"));
                     d.setAppointmentTime(rs.getTime("AppointmentTime"));
                     d.setStatus(rs.getString("Status"));
-                    d.setServiceName(rs.getString("NameService")); // GÁN DỮ LIỆU
+                    d.setServiceName(rs.getString("NameService"));
                     d.setPrice(rs.getDouble("PriceAtBooking"));
                     d.setCheckOutTime(rs.getTimestamp("CheckOutTime"));
-// GÁN DỮ LIỆU
                     list.add(d);
                 }
             }
@@ -1015,25 +1024,33 @@ public class BookingDAO extends DBContext {
         }
         return list;
     }
-    public int countClientBookings(int userID, String search, String status) {
+    public int countClientBookings(int userID, String search, String status, String dateFilter) {
         int total = 0;
-        String sql = "SELECT COUNT(*) FROM Bookings b "
+        // Lưu ý: Dùng COUNT(DISTINCT b.BookingID) để tránh đếm lặp nếu 1 booking có nhiều service
+        String sql = "SELECT COUNT(DISTINCT b.BookingID) FROM Bookings b "
                 + "JOIN Cats c ON b.CatID = c.CatID "
                 + "JOIN Owners o ON c.OwnerID = o.OwnerID "
-                + "JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
-                + "JOIN Services s ON ad.ServiceID = s.ServiceID "
+                + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
+                + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
                 + "WHERE o.UserID = ? ";
 
+        // 1. Check Search keyword
         if (search != null && !search.trim().isEmpty()) {
             sql += " AND (c.Name LIKE ? OR s.NameService LIKE ?) ";
         }
+        // 2. Check Status
         if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("ALL")) {
             sql += " AND b.Status = ? ";
+        }
+        // 3. Check Date (Phải giống hàm Paging)
+        if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+            sql += " AND b.AppointmentDate = ? ";
         }
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             int index = 1;
             ps.setInt(index++, userID);
+
             if (search != null && !search.trim().isEmpty()) {
                 String p = "%" + search.trim() + "%";
                 ps.setString(index++, p);
@@ -1042,15 +1059,21 @@ public class BookingDAO extends DBContext {
             if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("ALL")) {
                 ps.setString(index++, status);
             }
+            // QUAN TRỌNG: Phải set tham số dateFilter ở đây
+            if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+                ps.setString(index++, dateFilter);
+            }
+
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) total = rs.getInt(1);
+                if (rs.next()) {
+                    total = rs.getInt(1);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return total;
     }
-
     public FeedbackDTO getFeedbackByBookingID(int bookingID) {
         String sql = "SELECT FeedbackID, BookingID, Rating, Comment FROM Feedbacks WHERE BookingID = ?";
         try (PreparedStatement ps = c.prepareStatement(sql)) {
@@ -1098,6 +1121,21 @@ public class BookingDAO extends DBContext {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
+    }
+    public boolean isNotCheckedOut(int bookingId) {
+        String sql = "SELECT CheckOutTime FROM BoardingRecords WHERE BookingID = ?";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, bookingId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getTimestamp("CheckOutTime") == null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return false;
     }
 }
