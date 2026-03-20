@@ -42,7 +42,10 @@ public class NewDAO extends DBContext {
     }
     public List<News> getActiveNew() {
         List<News> list = new ArrayList<>();
-        String sql = "select * from News Where IsActive = 1";
+        String sql = "SELECT  *\n"
+                + "FROM News\n"
+                + "WHERE IsActive = 1\n"
+                + "ORDER BY NewID DESC;";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -201,4 +204,28 @@ public class NewDAO extends DBContext {
             e.printStackTrace();
         }
     }
+    public List<News> getTop3LatestNews() {
+    List<News> list = new ArrayList<>();
+    String sql = "SELECT TOP 3 * FROM News WHERE IsActive = 1 ORDER BY CreatedDate DESC";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            News n = new News();
+            n.setNewsId(rs.getInt("NewID"));
+            n.setBanner(rs.getString("Banner"));
+            n.setTitle(rs.getString("Title"));
+            n.setDescription(rs.getString("Description"));
+            n.setCreatedDate(rs.getDate("CreatedDate"));
+            n.setIsActive(rs.getBoolean("IsActive"));
+            list.add(n);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
 }

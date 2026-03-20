@@ -4,6 +4,8 @@
  */
 package com.mycompany.catclinicproject.model;
 
+import java.sql.Date;
+
 /**
  *
  * @author ADMIN
@@ -13,16 +15,18 @@ public class CancelBookingDTO {
     public String nameService;
     public String status;
     public String note;
+    public Date refundDate;
     public double priceAtBooking;
 
     public CancelBookingDTO() {
     }
 
-    public CancelBookingDTO(int bookingID, String nameService, String status, String note, double priceAtBooking) {
+    public CancelBookingDTO(int bookingID, String nameService, String status, String note, Date refundDate, double priceAtBooking) {
         this.bookingID = bookingID;
         this.nameService = nameService;
         this.status = status;
         this.note = note;
+        this.refundDate = refundDate;
         this.priceAtBooking = priceAtBooking;
     }
 
@@ -56,6 +60,14 @@ public class CancelBookingDTO {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public Date getRefundDate() {
+        return refundDate;
+    }
+
+    public void setRefundDate(Date refundDate) {
+        this.refundDate = refundDate;
     }
 
     public double getPriceAtBooking() {

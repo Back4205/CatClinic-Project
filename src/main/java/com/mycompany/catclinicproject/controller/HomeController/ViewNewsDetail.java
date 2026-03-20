@@ -4,8 +4,9 @@
  */
 package com.mycompany.catclinicproject.controller.HomeController;
 
-import com.mycompany.catclinicproject.dao.homeDao.NewsDao;
-import com.mycompany.catclinicproject.model.NewsDTO;
+import com.mycompany.catclinicproject.dao.NewDAO;
+import com.mycompany.catclinicproject.model.News;
+import com.mycompany.catclinicproject.model.NewsImages;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
@@ -60,9 +62,22 @@ public class ViewNewsDetail extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        int id = Integer.parseInt(request.getParameter("id"));
-        NewsDao dao = new NewsDao();
-        NewsDTO news = dao.getNewsByID(id);
+        int id = Integer.parseInt(request.getParameter("id"));  
+        NewDAO dao = new NewDAO();
+        News news = dao.getNewsById(id);
+        List<NewsImages> images = dao.getNewsImagesByNewsId(id);
+            String processedContent = news.getDescription();
+            
+            // Xử lý đan xen ảnh giống như đã bàn
+            if (images != null) {
+                for (int i = 0; i < images.size(); i++) {
+                    String placeholder = "[IMG" + (i + 1) + "]";
+                    String imgHtml = "<div style='text-align:center; margin:10px;'><img src='" 
+                                     + images.get(i).getImgUrl() + "' style='max-width:100%;'></div>";
+                    processedContent = processedContent.replace(placeholder, imgHtml);
+                }
+            }
+        request.setAttribute("content", processedContent);
         request.setAttribute("news", news);
         request.getRequestDispatcher("/WEB-INF/views/common/NewsDetail.jsp").forward(request, response);
     }

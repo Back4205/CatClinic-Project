@@ -6,40 +6,62 @@
 <head>
     <meta charset="UTF-8">
     <title>${news.title}</title>
-    <link rel="stylesheet" href="css/news-detail.css">
-    <link href="css/NewsDetailStyle.css" rel="stylesheet" type="text/css"/>
+
+    <!-- DÙNG CSS PREVIEW -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/new_preview.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
-        <jsp:include page="headerSelection.jsp"/>
 
-<!-- ===== Banner Image ===== -->
-<section class="news-banner">
-    <img src="${news.img}" alt="${news.title}">
-</section>
+<jsp:include page="headerSelection.jsp"/>
 
-<!-- ===== Content ===== -->
-<section class="news-container">
+<!-- ===== GIỐNG PREVIEW ===== -->
+<div class="preview-container">
 
+    <!-- Banner -->
+    <c:choose>
+        <c:when test="${not empty news.banner}">
+            <img src="${news.banner}" alt="${news.title}" class="preview-banner">
+        </c:when>
+        <c:otherwise>
+            <div style="height:200px; background:#eee; display:flex; align-items:center; justify-content:center; color:#999;">
+                No Banner Image
+            </div>
+        </c:otherwise>
+    </c:choose>
 
-    <!-- Title -->
-    <h1 class="news-title">
-        ${news.title}
-    </h1>
+    <div class="preview-body">
 
-    <div class="title-line"></div>
+        <!-- Meta -->
+        <div class="meta-info">
+            <span>
+                <i class="fa-regular fa-calendar-check"></i>
+                ${news.createdDate}
+            </span>
+        </div>
 
-    <!-- Content -->
-    <div class="news-content">
-        ${news.description}
+        <!-- Title -->
+        <h1 class="article-title">
+            ${news.title}
+        </h1>
+
+        <div class="divider"></div>
+
+        <!-- Content -->
+        <div class="article-content">
+            ${content}
+        </div>
+
     </div>
 
-</section>
+</div>
+<!-- ===== END ===== -->
 
-
-        <jsp:include page="footer_1.jsp"/>
-
+<jsp:include page="footer_1.jsp"/>
 
 </body>
 </html>

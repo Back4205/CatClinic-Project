@@ -48,3 +48,26 @@
     background: linear-gradient(90deg, #ff7a00, #ffa64d);
     color: white;
 }
+.admin-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 🔥 KEY */
+}
+
+/* Logout style */
+.logout {
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #dc2626;
+    text-decoration: none;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.logout:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}
