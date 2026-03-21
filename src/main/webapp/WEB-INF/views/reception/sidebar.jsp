@@ -17,7 +17,7 @@
     <a href="${pageContext.request.contextPath}/reception/view-booking-list" class="nav-item ${activePage == 'dashboard' ? 'active' : ''}">
       <i class="fa-solid fa-table-cells-large"></i> View Booking List
     </a>
-    <a href="${pageContext.request.contextPath}/reception/counter-booking" class="nav-item ${activePage == 'counter-booking' ? 'active' : ''}">
+    <a href="${pageContext.request.contextPath}/Booking2" class="nav-item ${activePage == 'booking' ? 'active' : ''}">
       <i class="fa-regular fa-calendar-plus"></i> Counter Booking
     </a>
     <a href="${pageContext.request.contextPath}/reception/counter-cancellation" class="nav-item ${activePage == 'counter-cancellation' ? 'active' : ''}">

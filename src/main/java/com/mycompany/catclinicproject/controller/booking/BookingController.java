@@ -19,7 +19,7 @@ public class BookingController extends HttpServlet {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("acc") : null;
 
-        if (user == null) {
+        if (user == null || user.getRoleID() != 5) {
             response.sendRedirect(request.getContextPath() + "/login?from=booking");
             return;
         }
@@ -72,10 +72,10 @@ public class BookingController extends HttpServlet {
             }
 
             String categoryName = category.getCategoryName().toLowerCase();
-
-            boolean isBoarding = categoryName.contains("boarding");
-            boolean isCheckup = categoryName.contains("checkup");
-            boolean needsVet = !isBoarding && !isCheckup;
+            int     categoryIDtmp  =  category.getCategoryID();
+            boolean isBoarding = categoryName.contains("boarding") || (categoryIDtmp == 4);
+            boolean isParaclinical = categoryName.contains("paraclinical")|| (categoryIDtmp == 5);
+            boolean needsVet = !isBoarding && !isParaclinical;
 
             Booking booking = new Booking();
 
@@ -111,7 +111,7 @@ public class BookingController extends HttpServlet {
 
                 totalAmount = service.getPrice();
             }
-            else if (isCheckup) {
+            else if (isParaclinical) {
 
                 java.sql.Date date =
                         java.sql.Date.valueOf(request.getParameter("startDate"));
@@ -242,11 +242,11 @@ public class BookingController extends HttpServlet {
             if (category != null) {
                 String name = category.getCategoryName().toLowerCase();
                 boolean isBoarding = name.contains("boarding");
-                boolean isCheckup = name.contains("checkup");
-                boolean needsVet = !isBoarding && !isCheckup;
+                boolean isParaclinical = name.contains("paraclinical");
+                boolean needsVet = !isBoarding && !isParaclinical;
 
                 request.setAttribute("isBoarding", isBoarding);
-                request.setAttribute("isCheckup", isCheckup);
+                request.setAttribute("isParaclinical", isParaclinical);
                 request.setAttribute("needsVet", needsVet);
                 request.setAttribute("serviceList", serviceDAO.getServicesByCategoryID(categoryID));
 

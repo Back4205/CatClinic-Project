@@ -33,7 +33,11 @@
 <div class="container">
 
     <c:set var="activePage" value="cats" />
-    <%@include file="sidebar.jsp" %>
+
+    <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID == 5}">
+        <%@include file="sidebar.jsp" %>
+    </c:if>
+
 
     <main class="content">
 
@@ -55,6 +59,10 @@
                   action="${pageContext.request.contextPath}${(empty cat || cat.catID == 0) ? '/cats/cat-add' : '/cats/cat-update'}"
                   enctype="multipart/form-data">
                 <input type="hidden" name="from" value="${from}">
+                <input type="hidden" name="from2" value="${f}">
+                <input type="hidden" name="phone" value="${param.phone}">
+                <input type="hidden" name="fullName" value="${param.fullName}">
+                <input type="hidden" name="email" value="${param.email}">
                 <div class="profile-box">
 
                     <!-- IMAGE -->
@@ -81,11 +89,18 @@
 
                         <div class="field">
                             <label>Owner</label>
-                            <input type="text" name="ownerID" value="${acc.fullName}" readonly>
+                            <c:choose>
+                                <c:when test="${not empty fullName or not empty phone}">
+                                    <input type="text" value="${fullName}" readonly style="background-color: #f1f5f9; color: #475569; font-weight: 600;">
+                                </c:when>
+                                <c:otherwise>
+                                    <input type="text" value="${acc.fullName}" readonly style="background-color: #f1f5f9; color: #475569; font-weight: 600;">
+                                </c:otherwise>
+                            </c:choose>
                         </div>
 
                         <div class="field">
-                            <label>Pet Name</label>
+                            <label>Cat Name</label>
                             <input type="text" name="name" value="${cat.name}" required>
                         </div>
 
@@ -116,7 +131,7 @@
 
                         <div class="btn-group">
                             <button class="btn btn-primary" type="submit">
-                                <c:out value="${(empty cat || cat.catID == 0) ? 'ADD PET' : 'UPDATE PROFILE CAT'}" />
+                                <c:out value="${(empty cat || cat.catID == 0) ? 'ADD CAT' : 'UPDATE PROFILE CAT'}" />
                             </button>
                             <c:choose>
                                 <c:when test="${from eq 'booking'}">

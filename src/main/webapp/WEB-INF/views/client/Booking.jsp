@@ -8,7 +8,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Book Appointment | CatClinic</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/booking/Booking.css">
     <script src="${pageContext.request.contextPath}/js/booking/booking.js"></script>
@@ -70,7 +71,7 @@
                                                  class="pet-img" alt="${c.name}">
                                         </td>
                                         <td><strong>${c.name}</strong></td>
-                                        <td>${c.age} Yr${c.age > 1 ? 's' : ''}</td>
+                                        <td>${c.age} year${c.age > 1 ? 's' : ''}</td>
                                         <td>
                                                 <span class="badge ${c.gender == 1 ? 'male' : 'female'}">
                                                         ${c.gender == 1 ? 'Male' : 'Female'}
@@ -151,7 +152,7 @@
                         </div>
 
 
-                        <c:if test="${needsVet and not isBoarding and not isCheckup}">
+                        <c:if test="${needsVet and not isBoarding and not isParaclinical}">
                             <div>
                                 <label for="vetSelect">Veterinarian <span style="color: red;">*</span></label>
                                 <select id="vetSelect" name="assigneeInfo" onchange="submitForm()" required>
@@ -170,7 +171,7 @@
                         <div>
                             <label for="startDate">
                                 <c:choose>
-                                    <c:when test="${isBoarding or isCheckup}">Start Date</c:when>
+                                    <c:when test="${isBoarding or isParaclinical}">Start Date</c:when>
                                     <c:otherwise>Preferred Date</c:otherwise>
                                 </c:choose>
                                 <span style="color: red;">*</span>
@@ -199,7 +200,7 @@
                         </c:if>
 
 
-                        <c:if test="${isBoarding or isCheckup}">
+                        <c:if test="${isBoarding or isParaclinical}">
                             <div>
                                 <label for="checkInTime">
                                     <c:choose>
@@ -225,7 +226,7 @@
                     </div>
 
 
-                    <c:if test="${needsVet and not isBoarding and not isCheckup}">
+                    <c:if test="${needsVet and not isBoarding and not isParaclinical}">
                     <div style="margin-top: 20px;">
                         <label style="font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 12px; display: block;">
                             <i class="bi bi-clock"></i> Available Slots:
@@ -288,6 +289,12 @@
             </div>
             </c:if>
 
+            <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 25px 0;">
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label"><i class="fa-regular fa-comment-dots"></i> Note / Special Request</label>
+                <textarea name="note" class="form-control"  rows="4" placeholder="Enter Note ">${not empty savedNote ? savedNote : param.note}</textarea>
+            </div>
 
             <input type="hidden" id="slotDate" name="slotDate" value="">
             <input type="hidden" id="vetID" name="vetID" value="">
@@ -337,17 +344,16 @@
 </form>
 </div>
 
-<footer style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 25px 0; text-align: center; color: #64748b; font-size: 14px; margin-top: 40px;">
+<footer style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 25px 0; text-align: center; color: #64748b; font-size: 14px; margin-top: auto;">
     <div class="footer-content">
         &copy; 2026 CatClinic. All rights reserved.
     </div>
 </footer>
-
 </body>
 
 <script>
     const isBoardingMode = ${isBoarding ? 'true' : 'false'};
-    const isCheckupMode = ${isCheckup ? 'true' : 'false'};
+    const isParaclinicalMode = ${isParaclinical ? 'true' : 'false'};
     const needsVetMode = ${needsVet ? 'true' : 'false'};
     const contextPath = '${pageContext.request.contextPath}';
 </script>
