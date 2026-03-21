@@ -238,7 +238,54 @@ public class BookingDAO extends DBContext {
             }
         }
     }
+    public boolean confirmBooking2(int bookingID) {
 
+        String updateBookingSQL
+                = "UPDATE Bookings SET Status = 'Completed' "
+                + "WHERE BookingID = ? AND Status = 'PendingPayment'";
+
+        try {
+
+            c.setAutoCommit(false);
+
+            try (PreparedStatement ps = c.prepareStatement(updateBookingSQL)) {
+
+                ps.setInt(1, bookingID);
+                int rowsUpdated = ps.executeUpdate();
+
+                if (rowsUpdated > 0) {
+                    c.commit();
+                    System.out.println(" Booking confirmed: ID=" + bookingID);
+                    return true;
+                } else {
+                    c.rollback();
+                    System.out.println(" Booking not found or not pending: ID=" + bookingID);
+                    return false;
+                }
+
+            }
+
+        } catch (Exception e) {
+
+            try {
+                c.rollback();
+            } catch (Exception ex) {
+            }
+
+            System.out.println(" ERROR in confirmBooking: " + e.getMessage());
+            e.printStackTrace();
+
+        } finally {
+
+            try {
+                c.setAutoCommit(true);
+            } catch (Exception e) {
+            }
+
+        }
+
+        return false;
+    }
     public boolean confirmBooking(int bookingID) {
 
         String updateBookingSQL
@@ -1129,5 +1176,50 @@ public class BookingDAO extends DBContext {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public BookingHistoryDTO getBookingDetailByID2(int bookingID) {
+        String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, "
+                + "b.EndDate, b.AppointmentTime, b.Status, b.Note, s.NameService, "
+                + "ad.PriceAtBooking, u_vet.FullName AS VetName, "
+                + "u_owner.FullName AS OwnerName, u_owner.Phone, "
+                + "br.CheckInTime, br.CheckOutTime "
+                + "FROM Bookings b "
+                + "JOIN Cats c ON b.CatID = c.CatID "
+                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+                + "JOIN Users u_owner ON o.UserID = u_owner.UserID "
+                + "LEFT JOIN Veterinarians v ON b.VetID = v.VetID "
+                + "LEFT JOIN Users u_vet ON v.UserID = u_vet.UserID "
+                + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
+                + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
+                + "LEFT JOIN BoardingRecords br ON b.BookingID = br.BookingID "
+                + "WHERE b.BookingID = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, bookingID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    BookingHistoryDTO d = new BookingHistoryDTO();
+                    d.setBookingID(rs.getInt("BookingID"));
+                    d.setCatName(rs.getString("CatName"));
+                    d.setCatBreed(rs.getString("Breed"));
+                    d.setAppointmentDate(rs.getDate("AppointmentDate"));
+                    d.setAppointmentTime(rs.getTime("AppointmentTime"));
+                    d.setStatus(rs.getString("Status"));
+                    d.setNote(rs.getString("Note"));
+
+                    d.setServiceName(rs.getString("NameService"));
+                    d.setPrice(rs.getDouble("PriceAtBooking"));
+
+                    d.setVetName(rs.getString("VetName"));
+                    d.setCustomerName(rs.getString("OwnerName"));
+                    d.setCustomerPhone(rs.getString("Phone"));
+                    d.setCheckInTime(rs.getTimestamp("CheckInTime"));
+                    d.setCheckOutTime(rs.getTimestamp("CheckOutTime"));
+                    return d;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

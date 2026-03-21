@@ -24,7 +24,8 @@ public class CheckoutController extends HttpServlet {
                 String condition = request.getParameter("condition");
                 boolean success = dao.updateCheckoutStatus(id, condition);
                 if (success) {
-                    response.sendRedirect("checkout-queue?status=success");
+
+                    response.sendRedirect(request.getContextPath() + "/reception/invoice_detail?bookingID=" + id);
                 } else {
                     response.sendRedirect("checkout-queue?status=error");
                 }

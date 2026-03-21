@@ -35,6 +35,8 @@ public class LoginController extends HttpServlet {
                 }
             }
         }
+        String from = request.getParameter("from");
+        request.setAttribute("from", from);
 
         request.getRequestDispatcher("WEB-INF/views/auth/login.jsp").forward(request, response);
     }
@@ -46,13 +48,14 @@ public class LoginController extends HttpServlet {
         String u = request.getParameter("username");
         String p = request.getParameter("password");
         String r = request.getParameter("remember");
+        String redirect = request.getParameter("from");
 
         // MÃ HÓA MẬT KHẨU ĐẦU VÀO ĐỂ KHỚP VỚI DATABASE
         String hashedPassword = com.mycompany.catclinicproject.util.PasswordUtil.hashPassword(p);
 
         UserDAO dao = new UserDAO();
         User account = dao.checkLogin(u, hashedPassword);
-       
+
 
         if (account == null) {
 
@@ -60,12 +63,11 @@ public class LoginController extends HttpServlet {
 
             request.setAttribute("username", u);
             request.getRequestDispatcher("WEB-INF/views/auth/login.jsp").forward(request, response);
-        }else if (!account.isActive()) {
+        } else if (!account.isActive()) {
             request.setAttribute("mess", "Your account has been deactivated by Admin! Please contact support.");
             request.setAttribute("username", u);
             request.getRequestDispatcher("WEB-INF/views/auth/login.jsp").forward(request, response);
-        }
-        else {
+        } else {
 
             HttpSession session = request.getSession();
             session.setAttribute("acc", account);
@@ -82,37 +84,41 @@ public class LoginController extends HttpServlet {
             }
             response.addCookie(cu);
             response.addCookie(cp);
+            if ("booking".equals(redirect)) {
 
-            switch (account.getRoleID()) {
-                case 1:
-                    request.getRequestDispatcher("WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
-                    break;
-                case 2:
-                    response.sendRedirect("vet/schedule");
-                    break;
-                case 3:
-                    response.sendRedirect("reception/view-booking-list");
-                    break;
-                case 4:
-                    String position = dao.getStaffPosition(account.getUserID());
+                response.sendRedirect(request.getContextPath() + "/Booking");
+            } else {
+                switch (account.getRoleID()) {
+                    case 1:
+                        request.getRequestDispatcher("WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
+                        break;
+                    case 2:
+                        response.sendRedirect("DashboardController");
+                        break;
+                    case 3:
+                        response.sendRedirect("view-booking-list");
+                        break;
+                    case 4:
+                        String position = dao.getStaffPosition(account.getUserID());
 
-                    if ("Care".equalsIgnoreCase(position)) {
-                        response.sendRedirect("staff/daily-care-tasks");
+                        if ("Care".equalsIgnoreCase(position)) {
+                            response.sendRedirect("staff/daily-care-tasks");
+                            break;
+                        }
+                        if ("Technician".equalsIgnoreCase(position)) {
+                            response.sendRedirect("technician/dashboard");
+                            break;
+                        }
                         break;
-                    }
-                    if("Technician".equalsIgnoreCase(position)) {
-                        response.sendRedirect("technician/dashboard");
+                    case 5:
+                        CategoryDao cdao = new CategoryDao();
+                        List<Category> list = cdao.getAllCategory();
+                        request.setAttribute("CategoryList", list);
+                        request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
                         break;
-                    }
-                    break;
-                case 5:
-                      CategoryDao cdao = new CategoryDao();
-        List<Category> list = cdao.getAllCategory();
-        request.setAttribute("CategoryList", list);
-                    request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
-                    break;
-                default:
-                    request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
+                    default:
+                        request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
+                }
             }
         }
     }

@@ -31,8 +31,19 @@ body { background-color: #f8fafc; font-family: 'Inter', sans-serif; overflow-x: 
 .nav-item {
     display: flex; align-items: center; gap: 12px; padding: 12px 15px;
     text-decoration: none; color: #64748b; border-radius: 12px; font-weight: 600;
+    transition: all 0.2s ease;
 }
-.nav-item.active { background: #fff7ed; color: #f97316; }
+
+.nav-item:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+/* Nền cam nhạt, chữ cam cho menu đang active */
+.nav-item.active {
+    background: #fff7ed;
+    color: #f97316;
+}
 
 /* --- 4. MAIN CONTENT --- */
 .main-content { margin-left: 300px; margin-top: 70px; padding: 40px; flex: 1; }

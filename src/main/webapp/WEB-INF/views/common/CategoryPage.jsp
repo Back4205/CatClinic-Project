@@ -17,7 +17,7 @@
         <div class="banner-text">
             <h1>${category.categoryName}</h1>
             <p>${category.description}</p>
-            <a href="booking.jsp" class="btn-book">Book Appointment</a>
+            <a href="${pageContext.request.contextPath}/Booking?categoryID=${category.categoryID}" class="btn-book">Book Appointment</a>
         </div>
         <div class="banner-image">
             <img src="${category.banner}" alt="${category.categoryName}">

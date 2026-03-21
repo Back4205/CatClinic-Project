@@ -116,7 +116,7 @@
                                 <div class="cat-avatar">🐱</div>
                                 <div>
                                     <p class="patient-name"><strong>${b.catName}</strong></p>
-                                    <p class="patient-id">Owner: ${b.ownerName} - ${b.ownerPhone}</p>
+                                    <p class="patient-id">Owner: ${b.bookingID} ${b.ownerName} - ${b.ownerPhone}</p>
                                     <p style="color: #FF6B00; font-size: 12px; font-weight: 600; margin-top: 2px;">
                                         Service: ${empty b.serviceName ? 'General Check' : b.serviceName}
                                     </p>
@@ -138,7 +138,7 @@
                             </c:choose>
                         </td>
                         <td class="col-actions">
-                            <a href="appointmentdetail?id=${b.bookingID}" class="btn-text">Details ></a>
+                            <a href="${pageContext.request.contextPath}/appointmentdetail?id=${b.bookingID}" class="btn-text">Details ></a>
                         </td>
                     </tr>
                 </c:forEach>

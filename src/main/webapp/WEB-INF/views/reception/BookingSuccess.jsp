@@ -130,7 +130,7 @@
             <a href="${pageContext.request.contextPath}/Booking2" class="btn btn-secondary">
                 <i class="fa-solid fa-plus"></i> Create New Booking
             </a>
-            <a href="${pageContext.request.contextPath}/booking-history" class="btn btn-primary">
+            <a href="${pageContext.request.contextPath}/view-booking-list" class="btn btn-primary">
                 <i class="fa-solid fa-calendar-check"></i> Booking history
             </a>
         </div>

@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <a href="booking.jsp?id=${service.serviceID}" class="btn-booking">
+            <a href="${pageContext.request.contextPath}/Booking?categoryID=${service.categoryID}&serviceID=${service.serviceID}" class="btn-booking">
                 Booking
             </a>
 

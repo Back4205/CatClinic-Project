@@ -232,6 +232,30 @@
       object-fit: cover;
       border: 1px solid #eee;
     }
+    /* --- STYLE CHO BADGE GIỚI TÍNH MÈO --- */
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 65px;
+      letter-spacing: 0.3px;
+    }
+
+    .badge.male {
+      background-color: #E0F2FE; /* Nền xanh nhạt */
+      color: #0284C7; /* Chữ xanh đậm */
+      border: 1px solid #BAE6FD;
+    }
+
+    .badge.female {
+      background-color: #FCE7F3; /* Nền hồng nhạt */
+      color: #DB2777; /* Chữ hồng đậm */
+      border: 1px solid #FBCFE8;
+    }
   </style>
 </head>
 
@@ -361,7 +385,7 @@
                       </td>
                       <td><span class="time-text"> ${c.age} year${c.age > 1 ? 's' : ''}</span></td>
                       <td>
-                                                    <span class="badge ${c.gender == 1 ? 'waiting' : 'pending'}">
+                                                    <span class="badge ${c.gender == 1 ? 'male' : 'female'}">
                                                         ${c.gender == 1 ? 'Male' : 'Female'}
                                                     </span>
                       </td>

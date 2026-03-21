@@ -19,6 +19,8 @@ public class AppointmentDetailController extends HttpServlet {
 
         try {
             String idRaw = request.getParameter("id");
+            System.out.println(">>> GO TO DETAIL");
+            System.out.println("ID RAW: " + idRaw);
             if (idRaw == null) {
                 response.sendRedirect("view-booking-list");
                 return;
@@ -27,7 +29,7 @@ public class AppointmentDetailController extends HttpServlet {
 
             BookingDAO dao = new BookingDAO();
 
-            BookingHistoryDTO detail = dao.getBookingDetailByID(bookingID);
+            BookingHistoryDTO detail = dao.getBookingDetailByID2(bookingID);
             request.setAttribute("booking", detail);
 
             BoardingRecordDTO boarding = dao.getBoardingRecordByBookingID(bookingID);
@@ -37,7 +39,8 @@ public class AppointmentDetailController extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("view-booking-list");
+//            response.sendRedirect("view-booking-list");
+            throw new ServletException(e);
         }
     }
 

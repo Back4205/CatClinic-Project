@@ -91,7 +91,7 @@ public class PaymentDAO extends DBContext{
         }
 
         if (status != null && !status.equals("ALL")) {
-            sql.append(" AND ISNULL(i.PaymentStatus,'PendingPayment') = ? ");
+            sql.append(" AND ISNULL(i.PaymentStatus,'Unpaid') = ? ");
         }
 
         if (filterDate != null && !filterDate.isEmpty()) {

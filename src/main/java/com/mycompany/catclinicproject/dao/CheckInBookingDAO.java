@@ -96,8 +96,8 @@ public class CheckInBookingDAO extends DBContext{
         try {
             c.setAutoCommit(false);
 
-            String insertCare = " INSERT INTO CareJourneys (CatID, BookingID, RecordTime, StaffID, Note)\n" +
-                    "            VALUES (?, ?, GETDATE(), ?, N'Check-in Care')";
+            String insertCare = " INSERT INTO CareJourneys (CatID, BookingID, RecordTime, StaffID, Note , Status)\n" +
+                    "            VALUES (?, ?, GETDATE(), ?, N'Check-in Care' , 'Pending')";
 
             PreparedStatement psCare = c.prepareStatement(insertCare);
             psCare.setInt(1, catId);

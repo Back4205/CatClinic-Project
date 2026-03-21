@@ -2,7 +2,7 @@
 
 <header class="topbar">
   <div class="logo">
-    <a href="${pageContext.request.contextPath}/home" class="logo-link">
+    <a class="logo-link">
       <i class="bi bi-hospital"></i> <span>CatClinic</span>
     </a>
   </div>
@@ -30,7 +30,9 @@
           <c:choose>
             <c:when test="${not empty sessionScope.notifications}">
               <c:forEach var="n" items="${sessionScope.notifications}">
-                <div class="noti-item">
+                <div class="noti-item"
+                     onclick="window.location.href='${pageContext.request.contextPath}/appointmentdetail?id=${n.bookingID}'"
+                     style="cursor: pointer;">
                   <div class="noti-icon">
                     <i class="bi bi-calendar-check"></i>
                   </div>

@@ -5,6 +5,8 @@ import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import jdk.jshell.execution.Util;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +49,7 @@ public class BookingListController extends HttpServlet {
         int offset = (currentPage - 1) * pageSize;
 
         List<BookingHistoryDTO> list = dao.getBookingHistory(search, status, dateFilter, offset, pageSize);
+
         int totalRecord = dao.countBookings(search, status, dateFilter);
         int totalPage = (int) Math.ceil((double) totalRecord / pageSize);
 

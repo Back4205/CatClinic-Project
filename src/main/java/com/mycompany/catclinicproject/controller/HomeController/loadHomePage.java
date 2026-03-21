@@ -72,13 +72,13 @@ public class loadHomePage extends HttpServlet {
         List<Category> list = cdao.getAllCategory();
         ServiceDaoo sdao = new ServiceDaoo();
         List<ServiceDTO> lists = sdao.getAllServices();
-        List<NewsDTO> listn = ndao.getNews();
+//        List<NewsDTO> listn = ndao.getNews();
         FeebackDAO_1 fdao = new FeebackDAO_1();
         List<Feedback3DTO> listf = fdao.getAllFeedback();
         List<ServiceFeedback> listsf = fdao.getAllBookingServices();
         request.setAttribute("listfeedback", listf);
         request.setAttribute("listnameservice", listsf);
-        request.setAttribute("NewsList", listn);
+//        request.setAttribute("NewsList", listn);
         request.setAttribute("listService", lists);
         request.setAttribute("CategoryList", list);
         request.getRequestDispatcher("/WEB-INF/views/common/homePage.jsp").forward(request, response);

@@ -102,39 +102,51 @@
             </table>
 
             <div class="invoice-total-box">
+
+
+              <c:set var="actualDeposit" value="${deposit}" />
+              <c:set var="actualPaid" value="${hasPaid - actualDeposit}" />
+
+              <c:if test="${hasPaid == deposit}">
+                <c:set var="actualDeposit" value="0" />
+                <c:set var="actualPaid" value="${hasPaid}" />
+              </c:if>
+
               <div class="total-row">
                 <span class="label">Total Service</span>
                 <span class="value">
-                  <fmt:formatNumber value="${totalServiceAmount}" type="number" groupingUsed="true"/> VND
-                </span>
+      <fmt:formatNumber value="${totalServiceAmount}" type="number" groupingUsed="true"/> VND
+    </span>
               </div>
 
               <div class="total-row">
                 <span class="label">Deposit</span>
                 <span class="value">
-                  <fmt:formatNumber value="${deposit}" type="number" groupingUsed="true"/> VND
-                </span>
+
+      <fmt:formatNumber value="${actualDeposit}" type="number" groupingUsed="true"/> VND
+    </span>
               </div>
 
               <div class="total-row">
                 <span class="label">Paid</span>
                 <span class="value">
-                  <fmt:formatNumber value="${hasPaid - deposit}" type="number" groupingUsed="true"/> VND
-                </span>
+
+      <fmt:formatNumber value="${actualPaid}" type="number" groupingUsed="true"/> VND
+    </span>
               </div>
 
               <div class="total-row total-final">
                 <span class="label">Remaining</span>
                 <span class="value">
-                  <c:choose>
-                    <c:when test="${inforInvoiceDetail.invoiceStatus == 'Paid'}">
-                      0 VND
-                    </c:when>
-                    <c:otherwise>
-                      <fmt:formatNumber value="${totalServiceAmount - hasPaid}" type="number" groupingUsed="true"/> VND
-                    </c:otherwise>
-                  </c:choose>
-                </span>
+      <c:choose>
+        <c:when test="${inforInvoiceDetail.invoiceStatus == 'Paid'}">
+          0 VND
+        </c:when>
+        <c:otherwise>
+          <fmt:formatNumber value="${totalServiceAmount - hasPaid}" type="number" groupingUsed="true"/> VND
+        </c:otherwise>
+      </c:choose>
+    </span>
               </div>
             </div>
           </div>
@@ -185,9 +197,5 @@
 
 
 </body>
-<footer style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 25px 0; text-align: center; color: #64748b; font-size: 14px; margin-top: auto;">
-  <div class="footer-content">
-    &copy; 2026 CatClinic. All rights reserved.
-  </div>
-</footer>
+
 </html>

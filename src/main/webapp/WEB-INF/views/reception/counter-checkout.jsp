@@ -115,6 +115,7 @@
             <div class="modal-footer">
                 <button type="button" onclick="closeModal()" class="btn-modal-cancel">Cancel</button>
                 <button type="button" id="confirmBtn" class="btn-modal-confirm">Confirm & Pay</button>
+
             </div>
         </div>
     </div>
