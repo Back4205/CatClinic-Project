@@ -8,10 +8,15 @@
         <a href="${pageContext.request.contextPath}/view-booking-list" class="nav-item ${activePage == 'dashboard' ? 'active' : ''}">
             <i class="fa-solid fa-table-cells-large"></i> View Booking List
         </a>
+
         <a href="${pageContext.request.contextPath}/reception/counter-booking" class="nav-item ${activePage == 'counter-booking' ? 'active' : ''}">
             <i class="fa-regular fa-calendar-plus"></i> Counter Booking
         </a>
-        
+
+        <a href="${pageContext.request.contextPath}/reception/checkout-queue" class="nav-item ${activePage == 'CheckOut' ? 'active' : ''}">
+            <i class="fa-solid fa-right-to-bracket"></i> Counter Check-out
+        </a>
+
 
     </nav>
     <a href="${pageContext.request.contextPath}/logout" class="logout-btn">

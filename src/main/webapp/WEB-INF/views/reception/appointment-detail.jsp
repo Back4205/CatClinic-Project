@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/receptiondashboard-style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/view-booking-list.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reception-cancel.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="css/reception-detail.css" rel="stylesheet" type="text/css"/>
@@ -124,20 +127,6 @@
                     </a>
                 </c:if>
 
-                <c:if test="${booking.status == 'Completed'}">
-                    <c:choose>
-                        <c:when test="${boarding.checkInTime != null and boarding.checkOutTime == null}">
-                            <button type="button" onclick="openCheckoutModal()" class="btn-action btn-orange-fixed">
-                                <i class="fa-solid fa-door-open"></i> &nbsp; Check-out Now
-                            </button>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="status-completed-tag">
-                                <i class="fa-solid fa-circle-check"></i> &nbsp; Pet Released
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
-                </c:if>
 
                 <%-- Trường hợp ca khám mới đặt chưa confirm cũng cho phép Cancel --%>
                 <c:if test="${booking.status == 'PendingPayment'}">
@@ -168,23 +157,6 @@
     </div>
 </div>
 
-<div id="checkoutModal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-header-orange">
-            <h3>Confirm Check-Out</h3>
-            <p>Patient: ${booking.catName}</p>
-        </div>
-        <div class="modal-body">
-            <label>CONDITION AT RELEASE:</label>
-            <textarea id="checkoutNote" placeholder="Ví dụ: Bé khỏe mạnh, đã hoàn thành điều trị..."></textarea>
-            <div class="modal-footer">
-                <button type="button" onclick="closeCheckoutModal()" class="btn-modal-cancel">Cancel</button>
-                <button type="button" onclick="submitCheckoutForm(${booking.bookingID})" class="btn-modal-confirm">Confirm</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
     function openCheckinModal() { document.getElementById('checkinModal').style.display = 'flex'; }
     function closeCheckinModal() { document.getElementById('checkinModal').style.display = 'none'; }
@@ -193,13 +165,7 @@
         if (!note.trim()) { alert("Vui lòng ghi nhận tình trạng bé mèo lúc tiếp nhận!"); return; }
         window.location.href = "checkin?id=" + bookingId + "&status=Completed&condition=" + encodeURIComponent(note);
     }
-    function openCheckoutModal() { document.getElementById('checkoutModal').style.display = 'flex'; }
-    function closeCheckoutModal() { document.getElementById('checkoutModal').style.display = 'none'; }
-    function submitCheckoutForm(bookingId) {
-        var note = document.getElementById('checkoutNote').value;
-        if (!note.trim()) { alert("Vui lòng nhập tình trạng bé lúc trả!"); return; }
-        window.location.href = "checkout?id=" + bookingId + "&condition=" + encodeURIComponent(note);
-    }
+   
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('status') === 'checkin_success') {

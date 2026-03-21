@@ -82,7 +82,6 @@ public class LabManagementController extends HttpServlet {
             pagedList = fullList.subList(fromIndex, toIndex);
         }
 
-        // Set attribute cho JSP
         request.setAttribute("currentStatus", status);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPage", totalPage);

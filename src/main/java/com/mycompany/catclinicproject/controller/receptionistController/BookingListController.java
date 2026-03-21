@@ -18,35 +18,56 @@ public class BookingListController extends HttpServlet {
             throws ServletException, IOException {
         BookingDAO dao = new BookingDAO();
         int pageSize = 5;
+
         String status = request.getParameter("status");
         String search = request.getParameter("search");
         String pageParam = request.getParameter("page");
+
+        String dateFilter = request.getParameter("dateFilter");
+        if (dateFilter == null || dateFilter.trim().isEmpty()) {
+            dateFilter = java.time.LocalDate.now().toString();
+        }
+
+
         if (status == null) {
             status = "";
         }
         if (search == null) {
             search = "";
         }
+
         int currentPage = 1;
         if (pageParam != null) {
-            currentPage = Integer.parseInt(pageParam);
+            try {
+                currentPage = Integer.parseInt(pageParam);
+            } catch (NumberFormatException e) {
+                currentPage = 1;
+            }
         }
         int offset = (currentPage - 1) * pageSize;
-        List<BookingHistoryDTO> list = dao.getBookingHistory(search, status, offset, pageSize);
-        int totalRecord = dao.countBookings(search, status);
+
+        List<BookingHistoryDTO> list = dao.getBookingHistory(search, status, dateFilter, offset, pageSize);
+        int totalRecord = dao.countBookings(search, status, dateFilter);
         int totalPage = (int) Math.ceil((double) totalRecord / pageSize);
+
         Map<String, Integer> stats = new HashMap<>();
-        stats.put("PendingPayment", dao.countPendingPayment());
-        stats.put("Confirmed", dao.countConfirmed());
-        stats.put("Completed", dao.countCompleted());
-        stats.put("PendingCancelRefund", dao.countPendingCancelRefund());
-        stats.put("Cancelled", dao.countCancelled());
+        stats.put("Total", dao.countTotalBookings(dateFilter));
+        stats.put("PendingPayment", dao.countPendingPayment(dateFilter));
+        stats.put("Confirmed", dao.countConfirmed(dateFilter));
+        stats.put("Completed", dao.countCompleted(dateFilter));
+        stats.put("PendingCancelRefund", dao.countPendingCancelRefund(dateFilter));
+        stats.put("Cancelled", dao.countCancelled(dateFilter));
+        // ----------------------------------------------------------------------
+
         request.setAttribute("bookingList", list);
         request.setAttribute("stats", stats);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("currentSearch", search);
         request.setAttribute("currentStatus", status);
+
+        request.setAttribute("currentDate", dateFilter);
+
         request.getRequestDispatcher("WEB-INF/views/reception/view-booking-list.jsp")
                 .forward(request, response);
     }
@@ -57,8 +78,3 @@ public class BookingListController extends HttpServlet {
         doGet(request, response);
     }
 }
-
-
-
-
-

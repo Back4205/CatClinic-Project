@@ -4,8 +4,8 @@
 <html>
 <head>
     <title>Receptionist | Process Cancellation</title>
-    <%-- Chỉ giữ lại link CSS của reception để tránh xung đột --%>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reception-cancel.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body style="background-color: #f8fafc; margin: 0; padding: 0;">
@@ -13,7 +13,6 @@
 <div class="main-content-wrapper">
     <div class="cancel-container">
         <c:choose>
-            <%-- BƯỚC 1: XÁC NHẬN CHI TIẾT --%>
             <c:when test="${empty param.step || param.step == '1'}">
                 <div class="cancel-header-card">
                     <span class="reception-badge">RECEPTIONIST TASK</span>
@@ -34,7 +33,6 @@
                 </div>
             </c:when>
 
-            <%-- BƯỚC 2: CHỌN LÝ DO HỦY --%>
             <c:when test="${param.step == '2'}">
                 <div class="cancel-header-card">
                     <a href="reception-cancel?step=1&id=${booking.bookingID}" class="back-link">

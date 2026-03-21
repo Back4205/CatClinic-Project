@@ -124,13 +124,11 @@
 
                 <c:forEach var="b" items="${bookingList}">
                     <tr>
-                        <!-- CAT -->
                         <td>
                             <strong>${b.catName}</strong><br>
                             <span style="font-size:12px;color:#777;">${b.catBreed}</span>
                         </td>
 
-                        <!-- DAY -->
                         <td>
                                 ${b.appointmentDate}
                             <div style="font-size:12px;color:#777;">
@@ -138,18 +136,15 @@
                             </div>
                         </td>
 
-                        <!-- SERVICE -->
                         <td>
                             <i class="bi ${b.serviceType == 'Spa' ? 'bi-scissors' : 'bi-capsule'}"></i>
                                 ${b.serviceName}
                         </td>
 
-                        <!-- PRICE -->
                         <td>
                             <fmt:formatNumber value="${b.price}" type="number"/> VND
                         </td>
 
-                        <!-- STATUS -->
                         <td>
                             <c:choose>
 
@@ -176,7 +171,6 @@
                             </c:choose>
                         </td>
 
-                        <!-- ACTION -->
                         <td>
                             <a href="booking-detail?id=${b.bookingID}" class="btn-view">Detail</a>
                         </td>
@@ -192,7 +186,7 @@
                         <i class="bi bi-search-heart"></i>
                         <h3>No Bookings Found</h3>
                         <p>We couldn't find any booking history matching your search or filter.</p>
-                        <a href="${pageContext.request.contextPath}/booking-history#bookingSection" class="btn-reset">
+                        <a href="${pageContext.request.contextPath}/booking-history" class="btn-reset">
                             Clear All Filters
                         </a>
                     </div>
@@ -206,24 +200,22 @@
 
                         <%-- 1. Nút Prev --%>
                     <c:if test="${currentPage > 1}">
-                        <a href="booking-history?page=${currentPage - 1}&search=${currentSearch}&status=${currentStatus}#bookingSection"
+                        <a href="booking-history?page=${currentPage - 1}&search=${currentSearch}&status=${currentStatus}&dateFilter=${currentDate}#bookingSection"
                            class="page-item">
                             &laquo;
                         </a>
                     </c:if>
 
-                        <%-- 2. THUẬT TOÁN TRƯỢT SỐ TRANG (Max hiển thị 3 trang) --%>
+                        <%-- 2. THUẬT TOÁN TRƯỢT SỐ TRANG --%>
                     <c:set var="maxVisible" value="3" />
                     <c:set var="startPage" value="${currentPage - 1}" />
                     <c:set var="endPage" value="${currentPage + 1}" />
 
-                        <%-- Xử lý nếu lùi quá trang 1 --%>
                     <c:if test="${startPage < 1}">
                         <c:set var="startPage" value="1" />
                         <c:set var="endPage" value="${startPage + maxVisible - 1}" />
                     </c:if>
 
-                        <%-- Xử lý nếu tiến quá tổng số trang --%>
                     <c:if test="${endPage > totalPage}">
                         <c:set var="endPage" value="${totalPage}" />
                         <c:set var="startPage" value="${endPage - maxVisible + 1}" />
@@ -232,9 +224,9 @@
                         </c:if>
                     </c:if>
 
-                        <%-- 3. In các nút số dựa theo khoảng start - end vừa tính --%>
+                        <%-- 3. In các nút số trang --%>
                     <c:forEach begin="${startPage}" end="${endPage}" var="i">
-                        <a href="booking-history?page=${i}&search=${currentSearch}&status=${currentStatus}#bookingSection"
+                        <a href="booking-history?page=${i}&search=${currentSearch}&status=${currentStatus}&dateFilter=${currentDate}#bookingSection"
                            class="page-item ${i == currentPage ? 'active' : ''}">
                                 ${i}
                         </a>
@@ -242,7 +234,7 @@
 
                         <%-- 4. Nút Next --%>
                     <c:if test="${currentPage < totalPage}">
-                        <a href="booking-history?page=${currentPage + 1}&search=${currentSearch}&status=${currentStatus}#bookingSection" class="page-item">
+                        <a href="booking-history?page=${currentPage + 1}&search=${currentSearch}&status=${currentStatus}&dateFilter=${currentDate}#bookingSection" class="page-item">
                             &raquo;
                         </a>
                     </c:if>

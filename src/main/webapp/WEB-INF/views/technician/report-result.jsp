@@ -24,7 +24,6 @@
             </div>
         </c:if>
 
-        <!-- Upload file -->
         <div class="form-group">
             <label>Upload New Result Image</label>
 
@@ -36,13 +35,11 @@
                 </div>
             </div>
 
-            <!-- Preview ảnh -->
             <div class="preview-container">
                 <img id="imagePreview" src="#" alt="Preview Image"/>
             </div>
         </div>
 
-        <!-- Ghi chú -->
         <div class="form-group">
             <label>Laboratory Findings</label>
             <textarea name="resultName"

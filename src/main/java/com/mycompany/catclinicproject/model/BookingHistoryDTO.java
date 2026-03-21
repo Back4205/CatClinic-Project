@@ -24,7 +24,7 @@ public class BookingHistoryDTO {
     private String customerPhone;
     private Timestamp checkInTime;
     private Timestamp checkOutTime;
-    private Integer rating; // Dùng Integer để có thể nhận giá trị null
+    private Integer rating;
     private String feedbackComment;
     public BookingHistoryDTO() {
     }

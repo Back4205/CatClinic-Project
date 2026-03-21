@@ -19,13 +19,13 @@ public class ProfileController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         HttpSession session = request.getSession(false);
-     User user = (User)session.getAttribute("acc");
-     if(user == null){
-         response.sendRedirect(request.getContextPath()+"/login");
-         return;
-     }
-     int userID = user.getUserID();
+        HttpSession session = request.getSession(false);
+        User user = (User) session.getAttribute("acc");
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        int userID = user.getUserID();
 
         ProfileDAO dao = new ProfileDAO();
         UserDTO userProfile = dao.getUserProfile(userID);
@@ -38,13 +38,13 @@ public class ProfileController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-         HttpSession session = request.getSession(false);
-     User user = (User)session.getAttribute("acc");
-     if(user == null){
-         response.sendRedirect(request.getContextPath()+"/login");
-         return;
-     }
-      int userID = user.getUserID();
+        HttpSession session = request.getSession(false);
+        User user = (User) session.getAttribute("acc");
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+        int userID = user.getUserID();
         String action = request.getParameter("action");
         ProfileDAO dao = new ProfileDAO();
 
@@ -60,34 +60,35 @@ public class ProfileController extends HttpServlet {
                 request.setAttribute("message", "Please fill in all password fields!");
                 request.setAttribute("messageType", "error");
 
-            } else if (!dao.checkPassword(userID, oldPass)) {
-
-                request.setAttribute("message", "Current password is incorrect!");
-                request.setAttribute("messageType", "error");
-
-            } else if (!newPass.matches(PASS_PATTERN)) {
-
-                request.setAttribute("message",
-                        "Password must be at least 6 characters, including letters and numbers!");
-                request.setAttribute("messageType", "error");
-
-            } else if (!newPass.equals(confirmPass)) {
-
-                request.setAttribute("message", "New passwords do not match!");
-                request.setAttribute("messageType", "error");
-
             } else {
+                String hashedOldPass = com.mycompany.catclinicproject.util.PasswordUtil.hashPassword(oldPass);
 
-                dao.changePassword(userID, newPass);
-                request.setAttribute("message", "Password updated successfully!");
-                request.setAttribute("messageType", "success");
+                if (!dao.checkPassword(userID, hashedOldPass)) {
+                    request.setAttribute("message", "Current password is incorrect!");
+                    request.setAttribute("messageType", "error");
 
+                } else if (!newPass.matches(PASS_PATTERN)) {
+                    request.setAttribute("message",
+                            "Password must be at least 6 characters, including letters and numbers!");
+                    request.setAttribute("messageType", "error");
+
+                } else if (!newPass.equals(confirmPass)) {
+                    request.setAttribute("message", "New passwords do not match!");
+                    request.setAttribute("messageType", "error");
+
+                } else {
+                    String hashedNewPass = com.mycompany.catclinicproject.util.PasswordUtil.hashPassword(newPass);
+                    dao.changePassword(userID, hashedNewPass);
+
+                    request.setAttribute("message", "Password updated successfully!");
+                    request.setAttribute("messageType", "success");
+                }
             }
         }
+
         UserDTO userProfile = dao.getUserProfile(userID);
         request.setAttribute("user", userProfile);
         request.getRequestDispatcher("/WEB-INF/views/client/my-profile.jsp")
                 .forward(request, response);
     }
-
 }

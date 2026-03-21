@@ -2,6 +2,8 @@ package com.mycompany.catclinicproject.controller.receptionistController;
 
 import com.mycompany.catclinicproject.dao.BookingDAO;
 import java.io.IOException;
+
+import com.mycompany.catclinicproject.dao.CheckInBookingDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,6 +17,7 @@ public class CheckinController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         BookingDAO dao = new BookingDAO();
+        CheckInBookingDAO daoCheckin = new CheckInBookingDAO();
         int id = -1;
 
         try {
@@ -29,6 +32,7 @@ public class CheckinController extends HttpServlet {
                     boolean isSuccess = dao.checkInWithRecord(id, condition);
 
                     if (isSuccess) {
+                        daoCheckin.checkInBooking(id);
                         response.sendRedirect("appointmentdetail?id=" + id + "&status=checkin_success");
                         return;
                     }

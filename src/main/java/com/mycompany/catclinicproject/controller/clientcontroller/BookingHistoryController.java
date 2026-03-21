@@ -23,7 +23,6 @@ public class BookingHistoryController extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("acc");
 
-        // 1. Kiểm tra quyền truy cập
         if (user == null || user.getRoleID() != 5) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -32,17 +31,16 @@ public class BookingHistoryController extends HttpServlet {
         BookingDAO dao = new BookingDAO();
         int userID = user.getUserID();
 
-        // 2. Lấy tham số tìm kiếm, lọc status và NGÀY
         String keyword = request.getParameter("search");
         String filterStatus = request.getParameter("status");
-        String dateFilter = request.getParameter("dateFilter"); // MỚI THÊM: Lấy ngày từ ô input date
-
-        // Chuẩn hóa status
+        String dateFilter = request.getParameter("dateFilter");
+        if (dateFilter == null || dateFilter.trim().isEmpty()) {
+            dateFilter = java.time.LocalDate.now().toString();
+        }
         if (filterStatus == null || filterStatus.trim().isEmpty() || "ALL".equalsIgnoreCase(filterStatus)) {
             filterStatus = "ALL";
         }
 
-        // 3. Xử lý phân trang
         int pageSize = 5;
         int currentPage = 1;
         String pageParam = request.getParameter("page");
@@ -55,12 +53,10 @@ public class BookingHistoryController extends HttpServlet {
         }
         int offset = (currentPage - 1) * pageSize;
 
-        // 4. Lấy dữ liệu từ Database (NHỚ: Sửa hàm này trong DAO để nhận thêm dateFilter)
         List<BookingHistoryDTO> pagedList = dao.getClientHistoryPaging(userID, keyword, filterStatus, dateFilter, offset, pageSize);
         int totalRecord = dao.countClientBookings(userID, keyword, filterStatus, dateFilter);
         int totalPage = (int) Math.ceil((double) totalRecord / pageSize);
 
-        // Lấy danh sách đầy đủ để tính toán các con số thống kê (Stats)
         List<BookingHistoryDTO> fullList = dao.getHistoryByUserID(userID);
 
         int total = fullList.size();
@@ -72,12 +68,10 @@ public class BookingHistoryController extends HttpServlet {
 
         LocalDate today = LocalDate.now();
 
-        // 5. Đồng bộ trạng thái ảo cho danh sách hiển thị
         for (BookingHistoryDTO b : pagedList) {
             updateVirtualStatus(b, today);
         }
 
-        // 6. Cập nhật trạng thái ảo cho danh sách tổng và đếm số lượng
         for (BookingHistoryDTO b : fullList) {
             updateVirtualStatus(b, today);
 

@@ -11,6 +11,9 @@
     <link href="${pageContext.request.contextPath}/css/receptiondashboard-style.css" rel="stylesheet">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/view-booking-list.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 </head>
 <body>
 
@@ -31,6 +34,11 @@
         </div>
 
         <div class="stat-cards">
+            <div class="stat-card card-black">
+                <div class="stat-icon icon-black"><i class="fa-solid fa-list-check"></i></div>
+                <div class="stat-title">TOTAL BOOKINGS</div>
+                <p class="stat-number">${stats['Total'] != null ? stats['Total'] : 0}</p>
+            </div>
             <div class="stat-card card-orange">
                 <div class="stat-icon icon-orange"><i class="fa-regular fa-clock"></i></div>
                 <div class="stat-title">PENDING PAYMENT</div>
@@ -49,7 +57,7 @@
             <div class="stat-card card-green">
                 <div class="stat-icon icon-green"><i class="fa-regular fa-circle-check"></i></div>
                 <div class="stat-title">PENDING CANCEL</div>
-                <p class="stat-number">${stats['PendingCancel'] != null ? stats['PendingCancel'] : 0}</p>
+                <p class="stat-number">${stats['PendingCancelRefund'] != null ? stats['PendingCancelRefund'] : 0}</p>
             </div>
             <div class="stat-card card-red">
                 <div class="stat-icon icon-red"><i class="fa-solid fa-xmark"></i></div>
@@ -71,6 +79,13 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="text" name="search" value="${currentSearch}" placeholder="Search by cat name, phone or owner...">
                     </div>
+
+                    <%-- SỬA TẠI ĐÂY: Thêm ô chọn ngày --%>
+                    <div style="margin-left: 10px;">
+                        <input type="date" name="dateFilter" value="${currentDate}"
+                               style="padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; color: #475569;">
+                    </div>
+
                     <div class="filter-bar">
                         <select name="status">
                             <option value="" ${empty currentStatus ? 'selected' : ''}>ALL STATUS</option>
@@ -102,7 +117,6 @@
                                 <div>
                                     <p class="patient-name"><strong>${b.catName}</strong></p>
                                     <p class="patient-id">Owner: ${b.ownerName} - ${b.ownerPhone}</p>
-                                        <%-- THÊM DÒNG SERVICE NAME Ở ĐÂY --%>
                                     <p style="color: #FF6B00; font-size: 12px; font-weight: 600; margin-top: 2px;">
                                         Service: ${empty b.serviceName ? 'General Check' : b.serviceName}
                                     </p>
@@ -111,7 +125,6 @@
                         </td>
                         <td>
                             <span class="date-text"><i class="fa-regular fa-calendar table-icon"></i> ${b.appointmentDate}</span><br>
-                                <%-- ĐẢM BẢO HIỆN GIỜ KHÁM --%>
                             <span class="time-text"><i class="fa-regular fa-clock table-icon"></i> ${b.appointmentTime}</span>
                         </td>
                         <td>
@@ -136,8 +149,9 @@
             </table>
 
             <div class="pagination">
+                <%-- SỬA TẠI ĐÂY: Thêm dateFilter vào các link phân trang --%>
                 <c:if test="${currentPage > 1}">
-                    <a href="view-booking-list?page=${currentPage - 1}&status=${currentStatus}&search=${currentSearch}#table-section">&laquo;</a>
+                    <a href="view-booking-list?page=${currentPage - 1}&status=${currentStatus}&search=${currentSearch}&dateFilter=${currentDate}#table-section">&laquo;</a>
                 </c:if>
 
                 <c:set var="p_begin" value="${currentPage - 1}" />
@@ -146,11 +160,12 @@
                 <c:if test="${p_end > totalPage}"><c:set var="p_end" value="${totalPage}" /><c:set var="p_begin" value="${totalPage - 2 > 0 ? totalPage - 2 : 1}" /></c:if>
 
                 <c:forEach begin="${p_begin}" end="${p_end}" var="i">
-                    <a href="view-booking-list?page=${i}&status=${currentStatus}&search=${currentSearch}#table-section" class="${i == currentPage ? 'active-page' : ''}">${i}</a>
+                    <a href="view-booking-list?page=${i}&status=${currentStatus}&search=${currentSearch}&dateFilter=${currentDate}#table-section"
+                       class="${i == currentPage ? 'active-page' : ''}">${i}</a>
                 </c:forEach>
 
                 <c:if test="${currentPage < totalPage}">
-                    <a href="view-booking-list?page=${currentPage + 1}&status=${currentStatus}&search=${currentSearch}#table-section">&raquo;</a>
+                    <a href="view-booking-list?page=${currentPage + 1}&status=${currentStatus}&search=${currentSearch}&dateFilter=${currentDate}#table-section">&raquo;</a>
                 </c:if>
             </div>
         </div>

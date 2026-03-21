@@ -24,7 +24,6 @@ public class ReceptionCancelController extends HttpServlet {
 
             if (booking != null) {
                 request.setAttribute("booking", booking);
-                // Trỏ đến file JSP mà cậu muốn đặt tên
                 request.getRequestDispatcher("/WEB-INF/views/reception/reception-cancel.jsp").forward(request, response);
                 return;
             }
@@ -41,24 +40,19 @@ public class ReceptionCancelController extends HttpServlet {
             int slotID = Integer.parseInt(request.getParameter("slotID"));
             String cancelReason = request.getParameter("cancelReason");
 
-            // Thông tin hoàn tiền do Lễ tân nhập hộ khách
             String bankName = request.getParameter("bankName");
             String accNum = request.getParameter("accNum");
             String accName = request.getParameter("accName");
 
-            // Gom chuỗi Note y hệt bên Client để Admin dễ duyệt
             String refundNote = "RECEPTIONIST_CANCEL | Reason: " + cancelReason
                     + " | Refund: " + bankName + " - " + accNum + " - " + accName;
 
             BookingDAO dao = new BookingDAO();
-            // Gọi hàm xử lý Transaction đã có sẵn trong DAO của cậu
             boolean success = dao.cancelAndRequestRefund(bookingID, refundNote, slotID);
 
             if (success) {
-                // Chuyển sang bước success (Step thành công)
                 response.sendRedirect("reception-cancel?step=success&id=" + bookingID);
             } else {
-                // Nếu lỗi quay lại trang chi tiết
                 response.sendRedirect("reception-booking-detail?id=" + bookingID);
             }
         } catch (Exception e) {

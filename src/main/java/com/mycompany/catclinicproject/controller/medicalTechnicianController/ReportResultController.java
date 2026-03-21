@@ -47,7 +47,6 @@ public class ReportResultController extends HttpServlet {
 
         LabDAO ldao = new LabDAO();
 
-        // Nếu có upload file mới
         if (filePart != null && filePart.getSize() > 0) {
             String fileName = "test_" + System.currentTimeMillis();
             result = CloudinaryUntil.uploadImage(filePart, fileName);
@@ -59,7 +58,6 @@ public class ReportResultController extends HttpServlet {
                 return;
             }
         } else {
-            // Lấy ảnh cũ từ DB (an toàn hơn hidden field)
             TestOrders old = ldao.getTestOrderById(testOrderID);
             result = old.getResult();
         }
