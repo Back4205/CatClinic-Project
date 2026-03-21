@@ -53,75 +53,7 @@ public class BookingDAO extends DBContext {
         return list;
     }
 
-    public Map<String, Integer> getBookingDashboardStats() {
-        Map<String, Integer> stats = new HashMap<>();
-        stats.put("Pending", 0);
-        stats.put("Confirmed", 0);
-        stats.put("Waiting", 0);
-        stats.put("In Treatment", 0);
-        stats.put("Completed", 0);
-        stats.put("Cancelled", 0);
 
-        String sql = "SELECT Status, COUNT(*) as Total FROM Bookings GROUP BY Status";
-
-        try (PreparedStatement st = c.prepareStatement(sql);
-             ResultSet rs = st.executeQuery()) {
-            while (rs.next()) {
-                String status = rs.getString("Status");
-                int total = rs.getInt("Total");
-                if (stats.containsKey(status)) {
-                    stats.put(status, total);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stats;
-    }
-
-    public List<BookingHistoryDTO> getReceptionBookingList(String keyword) {
-        List<BookingHistoryDTO> list = new ArrayList<>();
-        String sql = "SELECT b.BookingID, b.AppointmentDate, b.AppointmentTime, b.Status, " +
-                "u_owner.FullName AS CustomerName, u_owner.Phone AS CustomerPhone, " +
-                "c.Name AS CatName, s.NameService " +
-                "FROM Bookings b " +
-                "JOIN Cats c ON b.CatID = c.CatID " +
-                "JOIN Owners o ON c.OwnerID = o.OwnerID " +
-                "JOIN Users u_owner ON o.UserID = u_owner.UserID " +
-                "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID " +
-                "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID " +
-                "WHERE 1=1 ";
-
-
-        try (PreparedStatement st = c.prepareStatement(sql)) {
-            try (ResultSet rs = st.executeQuery()) {
-                while (rs.next()) {
-                    BookingHistoryDTO d = new BookingHistoryDTO();
-                    d.setBookingID(rs.getInt("BookingID"));
-                    d.setAppointmentDate(rs.getDate("AppointmentDate"));
-                    d.setAppointmentTime(rs.getTime("AppointmentTime")); // QUAN TRỌNG: Lấy giờ ở đây
-                    d.setStatus(rs.getString("Status"));
-                    d.setCustomerName(rs.getString("CustomerName"));
-                    d.setCustomerPhone(rs.getString("CustomerPhone"));
-                    d.setCatName(rs.getString("CatName"));
-                    d.setServiceName(rs.getString("NameService"));
-
-                    list.add(d);
-                }
-            }
-        } catch (Exception e) { e.printStackTrace(); }
-        return list;
-    }
-    public void updateBookingStatusSimple(int id, String status) {
-        String sql = "UPDATE Bookings SET Status = ? WHERE BookingID = ?";
-        try (PreparedStatement st = c.prepareStatement(sql)) { // Biến 'c' là connection của cậu
-            st.setString(1, status);
-            st.setInt(2, id);
-            st.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public BookingHistoryDTO getBookingDetailByID(int bookingID) {
         String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, "
@@ -376,43 +308,6 @@ public class BookingDAO extends DBContext {
     }
 
 
-    public boolean cancelBooking(int bookingID, int slotID) {
-
-        String updateBookingSQL = "UPDATE Bookings SET Status = N'Cancelled' WHERE BookingID = ?";
-        String releaseSlotSQL = "UPDATE TimeSlots SET Status = N'Available' WHERE SlotID = ?";
-
-        try {
-            c.setAutoCommit(false);
-
-            try (PreparedStatement ps1 = c.prepareStatement(updateBookingSQL)) {
-                ps1.setInt(1, bookingID);
-                ps1.executeUpdate();
-            }
-
-            if (slotID > 0) {
-                try (PreparedStatement ps2 = c.prepareStatement(releaseSlotSQL)) {
-                    ps2.setInt(1, slotID);
-                    ps2.executeUpdate();
-                }
-            }
-
-            c.commit();
-            return true;
-
-        } catch (SQLException e) {
-            try {
-                c.rollback();
-            } catch (SQLException ex) {
-            }
-        } finally {
-            try {
-                c.setAutoCommit(true);
-            } catch (SQLException e) {
-            }
-        }
-
-        return false;
-    }
 
     public boolean updateBookingStatus(int bookingID, String status) {
         String sql = "UPDATE Bookings SET status = ? WHERE bookingID = ?";
@@ -433,26 +328,6 @@ public class BookingDAO extends DBContext {
         return false;
     }
 
-    public int getSlotIDByBookingID(int bookingID) {
-
-        String sql = "SELECT SlotID FROM Bookings WHERE BookingID = ?";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setInt(1, bookingID);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("SlotID");
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-    }
 
     public void autoCancelExpiredBookings() {
 
@@ -511,24 +386,6 @@ public class BookingDAO extends DBContext {
 //
 //        return false;
 //    }
-    public boolean isCatMedicalConflict(int catID, int newSlotID) {
-
-        String sql = " SELECT 1 FROM Bookings b JOIN TimeSlots ts_old ON b.SlotID = ts_old.SlotID JOIN TimeSlots ts_new ON ts_new.SlotID = ? WHERE b.CatID = ? AND b.Status IN ('PendingPayment','Confirmed','Assigned','Intreatment')AND ts_old.SlotDate = ts_new.SlotDate AND ts_old.StartTime < ts_new.EndTime AND ts_old.EndTime > ts_new.StartTime ";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-
-            ps.setInt(1, newSlotID);
-            ps.setInt(2, catID);
-
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
 
 
     public boolean isCatHotelConflict(int catID, Date newStart, Date newEnd) {
@@ -876,21 +733,6 @@ public class BookingDAO extends DBContext {
         return false;
     }
 
-    public boolean processCheckOut(int bookingID, String releaseCondition) {
-        String sql = "UPDATE BoardingRecords SET CheckOutTime = GETDATE(), CheckOutCondition = ? " +
-                "WHERE BookingID = ? AND CheckOutTime IS NULL";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, releaseCondition);
-            ps.setInt(2, bookingID);
-
-            int rows = ps.executeUpdate();
-            return rows > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     public BoardingRecordDTO getBoardingRecordByBookingID(int bookingID) {
         String sql = "SELECT * FROM BoardingRecords WHERE BookingID = ?";
@@ -1051,23 +893,6 @@ public class BookingDAO extends DBContext {
             ps.setString(3, (comment == null) ? "" : comment);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    public boolean hasCheckout(int bookingId) {
-        String sql = "SELECT checkout_time FROM BoardingRecord WHERE booking_id = ?";
-
-        try {
-            PreparedStatement ps = c.prepareStatement(sql);
-            ps.setInt(1, bookingId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getTimestamp("checkout_time") != null;
-            }
-
-        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
