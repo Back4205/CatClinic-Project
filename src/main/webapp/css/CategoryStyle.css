@@ -1,0 +1,246 @@
+/* ================= ROOT ================= */
+:root {
+    --primary-orange: #f97316;
+    --dark-orange: #ea580c;
+    --light-gray: #f5f5f5;
+    --soft-beige: #e5d2c0;
+}
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    line-height: 1.6;
+}
+
+/* ================= SECTION 1 - BANNER ================= */
+.banner-section {
+    background: #eef3f2;
+    padding: 70px 0;
+}
+
+.banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px; /* giảm khoảng cách */
+}
+
+/* IMAGE */
+.banner-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.banner-image img {
+    width: 100%;
+    max-width: 520px;   /* giới hạn ảnh */
+    border-radius: 30px;
+    object-fit: cover;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+/* TEXT */
+.banner-text {
+    flex: 1;
+    max-width: 520px;  /* giới hạn text */
+}
+
+.banner-text h1 {
+    font-size: 44px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    color: #111;
+}
+
+.banner-text p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: #555;
+    margin-bottom: 28px;
+}
+
+/* BUTTON */
+.btn-book {
+    display: inline-block;
+    padding: 14px 34px;
+    background: #ff7a1a;
+    color: #fff;
+    font-weight: 600;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: 0.3s ease;
+    box-shadow: 0 10px 25px rgba(255, 122, 26, 0.25);
+}
+
+.btn-book:hover {
+    background: #e5670f;
+    transform: translateY(-3px);
+}
+
+/* ================= SECTION 2 - SERVICES ================= */
+.service-section {
+    background: var(--light-gray);
+    padding: 100px 10%;
+    text-align: center;
+}
+
+.service-section h2 {
+    font-size: 40px;
+    font-weight: 800;
+}
+
+.line {
+    width: 80px;
+    height: 4px;
+    background: var(--primary-orange);
+    margin: 15px auto 60px;
+    border-radius: 5px;
+}
+
+.service-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+}
+
+/* CARD */
+.service-card {
+    background: #f0f0f0;
+    padding: 40px 30px;
+    border-radius: 25px;
+    transition: 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+/* Circle Image */
+.service-image {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 25px;
+    border-radius: 50%;
+    border: 6px solid var(--primary-orange);
+    overflow: hidden;
+}
+
+.service-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.service-card h3 {
+    font-size: 22px;
+    color: var(--primary-orange);
+    margin-bottom: 10px;
+}
+
+.service-card p {
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.view-more {
+    display: inline-block;
+    margin-top: 15px;
+    color: var(--primary-orange);
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.view-more:hover {
+    color: var(--dark-orange);
+}
+
+/* ================= PAGINATION ================= */
+/* ===== PAGINATION WRAPPER ===== */
+.pagination {
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* ===== BUTTON STYLE ===== */
+.page-btn {
+    min-width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f3f3f3;
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+
+    transition: all 0.25s ease;
+}
+
+/* Hover */
+.page-btn:hover {
+    background: #ffe8d8;
+    color: #f97316;
+    border-color: #f97316;
+}
+
+/* Active */
+.page-btn.active {
+    background: #f97316;
+    color: white;
+    border-color: #f97316;
+    box-shadow: 0 6px 14px rgba(249, 115, 22, 0.35);
+}
+
+/* Nút << >> */
+.page-btn:first-child,
+.page-btn:last-child {
+    font-size: 18px;
+}
+html {
+    scroll-behavior: smooth;
+}
+/* ===== CTA SECTION ===== */
+.cta-section {
+    padding: 50px 0;              /* giảm padding */
+    text-align: center;
+    background: #fff7f0;          /* trắng cam nhẹ */
+}
+
+.cta-section h2 {
+    font-size: 30px;              /* nhỏ lại vừa phải */
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.btn-cta {
+    display: inline-block;
+    padding: 10px 22px;           /* nút nhỏ lại */
+    font-size: 20px;              /* chữ nút nhỏ */
+    background: #ff7a1a;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: 0.3s ease;
+}
+
+.btn-cta:hover {
+    background: #e66a0f;
+}

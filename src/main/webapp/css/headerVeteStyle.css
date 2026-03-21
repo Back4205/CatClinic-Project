@@ -1,0 +1,203 @@
+/* ================= HEADER ================= */
+
+.header {
+    width: 100%;                  /* full ngang main */
+    height: 80px;                 /* chiều cao header */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;              /* khoảng cách 2 bên */
+    background-color: #fff;    /* nền giống ảnh bạn gửi */
+
+    border-bottom: 1px solid #dcdcdc;
+}
+
+/* ===== LEFT SIDE ===== */
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.header-left h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.today-date {
+    font-size: 14px;
+    color: #555;
+    border-left: 1px solid #bdbdbd;
+    padding-left: 20px;
+}
+
+/* ===== RIGHT SIDE ===== */
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.notification {
+    font-size: 18px;
+    color: #444;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.notification:hover {
+    color: #ff7a00;
+}
+
+/* ===== USER INFO ===== */
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid #ff7a00;
+    color: #2563eb;
+    font-size: 16px;
+}
+.notification-wrapper{
+    position: relative;
+    cursor: pointer;
+}
+
+.notification{
+    font-size: 20px;
+}
+
+.noti-count{
+    position: absolute;
+    top: -5px;
+    right: -8px;
+
+    background: red;
+    color: white;
+
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+/* ===== NOTIFICATION DROPDOWN ===== */
+
+/* Dùng chính xác class/id bạn có, không thêm mới */
+#notiList.noti-list {
+  /* Vị trí hiển thị danh sách thông báo bật ra từ chuông */
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 360px;
+  max-height: 420px;
+  /* Style giao diện */
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  overflow: hidden;
+  /* Mặc định ẩn khi không mở chuông, chỉ hiển thị khi JS toggle thêm class show */
+  display: none;
+  z-index: 999; /* Đảm bảo hiển thị trên tất cả các phần khác của trang */
+}
+/* Class thêm bởi JS toggleNoti() để hiện danh sách */
+#notiList.noti-list.show {
+  display: block;
+}
+
+/* Reset style mặc định của ul */
+ul#notiUl {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 400px;
+  overflow-y: auto; /* Tạo thanh cuộn khi có quá nhiều thông báo */
+}
+/* Tùy chỉnh thanh cuộn nhìn đẹp hơn */
+ul#notiUl::-webkit-scrollbar {
+  width: 6px;
+}
+ul#notiUl::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+/* Style từng item thông báo */
+#notiUl li {
+  margin: 0;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.2s;
+}
+#notiUl li:last-child {
+  border-bottom: none; /* Bỏ đường kẻ của item cuối cùng */
+}
+/* Hover hiệu ứng khi di chuột vào thông báo */
+#notiUl li:hover {
+  background: #fff7ed; /* Màu cam nhạt chủ đạo của CatClinic */
+}
+
+/* Style thông báo CHƯA ĐỌC (nổi bật) */
+#notiUl li.noti-unread {
+  background: #f8fafc;
+  position: relative;
+}
+/* Thêm dấu chấm xanh báo chưa đọc bên trái */
+#notiUl li.noti-unread::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e; /* Xanh lá thông báo chưa đọc */
+}
+/* Style cho link thông báo */
+#notiUl li.noti-unread a {
+  padding: 14px 14px 14px 26px; /* Dời chữ vào trong để không đè lên dấu chấm xanh */
+  display: block;
+  color: #1e293b;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Style thông báo ĐÃ ĐỌC (nhạt hơn) */
+#notiUl li.noti-read {
+  background: #ffffff;
+  opacity: 0.75;
+}
+#notiUl li.noti-read a {
+  padding: 14px;
+  display: block;
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+/* Style thời gian tạo thông báo */
+#notiUl li small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}

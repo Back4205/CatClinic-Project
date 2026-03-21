@@ -1,0 +1,355 @@
+:root {
+    --primary-orange: #ff8c00;
+    --light-orange: #fff4e6;
+    --dark-orange: #e67e00;
+    --bg-white: #ffffff;
+    --text-dark: #333333;
+    --border-gray: #eeeeee;
+    --status-booked: #ffe8cc;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+    color: var(--text-dark);
+    margin: 0;
+    padding: 20px;
+}
+
+.schedule-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--bg-white);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+/* Header & Controls */
+.sched-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--light-orange);
+    padding-bottom: 15px;
+}
+
+.vet-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon-wrapper {
+    background: var(--primary-orange);
+    color: white;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.2rem;
+}
+
+.header-text h2 {
+    margin: 0;
+    color: var(--primary-orange);
+}
+
+/* Nút Change Schedule Style */
+.change a {
+    text-decoration: none;
+    background-color: var(--primary-orange);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.change a:hover {
+    background-color: var(--dark-orange);
+    box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Form Selects */
+form select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+form select:focus {
+    border-color: var(--primary-orange);
+}
+
+/* Table Design */
+.sched-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border-gray);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sched-table th {
+    background-color: #f8f9fa;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 2px solid var(--primary-orange);
+}
+
+.day-name {
+    display: block;
+    font-weight: bold;
+    color: var(--primary-orange);
+    font-size: 0.9rem;
+}
+
+.day-date {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.sched-table td {
+    border: 1px solid var(--border-gray);
+    padding: 10px;
+    height: 80px;
+    vertical-align: top;
+    width: 13%;
+}
+
+.time-column {
+    background-color: #fdfdfd;
+    font-weight: bold;
+    text-align: center;
+    width: 80px !important;
+}
+
+.time-sub {
+    display: block;
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: normal;
+}
+
+/* Booking Card inside Table */
+.booking-card {
+    background-color: var(--status-booked);
+    border-left: 4px solid var(--primary-orange);
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+.pet-title {
+    display: block;
+    font-weight: bold;
+    color: var(--dark-orange);
+    margin-bottom: 4px;
+}
+
+.owner-info {
+    font-size: 0.8rem;
+    color: #555;
+}
+
+.status-pill {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--primary-orange);
+    margin-top: 5px;
+}
+
+.absent {
+    background: #eeeeee;
+    color: #888;
+    text-align: center;
+    padding: 10px 5px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+/* Footer Legend */
+.sched-footer {
+    margin-top: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+}
+
+.box {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    display: inline-block;
+}
+/* Container cho toàn bộ form */
+.filter-form {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end; /* Để label và select thẳng hàng dưới đáy */
+    flex-wrap: wrap;
+}
+
+/* Từng cụm Label + Select */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
+    margin-left: 2px;
+}
+
+/* Style cho thẻ Select */
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    font-size: 0.9rem;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    border-bottom: 2px solid transparent; /* Tạo hiệu ứng border dưới */
+}
+
+/* Hiệu ứng khi hover hoặc focus vào ô chọn */
+.filter-group select:hover {
+    border-color: var(--primary-orange);
+}
+
+.filter-group select:focus {
+    border-color: var(--primary-orange);
+    border-bottom: 2px solid var(--primary-orange);
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.1);
+}
+
+/* Riêng cho dropdown Veterinarian có thể cần rộng hơn */
+select[name="VetID"] {
+    min-width: 200px;
+}/* Container chính của Header */
+.sched-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Căn giữa dọc cho toàn bộ header */
+    padding: 20px 0;
+    border-bottom: 2px solid #fff4e6;
+    margin-bottom: 30px;
+}
+
+.vet-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.icon-wrapper {
+    background: #ff8c00;
+    color: white;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 10px rgba(255, 140, 0, 0.2);
+}
+
+.header-text h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Cụm bên phải chứa Form + Nút */
+.header-actions {
+    display: flex;
+    align-items: flex-end; /* Quan trọng: Giúp chân của select và nút bằng nhau */
+    gap: 20px;
+}
+
+.filter-form {
+    display: flex;
+    gap: 15px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #ff8c00;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-group select {
+    height: 40px; /* Chiều cao cố định */
+    padding: 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 0.9rem;
+    color: #444;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-group select:hover {
+    border-color: #ff8c00;
+}
+
+/* Nút Change Schedule */
+.change a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px; /* Bằng chính xác chiều cao của select */
+    padding: 0 20px;
+    background-color: #ff8c00;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    white-space: nowrap;
+    transition: all 0.3s;
+    gap: 8px;
+}
+
+.change a:hover {
+    background-color: #e67e00;
+    box-shadow: 0 4px 12px rgba(230, 126, 0, 0.3);
+    transform: translateY(-2px);
+}

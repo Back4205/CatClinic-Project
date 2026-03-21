@@ -1,0 +1,193 @@
+/* ===============================
+   GLOBAL
+================================= */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #fff8f2;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===============================
+   MAIN LAYOUT (Flex chuẩn)
+================================= */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===============================
+   SIDEBAR
+================================= */
+.sidebar {
+    width: 240px;
+    background: #ffffff;
+    border-right: 1px solid #e5e5e5;
+    flex-shrink: 0;      /* Không cho co lại */
+}
+
+/* ===============================
+   CONTENT CONTAINER
+================================= */
+.container {
+    flex: 1;             /* Chiếm toàn bộ phần còn lại */
+    padding: 30px 40px;
+}
+
+/* ===============================
+   HEADER
+================================= */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.title {
+    color: #ff6b00;
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* ===============================
+   BUTTON ADD NEW
+================================= */
+.btn-primary {
+    background-color: #ff6b00;
+    color: white;
+    padding: 10px 18px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #e65c00;
+}
+
+/* ===============================
+   TABLE
+================================= */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.styled-table thead {
+    background-color: #ff6b00;
+    color: white;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 14px 16px;
+    text-align: center;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: 0.2s;
+}
+
+.styled-table tbody tr:hover {
+    background-color: #fff2e6;
+}
+
+/* ===============================
+   BANNER IMAGE
+================================= */
+.banner-img {
+    width: 100px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+/* ===============================
+   STATUS BADGE
+================================= */
+.status-active {
+    color: white;
+    background-color: #28a745;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.status-inactive {
+    color: white;
+    background-color: #dc3545;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* ===============================
+   ACTION BUTTONS
+================================= */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.action-buttons a,
+.action-buttons button {
+    padding: 6px 12px;
+    border-radius: 5px;
+    border: none;
+    text-decoration: none;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* View */
+.btn-view {
+    background-color: #ffa94d;
+    color: white;
+}
+
+.btn-view:hover {
+    background-color: #ff922b;
+}
+
+/* Edit */
+.btn-edit {
+    background-color: #ff6b00;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #e65c00;
+}
+
+/* Hide */
+.btn-hide {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-hide:hover {
+    background-color: #bb2d3b;
+}
+
+/* Show */
+.btn-show {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-show:hover {
+    background-color: #218838;
+}

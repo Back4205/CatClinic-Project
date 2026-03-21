@@ -1,0 +1,35 @@
+package com.mycompany.catclinicproject.dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class DBContext {
+    protected Connection c;
+
+    public DBContext() {
+        try {
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=CatClinic_ERD;encrypt=true;trustServerCertificate=true";
+            String username = "sa";
+            String pass = "abc@123";
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            c = DriverManager.getConnection(url, username, pass);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Connection getConnection() {
+        return c;
+    }
+
+    public void closeConnection() {
+        try {
+            if (c != null && !c.isClosed()) {
+                c.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}

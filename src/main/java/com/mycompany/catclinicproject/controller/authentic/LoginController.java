@@ -1,0 +1,122 @@
+package com.mycompany.catclinicproject.controller.authentic;
+
+import com.mycompany.catclinicproject.dao.CategoryDao;
+import com.mycompany.catclinicproject.dao.UserDAO;
+import com.mycompany.catclinicproject.dao.homeDao.ServiceDao;
+import com.mycompany.catclinicproject.model.Category;
+import com.mycompany.catclinicproject.model.Service;
+import com.mycompany.catclinicproject.model.User;
+import java.io.IOException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+
+@WebServlet(name = "LoginController", urlPatterns = {"/login"})
+public class LoginController extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        // bách
+        String from = request.getParameter("from");
+        request.setAttribute("from", from);
+
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (c.getName().equals("cUser")) {
+                    request.setAttribute("username", c.getValue());
+                }
+                if (c.getName().equals("cPass")) {
+                    request.setAttribute("password", c.getValue());
+                    request.setAttribute("remember", "checked");
+                }
+            }
+        }
+
+        request.getRequestDispatcher("WEB-INF/views/auth/login.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String u = request.getParameter("username");
+        String p = request.getParameter("password");
+        String r = request.getParameter("remember");
+        String from = request.getParameter("from");
+        UserDAO dao = new UserDAO();
+        User account = dao.checkLogin(u, p);
+
+
+        if (account == null) {
+
+            request.setAttribute("mess", "Invalid Username/Email or Password!");
+
+            request.setAttribute("username", u);
+            request.getRequestDispatcher("WEB-INF/views/auth/login.jsp").forward(request, response);
+        } else if (!account.isActive()) {
+            request.setAttribute("mess", "Your account has been deactivated by Admin! Please contact support.");
+            request.setAttribute("username", u);
+            request.getRequestDispatcher("WEB-INF/views/auth/login.jsp").forward(request, response);
+        } else {
+
+            HttpSession session = request.getSession();
+            session.setAttribute("acc", account);
+
+            Cookie cu = new Cookie("cUser", u);
+            Cookie cp = new Cookie("cPass", p);
+
+            if (r != null) {
+                cu.setMaxAge(60 * 60 * 24 * 7);
+                cp.setMaxAge(60 * 60 * 24 * 7);
+            } else {
+                cu.setMaxAge(0);
+                cp.setMaxAge(0);
+            }
+            response.addCookie(cu);
+            response.addCookie(cp);
+            if ("booking".equals(from)) {
+
+                response.sendRedirect(request.getContextPath() + "/Booking");
+            } else {
+
+                switch (account.getRoleID()) {
+                    case 1:
+                        request.getRequestDispatcher("WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
+                        break;
+                    case 2:
+                        response.sendRedirect("DashboardController");
+                        break;
+                    case 3:
+                        response.sendRedirect("view-booking-list");
+                        break;
+                    case 4:
+                        String position = dao.getStaffPosition(account.getUserID());
+
+                        if ("Care".equalsIgnoreCase(position)) {
+                            response.sendRedirect("care/tasks");
+                            break;
+                        }
+                        if ("Technician".equalsIgnoreCase(position)) {
+                            response.sendRedirect("technician/lab-hub");
+                            break;
+                        }
+                        break;
+                    case 5:
+                        response.sendRedirect("loadinfo");
+                        break;
+                    default:
+                        request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);
+                }
+            }
+        }
+    }
+}
+

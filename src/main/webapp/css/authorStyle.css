@@ -1,0 +1,173 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Feb 1, 2026, 3:17:14 AM
+    Author     : Son
+*/
+
+* {
+    box-sizing: border-box;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body {
+    background: #fff7f0;
+    margin: 0;
+    padding: 40px 0;
+}
+
+/* container */
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* back link */
+.page-header {
+    width: 420px;
+    margin-bottom: 12px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #e67e22;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* card */
+.card {
+    width: 420px;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(230, 126, 34, 0.15);
+    overflow: hidden;
+}
+
+/* header */
+.card-header {
+    background: linear-gradient(135deg, #ff9f43, #f76b1c);
+    color: white;
+    padding: 20px;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.user-info {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+/* form */
+form {
+    padding: 22px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 12px;
+    color: #e67e22;
+    font-weight: 700;
+    margin-bottom: 16px;
+    letter-spacing: 1px;
+}
+
+/* role buttons */
+.role-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.role-btn {
+    padding: 12px;
+    border-radius: 12px;
+    border: 2px solid #ffd8b5;
+    background: #fff;
+    color: #e67e22;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.role-btn:hover {
+    background: #fff1e6;
+}
+
+.role-btn.active {
+    background: #e67e22;
+    color: white;
+    border-color: #e67e22;
+}
+
+/* impact */
+.impact-box {
+    margin-top: 18px;
+    background: #fff5eb;
+    border-left: 4px solid #e67e22;
+    padding: 12px;
+    font-size: 13px;
+    color: #555;
+}
+
+/* actions */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 22px;
+}
+
+.btn {
+    width: 48%;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+.btn.cancel {
+    background: white;
+    border: 2px solid #ffd8b5;
+    color: #e67e22;
+}
+
+.btn.submit {
+    background: #e67e22;
+    color: white;
+}
+
+.btn.submit:hover {
+    background: #cf6d17;
+}
+.msg {
+    text-align: center;
+    font-weight: 600;
+    margin: 12px 0;
+}
+
+/* Ẩn */
+.hide {
+    display: none;
+}
+
+/* Error */
+.msg.error {
+    color: #d9534f;
+}
+
+/* Success */
+.msg.success {
+    color: #28a745;
+}
+

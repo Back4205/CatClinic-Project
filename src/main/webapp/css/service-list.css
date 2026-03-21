@@ -1,0 +1,210 @@
+/* ===== GLOBAL ===== */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #fff7f0;
+}
+
+.container {
+    width: 95%;
+    margin: 40px auto;
+}
+
+/* ===== HEADER ===== */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title {
+    color: #ff6b00;
+    margin: 0;
+}
+
+.btn-create {
+    background-color: #ff6b00;
+    color: white;
+    padding: 10px 18px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-create:hover {
+    background-color: #e65c00;
+}
+
+/* ===== FILTER ===== */
+.filter-card {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+.filter-card input,
+.filter-card select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.filter-card input:focus,
+.filter-card select:focus {
+    border-color: #ff6b00;
+    outline: none;
+}
+
+/* ===== TABLE ===== */
+.table-wrapper {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background-color: #ff6b00;
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+}
+
+tbody tr {
+    border-bottom: 1px solid #eee;
+    transition: 0.2s;
+}
+
+tbody tr:hover {
+    background-color: #fff2e6;
+}
+
+/* ===== IMAGE ===== */
+.service-img {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* ===== STATUS ===== */
+.status-active {
+    background-color: #28a745;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.status-inactive {
+    background-color: #dc3545;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+/* ===== ACTION ===== */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-edit {
+    background-color: #ffa94d;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+.btn-edit:hover {
+    background-color: #ff922b;
+}
+
+.btn-hide {
+    background-color: #dc3545;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-show {
+    background-color: #28a745;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-hide:hover {
+    background-color: #bb2d3b;
+}
+
+.btn-show:hover {
+    background-color: #218838;
+}
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.title {
+    color: #ff6b00;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Back button */
+.btn-back {
+    background: #ffffff;
+    color: #ff6b00;
+    border: 2px solid #ff6b00;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-back:hover {
+    background: #ff6b00;
+    color: white;
+}
+
+/* Create button */
+.btn-create {
+    background: #ff6b00;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-create:hover {
+    background: #e65c00;
+}

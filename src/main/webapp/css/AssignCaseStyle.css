@@ -1,0 +1,436 @@
+/* ===== PAGE BACKGROUND ===== */
+.dashboard-content {
+    padding: 30px 40px;
+    background: #fdfdfd; /* Trắng tinh khôi hơn */
+    min-height: 100vh;
+}
+
+/* ===== TITLE ===== */
+.page-title h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 25px;
+    border-left: 5px solid #f97316; /* Thêm vạch cam bên cạnh tiêu đề */
+    padding-left: 15px;
+}
+
+/* ===== HEADER SEARCH + FILTER ===== */
+.case-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+a {
+    text-decoration: none;
+}
+/* SEARCH BOX */
+.search-container {
+    position: relative;
+    width: 320px;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 10px 15px 10px 38px;
+    border-radius: 12px;
+    border: 1px solid #fed7aa; /* Viền cam nhạt */
+    background: #ffffff;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.search-container input:focus {
+    border-color: #f97316; /* Focus hiện cam đậm */
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.search-container i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #f97316; /* Icon màu cam */
+}
+
+/* DROPDOWN + PLUS */
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.status-dropdown {
+    padding: 10px 15px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    color: #475569;
+}
+
+.btn-plus {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: none;
+    background: #f97316; /* Nút cộng màu cam nổi bật */
+    cursor: pointer;
+    font-size: 16px;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+    transition: 0.3s;
+}
+
+.btn-plus:hover {
+    background: #ea580c;
+    transform: scale(1.05);
+}
+
+/* ===== TABLE CONTAINER ===== */
+.table-container {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
+}
+
+/* ===== TABLE ===== */
+.vet-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.vet-table thead {
+    background: #fff7ed; /* Nền header cam cực nhạt */
+}
+
+.vet-table thead th {
+    padding: 18px 22px;
+    text-align: left;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: #9a3412; /* Chữ tiêu đề bảng màu nâu cam */
+}
+
+.vet-table tbody td {
+    padding: 22px;
+    border-bottom: 1px solid #f1f5f9; /* Đổi sang border bottom cho thanh thoát */
+    font-size: 14px;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.vet-table tbody tr:hover {
+    background: #fffaf5;
+}
+
+/* ===== CASE ID STYLE ===== */
+.case-id {
+    font-weight: 700;
+    color: #f97316;
+    background: #fff7ed;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    display: inline-block;
+    border: 1px solid #ffedd5;
+}
+
+/* ===== PET CELL ===== */
+.pet-cell {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    background: #ffedd5;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #f97316;
+    font-size: 16px;
+}
+
+.info .name {
+    display: block;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.info .sub {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 3px;
+}
+
+/* ===== STATUS BADGES (Phối lại theo tông cam/nóng) ===== */
+.badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Assigned */
+
+
+/* In Treatment */
+.badge.in-treatment {
+    background-color: #fef3c7;  /* vàng nhạt */
+    color: #d97706;             /* cam đậm */
+}
+
+/* Waiting result */
+.badge.waiting-result {
+    background-color: #f1f5f9;  /* xám nhạt */
+    color: #64748b;             /* xám đậm */
+}
+
+/* Completed */
+.badge.completed {
+    background-color: #dcfce7;  /* xanh nhạt */
+    color: #16a34a;             /* xanh đậm */
+}
+
+/* ===== ACTIONS ===== */
+.actions-cell {
+    text-align: right;
+}
+
+.btn-emr {
+    background: #fff7ed;
+    border: 1px solid #ffedd5;
+    padding: 8px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 13px;
+    color: #f97316;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-emr:hover {
+    background: #f97316;
+    color: #ffffff;
+}
+
+.icon-action {
+    margin-left: 12px;
+    font-size: 16px;
+    color: #cbd5e1;
+    cursor: pointer;
+}
+
+.icon-action:hover {
+    color: #f97316;
+}
+
+.pagination {
+    margin: 25px 0;
+    text-align: center;
+}
+
+/* Nút chung */
+.pagination a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    margin: 0 5px;
+    border-radius: 10px;
+
+    background: #fff;
+    color: #ff7a00;
+    border: 2px solid #ff7a00;
+
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1;
+
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+.pagination a:hover {
+    background: #ff7a00;
+    color: #fff;
+}
+
+/* Active */
+.pagination a.active-page {
+    background: #ff7a00;
+    color: #fff;
+}
+
+/* Nút điều hướng */
+.pagination a.nav-btn {
+    font-size: 16px;
+    letter-spacing: -2px; /* ép << sát lại */
+}
+/* Pagination */
+.pagination {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    background: white;
+    margin-left: 0px;
+
+}
+.pagination {
+    margin-top: auto;
+}
+
+.pagination a {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 4px;
+    border-radius: 8px;
+    color: #718096;
+    text-decoration: none;
+    border: 1px solid #edf2f7;
+}
+
+.pagination a.active-page {
+    background: #ff7a31;
+    color: white;
+    border-color: #ff7a31;
+}
+/* Container của các nút */
+.actions-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Khoảng cách giữa các nút */
+}
+
+/* Style chung cho các nút có chữ (EMR, Rx) */
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+
+/* Màu riêng cho nút EMR (Xanh dương nhạt) */
+.btn-emr {
+    background-color: #eef4ff;
+    color: #3b82f6;
+}
+
+.btn-emr:hover {
+    background-color: #dbeafe;
+}
+
+/* Màu riêng cho nút Rx (Cam nhạt) */
+.btn-rx {
+    background-color: #fff4ed;
+    color: #f97316;
+}
+
+.btn-rx:hover {
+    background-color: #ffedd5;
+}
+
+/* Style cho các icon đơn lẻ (X-ray, Blood test) */
+.btn-icon {
+    color: #94a3b8; /* Màu xám trung tính */
+    font-size: 18px;
+    text-decoration: none;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.btn-icon:hover {
+    color: #64748b;
+}
+
+/* Tinh chỉnh icon bên trong nút có chữ */
+.btn-action i {
+    font-size: 14px;
+}
+.actions-cell{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* style chung */
+.actions-cell a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: white;
+    transition: all 0.25s ease;
+}
+
+/* EMR */
+.btn-emr{
+    background: #ff8c00;
+}
+
+.btn-emr:hover{
+    background: #ff7a00;
+    transform: translateY(-2px);
+}
+
+/* Xray */
+.actions-cell a[href*="xray"]{
+    background: #ffa726;
+}
+
+.actions-cell a[href*="xray"]:hover{
+    background: #fb8c00;
+    transform: translateY(-2px);
+}
+
+/* Blood Test */
+.actions-cell a[href*="bloodtest"]{
+    background: #ff9800;
+}
+.actions-cell a[href*="bloodtest"]:hover{
+    background: #f57c00;
+    transform: translateY(-2px);
+}
+/* Prescription */
+.actions-cell a[href*="preController"]{
+    background: #ffb74d;
+}
+
+.actions-cell a[href*="preController"]:hover{
+    background: #ffa726;
+    transform: translateY(-2px);
+}
+
+/* icon */
+.actions-cell i{
+    font-size: 14px;
+}
