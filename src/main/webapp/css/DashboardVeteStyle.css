@@ -537,3 +537,62 @@ a {
     margin-top: 13px;
     box-shadow: none;      /* bỏ shadow cho đồng màu */
 }
+.toast-box{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #ff9800;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-size: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 9999;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(-20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-buttons a {
+    text-decoration: none;
+    padding: 6px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+/* Nút Add EMR */
+.btn-start {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-start:hover {
+    background-color: #43a047;
+    transform: translateY(-1px);
+}
+
+/* Nút View EMR */
+.btn-view {
+    background-color: #2196F3;
+    color: white;
+}
+
+.btn-view:hover {
+    background-color: #1e88e5;
+    transform: translateY(-1px);
+}

@@ -4,6 +4,7 @@
  */
 package com.mycompany.catclinicproject.dao;
 
+import com.mycompany.catclinicproject.model.VeteNameID;
 import com.mycompany.catclinicproject.model.VeterinarianDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -133,4 +134,27 @@ public class VeterinarianDAO extends DBContext{
 
         return vet;
     }
+    public List<VeteNameID> getAllVets() {
+    List<VeteNameID> list = new ArrayList<>();
+
+    String sql = "SELECT v.VetID, u.FullName "
+               + "FROM Veterinarians v "
+               + "JOIN Users u ON v.UserID = u.UserID";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            VeteNameID v = new VeteNameID();
+            v.setVetID(rs.getInt("VetID"));
+            v.setFullName(rs.getString("FullName"));
+            list.add(v);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
 }

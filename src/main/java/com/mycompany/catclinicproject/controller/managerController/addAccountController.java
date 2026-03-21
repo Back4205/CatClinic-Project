@@ -110,26 +110,8 @@ public class addAccountController extends HttpServlet {
         UserDao dao = new UserDao();
         username = username == null ? "" : username.trim();
 
-// Regex:
-// - Ít nhất 1 chữ
-// - Ít nhất 1 số
-// - Không có khoảng trắng
-// - Tối thiểu 6 ký tự
-        if (!username.matches("^(?=.*[A-Za-z])(?=.*\\d)\\S{6,}$")) {
-            session.setAttribute("error_addaccount",
-                    "Username must be at least 6 characters, contain at least 1 letter and 1 number, and no spaces!");
-            response.sendRedirect("addAccount");
-            return;
-        }
-
         if (dao.isUsernameExist(username)) {
             session.setAttribute("error_addaccount", "Username already exists!");
-            response.sendRedirect("addAccount");
-            return;
-        }
-
-        if (password.length() < 6 || !password.matches("^(?=.*[A-Za-z])(?=.*\\d).+$")) {
-            session.setAttribute("error_addaccount", "Pass is invalid!");
             response.sendRedirect("addAccount");
             return;
         }
@@ -138,20 +120,14 @@ public class addAccountController extends HttpServlet {
             response.sendRedirect("addAccount");
             return;
         }
-        if (dao.isPhoneExist(phone) || phone.length() != 10 || !(phone.matches("\\d+"))) {
-            session.setAttribute("error_addaccount", "Phone already exists or invalid!");
+        if (dao.isPhoneExist(phone)) {
+            session.setAttribute("error_addaccount", "Phone already exists!");
             response.sendRedirect("addAccount");
             return;
         }
         int roleID = dao.getRoleID(role);
-        if (roleID == 1) {
-            session.setAttribute("error_addaccount", "Role name must not Admin!");
-            response.sendRedirect("addAccount");
-            return;
-        }
         boolean ok = dao.addUser(username, password, fullName, male,
                 email, roleID, phone, null);
-
         if (ok) {
             session.setAttribute("success", "Add user successfully!");
         } else {

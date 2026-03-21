@@ -165,30 +165,25 @@
                                     <input type="hidden" name="action" id="actionField">
                                     <input type="hidden" name="medicalRecordID"
                                            value="${emr.medicalRecordID}"/>
-
                                     <div class="lab-request-box">
 
-                                        <div class="lab-icon">
-                                            <i class="fa-solid fa-heart-pulse"></i>
-                                        </div>
+                                        <c:choose>
+                                            <c:when test="${sessionScope.status ne 'Completed'}">
+                                                <div class="lab-actions">
+                                                    <button type="button"
+                                                            class="btn-request"
+                                                            onclick="confirmAction('request')">
+                                                        Request Blood Test
+                                                    </button>
 
-                                        <h3>Do you want to request a Blood Test?</h3>
+                                                </div>
+                                            </c:when>
 
-                                        <div class="lab-actions">
+                                            <c:otherwise>
+                                                <span class="no-request">No request</span>
+                                            </c:otherwise>
+                                        </c:choose>
 
-                                            <button type="button"
-                                                    class="btn-skip"
-                                                    onclick="confirmAction('skip')">
-                                                No, Skip
-                                            </button>
-
-                                            <button type="button"
-                                                    class="btn-request"
-                                                    onclick="confirmAction('request')">
-                                                Yes, Request Blood Test
-                                            </button>
-
-                                        </div>
 
                                     </div>
 
@@ -223,22 +218,22 @@
 
             </main>
         </div>
-                                <script>
-function confirmAction(actionType) {
+        <script>
+            function confirmAction(actionType) {
 
-    let message = "";
+                let message = "";
 
-    if (actionType === "skip") {
-        message = "Are you sure you want to skip blood test?";
-    } else if (actionType === "request") {
-        message = "Are you sure you want to request a blood test?";
-    }
+                if (actionType === "skip") {
+                    message = "Are you sure you want to skip blood test?";
+                } else if (actionType === "request") {
+                    message = "Are you sure you want to request a blood test?";
+                }
 
-    if (confirm(message)) {
-        document.getElementById("actionField").value = actionType;
-        document.querySelector("form").submit();
-    }
-}
-</script>
+                if (confirm(message)) {
+                    document.getElementById("actionField").value = actionType;
+                    document.querySelector("form").submit();
+                }
+            }
+        </script>
     </body>
 </html>

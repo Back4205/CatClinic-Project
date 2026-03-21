@@ -5,10 +5,15 @@
 package com.mycompany.catclinicproject.controller.HomeController;
 
 import com.mycompany.catclinicproject.dao.CategoryDao;
+import com.mycompany.catclinicproject.dao.FeebackDAO;
 import com.mycompany.catclinicproject.dao.ServiceDAO;
+import com.mycompany.catclinicproject.dao.homeDao.NewsDao;
 import com.mycompany.catclinicproject.dao.homeDao.ServiceDaoo;
 import com.mycompany.catclinicproject.model.Category;
+import com.mycompany.catclinicproject.model.FeedbackDTO;
+import com.mycompany.catclinicproject.model.NewsDTO;
 import com.mycompany.catclinicproject.model.ServiceDTO;
+import com.mycompany.catclinicproject.model.ServiceFeedback;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -64,9 +69,17 @@ public class loadHomePage extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         CategoryDao cdao = new CategoryDao();
+        NewsDao ndao = new NewsDao();
         List<Category> list = cdao.getAllCategory();
-         ServiceDaoo sdao = new ServiceDaoo();
+        ServiceDaoo sdao = new ServiceDaoo();
         List<ServiceDTO> lists = sdao.getAllServices();
+        List<NewsDTO> listn = ndao.getNews();
+        FeebackDAO fdao = new FeebackDAO();
+        List<FeedbackDTO> listf = fdao.getAllFeedback();
+        List<ServiceFeedback> listsf = fdao.getAllBookingServices();
+        request.setAttribute("listfeedback", listf);
+        request.setAttribute("listnameservice", listsf);
+        request.setAttribute("NewsList", listn);
         request.setAttribute("listService", lists);
         request.setAttribute("CategoryList", list);
         request.getRequestDispatcher("/WEB-INF/views/common/homePage.jsp").forward(request, response);

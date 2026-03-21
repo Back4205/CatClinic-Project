@@ -5,8 +5,12 @@
 package com.mycompany.catclinicproject.controller.Veterinarian;
 
 import com.mycompany.catclinicproject.dao.BookingDaoVeterinarian;
+import com.mycompany.catclinicproject.dao.MedicalRecordDAO;
+import com.mycompany.catclinicproject.dao.NotificationDAO;
+import com.mycompany.catclinicproject.dao.ServiceDAO;
 import com.mycompany.catclinicproject.model.EMRDTO;
 import com.mycompany.catclinicproject.model.TestOrderDTO;
+import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,6 +18,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -86,10 +91,28 @@ public class BloodTest extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        NotificationDAO ndao = new NotificationDAO();
         String idParam = request.getParameter("medicalRecordID");
         int medicalRecordID = Integer.parseInt(idParam);
         BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
-        dao.insertTestOrderBloodTest(medicalRecordID);
+        MedicalRecordDAO mdao = new MedicalRecordDAO();
+        mdao.updateStatusToWaiting(medicalRecordID);
+        boolean k = dao.insertTestOrderBloodTest(medicalRecordID);
+        User acc = (User) session.getAttribute("acc");
+        int UserID = acc.getUserID();
+        int VetID = ndao.getVetIDByUserID(UserID);
+         ServiceDAO svdao =  new ServiceDAO();
+        int bookingID = svdao.getBookingIDByMedicalRecordID(medicalRecordID);
+        svdao.addServiceToBooking(bookingID, 7);
+        if(k == true){
+             ndao.createNotification(
+                VetID,
+                "Lab create Medical Record for Blood test ",
+                medicalRecordID,
+                "request BL"
+        );
+        }
         response.sendRedirect("bloodtest?medicalRecordID=" + medicalRecordID);
     }
 

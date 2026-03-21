@@ -31,6 +31,12 @@
                 <i class="fa-solid fa-money-bill-wave"></i> Refund Management
             </a>
         </li>
+         <li>
+            <a href="${pageContext.request.contextPath}/viewschedule">
+                <i class="fa-solid fa-money-bill-wave"></i> Schedule
+            </a>
+        </li>
+
 
     </ul>
 </div>

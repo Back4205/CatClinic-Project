@@ -665,3 +665,14 @@ form {
 .btn-next:hover{
     background-color: #e6680f;
 }
+.no-request {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #e0e0e0;
+    color: #666;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: not-allowed;
+    border: 1px solid #ccc;
+}

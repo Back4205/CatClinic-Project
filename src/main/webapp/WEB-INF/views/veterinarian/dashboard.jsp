@@ -11,22 +11,17 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     </head>
     <body>
-
         <div class="layout">
             <jsp:include page="sidebar.jsp"/>
-            <!-- MAIN -->
 
             <main class="main">
 
-                <!-- HEADER -->
 
                 <jsp:include page="header.jsp"/>
 
                 <div class="dashboard-content">
 
-                    <!-- ===== STATUS CARDS ===== -->
-
-                    <!-- ===== FILTER ===== -->
+                    <jsp:include page="notificationbar.jsp"/>
                     <div class="filter-bar">
                         <form method="get" action="DashboardController" class="filter-form">
 
@@ -37,7 +32,6 @@
                                        placeholder="Search pet, owner, or ID..."
                                        value="${keyword}">
                             </div>
-
                             <div class="date-group">
                                 <label>From</label>
                                 <input type="date" name="dateFrom" value="${dateFrom}">
@@ -52,15 +46,9 @@
 
                         </form>
                     </div>
-
-
-                    <!-- ===== MAIN GRID ===== -->
                     <div class="main-grid">
-
-                        <!-- LEFT -->
                         <div class="case-table-card">
                             <h3>Assigned Cases</h3>
-
                             <table>
                                 <thead>
                                     <tr>
@@ -71,26 +59,28 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
                                     <c:choose>
                                         <c:when test="${not empty assignList}">
                                             <c:forEach var="c" items="${assignList}">
-                                                <tr>
+                                                <tr style="${c.bookingID == nextID ? 'background-color:#dcfce7;' : ''}">
                                                     <td>${c.bookingID}</td>
                                                     <td>${c.slot}</td>
                                                     <td>${c.catName}</td>
                                                     <td>${c.fullName}</td>
                                                     <td class="action-buttons">
-                                                        <a href="addemr?&bookingID=${c.bookingID}" 
-                                                           class="btn-start">
-                                                            EMR
-                                                        </a>
+                                                        <c:choose>
+                                                            <c:when test="${listBookingID.contains(c.bookingID)}">
+                                                                <a href="addemr?bookingID=${c.bookingID}" class="btn-start">ADD</a>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <a href="addemr?bookingID=${c.bookingID}" class="btn-view">VIEW</a>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                         <a href="DashboardController?bookingID=${c.bookingID}&page=${currentPage}&dateFrom=${dateFrom}&dateTo=${dateTo}" 
                                                            class="btn-detail">
                                                             Detail
                                                         </a>
-
                                                     </td>
                                                 </tr>
                                             </c:forEach>
@@ -166,6 +156,13 @@
 
                     </div>
                 </div>
+                <c:if test="${not empty sessionScope.toastMessage}">
+                    <div id="toastBox" class="toast-box">
+                        ${sessionScope.toastMessage}
+                    </div>
+                    <c:remove var="toastMessage" scope="session"/>
+                </c:if>
+
                 <!-- PAGINATION -->
                 <div class="pagination">
 
@@ -200,16 +197,33 @@
                             &raquo;
                         </a>
                     </c:if>
-
                 </div>
         </div>
-
-        <!-- DETAIL PANEL -->
-
     </div>
-
 </main>
 </div>
+<script>
+    setTimeout(function () {
+        var toast = document.getElementById("toastBox");
+        if (toast) {
+            toast.style.display = "none";
+        }
+    }, 5000);
+    function checkDoctorStatus() {
+        fetch("checkDoctorStatus")
+                .then(res => res.text())
+                .then(data => {
+                    const bar = document.getElementById("doctorStatus");
+
+                    if (data === "FREE") {
+                        bar.style.display = "block";
+                    } else {
+                        bar.style.display = "none";
+                    }
+                });
+    }
+    setInterval(checkDoctorStatus, 2000);
+</script>
 
 </body>
 </html>

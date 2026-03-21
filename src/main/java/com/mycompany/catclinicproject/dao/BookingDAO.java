@@ -191,6 +191,7 @@ public class BookingDAO extends DBContext {
             try { c.setAutoCommit(true); } catch (SQLException e) {}
         }
     }
+    
     public int getCatIdByBookingID(int bookingID) {
 
         String sql = "SELECT CatID FROM Bookings WHERE BookingID = ?";
@@ -650,6 +651,230 @@ public class BookingDAO extends DBContext {
         e.printStackTrace();
     }
     
+}
+    public int countCompleted() {
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM Bookings WHERE Status = 'Completed'";
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return count;
+}
+
+public int countConfirmed() {
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM Bookings WHERE Status = 'Confirmed'";
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return count;
+}
+
+public int countPendingPayment() {
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM Bookings WHERE Status = 'PendingPayment'";
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return count;
+}
+
+public int countPendingCancelRefund() {
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM Bookings WHERE Status = 'PendingCancelRefund'";
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return count;
+}
+
+public int countCancelled() {
+    int count = 0;
+    String sql = "SELECT COUNT(*) FROM Bookings WHERE Status = 'Cancelled'";
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return count;
+}
+public List<BookingHistoryDTO> getBookingHistory(String search, String status, int offset, int pageSize) {
+
+    List<BookingHistoryDTO> list = new ArrayList<>();
+
+    String sql =
+        "SELECT "
+        + "b.BookingID, "
+        + "b.SlotID, "
+        + "c.Name AS CatName, "
+        + "c.Breed, "
+        + "b.AppointmentDate, "
+        + "b.EndDate, "
+        + "t.StartTime AS AppointmentTime, "
+        + "b.Status, "
+        + "b.Note, "
+        + "u.FullName AS OwnerName, "
+        + "u.Phone AS OwnerPhone, "
+        + "vetUser.FullName AS VetName "
+        + "FROM Bookings b "
+        + "JOIN Cats c ON b.CatID = c.CatID "
+        + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+        + "JOIN Users u ON o.UserID = u.UserID "
+        + "LEFT JOIN Veterinarians v ON b.VetID = v.VetID "
+        + "LEFT JOIN Users vetUser ON v.UserID = vetUser.UserID "
+        + "JOIN TimeSlots t ON b.SlotID = t.SlotID "
+        + "WHERE 1=1 ";
+
+    if (search != null && !search.trim().isEmpty()) {
+        sql += " AND (c.Name LIKE ? OR u.FullName LIKE ? OR u.Phone LIKE ?) ";
+    }
+
+    if (status != null && !status.trim().isEmpty()) {
+        sql += " AND b.Status = ? ";
+    }
+
+    sql += " ORDER BY b.AppointmentDate DESC "
+         + " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+    try {
+
+        PreparedStatement ps = c.prepareStatement(sql);
+
+        int index = 1;
+
+        if (search != null && !search.trim().isEmpty()) {
+            ps.setString(index++, "%" + search + "%");
+            ps.setString(index++, "%" + search + "%");
+            ps.setString(index++, "%" + search + "%");
+        }
+
+        if (status != null && !status.trim().isEmpty()) {
+            ps.setString(index++, status);
+        }
+
+        // pagination
+        ps.setInt(index++, offset);
+        ps.setInt(index++, pageSize);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+
+            BookingHistoryDTO dto = new BookingHistoryDTO();
+
+            dto.setBookingID(rs.getInt("BookingID"));
+            dto.setSlotID(rs.getInt("SlotID"));
+            dto.setCatName(rs.getString("CatName"));
+            dto.setCatBreed(rs.getString("Breed"));
+            dto.setAppointmentDate(rs.getDate("AppointmentDate"));
+            dto.setEndDate(rs.getDate("EndDate"));
+            dto.setAppointmentTime(rs.getTime("AppointmentTime"));
+            dto.setStatus(rs.getString("Status"));
+            dto.setNote(rs.getString("Note"));
+            dto.setOwnerName(rs.getString("OwnerName"));
+            dto.setOwnerPhone(rs.getString("OwnerPhone"));
+            dto.setVetName(rs.getString("VetName"));
+
+            list.add(dto);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
+public int countBookings(String search, String status) {
+
+    int total = 0;
+
+    String sql =
+        "SELECT COUNT(*) "
+        + "FROM Bookings b "
+        + "JOIN Cats c ON b.CatID = c.CatID "
+        + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+        + "JOIN Users u ON o.UserID = u.UserID "
+        + "WHERE 1=1 ";
+
+    if (search != null && !search.trim().isEmpty()) {
+        sql += " AND (c.Name LIKE ? OR u.FullName LIKE ? OR u.Phone LIKE ?) ";
+    }
+
+    // sửa điều kiện status
+    if (status != null && !status.trim().isEmpty()) {
+        sql += " AND b.Status = ? ";
+    }
+
+    try {
+
+        PreparedStatement ps = c.prepareStatement(sql);
+
+        int index = 1;
+
+        if (search != null && !search.trim().isEmpty()) {
+            ps.setString(index++, "%" + search + "%");
+            ps.setString(index++, "%" + search + "%");
+            ps.setString(index++, "%" + search + "%");
+        }
+
+        if (status != null && !status.trim().isEmpty()) {
+            ps.setString(index++, status);
+        }
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            total = rs.getInt(1);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return total;
+}
+public boolean updateStatusPendingCancelRefund(int bookingID) {
+    String sql = "UPDATE Booking SET Status = ? WHERE BookingID = ?";
+    
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setString(1, "PendingCancelRefund");
+        ps.setInt(2, bookingID);
+        
+        return ps.executeUpdate() > 0;
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
 }
 
 }

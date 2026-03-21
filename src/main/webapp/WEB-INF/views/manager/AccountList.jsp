@@ -22,7 +22,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
                 </div>
 
                 <div class="top-actions">
-                    <button type="button" onclick="history.back()" class="btn btn-back">BACK</button>
                     <a href="addAccount" class="btn btn-primary">ADD ACCOUNT</a>
                 </div>
             </div>

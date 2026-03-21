@@ -185,27 +185,24 @@ a {
 }
 
 /* Assigned */
-.badge.assigned {
-    background: #ffedd5;
-    color: #ea580c;
-}
+
 
 /* In Treatment */
 .badge.in-treatment {
-    background: #fef3c7;
-    color: #d97706;
+    background-color: #fef3c7;  /* vàng nhạt */
+    color: #d97706;             /* cam đậm */
 }
 
-/* Waiting */
-.badge.waiting {
-    background: #f1f5f9;
-    color: #64748b;
+/* Waiting result */
+.badge.waiting-result {
+    background-color: #f1f5f9;  /* xám nhạt */
+    color: #64748b;             /* xám đậm */
 }
 
-/* Discharged */
-.badge.discharged {
-    background: #dcfce7;
-    color: #16a34a;
+/* Completed */
+.badge.completed {
+    background-color: #dcfce7;  /* xanh nhạt */
+    color: #16a34a;             /* xanh đậm */
 }
 
 /* ===== ACTIONS ===== */
@@ -295,7 +292,7 @@ a {
     justify-content: center;
     background: white;
     margin-left: 0px;
-    
+
 }
 .pagination {
     margin-top: auto;
@@ -374,5 +371,66 @@ a {
 
 /* Tinh chỉnh icon bên trong nút có chữ */
 .btn-action i {
+    font-size: 14px;
+}
+.actions-cell{
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* style chung */
+.actions-cell a{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: white;
+    transition: all 0.25s ease;
+}
+
+/* EMR */
+.btn-emr{
+    background: #ff8c00;
+}
+
+.btn-emr:hover{
+    background: #ff7a00;
+    transform: translateY(-2px);
+}
+
+/* Xray */
+.actions-cell a[href*="xray"]{
+    background: #ffa726;
+}
+
+.actions-cell a[href*="xray"]:hover{
+    background: #fb8c00;
+    transform: translateY(-2px);
+}
+
+/* Blood Test */
+.actions-cell a[href*="bloodtest"]{
+    background: #ff9800;
+}
+.actions-cell a[href*="bloodtest"]:hover{
+    background: #f57c00;
+    transform: translateY(-2px);
+}
+/* Prescription */
+.actions-cell a[href*="preController"]{
+    background: #ffb74d;
+}
+
+.actions-cell a[href*="preController"]:hover{
+    background: #ffa726;
+    transform: translateY(-2px);
+}
+
+/* icon */
+.actions-cell i{
     font-size: 14px;
 }

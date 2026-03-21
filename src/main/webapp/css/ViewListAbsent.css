@@ -1,0 +1,270 @@
+/* Reset và biến cấu hình chung */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+:root {
+  /* Màu nền */
+  --bg-body: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-hover: #f8fafc;
+
+  /* Màu chữ */
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+
+  /* Màu chủ đạo */
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --primary-light: #dbeafe;
+
+  /* Màu viền */
+  --border: #e2e8f0;
+  --border-focus: #2563eb;
+
+  /* Cỡ chữ vừa phải */
+  --text-base: 13.5px;
+  --text-sm: 11.5px;
+  --text-title: 17px;
+
+  /* Bo góc và hiệu ứng */
+  --radius: 0.5rem;
+  --transition: all 0.2s ease;
+}
+
+body {
+  background-color: var(--bg-body);
+  font-size: var(--text-base);
+  line-height: 1.5;
+  color: var(--text-primary);
+  padding: 1.5rem 1rem;
+}
+
+/* Khung tổng thể cố định chiều ngang */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Thẻ card chung */
+.card {
+  background-color: var(--bg-card);
+  border-radius: calc(var(--radius) + 0.1rem);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+/* Phần bộ lọc */
+.filter-header .header-title {
+  margin-bottom: 1rem;
+}
+
+.filter-header .header-title h2 {
+  font-size: var(--text-title);
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.filter-header .header-title p {
+  color: var(--text-secondary);
+  font-size: var(--text-base);
+}
+
+#requestType {
+  margin-bottom: 1rem;
+}
+
+.date-picker-group {
+  display: flex;
+  align-items: end;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.date-single, .date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.date-range {
+  display: flex;
+  align-items: end;
+  gap: 0.5rem;
+}
+
+label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Input, select */
+input[type="date"], select {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: var(--text-base);
+  min-width: 140px;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+input[type="date"]:focus, select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Nút tìm kiếm */
+.btn-search {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.3rem;
+  border-radius: var(--radius);
+  font-size: var(--text-base);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  height: fit-content;
+}
+
+.btn-search:hover {
+  background-color: var(--primary-hover);
+}
+
+/* Phần danh sách lịch nghỉ */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+
+#checkAll, input[name="selectedIds"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.btn-cancel-selected {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius);
+  font-size: var(--text-base);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-cancel-selected:hover {
+  background-color: #fee2e2;
+}
+
+/* ========== FIX CHIỀU CAO DANH SÁCH ĐỦ 5 SLOT ========== */
+.list-content {
+  /* Chiều cao cố định đủ chứa đúng 5 slot, bao gồm cả khoảng cách giữa các item */
+  height: 390px;
+  /* Nếu có nhiều hơn 5 slot, tự động hiển thị thanh cuộn dọc */
+  overflow-y: auto;
+  /* Thanh cuộn gọn gàng, không chiếm diện tích */
+  scrollbar-width: thin;
+}
+
+/* Thanh cuộn đẹp trên trình duyệt Chrome, Edge */
+.list-content::-webkit-scrollbar {
+  width: 6px;
+}
+.list-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+.list-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+/* Item danh sách */
+.list-content .list-item {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 0.6rem;
+  transition: var(--transition);
+  gap: 1rem;
+}
+
+.list-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.col-check {
+  flex: 0 0 40px;
+}
+
+.col-time {
+  flex: 1;
+}
+
+.time-text {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 0.15rem;
+}
+
+.label-muted {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+/* Trạng thái trống khi không có slot nào */
+.empty-state {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  color: var(--text-secondary);
+}
+.empty-state span {
+  font-size: 40px;
+}
+.empty-state p {
+  font-size: var(--text-base);
+}
+
+/* Responsive cho điện thoại */
+@media (max-width: 480px) {
+  .date-picker-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  input[type="date"], select {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .list-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

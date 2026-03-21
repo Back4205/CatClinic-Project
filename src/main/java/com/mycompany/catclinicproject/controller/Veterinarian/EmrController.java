@@ -16,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -63,22 +64,21 @@ public class EmrController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        
         String idParam = request.getParameter("medicalRecordID");
-
         try {
-
             int medicalRecordID = Integer.parseInt(idParam);
             BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
             EMRDTO emr = dao.getEMRDetail(medicalRecordID);
             int catID = dao.getCatIDByMedicalRecordID(medicalRecordID);
             String status = dao.getStatusByMedicalRecordID(medicalRecordID);
-            request.setAttribute("status", status);
+            session.setAttribute("status", status);
             request.setAttribute("emr", emr);
             request.setAttribute("activePage", "assigned");
             request.setAttribute("catId", catID);
             request.getRequestDispatcher("WEB-INF/views/veterinarian/medicalrecord.jsp")
                     .forward(request, response);
-
         } catch (NumberFormatException e) {
             response.sendRedirect("assignCase");
         }

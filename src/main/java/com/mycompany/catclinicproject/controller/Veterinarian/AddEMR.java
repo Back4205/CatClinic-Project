@@ -5,6 +5,10 @@
 package com.mycompany.catclinicproject.controller.Veterinarian;
 
 import com.mycompany.catclinicproject.dao.BookingDaoVeterinarian;
+import com.mycompany.catclinicproject.dao.MedicalRecordDAO;
+import com.mycompany.catclinicproject.dao.NotificationDAO;
+import com.mycompany.catclinicproject.model.User;
+import com.mycompany.catclinicproject.websocket.NotificationSocket;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -58,15 +63,48 @@ public class AddEMR extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        HttpSession session = request.getSession();
+        NotificationDAO daon = new NotificationDAO();
+        User acc = (User) session.getAttribute("acc");
+        int UserID = acc.getUserID();
+        int VetID = daon.getVetIDByUserID(UserID);
         int bookingID = Integer.parseInt(request.getParameter("bookingID"));
         BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
-        dao.createMedicalRecord(bookingID);
-        int medicalRecordID = dao.getMedicalRecordIDByBookingID(bookingID);
-        dao.updateStatusToInTreatment(medicalRecordID);
-            request.setAttribute("activePage", "assigned");
-
-        response.sendRedirect("EmrController?medicalRecordID=" + medicalRecordID);
+        boolean checkstatus = dao.isAnyInTreatment(VetID);
+        MedicalRecordDAO mdao = new MedicalRecordDAO();
+        int nextid = mdao.getGeneralCheckBookingId(VetID);
+        int id = mdao.getMedicalRecordIdByBookingId(bookingID);
+        if (id != -1) {
+            response.sendRedirect("EmrController?medicalRecordID=" + id);
+        } else {
+            if (checkstatus) {
+                session.setAttribute("toastMessage", "Đang có ca khám khác chưa hoàn thành nên chưa thể thêm mới.");
+                response.sendRedirect("DashboardController");
+                return;
+            }
+             if (bookingID != nextid) {
+                session.setAttribute("toastMessage", "Phải khám theo thứ tự booking.");
+                response.sendRedirect("DashboardController");
+                return;
+            }
+             
+             
+            
+            boolean created = dao.createMedicalRecord(bookingID);
+            if (created) {
+                int medicalRecordID = dao.getMedicalRecordIDByBookingID(bookingID);
+                dao.updateStatusToInTreatment(medicalRecordID);
+                String message = "You have just updated a medical record.";
+                int notiID = daon.createNotification(VetID, message, medicalRecordID, "EMR");
+                if (notiID != -1) {
+                    NotificationSocket.sendNotification(VetID, notiID, message, "EMR");
+                }
+                response.sendRedirect("EmrController?medicalRecordID=" + medicalRecordID);
+            } else {
+                session.setAttribute("toastMessage", "Tạo medical record thất bại.");
+                response.sendRedirect("DashboardController");
+            }
+        }
     }
 
     /**

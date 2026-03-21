@@ -11,28 +11,15 @@
         <link href="css/AssignCaseStyle.css" rel="stylesheet" type="text/css"/>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     </head>
-
     <body>
-
         <div class="layout">
-
-            <!-- SIDEBAR -->
             <jsp:include page="sidebar.jsp"/>
-
-            <!-- MAIN -->
             <main class="main">
-
-                <!-- HEADER -->
                 <jsp:include page="header.jsp"/>
-
                 <div class="dashboard-content">
-
-                    <!-- ===== TITLE ===== -->
                     <div class="page-title">
                         <h2>TREATMENT RECORD</h2>
                     </div>
-
-                    <!-- ===== FILTER ===== -->
                     <form action="assignedCases" method="get">
 
                         <div class="case-header">
@@ -111,86 +98,70 @@
                                         <td>${c.appointmentDate}</td>
 
                                         <td>
-                                            <span class="badge ${c.status.toLowerCase()}">
-                                                ${c.status}
-                                            </span>
-                                        </td>
+                                            <span class="badge 
+                                                  ${c.status == 'In Treatment' ? 'in-treatment' : 
+                                                    (c.status == 'Waiting result' ? 'waiting-result' : 'completed')}">
+                                                      ${c.status}
+                                                  </span>
+                                            </td>
 
-                                        <td class="actions-cell">
-                                            <a href="EmrController?medicalRecordID=${c.medicalRecordID}" 
-                                               class="btn-emr">
-                                                <i class="fa-regular fa-file-lines"></i> EMR
-                                            </a>
-                                            <a href="xray?medicalRecordID=${c.medicalRecordID}"
-                                               class="btn-view">
-                                                <i class="fa-solid fa-flask icon-action"></i>
-                                            </a>
-                                            <a href="bloodtest?medicalRecordID=${c.medicalRecordID}"
-                                               class="btn-view">
-                                                <i class="fa-solid fa-table-cells-large icon-action"></i>
-                                            </a>
+                                            <td class="actions-cell">
+                                                <a href="EmrController?medicalRecordID=${c.medicalRecordID}" 
+                                                   class="btn-emr">
+                                                    <i class="fa-regular fa-file-lines"></i> EMR
+                                                </a>
+                                                <a href="xray?medicalRecordID=${c.medicalRecordID}"
+                                                   class="btn-view">
+                                                    <i class="fa-solid fa-flask icon-action"></i>
+                                                </a>
+                                                <a href="bloodtest?medicalRecordID=${c.medicalRecordID}"
+                                                   class="btn-view">
+                                                    <i class="fa-solid fa-table-cells-large icon-action"></i>
+                                                </a>
                                                 <a href="preController?medicalRecordID=${c.medicalRecordID}"
-                                               class="btn-view">
-                                                <i class="fa-solid fa-pills"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                </c:forEach>
-                            </tbody>
-                        </table>
+                                                   class="btn-view">
+                                                    <i class="fa-solid fa-pills"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-
-                </div>
-
-                <!-- ===== PAGINATION ===== -->
-                <div class="pagination">
-
-                    <c:set var="startPage" value="${currentPage - 1}" />
-                    <c:set var="endPage" value="${currentPage + 1}" />
-
-                    <!-- Fix nếu ở đầu -->
-                    <c:if test="${startPage < 1}">
-                        <c:set var="startPage" value="1" />
-                        <c:set var="endPage" value="3" />
-                    </c:if>
-
-                    <!-- Fix nếu ở cuối -->
-                    <c:if test="${endPage > totalPages}">
-                        <c:set var="endPage" value="${totalPages}" />
-                        <c:set var="startPage" value="${totalPages - 2}" />
-                    </c:if>
-
-                    <!-- Tránh startPage < 1 -->
-                    <c:if test="${startPage < 1}">
-                        <c:set var="startPage" value="1" />
-                    </c:if>
-
-                    <!-- Nút << -->
-                    <c:if test="${startPage > 1}">
-                        <a href="assignedCases?page=${startPage - 1}&status=${statusFilter}">
-                            &laquo;
-                        </a>
-                    </c:if>
-
-                    <!-- Hiển thị tối đa 3 trang -->
-                    <c:forEach begin="${startPage}" end="${endPage}" var="i">
-                        <a href="assignedCases?page=${i}&status=${status}&keyword=${keyword}"
-                           class="${i == currentPage ? 'active-page' : ''}">
-                            ${i}
-                        </a>
-                    </c:forEach>
-
-                    <!-- Nút >> -->
-                    <c:if test="${endPage < totalPages}">
-                        <a href="assignedCases?page=${endPage + 1}&status=${status}">
-                            &raquo;
-                        </a>
-                    </c:if>
-
-                </div>
-
-            </main>
-        </div>
-
-    </body>
-</html>
+                    <div class="pagination">
+                        <c:set var="startPage" value="${currentPage - 1}" />
+                        <c:set var="endPage" value="${currentPage + 1}" />
+                        <c:if test="${startPage < 1}">
+                            <c:set var="startPage" value="1" />
+                            <c:set var="endPage" value="3" />
+                        </c:if>
+                        <c:if test="${endPage > totalPages}">
+                            <c:set var="endPage" value="${totalPages}" />
+                            <c:set var="startPage" value="${totalPages - 2}" />
+                        </c:if>
+                        <c:if test="${startPage < 1}">
+                            <c:set var="startPage" value="1" />
+                        </c:if>
+                        <c:if test="${startPage > 1}">
+                            <a href="assignedCases?page=${startPage - 1}&status=${statusFilter}">
+                                &laquo;
+                            </a>
+                        </c:if>
+                        <c:forEach begin="${startPage}" end="${endPage}" var="i">
+                            <a href="assignedCases?page=${i}&status=${status}&keyword=${keyword}"
+                               class="${i == currentPage ? 'active-page' : ''}">
+                                ${i}
+                            </a>
+                        </c:forEach>
+                        <c:if test="${endPage < totalPages}">
+                            <a href="assignedCases?page=${endPage + 1}&status=${status}">
+                                &raquo;
+                            </a>
+                        </c:if>
+                    </div>
+                </main>
+            </div>
+            
+        </body>
+    </html>

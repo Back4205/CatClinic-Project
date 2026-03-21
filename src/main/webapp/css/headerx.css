@@ -1,13 +1,30 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
-*/
-/* 
-    Created on : Jan 29, 2026, 9:33:41 PM
-    Author     : Son
-*/
+/* ================= HEADER / NAVBAR ĐÃ ĐƯỢC TỐI ƯU ================= */
+:root {
+    --primary-orange: #f97316;
+    --primary-orange-dark: #ea580c;
+    --light-orange-bg: #fff7ed;
+    --text-dark: #1e293b;
+    --white: #ffffff;
+    --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
+    --shadow-md: 0 12px 30px rgba(0,0,0,0.12);
+}
 
-/* ================= HEADER / NAVBAR ================= */
+/* Sticky header luôn cố định ở đầu trang */
+header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    background: var(--white);
+    z-index: 9999;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Chuyển cảnh mượt tự nhiên */
+}
+/* Hiệu ứng khi cuộn trang: header có bóng đổ nhẹ */
+header.scrolled {
+    box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.98);
+}
+
 .navbar {
     max-width: 1280px;
     margin: 0 auto;
@@ -17,28 +34,37 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     align-items: center;
 }
 
-/* Logo */
-/* ===== LOGO PETCLINIC ===== */
-/* ===== LOGO PETCLINIC ===== */
+/* ================= LOGO ================= */
 .logo {
     display: flex;
     align-items: center;
+    gap: 8px;
 }
-
+.logo::before {
+    content: "🐱"; /* Thêm icon con mèo để logo sinh động hơn, bạn có thể thay bằng icon khác */
+    font-size: 28px;
+}
 .logo span a {
+    font-family: 'Segoe UI', Roboto, sans-serif;
     font-size: 26px;
     font-weight: 700;
-    color: #f97316;          /* cam chủ đạo */
+    color: var(--primary-orange);
     text-decoration: none;
-    letter-spacing: 1px;
-    transition: 0.3s;
+    letter-spacing: 1.2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .logo span a:hover {
-    color: #ea580c;          /* cam đậm khi hover */
+    color: var(--primary-orange-dark);
+    transform: translateX(-2px); /* Di chuyển nhẹ logo khi hover */
 }
 
-
+/* Nút hamburger chỉ hiện trên mobile */
+.hamburger {
+    display: none;
+    font-size: 24px;
+    color: var(--primary-orange);
+    cursor: pointer;
+}
 
 /* ================= MAIN NAV ================= */
 .main-nav {
@@ -46,184 +72,339 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css
     gap: 12px;
     align-items: center;
 }
-
-/* Nav links */
 .main-nav > a,
 .main-nav .nav-item > a {
-    padding: 8px 14px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    position: relative;
+    padding: 10px 16px;
     text-decoration: none;
-    color: #f97316;
+    color: var(--text-dark);
     font-weight: 500;
     border-radius: 10px;
-    transition: all 0.25s ease;
+    font-size: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-flex;
     align-items: center;
-    font-size: 16px;
+    overflow: hidden;
 }
+/* Hiệu ứng gạch chân động khi hover */
+.main-nav > a::after,
+.main-nav .nav-item > a::after {
+    content: "";
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary-orange);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(-50%);
+}
+.main-nav > a:hover::after,
+.main-nav .nav-item > a:hover::after {
+    width: 70%;
+}
+/* Màu chữ đổi sang cam khi hover */
+.main-nav > a:hover,
+.main-nav > a.active,
+.main-nav .nav-item > a:hover {
+    color: var(--primary-orange);
+    background: var(--light-orange-bg);
+}
+/* Hiệu ứng mũi tên hiện ra mượt */
 .services-link .arrow {
     opacity: 0;
     visibility: hidden;
     margin-left: 0;
-    transform: translateY(-2px);
-    transition: all 0.25s ease;
+    transform: translateY(-3px) rotate(0deg);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .nav-item:hover .services-link .arrow {
     opacity: 1;
     visibility: visible;
     margin-left: 6px;
-    transform: translateY(0);
+    transform: translateY(0) rotate(90deg); /* Xoay mũi tên mượt */
 }
 
-.main-nav > a:hover,
-.main-nav > a.active,
-.main-nav .nav-item > a:hover {
-    background: #fff7ed;
-    color: #f97316;
-}
-
-/* ================= DROPDOWN ================= */
+/* ================= DROPDOWN MENU ================= */
 .nav-item {
     position: relative;
 }
-
 .dropdown-menu {
     position: absolute;
-    top: 120%;
+    top: 130%;
     left: 0;
     list-style: none;
     margin: 0;
-    padding: 8px 0;
-    background: #fff;
-    border-radius: 12px;
-    min-width: 210px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    padding: 12px 0;
+    background: var(--white);
+    border-radius: 14px;
+    min-width: 220px;
+    box-shadow: var(--shadow-md);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(8px);
-    transition: all 0.2s ease;
+    transform: translateY(15px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 999;
+    overflow: hidden;
 }
-
-/* Show dropdown on hover */
 .nav-item:hover .dropdown-menu {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
 }
-
-.dropdown-menu li {
-    list-style: none;
-}
-
 .dropdown-menu li a {
+    font-family: 'Segoe UI', Roboto, sans-serif;
     display: block;
-    padding: 10px 18px;
+    padding: 10px 20px;
     text-decoration: none;
-    color: #0f172a;
+    color: var(--text-dark);
     font-weight: 500;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
 }
-
 .dropdown-menu li a:hover {
-    background: #f1f5f9;
-    color: #0f9d75;
-    padding-left: 22px;
+    background: var(--light-orange-bg);
+    color: var(--primary-orange);
+    padding-left: 26px;
 }
 
-/* ================= AUTH ================= */
+/* ================= AUTH BUTTONS ================= */
 .auth {
     display: flex;
     align-items: center;
     gap: 14px;
-    position: relative;   /* Bắt buộc để dropdown bám theo */
+    position: relative;
 }
-
-/* Icon user */
 .auth i {
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
-    color: #222;
-    padding: 6px;
+    color: var(--text-dark);
+    padding: 8px;
     border-radius: 50%;
-    transition: all 0.25s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .auth i:hover {
-    background: #e8f7f2;
-    color: #0f9d75;
+    background: var(--light-orange-bg);
+    color: var(--primary-orange);
+    transform: scale(1.1); /* Phóng to nhẹ icon user */
 }
-
-/* Login */
 .auth .login {
+    font-family: 'Segoe UI', Roboto, sans-serif;
     text-decoration: none;
-    color: #222;
-    padding: 8px 12px;
+    color: var(--text-dark);
+    padding: 10px 16px;
     border-radius: 10px;
-    transition: all 0.25s ease;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .auth .login:hover {
-    background: #e8f7f2;
-    color: #0f9d75;
+    background: var(--light-orange-bg);
+    color: var(--primary-orange);
 }
-
-/* Register */
 .auth .register {
-    background: #f97316;
-    color: #fff;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: var(--primary-orange);
+    color: var(--white);
     text-decoration: none;
-    padding: 9px 20px;
+    padding: 10px 22px;
     border-radius: 999px;
     font-weight: 600;
-    box-shadow: 0 6px 16px rgba(15,157,117,0.3);
-    transition: all 0.25s ease;
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
 .auth .register:hover {
-    background: #f97316;
-    transform: translateY(-2px);
+    background: var(--primary-orange-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4);
 }
 
 /* ================= DROPDOWN USER ================= */
-
 .dropdown-user {
     position: absolute;
-    top: 120%;
+    top: 130%;
     right: 0;
-    background: #fff;
-    border-radius: 10px;
-    min-width: 160px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    background: var(--white);
+    border-radius: 14px;
+    min-width: 170px;
+    box-shadow: var(--shadow-md);
     list-style: none;
-    padding: 8px 0;
+    padding: 12px 0;
     margin: 0;
-
-    /* Ẩn mặc định */
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.2s ease;
+    transform: translateY(15px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 9999;
+    overflow: hidden;
 }
-
-.dropdown-user li a {
-    display: block;
-    padding: 10px 16px;
-    color: #222;
-    text-decoration: none;
-    font-size: 14px;
-}
-
-.dropdown-user li a:hover {
-    background: #f1f5f9;
-    color: #0f9d75;
-}
-
-/* Hover icon thì hiện dropdown */
 .auth:hover .dropdown-user {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
 }
+.dropdown-user li a {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    display: block;
+    padding: 10px 18px;
+    color: var(--text-dark);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dropdown-user li a:hover {
+    background: var(--light-orange-bg);
+    color: var(--primary-orange);
+    padding-left: 24px;
+}
+
+/* ================= RESPONSIVE CHO MOBILE ================= */
+@media (max-width: 992px) {
+    .hamburger {
+        display: block;
+    }
+    .main-nav {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--white);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+        box-shadow: var(--shadow-sm);
+        /* Ẩn menu mặc định */
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-15px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    /* Hiện menu khi click hamburger (thêm js nhỏ bên dưới để kích hoạt) */
+    .main-nav.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    .nav-item {
+        width: 100%;
+    }
+    .dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        box-shadow: none;
+        width: 100%;
+        padding-left: 20px;
+        margin-top: 10px;
+    }
+}/* ========== BIẾN CHUNG VỪA DÙNG ========== */
+:root {
+    --primary-orange: #f97316;
+    --primary-orange-dark: #ea580c;
+    --light-orange-bg: #fff7ed;
+    --text-dark: #1e293b;
+    --white: #ffffff;
+    --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
+    --shadow-md: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* ========== SỬA LỖI HEADER ĐẦU TIÊN ========== */
+header {
+    position: sticky;
+    top: 0;
+    width: 100%; /* Lấy full chiều rộng màn hình, hết khoảng trắng 2 bên */
+    left: 0;
+    right: 0;
+    background: var(--white); /* Nền trắng phủ kín toàn bộ header, không bị hở */
+    z-index: 9999;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm); /* Thêm bóng nhẹ để header nổi bật hơn phần hero */
+}
+/* Sửa lỗi navbar bị lề, căn chỉnh lề đều 2 bên */
+.navbar {
+    max-width: 100%; /* Xóa giới hạn chiều rộng cũ, lấy full màn hình */
+    width: 100%;
+    margin: 0 auto;
+    padding: 18px 5%; /* Canh lề nội dung header cách mép màn hình 5% */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ========== CÁC PHẦN CÒN LẠI CỦA HEADER GIỮ NGUYÊN, CHỈ SỬA NỮA ĐÂY ========== */
+/* Logo giữ nguyên code cũ, main-nav, dropdown... giữ hết */
+
+/* ========== SỬA LỖI HERO BỊ DÍNH VÀO HEADER ========== */
+.hero {
+    width: 100%;
+    min-height: calc(100vh - 82px); /* Trừ đúng chiều cao header, không bị dư khoảng trống */
+    padding: 60px 5%; /* Thêm padding trên để nội dung không bị header che */
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 40px;
+    background: var(--primary-orange);
+    position: relative;
+    overflow: hidden;
+}
+/* Sửa background shape của hero không bị trồi lên trên header */
+.hero-bg-circle {
+    position: absolute;
+    top: 0; /* Căn sát trên cùng của hero, không bị hở ra sau header */
+    left: -20%;
+    width: 70%;
+    height: 140%;
+    background: rgba(0,0,0,0.05);
+    border-radius: 0 50% 50% 0;
+    z-index: 1;
+}
+/* Các phần còn lại của hero giữ nguyên code cũ */
+/* ========== HEADER SỬA LỖI, THÊM TỰ ẨN HIỆN ========== */
+:root {
+    --primary-orange: #f97316;
+    --primary-orange-dark: #ea580c;
+    --light-orange-bg: #fff7ed;
+    --text-dark: #1e293b;
+    --white: #ffffff;
+    --shadow-sm: 0 2px 10px rgba(0,0,0,0.08);
+    --shadow-md: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+header {
+    position: sticky; /* Luôn dính ở đầu màn hình */
+    top: 0;
+    width: 100%; /* Full chiều rộng, hết khoảng trắng 2 bên */
+    left: 0;
+    right: 0;
+    background: var(--white);
+    z-index: 9999;
+    /* Chuyển cảnh ẩn hiện mượt không bị giật */
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+    transform: translateY(0); /* Vị trí ban đầu: hiển thị đầy đủ */
+    box-shadow: var(--shadow-sm);
+}
+/* Class ẩn header khi cuộn xuống */
+header.hidden {
+    transform: translateY(-100%); /* Trượt header lên ngoài màn hình */
+}
+/* Class thêm bóng khi header ở trạng thái cuộn */
+header.scrolled {
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.98);
+}
+
+/* Căn chỉnh nội dung header không bị dính mép màn hình */
+.navbar {
+    max-width: 100%;
+    width: 100%;
+    margin: 0 auto;
+    padding: 18px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Các phần còn lại của header (logo, menu, dropdown...) giữ nguyên như cũ */

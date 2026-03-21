@@ -5,6 +5,7 @@
 package com.mycompany.catclinicproject.controller.Veterinarian;
 
 import com.mycompany.catclinicproject.dao.BookingDaoVeterinarian;
+import com.mycompany.catclinicproject.dao.MedicalRecordDAO;
 import com.mycompany.catclinicproject.model.AssignCaseDTO;
 import com.mycompany.catclinicproject.model.DetailBookingDTO;
 import com.mycompany.catclinicproject.model.User;
@@ -85,6 +86,7 @@ public class DashboardController extends HttpServlet {
             response.sendRedirect("login");
             return;
         }
+
         String keyword = request.getParameter("keyword");
         request.setAttribute("keyword", keyword);
         String dateFrom = request.getParameter("dateFrom");
@@ -119,16 +121,18 @@ public class DashboardController extends HttpServlet {
                 page = 1;
             }
         }
-        // ===== GỌI DAO =====
+
         int totalRecords = dao.countAssignCases(vetID, dateFrom, dateTo, keyword);
         int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
         List<AssignCaseDTO> assignList
                 = dao.getAssignCasesPaging(vetID, dateFrom, dateTo, keyword, page, pageSize);
-    
         DateTimeFormatter formatter
                 = DateTimeFormatter.ofPattern("EEEE, dd MMMM yyyy", Locale.ENGLISH);
         String bookingIDRaw = request.getParameter("bookingID");
         String raw = request.getParameter("bookingID");
+        List<Integer> listBookingID = dao.getBookingIDWithoutMedicalRecord(vetID, dateFrom, dateTo);
+        MedicalRecordDAO mdao = new MedicalRecordDAO();
+        int nextid = mdao.getGeneralCheckBookingId(vetID);
 
         if (raw != null && !raw.trim().isEmpty()) {
             int bookingID = Integer.parseInt(raw.trim());
@@ -140,8 +144,9 @@ public class DashboardController extends HttpServlet {
             request.setAttribute("selectedCase", detail);
         }
         String formattedDate = today.format(formatter);
+        request.setAttribute("nextID", nextid);
         request.setAttribute("todayDate", formattedDate);
-       
+        request.setAttribute("listBookingID", listBookingID);
         request.setAttribute("assignList", assignList);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);

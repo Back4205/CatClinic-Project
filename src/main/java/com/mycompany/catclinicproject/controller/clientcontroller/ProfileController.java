@@ -26,14 +26,11 @@ public class ProfileController extends HttpServlet {
          return;
      }
      int userID = user.getUserID();
-
         ProfileDAO dao = new ProfileDAO();
         UserDTO userProfile = dao.getUserProfile(userID);
-
         request.setAttribute("user", userProfile);
         request.getRequestDispatcher("/WEB-INF/views/client/my-profile.jsp").forward(request, response);
     }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

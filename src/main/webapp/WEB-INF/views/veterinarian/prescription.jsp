@@ -37,12 +37,8 @@
 
                             <input type="hidden" name="medicalRecordID"
                                    value="${medicalRecordID}"/>
-
                             <!-- SEARCH -->
-
-                           
                             <div class="emr-info">
-
                                 <!-- PATIENT -->
                                 <div class="info-box">
                                     <h4>PATIENT DETAILS</h4>

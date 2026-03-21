@@ -95,7 +95,7 @@ public class LoginController extends HttpServlet {
                         response.sendRedirect("DashboardController");
                         break;
                     case 3:
-                        response.sendRedirect("reception/home");
+                        response.sendRedirect("view-booking-list");
                         break;
                     case 4:
                         String position = dao.getStaffPosition(account.getUserID());
@@ -105,12 +105,12 @@ public class LoginController extends HttpServlet {
                             break;
                         }
                         if ("Technician".equalsIgnoreCase(position)) {
-                            response.sendRedirect("technician/dashboard");
+                            response.sendRedirect("technician/lab-hub");
                             break;
                         }
                         break;
                     case 5:
-                        
+                        response.sendRedirect("loadinfo");
                         break;
                     default:
                         request.getRequestDispatcher("WEB-INF/views/common/homeUser.jsp").forward(request, response);

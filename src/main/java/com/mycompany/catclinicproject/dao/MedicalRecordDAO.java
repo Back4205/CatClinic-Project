@@ -285,14 +285,89 @@ public class MedicalRecordDAO extends DBContext {
 
         return list;
     }
-    public static void main( String[] args){
-        MedicalRecordDAO dao = new MedicalRecordDAO();
-        List<MedicalStaffWorkDTO> list = dao.getStaffWorkByBookingID(1);
-        for(MedicalStaffWorkDTO mw:list){
+    public boolean updateStatusToWaiting(int medicalRecordID) {
+    String sql = "UPDATE MedicalRecords SET Status = 'Waiting result' WHERE MedicalRecordID = ?";
 
-        }
+    try (PreparedStatement ps = c.prepareStatement(sql)) {
+        ps.setInt(1, medicalRecordID);
 
+        int rowsAffected = ps.executeUpdate();
+        return rowsAffected > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return false;
+}
+    
+    public boolean autoUpdateAndCheckChanges() {
+    boolean changed = false;
+    
+   
+    String sqlUpdate = "UPDATE MedicalRecords " +
+                       "SET Status = 'In Treatment' " +
+                       "WHERE Status = 'Waiting result' " +
+                       "AND MedicalRecordID NOT IN (" +
+                       "    SELECT DISTINCT MedicalRecordID FROM TestOrders WHERE Status != 'Completed'" +
+                       ")";
+
+    try (PreparedStatement ps = c.prepareStatement(sqlUpdate)) {
+        int rows = ps.executeUpdate();
+        if (rows > 0) {
+            changed = true; 
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    
+    return changed;
+}
+    public int getMedicalRecordIdByBookingId(int bookingId) {
+        String sql = "SELECT MedicalRecordID FROM MedicalRecords WHERE BookingID = ?";
+        
+        try (PreparedStatement stm = c.prepareStatement(sql)) {
+            stm.setInt(1, bookingId);
+            
+            try (ResultSet rs = stm.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("MedicalRecordID");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Lỗi tại getMedicalRecordIdByBookingId: " + e.getMessage());
+        }
+        
+        return -1;
+    }
+    public int getGeneralCheckBookingId(int vetId) {
+    String sql = "SELECT TOP 1 b.BookingID " + // Chỉ lấy đúng cột ID
+                 "FROM Bookings b " +
+                 "INNER JOIN Appointment_Service asv ON b.BookingID = asv.BookingID " +
+                 "INNER JOIN Services s ON asv.ServiceID = s.ServiceID " +
+                 "LEFT JOIN MedicalRecords m ON b.BookingID = m.BookingID " +
+                 "WHERE b.VetID = ? " +
+                 "AND b.Status = 'Completed' " +
+                 "AND s.NameService = ? " +
+                 "AND m.BookingID IS NULL " +
+                 "ORDER BY b.BookingID ASC";
+
+    try (PreparedStatement stm = c.prepareStatement(sql)) {
+        stm.setInt(1, vetId);
+        stm.setString(2, "General Check");
+        
+        try (ResultSet rs = stm.executeQuery()) {
+            if (rs.next()) {
+                // Trả về ID trực tiếp
+                return rs.getInt("BookingID");
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Lỗi: " + e.getMessage());
+    }
+    
+    // Trả về -1 nếu không tìm thấy booking nào thỏa mãn
+    return -1;
+}
 
 
 

@@ -97,13 +97,13 @@
                             </div>
 
                         </div>
-                                   
+
                         <hr class="divider"/>
 
                         <!-- ===== CLINICAL SECTION ===== -->
-                        
+
                         <!-- ===== TEST LAB SECTION ===== -->
-                         <div class="step-nav">
+                        <div class="step-nav">
 
                             <a href="EmrController?medicalRecordID=${emr.medicalRecordID}"
                                class="step-item ${activeStep == 1 ? 'active' : ''}">
@@ -111,15 +111,15 @@
                                 <span class="step-label">EXAM</span>
                             </a>
 
-                            
+
 
                             <a href="xray?medicalRecordID=${emr.medicalRecordID}"
                                class="step-item ${activeStep == 2 ? 'active' : ''}">
                                 <span class="step-number">2</span>
                                 <span class="step-label">X-RAY</span>
                             </a>
-                                
-                                <a href="bloodtest?medicalRecordID=${emr.medicalRecordID}"
+
+                            <a href="bloodtest?medicalRecordID=${emr.medicalRecordID}"
                                class="step-item ${activeStep == 3 ? 'active' : ''}">
                                 <span class="step-number">3</span>
                                 <span class="step-label">BLOOD TEST</span>
@@ -132,8 +132,8 @@
                             </a>
 
                         </div>
-                                
-                                
+
+
                         <c:choose>
 
                             <c:when test="${not empty testOrders}">
@@ -168,82 +168,75 @@
                                     <input type="hidden" name="action" id="actionField">
                                     <input type="hidden" name="medicalRecordID"
                                            value="${emr.medicalRecordID}"/>
-
                                     <div class="lab-request-box">
+                                        <c:choose>
+                                            <c:when test="${sessionScope.status ne 'Completed'}">
+                                                <button type="button"
+                                                        class="btn-request"
+                                                        onclick="confirmAction('request')">
+                                                    Request X-ray
+                                                </button>
+                                            </c:when>
 
-                                        <div class="lab-icon">
-                                            <i class="fa-solid fa-heart-pulse"></i>
-                                        </div>
+                                            <c:otherwise>
+                                                <span class="no-request">No request</span>
+                                            </c:otherwise>
+                                        </c:choose>
 
-                                        <h3>Do you want to request a X-Ray?</h3>
-
-                                        <div class="lab-actions">
-
-                                            <button type="button"
-                                                    class="btn-skip"
-                                                    onclick="confirmAction('skip')">
-                                                No, Skip
-                                            </button>
-
-                                            <button type="button"
-                                                    class="btn-request"
-                                                    onclick="confirmAction('request')">
-                                                Yes, Request Blood Test
-                                            </button>
-
-                                        </div>
 
                                     </div>
 
-                                </form>
+                            </div>
 
-                            </c:otherwise>
-
-                        </c:choose>
-                        <!-- FLOAT NAVIGATION BUTTONS -->
-                        <div class="floating-nav">
-
-                            <!-- Previous -->
-                            <a href="EmrController?medicalRecordID=${emr.medicalRecordID}"
-                               class="btn-floating btn-prev">
-                                <i class="fa fa-arrow-left"></i> Previous
-                            </a>
-
-                            <!-- Save & Next -->
-                            <form action="bloodtest" method="get">
-                                <input type="hidden" name="medicalRecordID"
-                                       value="${emr.medicalRecordID}" />
-                               
-                                <input type="hidden" name="action" value="saveNext" />
-
-                                <button type="submit" class="btn-floating btn-next">
-                                    Next <i class="fa fa-arrow-right"></i> Blood Test
-                                </button>
                             </form>
 
-                        </div>
-                    </div>
+                        </c:otherwise>
 
+                    </c:choose>
+                    <!-- FLOAT NAVIGATION BUTTONS -->
+                    <div class="floating-nav">
+
+                        <!-- Previous -->
+                        <a href="EmrController?medicalRecordID=${emr.medicalRecordID}"
+                           class="btn-floating btn-prev">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+
+                        <!-- Save & Next -->
+                        <form action="bloodtest" method="get">
+                            <input type="hidden" name="medicalRecordID"
+                                   value="${emr.medicalRecordID}" />
+
+                            <input type="hidden" name="action" value="saveNext" />
+
+                            <button type="submit" class="btn-floating btn-next">
+                                Next <i class="fa fa-arrow-right"></i> Blood Test
+                            </button>
+                        </form>
+
+                    </div>
                 </div>
 
-            </main>
         </div>
-                                <script>
-function confirmAction(actionType) {
 
-    let message = "";
+    </main>
+</div>
+<script>
+    function confirmAction(actionType) {
 
-    if (actionType === "skip") {
-        message = "Are you sure you want to skip blood test?";
-    } else if (actionType === "request") {
-        message = "Are you sure you want to request a blood test?";
+        let message = "";
+
+        if (actionType === "skip") {
+            message = "Are you sure you want to skip blood?";
+        } else if (actionType === "request") {
+            message = "Are you sure you want to request a X-ray test?";
+        }
+
+        if (confirm(message)) {
+            document.getElementById("actionField").value = actionType;
+            document.querySelector("form").submit();
+        }
     }
-
-    if (confirm(message)) {
-        document.getElementById("actionField").value = actionType;
-        document.querySelector("form").submit();
-    }
-}
 </script>
-    </body>
+</body>
 </html>
