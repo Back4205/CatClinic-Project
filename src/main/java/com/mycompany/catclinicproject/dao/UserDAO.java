@@ -273,4 +273,69 @@ public class UserDAO extends DBContext {
         }
         return null;
     }
+
+    // Hàm lấy VetID từ UserID cho Bác sĩ
+    public Integer getVetIDByUserId(int userId) {
+        String sql = "SELECT VetID FROM Veterinarians WHERE UserID = ?";
+        try {
+            if (c == null || c.isClosed()) {
+                new DBContext();
+            }
+            java.sql.PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, userId);
+            java.sql.ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("VetID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    // 1. Hàm lấy danh sách Nhân viên theo Chức vụ (Care / Technician)
+    public java.util.List<java.util.Map<String, Object>> getAllStaffByPosition(String position) {
+        java.util.List<java.util.Map<String, Object>> list = new java.util.ArrayList<>();
+        String sql = "SELECT s.StaffID, u.FullName, s.Position FROM Staffs s " +
+                "JOIN Users u ON s.UserID = u.UserID " +
+                "WHERE s.Position = ? AND u.IsActive = 1";
+        try {
+            if (c == null || c.isClosed()) { new DBContext(); }
+            java.sql.PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, position);
+            java.sql.ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                map.put("staffID", rs.getInt("StaffID"));
+                map.put("fullName", rs.getString("FullName"));
+                map.put("position", rs.getString("Position"));
+                list.add(map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // 2. Hàm lấy danh sách tất cả Bác sĩ (Veterinarians)
+    public java.util.List<java.util.Map<String, Object>> getAllVeterinarians() {
+        java.util.List<java.util.Map<String, Object>> list = new java.util.ArrayList<>();
+        String sql = "SELECT u.UserID, u.FullName, v.VetID FROM Veterinarians v " +
+                "JOIN Users u ON v.UserID = u.UserID " +
+                "WHERE u.IsActive = 1";
+        try {
+            if (c == null || c.isClosed()) { new DBContext(); }
+            java.sql.PreparedStatement ps = c.prepareStatement(sql);
+            java.sql.ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                java.util.Map<String, Object> map = new java.util.HashMap<>();
+                map.put("userID", rs.getInt("UserID")); // JSP đang cần UserID để hiển thị
+                map.put("vetID", rs.getInt("VetID"));
+                map.put("fullName", rs.getString("FullName"));
+                list.add(map);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

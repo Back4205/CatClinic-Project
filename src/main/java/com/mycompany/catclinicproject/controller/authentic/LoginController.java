@@ -47,11 +47,12 @@ public class LoginController extends HttpServlet {
         String p = request.getParameter("password");
         String r = request.getParameter("remember");
 
-        UserDAO dao = new UserDAO();
-        User account = dao.checkLogin(u, p);
-       
-        
+        // MÃ HÓA MẬT KHẨU ĐẦU VÀO ĐỂ KHỚP VỚI DATABASE
+        String hashedPassword = com.mycompany.catclinicproject.util.PasswordUtil.hashPassword(p);
 
+        UserDAO dao = new UserDAO();
+        User account = dao.checkLogin(u, hashedPassword);
+       
 
         if (account == null) {
 
@@ -87,16 +88,16 @@ public class LoginController extends HttpServlet {
                     request.getRequestDispatcher("WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
                     break;
                 case 2:
-                    response.sendRedirect("DashboardController");
+                    response.sendRedirect("vet/schedule");
                     break;
                 case 3:
-                    response.sendRedirect("reception/home");
+                    response.sendRedirect("reception/view-booking-list");
                     break;
                 case 4:
                     String position = dao.getStaffPosition(account.getUserID());
 
                     if ("Care".equalsIgnoreCase(position)) {
-                        response.sendRedirect("care/tasks");
+                        response.sendRedirect("staff/daily-care-tasks");
                         break;
                     }
                     if("Technician".equalsIgnoreCase(position)) {

@@ -10,9 +10,6 @@
         <a href="${pageContext.request.contextPath}/reception/counter-booking" class="nav-item ${activePage == 'counter-booking' ? 'active' : ''}">
             <i class="fa-regular fa-calendar-plus"></i> Counter Booking
         </a>
-        <a href="${pageContext.request.contextPath}/reception/counter-cancellation" class="nav-item ${activePage == 'counter-cancellation' ? 'active' : ''}">
-            <i class="fa-regular fa-rectangle-xmark"></i> Counter Cancellation
-        </a>
         <a href="${pageContext.request.contextPath}/reception/" class="nav-item ${activePage == 'dashboard' ? 'active' : ''}">
             <i class="fa-solid fa-table-cells-large"></i> View Booking List
         </a>

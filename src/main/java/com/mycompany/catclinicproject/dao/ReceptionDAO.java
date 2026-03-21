@@ -25,49 +25,6 @@ public class ReceptionDAO extends DBContext {
         }
         return false;
     }
-
-    // 3. Lấy danh sách lịch hẹn ĐANG CHỜ để Lễ tân có thể Hủy (CHỈ LẤY CA ĐÃ THANH TOÁN)
-    public List<ReceptionDashboardDTO> searchBookingsForCancellation(String search) {
-        List<ReceptionDashboardDTO> list = new ArrayList<>();
-        String sql = "SELECT b.BookingID, u.FullName AS CustomerName, u.Phone, "
-                + "c.Name AS CatName, b.AppointmentDate, b.AppointmentTime, b.Status "
-                + "FROM Bookings b "
-                + "JOIN Cats c ON b.CatID = c.CatID "
-                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
-                + "JOIN Users u ON o.UserID = u.UserID "
-                // CHỈ LỌC NHỮNG CA ĐÃ THANH TOÁN ONLINE (Confirmed)
-                + "WHERE b.Status = 'Confirmed' ";
-
-        // Nếu có nhập từ khóa tìm kiếm
-        if (search != null && !search.trim().isEmpty()) {
-            sql += "AND (u.Phone LIKE ? OR u.FullName LIKE ? OR c.Name LIKE ? OR CAST(b.BookingID AS VARCHAR) = ?) ";
-        }
-        sql += "ORDER BY b.AppointmentDate ASC, b.AppointmentTime ASC";
-
-        try {
-            if (c == null || c.isClosed()) { c = new DBContext().c; }
-            PreparedStatement ps = c.prepareStatement(sql);
-            if (search != null && !search.trim().isEmpty()) {
-                String keyword = "%" + search + "%";
-                ps.setString(1, keyword);
-                ps.setString(2, keyword);
-                ps.setString(3, keyword);
-                ps.setString(4, search);
-            }
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(new ReceptionDashboardDTO(
-                        rs.getInt("BookingID"), rs.getString("CustomerName"),
-                        rs.getString("Phone"), rs.getString("CatName"), rs.getDate("AppointmentDate"),
-                        rs.getTime("AppointmentTime"), rs.getString("Status")
-                ));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
     // 4. Lấy danh sách Dịch vụ (Services)
     public List<Map<String, Object>> getAllActiveServices() {
         List<Map<String, Object>> list = new ArrayList<>();
@@ -145,7 +102,7 @@ public class ReceptionDAO extends DBContext {
     // ==============================================================================
     public boolean createFullCounterBooking(String phone, String fullName, String petName, String breed,
                                             int age, String gender, int vetId, int serviceId,
-                                            String date, String time, String note, int slotId, int staffId) {
+                                            String date, String time, String note, int slotId, int staffId, int existingCatId) {
         try {
             if (c == null || c.isClosed()) new DBContext();
             // TẮT AUTO COMMIT ĐỂ DÙNG TRANSACTION (LỖI THÌ QUAY LẠI TỪ ĐẦU)
@@ -153,53 +110,55 @@ public class ReceptionDAO extends DBContext {
 
             int userId = -1;
             int ownerId = -1;
+            int catId = existingCatId;
 
-            // BƯỚC 1: KIỂM TRA SĐT ĐÃ CÓ TRONG HỆ THỐNG CHƯA
-            PreparedStatement checkUser = c.prepareStatement("SELECT UserID FROM Users WHERE Phone = ? AND RoleID = 5");
-            checkUser.setString(1, phone);
-            ResultSet rsUser = checkUser.executeQuery();
+            if (catId <= 0) {
+                // BƯỚC 1: KIỂM TRA SĐT ĐÃ CÓ TRONG HỆ THỐNG CHƯA
+                PreparedStatement checkUser = c.prepareStatement("SELECT UserID FROM Users WHERE Phone = ? AND RoleID = 5");
+                checkUser.setString(1, phone);
+                ResultSet rsUser = checkUser.executeQuery();
 
-            if (rsUser.next()) {
-                userId = rsUser.getInt("UserID");
-                PreparedStatement checkOwner = c.prepareStatement("SELECT OwnerID FROM Owners WHERE UserID = ?");
-                checkOwner.setInt(1, userId);
-                ResultSet rsOwner = checkOwner.executeQuery();
-                if (rsOwner.next()) ownerId = rsOwner.getInt("OwnerID");
-            } else {
-                // NẾU KHÁCH MỚI -> TẠO USER (RoleID 5) & OWNER
-                String sqlInsertUser = "INSERT INTO Users (UserName, PassWord, FullName, Phone, Email, RoleID, IsActive, Male) VALUES (?, '123456', ?, ?, ?, 5, 1, 1)";
-                PreparedStatement insertUser = c.prepareStatement(sqlInsertUser, java.sql.Statement.RETURN_GENERATED_KEYS);
-                insertUser.setString(1, phone);
-                insertUser.setString(2, fullName);
-                insertUser.setString(3, phone);
-                insertUser.setString(4, phone + "@catclinic.com"); // Cấp đại một email để thỏa mãn DB
-                insertUser.executeUpdate();
-                ResultSet rsUserKeys = insertUser.getGeneratedKeys();
-                if (rsUserKeys.next()) userId = rsUserKeys.getInt(1);
+                if (rsUser.next()) {
+                    userId = rsUser.getInt("UserID");
+                    PreparedStatement checkOwner = c.prepareStatement("SELECT OwnerID FROM Owners WHERE UserID = ?");
+                    checkOwner.setInt(1, userId);
+                    ResultSet rsOwner = checkOwner.executeQuery();
+                    if (rsOwner.next()) ownerId = rsOwner.getInt("OwnerID");
+                } else {
+                    // NẾU KHÁCH MỚI -> TẠO USER (RoleID 5) & OWNER
+                    String sqlInsertUser = "INSERT INTO Users (UserName, PassWord, FullName, Phone, Email, RoleID, IsActive, Male) VALUES (?, '123456', ?, ?, ?, 5, 1, 1)";
+                    PreparedStatement insertUser = c.prepareStatement(sqlInsertUser, java.sql.Statement.RETURN_GENERATED_KEYS);
+                    insertUser.setString(1, phone);
+                    insertUser.setString(2, fullName);
+                    insertUser.setString(3, phone);
+                    insertUser.setString(4, phone + "@catclinic.com"); // Cấp đại một email để thỏa mãn DB
+                    insertUser.executeUpdate();
+                    ResultSet rsUserKeys = insertUser.getGeneratedKeys();
+                    if (rsUserKeys.next()) userId = rsUserKeys.getInt(1);
 
-                String sqlInsertOwner = "INSERT INTO Owners (UserID, Address) VALUES (?, 'Walk-in Customer')";
-                PreparedStatement insertOwner = c.prepareStatement(sqlInsertOwner, java.sql.Statement.RETURN_GENERATED_KEYS);
-                insertOwner.setInt(1, userId);
-                insertOwner.executeUpdate();
-                ResultSet rsOwnerKeys = insertOwner.getGeneratedKeys();
-                if (rsOwnerKeys.next()) ownerId = rsOwnerKeys.getInt(1);
+                    String sqlInsertOwner = "INSERT INTO Owners (UserID, Address) VALUES (?, 'Walk-in Customer')";
+                    PreparedStatement insertOwner = c.prepareStatement(sqlInsertOwner, java.sql.Statement.RETURN_GENERATED_KEYS);
+                    insertOwner.setInt(1, userId);
+                    insertOwner.executeUpdate();
+                    ResultSet rsOwnerKeys = insertOwner.getGeneratedKeys();
+                    if (rsOwnerKeys.next()) ownerId = rsOwnerKeys.getInt(1);
+                }
+
+                // BƯỚC 2: TẠO MÈO
+                String sqlInsertCat = "INSERT INTO Cats (OwnerID, Name, Breed, Age, Gender, IsActive) VALUES (?, ?, ?, ?, ?, 1)";
+                PreparedStatement insertCat = c.prepareStatement(sqlInsertCat, java.sql.Statement.RETURN_GENERATED_KEYS);
+                insertCat.setInt(1, ownerId);
+                insertCat.setString(2, petName);
+                insertCat.setString(3, breed);
+                insertCat.setInt(4, age);
+                // Gender lưu chuẩn BIT (1: Male, 0: Female) theo bản update mới nhất của DB
+                insertCat.setBoolean(5, "Male".equalsIgnoreCase(gender));
+                insertCat.executeUpdate();
+
+                ResultSet rsCatKeys = insertCat.getGeneratedKeys();
+
+                if (rsCatKeys.next()) catId = rsCatKeys.getInt(1);
             }
-
-            // BƯỚC 2: TẠO MÈO
-            String sqlInsertCat = "INSERT INTO Cats (OwnerID, Name, Breed, Age, Gender, IsActive) VALUES (?, ?, ?, ?, ?, 1)";
-            PreparedStatement insertCat = c.prepareStatement(sqlInsertCat, java.sql.Statement.RETURN_GENERATED_KEYS);
-            insertCat.setInt(1, ownerId);
-            insertCat.setString(2, petName);
-            insertCat.setString(3, breed);
-            insertCat.setInt(4, age);
-            // Gender lưu chuẩn BIT (1: Male, 0: Female) theo bản update mới nhất của DB
-            insertCat.setBoolean(5, "Male".equalsIgnoreCase(gender));
-            insertCat.executeUpdate();
-
-            ResultSet rsCatKeys = insertCat.getGeneratedKeys();
-            int catId = -1;
-            if (rsCatKeys.next()) catId = rsCatKeys.getInt(1);
-
             // BƯỚC 3: TẠO BOOKING
             // Thêm cột StaffID vào lệnh INSERT
             String sqlBooking = "INSERT INTO Bookings (CatID, VetID, SlotID, AppointmentDate, AppointmentTime, BookingDate, EndDate, Status, Note, StaffID) VALUES (?, ?, ?, ?, ?, GETDATE(), ?, 'Assigned', ?, ?)";
@@ -292,4 +251,115 @@ public class ReceptionDAO extends DBContext {
         }
         return list;
     }
+
+    public List<Map<String, Object>> getCustomerCatsByPhone(String phone) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        String sql = "SELECT c.CatID, c.Name, c.Breed, c.Age, c.Gender, u.FullName " +
+                "FROM Users u " +
+                "JOIN Owners o ON u.UserID = o.UserID " +
+                "JOIN Cats c ON o.OwnerID = c.OwnerID " +
+                "WHERE u.Phone = ? AND u.RoleID = 5 AND c.IsActive = 1";
+        try {
+            if (c == null || c.isClosed()) { c = new DBContext().c; } // Chú ý có .c
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, phone);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("catId", rs.getInt("CatID"));
+                map.put("name", rs.getString("Name"));
+                map.put("breed", rs.getString("Breed"));
+                map.put("age", rs.getInt("Age"));
+                map.put("gender", rs.getBoolean("Gender") ? "Male" : "Female");
+                map.put("fullName", rs.getString("FullName"));
+                list.add(map);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+    // Lấy slot trống trong 1 ngày duy nhất + Lớn hơn giờ hiện tại
+    public List<Map<String, Object>> getAvailableSlotsForCounter(int vetId, String date) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        String sql = "SELECT t.SlotID, t.StartTime " +
+                "FROM TimeSlots t " +
+                "JOIN TimeSlot_Vet tv ON t.SlotID = tv.SlotID " +
+                "WHERE tv.VetID = ? AND tv.Date = ? AND tv.Status = 'Available' " +
+                "AND (tv.Date > CAST(GETDATE() AS DATE) " +
+                "     OR (tv.Date = CAST(GETDATE() AS DATE) AND t.StartTime > CAST(GETDATE() AS TIME))) " +
+                "AND t.SlotID NOT IN (SELECT b.SlotID FROM Bookings b WHERE b.VetID = ? AND b.AppointmentDate = ? AND b.Status NOT IN ('Cancelled', 'Completed')) " +
+                "ORDER BY t.StartTime";
+        try {
+            if (c == null || c.isClosed()) { c = new DBContext().c; }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, vetId);
+            ps.setString(2, date);
+            ps.setInt(3, vetId);
+            ps.setString(4, date);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> map = new HashMap<>();
+                map.put("slotId", rs.getInt("SlotID"));
+                String time = rs.getString("StartTime");
+                if (time != null && time.length() >= 5) time = time.substring(0, 5);
+                map.put("startTime", time);
+                list.add(map);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+    public int createWalkInCustomerAndPet(String phone, String fullName, String email, String petName, String breed, int age, String gender) {
+        try {
+            if (c == null || c.isClosed()) { c = new DBContext().c; }
+            c.setAutoCommit(false);
+            int userId = -1, ownerId = -1, catId = -1;
+
+            PreparedStatement checkUser = c.prepareStatement("SELECT UserID FROM Users WHERE Phone = ? AND RoleID = 5");
+            checkUser.setString(1, phone);
+            ResultSet rsUser = checkUser.executeQuery();
+            if (rsUser.next()) {
+                userId = rsUser.getInt("UserID");
+                PreparedStatement checkOwner = c.prepareStatement("SELECT OwnerID FROM Owners WHERE UserID = ?");
+                checkOwner.setInt(1, userId);
+                ResultSet rsOwner = checkOwner.executeQuery();
+                if (rsOwner.next()) ownerId = rsOwner.getInt("OwnerID");
+            } else {
+                String sqlUser = "INSERT INTO Users (UserName, PassWord, FullName, Phone, Email, RoleID, IsActive, Male) VALUES (?, '123456', ?, ?, ?, 5, 1, 1)";
+                PreparedStatement psUser = c.prepareStatement(sqlUser, java.sql.Statement.RETURN_GENERATED_KEYS);
+                psUser.setString(1, phone);
+                psUser.setString(2, fullName != null && !fullName.isEmpty() ? fullName : "Walk-in Customer");
+                psUser.setString(3, phone);
+                psUser.setString(4, email != null && !email.isEmpty() ? email : phone + "@catclinic.com");
+                psUser.executeUpdate();
+                ResultSet rsU = psUser.getGeneratedKeys();
+                if (rsU.next()) userId = rsU.getInt(1);
+
+                String sqlOwner = "INSERT INTO Owners (UserID, Address) VALUES (?, 'Walk-in Customer')";
+                PreparedStatement psOwner = c.prepareStatement(sqlOwner, java.sql.Statement.RETURN_GENERATED_KEYS);
+                psOwner.setInt(1, userId);
+                psOwner.executeUpdate();
+                ResultSet rsO = psOwner.getGeneratedKeys();
+                if (rsO.next()) ownerId = rsO.getInt(1);
+            }
+
+            String sqlCat = "INSERT INTO Cats (OwnerID, Name, Breed, Age, Gender, IsActive) VALUES (?, ?, ?, ?, ?, 1)";
+            PreparedStatement psCat = c.prepareStatement(sqlCat, java.sql.Statement.RETURN_GENERATED_KEYS);
+            psCat.setInt(1, ownerId);
+            psCat.setString(2, petName);
+            psCat.setString(3, breed != null && !breed.isEmpty() ? breed : "Unknown");
+            psCat.setInt(4, age);
+            psCat.setBoolean(5, "Male".equalsIgnoreCase(gender));
+            psCat.executeUpdate();
+            ResultSet rsC = psCat.getGeneratedKeys();
+            if (rsC.next()) catId = rsC.getInt(1);
+
+            c.commit();
+            return catId;
+        } catch (Exception e) {
+            try { if (c != null) c.rollback(); } catch (Exception ex) {}
+        } finally {
+            try { if (c != null) c.setAutoCommit(true); } catch (Exception ex) {}
+        }
+        return -1;
+    }
+
 }

@@ -64,8 +64,12 @@ public class ResetPasswordController extends HttpServlet {
         }
 
         try {
+            // MÃ HÓA MẬT KHẨU MỚI BẰNG SHA-256 SAU KHI ĐÃ VALIDATE THÀNH CÔNG
+            String hashedNewPassword = com.mycompany.catclinicproject.util.PasswordUtil.hashPassword(newPass);
+
             UserDAO dao = new UserDAO();
-            if (dao.updatePasswordByEmail(sessionEmail, newPass)) {
+            // TRUYỀN MẬT KHẨU ĐÃ MÃ HÓA VÀO HÀM UPDATE
+            if (dao.updatePasswordByEmail(sessionEmail, hashedNewPassword)) {
                 // Hủy Session sau khi dùng xong
                 session.removeAttribute("resetToken");
                 session.removeAttribute("resetEmail");

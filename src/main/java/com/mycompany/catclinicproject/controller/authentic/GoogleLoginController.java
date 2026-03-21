@@ -63,13 +63,13 @@ public class GoogleLoginController extends HttpServlet {
                         response.sendRedirect("vet/schedule");
                         break;
                     case 3:
-                        response.sendRedirect("reception/home");
+                        response.sendRedirect("reception/view-booking-list");
                         break;
                     case 4:
                         String googleStaffPos = dao.getStaffPosition(userInDB.getUserID());
 
                         if ("Care".equalsIgnoreCase(googleStaffPos)) {
-                            response.sendRedirect("care/tasks");
+                            response.sendRedirect("staff/daily-care-tasks");
                             break;
                         }
                         if ("Technician".equalsIgnoreCase(googleStaffPos)) {
