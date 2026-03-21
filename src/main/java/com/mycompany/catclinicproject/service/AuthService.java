@@ -14,16 +14,16 @@ import java.nio.charset.StandardCharsets;
 
 public class AuthService {
 
-    public static final String GOOGLE_CLIENT_ID = "766431550241-pg69p1ohgg79ori80f0bf2n5e3i0cfc1.apps.googleusercontent.com";
-    public static final String GOOGLE_CLIENT_SECRET = "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";
+    public static final String GOOGLE_CLIENT_ID = "766431550241-np3ppkvkm208t0m3v6b6mhs003h0a4rr.apps.googleusercontent.com";
+    public static final String GOOGLE_CLIENT_SECRET = "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";
 
-    public static final String GOOGLE_REDIRECT_URI = "http://localhost:9999/CatClinicProject/login-google";
+
 
     public static final String GOOGLE_GRANT_TYPE = "authorization_code";
     public static final String GOOGLE_LINK_GET_TOKEN = "https://accounts.google.com/o/oauth2/token";
     public static final String GOOGLE_LINK_GET_USER_INFO = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
 
-    public String getToken(String code) throws IOException {
+    public String getToken(String code,String redirectUri) throws IOException {
         URL url = new URL(GOOGLE_LINK_GET_TOKEN);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
@@ -33,7 +33,7 @@ public class AuthService {
         String params = "code=" + URLEncoder.encode(code, StandardCharsets.UTF_8)
                 + "&client_id=" + URLEncoder.encode(GOOGLE_CLIENT_ID, StandardCharsets.UTF_8)
                 + "&client_secret=" + URLEncoder.encode(GOOGLE_CLIENT_SECRET, StandardCharsets.UTF_8)
-                + "&redirect_uri=" + URLEncoder.encode(GOOGLE_REDIRECT_URI, StandardCharsets.UTF_8)
+                + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8)
                 + "&grant_type=" + URLEncoder.encode(GOOGLE_GRANT_TYPE, StandardCharsets.UTF_8);
 
         try (OutputStream os = conn.getOutputStream()) {

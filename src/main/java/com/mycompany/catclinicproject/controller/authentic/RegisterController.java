@@ -67,6 +67,10 @@ public class RegisterController extends HttpServlet {
 
             } else {
 
+                // Mọi thứ OK -> MÃ HÓA MẬT KHẨU TRƯỚC KHI GỌI DAO ĐỂ LƯU
+                String hashedPassword = com.mycompany.catclinicproject.util.PasswordUtil.hashPassword(dto.getPassword());
+                dto.setPassword(hashedPassword);
+
                 boolean isSuccess = dao.registerCustomer(dto);
                 if (isSuccess) {
                     request.setAttribute("mess", "Registration successful! Please login.");

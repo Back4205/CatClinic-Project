@@ -189,6 +189,77 @@ public class UserDAO extends DBContext {
             e.printStackTrace();
         }
     }
+    // Hàm kiểm tra xem Email có tồn tại trong hệ thống không
+    public boolean checkEmailExists(String email) {
+        String sql = "SELECT UserID FROM Users WHERE Email = ?";
+        try {
+            if (c == null || c.isClosed()) {
+                new DBContext();
+            }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Hàm cập nhật mật khẩu mới theo Email
+    public boolean updatePasswordByEmail(String email, String newPassword) {
+        String sql = "UPDATE Users SET PassWord = ? WHERE Email = ?";
+        try {
+            if (c == null || c.isClosed()) {
+                new DBContext();
+            }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, newPassword);
+            ps.setString(2, email);
+            int result = ps.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Hàm kích hoạt tài khoản (Update IsActive = 1)
+    public boolean activateUser(String email) {
+        String sql = "UPDATE Users SET IsActive = 1 WHERE Email = ?";
+        try {
+            if (c == null || c.isClosed()) {
+                new DBContext();
+            }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, email);
+            int result = ps.executeUpdate();
+            return result > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    // Hàm lấy chức vụ (Position) của Staff dựa vào UserID
+    public String getStaffPosition(int userId) {
+        String sql = "SELECT Position FROM Staffs WHERE UserID = ?";
+        try {
+            if (c == null || c.isClosed()) {
+                new DBContext();
+            }
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("Position");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+
 
     public Integer getVetIDByUserId(int userID) {
         String sql = "SELECT VetID FROM Veterinarians WHERE UserID = ?";
