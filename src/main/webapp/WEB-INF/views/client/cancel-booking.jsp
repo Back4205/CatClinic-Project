@@ -15,7 +15,6 @@
 <div class="main-content-wrapper">
     <div class="cancel-container">
         <c:choose>
-            <%-- BƯỚC 1: XÁC NHẬN --%>
             <c:when test="${empty param.step || param.step == '1'}">
                 <div class="cancel-header-card">
                     <h2>Cancel Appointment?</h2>
@@ -35,7 +34,6 @@
                 </div>
             </c:when>
 
-            <%-- BƯỚC 2: CHỌN LÝ DO --%>
             <c:when test="${param.step == '2'}">
                 <div class="cancel-header-card">
                     <a href="cancel-booking?step=1&id=${booking.bookingID}" class="back-link">&lt; Back</a>
@@ -68,18 +66,17 @@
                         radio.addEventListener('change', function() {
                             if (this.id === 'radioOther') {
                                 otherInput.style.display = 'block';
-                                otherInput.required = true; // Bắt buộc nhập nếu chọn Other
+                                otherInput.required = true;
                             } else {
                                 otherInput.style.display = 'none';
                                 otherInput.required = false;
-                                otherInput.value = ''; // Xóa chữ nếu đổi ý
+                                otherInput.value = '';
                             }
                         });
                     });
                 </script>
             </c:when>
 
-            <%-- BƯỚC 3: NHẬP THÔNG TIN HOÀN TIỀN --%>
             <c:when test="${param.step == '3'}">
                 <div class="cancel-header-card">
                     <a href="cancel-booking?step=2&id=${booking.bookingID}" class="back-link">&lt; Back</a>
@@ -105,7 +102,6 @@
                 </form>
             </c:when>
 
-            <%-- BƯỚC 4: THÔNG BÁO THÀNH CÔNG --%>
             <c:when test="${param.step == 'success'}">
                 <div class="success-state">
                     <div class="success-icon-circle">

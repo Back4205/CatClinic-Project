@@ -17,8 +17,8 @@ public class LabDAO extends DBContext {
                 "JOIN MedicalRecords m ON t.MedicalRecordID = m.MedicalRecordID " +
                 "JOIN Bookings b ON m.BookingID = b.BookingID " +
                 "JOIN Cats c ON b.CatID = c.CatID " +
-                "JOIN Veterinarians v ON b.VetID = v.VetID " +
-                "JOIN Users u ON v.UserID = u.UserID ";
+                " LEFT JOIN Veterinarians v ON b.VetID = v.VetID " +
+                "LEFT JOIN Users u ON v.UserID = u.UserID ";
 
         if (status != null && !status.equals("All")) {
             sql += " WHERE t.Status = ? ";

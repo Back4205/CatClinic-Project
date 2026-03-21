@@ -50,12 +50,12 @@
 }
 
 .password-box {
-    background: #f8f9fa; /* Màu xám trắng nhạt, rất sang và sạch */
+    background: #f8f9fa;
     border-radius: 18px;
     padding: 30px;
-    color: #333333; /* Đổi chữ thành màu tối để dễ đọc trên nền sáng */
+    color: #333333;
     border: 1px solid #e9ecef;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* Shadow nhẹ nhàng hơn */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 
@@ -69,8 +69,8 @@
     margin-bottom: 16px;
     border-radius: 10px;
     border: 1px solid #ced4da;
-    background: #ffffff; /* Nền trắng cho thanh lịch */
-    color: #212529; /* Chữ màu tối */
+    background: #ffffff;
+    color: #212529;
     font-size: 15px;
 }
 
@@ -140,14 +140,14 @@
 
 #passwordForm {
     display: none;
-    margin: 20px auto 0 auto; /* Căn giữa form */
-    max-width: 450px; /* Thu hẹp lại chỉ còn 450px thay vì tràn màn hình */
+    margin: 20px auto 0 auto;
+    max-width: 450px;
     padding-top: 20px;
     border-top: 1px solid #dee2e6;
 }
 
 .btn-toggle {
-    background: var(--primary); /* Dùng màu chủ đạo của web cậu */
+    background: var(--primary);
     color: #ffffff;
     padding: 10px 24px;
     border-radius: 8px;

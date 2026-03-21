@@ -5,8 +5,6 @@ import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -22,123 +20,97 @@ public class BookingHistoryController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // --- HARDCODED USER ID = 5 ---
-      //  int userID = 5;
-        HttpSession session = request.getSession(false);
-     User user = (User)session.getAttribute("acc");
-     if(user == null){
-         response.sendRedirect(request.getContextPath()+"/login");
-         return;
-     }
-     int userID = user.getUserID();
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
 
+        if (user == null || user.getRoleID() != 5) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        BookingDAO dao = new BookingDAO();
+        int userID = user.getUserID();
 
         String keyword = request.getParameter("search");
         String filterStatus = request.getParameter("status");
-
-        BookingDAO dao = new BookingDAO();
-        List<BookingHistoryDTO> fullList = dao.getHistoryByUserID(userID);
-
-        LocalDate today = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
-
-        for (BookingHistoryDTO b : fullList) {
-            LocalDate checkDate;
-            if (b.getEndDate() != null) {
-                checkDate = b.getEndDate().toLocalDate();
-            } else {
-                if (b.getAppointmentDate() != null) {
-                    checkDate = b.getAppointmentDate().toLocalDate();
-                } else {
-                    continue;
-                }
-            }
-
-            if (checkDate.isBefore(today) && "Confirmed".equalsIgnoreCase(b.getStatus())) {
-                b.setStatus("Completed");
-            }
+        String dateFilter = request.getParameter("dateFilter");
+        if (dateFilter == null || dateFilter.trim().isEmpty()) {
+            dateFilter = java.time.LocalDate.now().toString();
+        }
+        if (filterStatus == null || filterStatus.trim().isEmpty() || "ALL".equalsIgnoreCase(filterStatus)) {
+            filterStatus = "ALL";
         }
 
-        int total = fullList.size();
-        int scheduled = 0;
-        int completed = 0;
-
-        for (BookingHistoryDTO b : fullList) {
-            String s = b.getStatus();
-
-            if (s != null) {
-                if (s.equalsIgnoreCase("Confirmed") || s.equalsIgnoreCase("PendingPayment") || s.equalsIgnoreCase("Upcoming")) {
-                    scheduled++;
-                } else if (s.equalsIgnoreCase("Completed") || s.equalsIgnoreCase("Done")) {
-                    completed++;
-                }
-            }
-        }
-
-        List<BookingHistoryDTO> filteredList = new ArrayList<>();
-        for (BookingHistoryDTO b : fullList) {
-            boolean isMatchKeyword = true;
-            boolean isMatchStatus = true;
-            if (keyword != null && !keyword.trim().isEmpty()) {
-                String k = keyword.toLowerCase().trim();
-                String catName = (b.getCatName() != null) ? b.getCatName().toLowerCase() : "";
-                String service = (b.getServiceName() != null) ? b.getServiceName().toLowerCase() : "";
-
-                if (!catName.contains(k) && !service.contains(k)) {
-                    isMatchKeyword = false;
-                }
-            }
-            if (filterStatus != null && !filterStatus.equals("ALL") && !filterStatus.isEmpty()) {
-                if (b.getStatus() == null || !b.getStatus().equalsIgnoreCase(filterStatus)) {
-                    isMatchStatus = false;
-                }
-            }
-
-            if (isMatchKeyword && isMatchStatus) {
-                filteredList.add(b);
-            }
-        }
-        // ===== PAGINATION =====
         int pageSize = 5;
-
         int currentPage = 1;
         String pageParam = request.getParameter("page");
-
         if (pageParam != null) {
             try {
                 currentPage = Integer.parseInt(pageParam);
-                if (currentPage < 1) currentPage = 1;
             } catch (NumberFormatException e) {
                 currentPage = 1;
             }
         }
+        int offset = (currentPage - 1) * pageSize;
 
-        int totalRecord = filteredList.size();
+        List<BookingHistoryDTO> pagedList = dao.getClientHistoryPaging(userID, keyword, filterStatus, dateFilter, offset, pageSize);
+        int totalRecord = dao.countClientBookings(userID, keyword, filterStatus, dateFilter);
         int totalPage = (int) Math.ceil((double) totalRecord / pageSize);
 
-        if (currentPage > totalPage && totalPage != 0) {
-            currentPage = totalPage;
+        List<BookingHistoryDTO> fullList = dao.getHistoryByUserID(userID);
+
+        int total = fullList.size();
+        int confirmedCount = 0;
+        int completed = 0;
+        int pendingPaymentCount = 0;
+        int cancelledCount = 0;
+        int pendingCancelCount = 0;
+
+        LocalDate today = LocalDate.now();
+
+        for (BookingHistoryDTO b : pagedList) {
+            updateVirtualStatus(b, today);
         }
 
-        int start = (currentPage - 1) * pageSize;
-        int end = Math.min(start + pageSize, totalRecord);
+        for (BookingHistoryDTO b : fullList) {
+            updateVirtualStatus(b, today);
 
-        List<BookingHistoryDTO> pagedList = new ArrayList<>();
-
-        if (totalRecord > 0 && start < totalRecord) {
-            pagedList = filteredList.subList(start, end);
+            String s = b.getStatus();
+            if (s != null) {
+                if (s.equalsIgnoreCase("PendingPayment")) pendingPaymentCount++;
+                else if (s.equalsIgnoreCase("Confirmed")) confirmedCount++;
+                else if (s.equalsIgnoreCase("Completed")) completed++;
+                else if (s.equalsIgnoreCase("Cancelled")) cancelledCount++;
+                else if (s.equalsIgnoreCase("PendingCancel")) pendingCancelCount++;
+            }
         }
 
+        // 7. Đẩy dữ liệu ra JSP
         request.setAttribute("user", user);
         request.setAttribute("bookingList", pagedList);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPage", totalPage);
+
+        request.setAttribute("pendingPaymentCount", pendingPaymentCount);
+        request.setAttribute("cancelledCount", cancelledCount);
         request.setAttribute("total", total);
-        request.setAttribute("scheduled", scheduled);
+        request.setAttribute("confirmedCount", confirmedCount);
         request.setAttribute("completed", completed);
+        request.setAttribute("pendingCancelCount", pendingCancelCount);
 
         request.setAttribute("currentSearch", keyword);
         request.setAttribute("currentStatus", filterStatus);
+        request.setAttribute("currentDate", dateFilter); // MỚI THÊM: Gửi lại ngày về JSP
 
         request.getRequestDispatcher("/WEB-INF/views/client/booking-history.jsp").forward(request, response);
+    }
+
+    private void updateVirtualStatus(BookingHistoryDTO b, LocalDate today) {
+        LocalDate checkDate = (b.getEndDate() != null) ? b.getEndDate().toLocalDate() :
+                ((b.getAppointmentDate() != null) ? b.getAppointmentDate().toLocalDate() : null);
+
+        if (checkDate != null && checkDate.isBefore(today) && "Confirmed".equalsIgnoreCase(b.getStatus())) {
+            b.setStatus("Completed");
+        }
     }
 }

@@ -1,6 +1,4 @@
 package com.mycompany.catclinicproject.dao;
-
-
 import com.mycompany.catclinicproject.model.UserDTO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

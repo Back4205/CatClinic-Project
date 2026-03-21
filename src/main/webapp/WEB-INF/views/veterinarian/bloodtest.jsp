@@ -111,16 +111,17 @@
                                 <span class="step-label">EXAM</span>
                             </a>
 
-                            <a href="bloodtest?medicalRecordID=${emr.medicalRecordID}"
-                               class="step-item ${activeStep == 2 ? 'active' : ''}">
-                                <span class="step-number">2</span>
-                                <span class="step-label">BLOOD TEST</span>
-                            </a>
+
 
                             <a href="xray?medicalRecordID=${emr.medicalRecordID}"
                                class="step-item ${activeStep == 3 ? 'active' : ''}">
-                                <span class="step-number">3</span>
+                                <span class="step-number">2</span>
                                 <span class="step-label">X-RAY</span>
+                            </a>
+                            <a href="bloodtest?medicalRecordID=${emr.medicalRecordID}"
+                               class="step-item ${activeStep == 2 ? 'active' : ''}">
+                                <span class="step-number">3</span>
+                                <span class="step-label">BLOOD TEST</span>
                             </a>
 
                             <a href="preController?medicalRecordID=${emr.medicalRecordID}"

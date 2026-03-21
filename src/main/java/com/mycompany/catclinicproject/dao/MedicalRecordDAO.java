@@ -107,9 +107,9 @@ public class MedicalRecordDAO extends DBContext {
             }
 
         } catch (SQLException e) {
-            // Production: dùng logger thay vì printStackTrace
+
             e.printStackTrace();
-            // Optional: throw new RuntimeException("Lỗi lấy dịch vụ cho booking " + bookingID, e);
+
         }
 
         return list;

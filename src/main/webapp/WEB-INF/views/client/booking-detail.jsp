@@ -72,16 +72,66 @@
                 </div>
             </div>
 
+            <c:if test="${booking.checkOutTime != null}">                <div class="detail-section" style="margin-top: 25px; border-top: 1px dashed #FFE8D9; padding-top: 25px;">
+                    <div class="section-title"><i class="bi bi-star-fill" style="color: #FF6B00;"></i> Service Feedback</div>
+                    <c:choose>
+                        <c:when test="${empty feedback}">
+                            <div class="feedback-banner">
+                                <div class="feedback-banner-left">
+                                    <div class="feedback-icon-wrapper">
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                    <div class="feedback-text">
+                                        <h4>We value your feedback!</h4>
+                                        <p>How was your experience with ${booking.catName} today?</p>
+                                    </div>
+                                </div>
+                            <button type="button" class="btn-rate-visit" onclick="document.getElementById('rateModal').style.display='flex'">
+                                    Rate This Visit
+                                </button>
+
+                            </div>
+                        </c:when>
+
+                        <c:otherwise>
+                            <div class="feedback-result-box">
+                                <div class="feedback-score-section">
+                                    <div class="feedback-stars">
+                                        <c:forEach begin="1" end="${feedback.rating}">★</c:forEach><c:forEach begin="${feedback.rating + 1}" end="5">☆</c:forEach>
+                                    </div>
+                                    <span class="feedback-score-text">${feedback.rating}.0 / 5</span>
+                                </div>
+                                <div class="feedback-comment-section">
+                                    <c:choose>
+                                        <%-- Nếu có bình luận thì in ra --%>
+                                        <c:when test="${not empty feedback.comment}">
+                                            <p>"${feedback.comment}"</p>
+                                        </c:when>
+                                        <%-- Nếu không có bình luận thì hiện chữ mờ --%>
+                                        <c:otherwise>
+                                            <p style="color: #94a3b8; opacity: 0.7;">No additional comments.</p>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </c:if>
             <div class="btn-action-group">
+                <c:if test="${not empty booking.checkOutTime}">
+                    <a href="view-invoice?id=${booking.bookingID}" class="btn-custom btn-invoice">
+                        <i class="bi bi-receipt"></i> View Invoice
+                    </a>
+                </c:if>
                 <a href="booking-history" class="btn-custom btn-back-history">Back to History</a>
 
                 <c:choose>
-
-                        <c:when test="${booking.status == 'Confirmed'}">
-                            <a href="cancel-booking?id=${booking.bookingID}" class="btn-custom btn-cancel">
-                                <i class="bi bi-trash"></i> Cancel Booking
-                            </a>
-                        </c:when>
+                    <c:when test="${booking.status == 'Confirmed'}">
+                        <a href="cancel-booking?id=${booking.bookingID}" class="btn-custom btn-cancel">
+                            <i class="bi bi-trash"></i> Cancel Booking
+                        </a>
+                    </c:when>
 
                     <c:when test="${booking.status == 'PendingPayment'}">
                         <a href="${pageContext.request.contextPath}//vnpay?bookingID=${booking.bookingID}" class="btn-custom btn-pay">
@@ -93,5 +143,34 @@
         </div>
     </main>
 </div>
+
+<div id="rateModal" class="rate-modal-overlay" style="display:none;">
+    <div class="rate-modal-content">
+        <span class="rate-modal-close" onclick="document.getElementById('rateModal').style.display='none'">&times;</span>
+
+        <h3 class="rate-modal-title">Rate Appointment</h3>
+        <p class="rate-modal-subtitle">How was ${booking.catName}'s visit?</p>
+
+        <form action="submit-feedback" method="POST">
+            <input type="hidden" name="bookingID" value="${booking.bookingID}">
+
+            <div class="star-rating-input">
+                <input type="radio" id="st5" name="rating" value="5" required><label for="st5">★</label>
+                <input type="radio" id="st4" name="rating" value="4"><label for="st4">★</label>
+                <input type="radio" id="st3" name="rating" value="3"><label for="st3">★</label>
+                <input type="radio" id="st2" name="rating" value="2"><label for="st2">★</label>
+                <input type="radio" id="st1" name="rating" value="1"><label for="st1">★</label>
+            </div>
+
+            <div class="rate-modal-comment-group">
+                <label class="rate-modal-label">Comments (Optional)</label>
+                <textarea name="comment" class="rate-modal-textarea" placeholder="Tell us about the service..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit-feedback">Submit Feedback</button>
+        </form>
+    </div>
+</div>
+
 </body>
 </html>

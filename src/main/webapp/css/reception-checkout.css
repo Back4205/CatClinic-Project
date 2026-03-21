@@ -1,0 +1,190 @@
+/* --- 1. RESET & LAYOUT --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background-color: #f8fafc; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+/* --- 2. TOPBAR (HEADER) --- */
+.topbar {
+    position: fixed; top: 0; left: 0; right: 0; height: 70px;
+    background: #ffffff; display: flex; align-items: center;
+    justify-content: space-between; padding: 0 30px;
+    border-bottom: 1px solid #e2e8f0; z-index: 1100;
+}
+.topbar .logo { font-size: 24px; font-weight: 800; color: #f97316; }
+.right-section { display: flex; align-items: center; gap: 20px; }
+.user-info { display: flex; align-items: center; gap: 10px; }
+.user-info .avatar img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; }
+
+/* --- 3. SIDEBAR (FIX 300PX) --- */
+.sidebar {
+    width: 300px; min-width: 300px; background: #ffffff;
+    border-right: 1px solid #e2e8f0; position: fixed;
+    top: 70px; left: 0; bottom: 0; z-index: 1000;
+    padding: 30px 20px; display: flex; flex-direction: column;
+}
+.profile-img {
+    width: 80px !important; height: 80px !important;
+    border-radius: 50%; margin: 0 auto 15px auto;
+    display: block; object-fit: cover; border: 3px solid #f1f5f9;
+}
+.profile-section { text-align: center; margin-bottom: 30px; }
+.nav-menu { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.nav-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 15px;
+    text-decoration: none; color: #64748b; border-radius: 12px; font-weight: 600;
+}
+.nav-item.active { background: #fff7ed; color: #f97316; }
+
+/* --- 4. MAIN CONTENT --- */
+.main-content { margin-left: 300px; margin-top: 70px; padding: 40px; flex: 1; }
+.hub-header h2 { font-size: 24px; color: #1e293b; margin-bottom: 5px; }
+
+/* --- 5. BẢNG DỮ LIỆU (PHẦN NÀY ĐANG BỊ THIẾU TRONG ẢNH CỦA BẠN) --- */
+.table-section {
+    background: #ffffff; border-radius: 20px; padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); margin-top: 20px;
+}
+.table-toolbar { display: flex; gap: 15px; margin: 20px 0; align-items: center; }
+.table-search input, .table-datepicker input {
+    padding: 10px 15px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc;
+}
+.btn-search-orange {
+    background: #1e293b; color: white; border: none; padding: 10px 20px;
+    border-radius: 10px; font-weight: 600; cursor: pointer;
+}
+
+.modern-table { width: 100%; border-collapse: separate; border-spacing: 0 12px; }
+.modern-table th { color: #64748b; font-size: 13px; text-transform: uppercase; padding: 10px; text-align: left; }
+.modern-table td {
+    padding: 20px; background: #ffffff;
+    border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9;
+}
+.modern-table td:first-child { border-left: 1px solid #f1f5f9; border-radius: 15px 0 0 15px; }
+.modern-table td:last-child { border-right: 1px solid #f1f5f9; border-radius: 0 15px 15px 0; }
+
+.btn-checkout-table {
+    background: #f97316; color: white; border: none; padding: 8px 16px;
+    border-radius: 8px; font-weight: 700; cursor: pointer;
+}
+
+/* --- 6. PHÂN TRANG --- */
+.pagination { display: flex; list-style: none; gap: 8px; justify-content: center; margin-top: 20px; }
+.page-item a {
+    width: 35px; height: 35px; display: flex; align-items: center;
+    justify-content: center; border: 1px solid #e2e8f0; border-radius: 8px;
+    text-decoration: none; color: #64748b; font-weight: 600;
+}
+.page-item.active a { border: 2px solid #64748b; color: #1e293b; }
+/* 1. Đảm bảo Modal luôn nằm trên cùng, không bị Sidebar đè */
+.modal-overlay {
+    z-index: 9999 !important; /* Cho nó lên 'trời' luôn để không bị gì đè */
+    display: none; /* JavaScript sẽ đổi thành flex khi bấm nút */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+}
+
+/* 2. Khống chế cái Content không cho nó tràn */
+.modal-content {
+    width: 90%; /* Trên mobile sẽ không bị tràn */
+    max-width: 500px; /* Trên máy tính sẽ rộng 500px */
+    background: white;
+    border-radius: 20px;
+    overflow: hidden; /* Cắt bỏ những gì lòi ra ngoài */
+}
+
+/* 3. Fix cái ô Textarea bị 'lòi' (Cực kỳ quan trọng) */
+.modal-body textarea {
+    width: 100% !important; /* Ép nó rộng bằng đúng cái Modal */
+    box-sizing: border-box;  /* Giữ padding nằm TRONG chiều rộng, không bị nở ra */
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    resize: none; /* Không cho người dùng kéo to nhỏ làm vỡ khung */
+}
+/* --- FIX TRIỆT ĐỂ MODAL --- */
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(15, 23, 42, 0.7) !important; /* Nền tối mờ xịn xò */
+    backdrop-filter: blur(4px);
+    display: none; /* Hiện bằng JS */
+    align-items: center;
+    justify-content: center;
+    z-index: 9999 !important;
+}
+
+.modal-content {
+    background: #ffffff !important;
+    width: 500px !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+.modal-header-orange {
+    background: #f97316 !important; /* MÀU CAM NÀY QUÍ */
+    color: white !important;
+    padding: 25px !important;
+    text-align: left !important;
+}
+
+.modal-header-orange h3 {
+    margin: 0 !important;
+    font-size: 22px !important;
+    font-weight: 800 !important;
+}
+
+.modal-body {
+    padding: 25px !important;
+}
+
+.modal-body label {
+    display: block !important;
+    font-weight: 700 !important;
+    margin-bottom: 10px !important;
+    color: #1e293b !important;
+}
+
+.modal-body textarea {
+    width: 100% !important;
+    height: 120px !important;
+    padding: 15px !important;
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0 !important;
+    background: #f8fafc !important;
+    box-sizing: border-box !important; /* QUAN TRỌNG: Không cho lòi ra ngoài */
+    resize: none !important;
+}
+
+.modal-footer {
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: flex-end !important;
+    margin-top: 20px !important;
+}
+
+/* Nút Cancel trắng */
+.btn-modal-cancel {
+    background: #f1f5f9 !important;
+    color: #64748b !important;
+    border: none !important;
+    padding: 12px 25px !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}
+
+/* Nút Confirm Cam */
+.btn-modal-confirm {
+    background: #f97316 !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 25px !important;
+    border-radius: 10px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+}

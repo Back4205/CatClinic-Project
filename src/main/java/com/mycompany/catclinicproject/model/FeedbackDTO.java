@@ -1,37 +1,27 @@
 package com.mycompany.catclinicproject.model;
-public class FeedbackDTO {
 
+public class FeedbackDTO {
+    private int feedbackID;
     private int bookingID;
     private int rating;
     private String comment;
     private String createdAt;
-    private String fullName;
 
-    public FeedbackDTO(int bookingID, int rating, String comment, String createdAt, String fullName) {
-        this.bookingID = bookingID;
-        this.rating = rating;
-        this.comment = comment;
-        this.createdAt = createdAt;
-        this.fullName = fullName;
-    }
+    public FeedbackDTO() {}
 
-    public int getBookingID() {
-        return bookingID;
-    }
+    public int getFeedbackID() { return feedbackID; }
+    public void setFeedbackID(int feedbackID) { this.feedbackID = feedbackID; }
 
-    public int getRating() {
-        return rating;
-    }
+    public int getBookingID() { return bookingID; }
+    public void setBookingID(int bookingID) { this.bookingID = bookingID; }
 
-    public String getComment() {
-        return comment;
-    }
+    public int getRating() { return rating; }
+    public void setRating(int rating) { this.rating = rating; }
 
-    public String getCreatedAt() {
-        return createdAt;
-    }
+    public String getComment() { return comment; }
+    public void setComment(String comment) { this.comment = comment; }
 
-    public String getFullName() {
-        return fullName;
-    }
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+
 }
