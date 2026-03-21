@@ -4,30 +4,26 @@
  */
 package com.mycompany.catclinicproject.model;
 
-import java.sql.Date;
 import java.sql.Time;
 
 /**
  *
- * @author Vuong Bach
+ * @author Son
  */
-public class TimeSlot {
-
-    private int slotID;
+public class TimeSlot2DTO {
+     private int slotID;
     private Time startTime;
     private Time endTime;
-    private boolean isActive ;
+    private boolean isActive;
 
-    public TimeSlot() {
+    public TimeSlot2DTO() {
     }
-
-    public TimeSlot(int slotID, Time startTime, Time endTime, boolean isActive) {
+    
+    public TimeSlot2DTO(int slotID, Time startTime, Time endTime, boolean isActive) {
         this.slotID = slotID;
-
         this.startTime = startTime;
         this.endTime = endTime;
         this.isActive = isActive;
-
     }
 
     public int getSlotID() {
@@ -37,7 +33,6 @@ public class TimeSlot {
     public void setSlotID(int slotID) {
         this.slotID = slotID;
     }
-
 
     public Time getStartTime() {
         return startTime;
@@ -55,15 +50,11 @@ public class TimeSlot {
         this.endTime = endTime;
     }
 
-    public boolean isActive() {
+    public boolean isIsActive() {
         return isActive;
     }
-    public void setActive(boolean active) {
-        isActive = active;
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
     }
-
-
-
-
-
 }

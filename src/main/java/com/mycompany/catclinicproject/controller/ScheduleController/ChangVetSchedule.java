@@ -7,7 +7,7 @@ package com.mycompany.catclinicproject.controller.ScheduleController;
 import com.mycompany.catclinicproject.dao.BookingDAO;
 import com.mycompany.catclinicproject.dao.TimeSlotDAO;
 import com.mycompany.catclinicproject.dao.VeterinarianDAO;
-import com.mycompany.catclinicproject.model.TimeSlotDTO;
+import com.mycompany.catclinicproject.model.TimeSlot2DTO;
 import com.mycompany.catclinicproject.model.VeteNameID;
 import com.mycompany.catclinicproject.sendmail.SendMail;
 import java.io.IOException;
@@ -70,7 +70,7 @@ public class ChangVetSchedule extends HttpServlet {
         TimeSlotDAO tdao = new TimeSlotDAO();
         String VetID = request.getParameter("VetID");
         String type = request.getParameter("requestType");
-        List<TimeSlotDTO> slots = tdao.getAllTimeSlots();
+        List<TimeSlot2DTO> slots = tdao.getAllTimeSlots2();
           VeterinarianDAO vdao = new VeterinarianDAO();
         List<VeteNameID> listVet = vdao.getAllVets();
         request.setAttribute("listvet", listVet);
@@ -103,7 +103,7 @@ public class ChangVetSchedule extends HttpServlet {
             if (date.before(today)) {
                 String VetIDs = request.getParameter("VetID");
                 String types = request.getParameter("requestType");
-                List<TimeSlotDTO> slots = tdao.getAllTimeSlots();
+                List<TimeSlot2DTO> slots = tdao.getAllTimeSlots2();
                 request.setAttribute("requestType", types);
                 request.setAttribute("slots", slots);
                 request.setAttribute("VetID", VetIDs);

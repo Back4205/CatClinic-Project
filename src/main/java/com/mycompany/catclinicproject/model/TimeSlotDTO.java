@@ -7,12 +7,9 @@ public class TimeSlotDTO {
 
     private int vetID;
     private int slotID;
-
     private Date slotDate;
-
     private Time startTime;
     private Time endTime;
-
     private boolean status;
 
     public TimeSlotDTO() {

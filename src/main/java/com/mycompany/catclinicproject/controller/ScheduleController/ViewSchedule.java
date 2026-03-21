@@ -6,8 +6,8 @@ package com.mycompany.catclinicproject.controller.ScheduleController;
 
 import com.mycompany.catclinicproject.dao.TimeSlotDAO;
 import com.mycompany.catclinicproject.dao.VeterinarianDAO;
-import com.mycompany.catclinicproject.model.TimeSlotDTO;
-import com.mycompany.catclinicproject.model.User;
+import com.mycompany.catclinicproject.model.TimeSlot2DTO;
+
 import com.mycompany.catclinicproject.model.VetScheduleDTO;
 import com.mycompany.catclinicproject.model.VeteNameID;
 import java.io.IOException;
@@ -122,7 +122,7 @@ public class ViewSchedule extends HttpServlet {
         VeterinarianDAO vdao = new VeterinarianDAO();
         List<VeteNameID> listVet = vdao.getAllVets();
         List<VetScheduleDTO> schedule = tdao.getVetSchedule(vetID, startDate, endDate);
-        List<TimeSlotDTO> slots = tdao.getAllTimeSlots();
+        List<TimeSlot2DTO> slots = tdao.getAllTimeSlots2();
         request.setAttribute("schedule", schedule);
         request.setAttribute("years", years);
         request.setAttribute("weeks", weeks);
