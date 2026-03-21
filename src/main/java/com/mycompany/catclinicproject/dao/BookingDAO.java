@@ -1,9 +1,7 @@
 package com.mycompany.catclinicproject.dao;
 
-import com.mycompany.catclinicproject.model.BillingBookingDTO;
-import com.mycompany.catclinicproject.model.Booking;
-import com.mycompany.catclinicproject.model.BookingHistoryDTO;
-import com.mycompany.catclinicproject.model.CancelBookingDTO;
+import com.mycompany.catclinicproject.model.*;
+
 import java.sql.PreparedStatement;
 import java.sql.*;
 import java.util.ArrayList;
@@ -663,46 +661,46 @@ public class BookingDAO extends DBContext {
 
         return list;
     }
-    public BookingHistoryDTO getBookingDetailByID(int bookingID) {
-        String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, "
-                + "b.EndDate, b.AppointmentTime, b.Status, b.Note, s.NameService, "
-                + "ad.PriceAtBooking, u_vet.FullName AS VetName, "
-                + "u_owner.FullName AS OwnerName, u_owner.Phone "
-                + "FROM Bookings b "
-                + "JOIN Cats c ON b.CatID = c.CatID "
-                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
-                + "JOIN Users u_owner ON o.UserID = u_owner.UserID "
-                + "LEFT JOIN Veterinarians v ON b.VetID = v.VetID "
-                + "LEFT JOIN Users u_vet ON v.UserID = u_vet.UserID "
-                + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
-                + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
-                + "WHERE b.BookingID = ?";
-
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setInt(1, bookingID);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    BookingHistoryDTO d = new BookingHistoryDTO();
-                    d.setBookingID(rs.getInt("BookingID"));
-                    d.setCatName(rs.getString("CatName"));
-                    d.setCatBreed(rs.getString("Breed"));
-                    d.setAppointmentDate(rs.getDate("AppointmentDate"));
-                    d.setAppointmentTime(rs.getTime("AppointmentTime"));
-                    d.setStatus(rs.getString("Status"));
-                    d.setNote(rs.getString("Note"));
-
-                    d.setServiceName(rs.getString("NameService"));
-                    d.setPrice(rs.getDouble("PriceAtBooking"));
-
-                    d.setVetName(rs.getString("VetName"));
-                    d.setCustomerName(rs.getString("OwnerName"));
-                    d.setCustomerPhone(rs.getString("Phone"));
-                    return d;
-                }
-            }
-        } catch (SQLException e) { e.printStackTrace(); }
-        return null;
-    }
+//    public BookingHistoryDTO getBookingDetailByID(int bookingID) {
+//        String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, "
+//                + "b.EndDate, b.AppointmentTime, b.Status, b.Note, s.NameService, "
+//                + "ad.PriceAtBooking, u_vet.FullName AS VetName, "
+//                + "u_owner.FullName AS OwnerName, u_owner.Phone "
+//                + "FROM Bookings b "
+//                + "JOIN Cats c ON b.CatID = c.CatID "
+//                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+//                + "JOIN Users u_owner ON o.UserID = u_owner.UserID "
+//                + "LEFT JOIN Veterinarians v ON b.VetID = v.VetID "
+//                + "LEFT JOIN Users u_vet ON v.UserID = u_vet.UserID "
+//                + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
+//                + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
+//                + "WHERE b.BookingID = ?";
+//
+//        try (PreparedStatement ps = c.prepareStatement(sql)) {
+//            ps.setInt(1, bookingID);
+//            try (ResultSet rs = ps.executeQuery()) {
+//                if (rs.next()) {
+//                    BookingHistoryDTO d = new BookingHistoryDTO();
+//                    d.setBookingID(rs.getInt("BookingID"));
+//                    d.setCatName(rs.getString("CatName"));
+//                    d.setCatBreed(rs.getString("Breed"));
+//                    d.setAppointmentDate(rs.getDate("AppointmentDate"));
+//                    d.setAppointmentTime(rs.getTime("AppointmentTime"));
+//                    d.setStatus(rs.getString("Status"));
+//                    d.setNote(rs.getString("Note"));
+//
+//                    d.setServiceName(rs.getString("NameService"));
+//                    d.setPrice(rs.getDouble("PriceAtBooking"));
+//
+//                    d.setVetName(rs.getString("VetName"));
+//                    d.setCustomerName(rs.getString("OwnerName"));
+//                    d.setCustomerPhone(rs.getString("Phone"));
+//                    return d;
+//                }
+//            }
+//        } catch (SQLException e) { e.printStackTrace(); }
+//        return null;
+//    }
     public void rejectRefund(int bookingID) {
     String sql = "UPDATE Bookings SET Status = 'Reject', "
                + "Note = 'Please verify your refund details and try again.' "
