@@ -1,6 +1,7 @@
 package com.mycompany.catclinicproject.dao;
 
 import com.mycompany.catclinicproject.model.TimeSlot;
+import com.mycompany.catclinicproject.model.TimeSlot2DTO;
 import com.mycompany.catclinicproject.model.TimeSlotDTO;
 import com.mycompany.catclinicproject.model.TimeSlotDTO;
 import com.mycompany.catclinicproject.model.TimeSlotDetailDTO;
@@ -113,7 +114,6 @@ public class TimeSlotDAO extends DBContext {
 
         return allSlots;
     }
-
     private Map<String, Boolean> getBookedSlotsMap(int vetID, java.sql.Date fromDate) {
         Map<String, Boolean> map = new HashMap<>();
         String sql = "SELECT SlotID, Date FROM TimeSlot_Vet " +
@@ -555,6 +555,34 @@ public class TimeSlotDAO extends DBContext {
         } catch (Exception e) {
             System.out.println("Lỗi DAO: " + e.getMessage());
         }
+        return list;
+    }
+      public List<TimeSlot2DTO> getAllTimeSlots2() {
+
+        List<TimeSlot2DTO> list = new ArrayList<>();
+
+        String sql = "SELECT SlotID, StartTime, EndTime, IsActive FROM TimeSlots WHERE IsActive = 1";
+
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                TimeSlot2DTO slot = new TimeSlot2DTO(
+                        rs.getInt("SlotID"),
+                        rs.getTime("StartTime"),
+                        rs.getTime("EndTime"),
+                        rs.getBoolean("IsActive")
+                );
+
+                list.add(slot);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return list;
     }
 }

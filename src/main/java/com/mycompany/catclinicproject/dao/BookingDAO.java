@@ -13,10 +13,8 @@ public class BookingDAO extends DBContext {
 
 
     public List<BookingHistoryDTO> getHistoryByUserID(int userID) {
-
         List<BookingHistoryDTO> list = new ArrayList<>();
-
-        String sql = "SELECT b.BookingID, c.Name AS CatName, c.Breed, "
+        String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, "
                 + "b.AppointmentDate, b.EndDate, b.AppointmentTime, b.Status, "
                 + "s.NameService, bd.PriceAtBooking "
                 + "FROM Bookings b "
@@ -29,11 +27,11 @@ public class BookingDAO extends DBContext {
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, userID);
-
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     list.add(new BookingHistoryDTO(
                             rs.getInt("BookingID"),
+                            rs.getInt("SlotID"),
                             rs.getString("CatName"),
                             rs.getString("Breed"),
                             rs.getDate("AppointmentDate"),
@@ -41,15 +39,14 @@ public class BookingDAO extends DBContext {
                             rs.getTime("AppointmentTime"),
                             rs.getString("NameService"),
                             rs.getDouble("PriceAtBooking"),
-                            rs.getString("Status")
+                            rs.getString("Status"),
+                            null, "", "", "" // 4 tham số bổ sung cho DTO
                     ));
                 }
             }
-
         } catch (SQLException e) {
-
+            e.printStackTrace();
         }
-
         return list;
     }
 
@@ -533,5 +530,20 @@ public class BookingDAO extends DBContext {
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
     }
+    public boolean updateStatusPendingCancelRefund(int bookingID) {
+    String sql = "UPDATE Booking SET Status = ? WHERE BookingID = ?";
+    
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setString(1, "PendingCancelRefund");
+        ps.setInt(2, bookingID);
+        
+        return ps.executeUpdate() > 0;
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return false;
+}
 
 }

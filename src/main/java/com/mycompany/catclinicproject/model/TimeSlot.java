@@ -14,7 +14,6 @@ import java.sql.Time;
 public class TimeSlot {
 
     private int slotID;
-
     private Time startTime;
     private Time endTime;
     private boolean isActive ;

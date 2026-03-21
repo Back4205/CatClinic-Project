@@ -5,7 +5,7 @@ import java.sql.Time;
 
 public class BookingHistoryDTO {
 
-    private int bookingID;
+      private int bookingID;
     private int slotID;
     private String catName;
     private String catBreed;
