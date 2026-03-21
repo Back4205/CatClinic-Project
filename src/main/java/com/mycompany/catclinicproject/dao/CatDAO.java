@@ -332,7 +332,7 @@ public class CatDAO extends DBContext {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return -1; // không tìm thấy
+        return -1;
     }
     public List<Cat> getCatsByOwnerPaging(int ownerID, int indexPage, int pageSize) {
 

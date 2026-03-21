@@ -37,6 +37,10 @@ public class BillingBookingController extends HttpServlet {
         String status = request.getParameter("status");
         String filterDate = request.getParameter("filterDate");
 
+        if (filterDate == null ) {
+            java.time.LocalDate today = java.time.LocalDate.now();
+            filterDate = today.toString();
+        }
         if (search == null) search = "";
         if (status == null || status.isEmpty()) status = "ALL";
 

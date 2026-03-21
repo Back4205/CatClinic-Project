@@ -155,7 +155,7 @@
                 </tbody>
             </table>
         </div>
-
+        <c:if test="${pageSize > 1}">
         <div class="pagination">
 
             <%-- FIRST BUTTON --%>
@@ -234,6 +234,7 @@
             </c:choose>
 
         </div>
+        </c:if>
 
     </main>
 </div>

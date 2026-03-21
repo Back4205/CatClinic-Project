@@ -68,10 +68,12 @@ public class PaymentDAO extends DBContext{
         sql.append(" SELECT\n" +
                 "            b.BookingID,\n" +
                 "            c.Name AS CatName,\n" +
+                "            c.Image,\n" +
                 "            u.FullName AS OwnerName,\n" +
+                "            u.Phone, \n" +
                 "            br.CheckInTime,\n" +
                 "            br.CheckOutTime,\n" +
-                "            ISNULL(i.PaymentStatus,'PendingPayment') AS InvoiceStatus\n" +
+                "            ISNULL(i.PaymentStatus,'Unpaid') AS InvoiceStatus\n" +
                 "        FROM Bookings b\n" +
                 "        JOIN BoardingRecords br ON b.BookingID = br.BookingID\n" +
                 "        JOIN Cats c ON b.CatID = c.CatID\n" +
@@ -134,6 +136,9 @@ public class PaymentDAO extends DBContext{
                 b.setCheckInTime(rs.getTimestamp("CheckInTime"));
                 b.setCheckOutTime(rs.getTimestamp("CheckOutTime"));
                 b.setInvoiceStatus(rs.getString("InvoiceStatus"));
+                b.setImage(rs.getString("Image"));
+                b.setPhone(rs.getString("Phone"));
+
 
                 list.add(b);
             }

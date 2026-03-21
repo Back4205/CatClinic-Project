@@ -1,84 +1,63 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: ADMIN
-  Date: 3/11/2026
-  Time: 3:16 PM
-  To change this template use File | Settings | File Templates.
---%>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-
-<%--<header class="topbar">--%>
-<%--    <div class="logo"><i class="bi bi-hospital"></i> CatClinic</div>--%>
-<%--    <div class="user-info">--%>
-<%--        <span class="name">${acc.fullName}</span>--%>
-<%--        <div class="avatar">--%>
-<%--            <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">--%>
-<%--        </div>--%>
-<%--    </div>--%>
-<%--</header>--%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <header class="topbar">
   <div class="logo">
-    <a  style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 10px;">
-      <i class="bi bi-hospital"></i> CatClinic
+    <a href="${pageContext.request.contextPath}/home" class="logo-link">
+      <i class="bi bi-hospital"></i> <span>CatClinic</span>
     </a>
   </div>
 
-
-  <%--    <div class="user-info">--%>
-  <%--        <span class="name">Wellcome ${acc.fullName}</span>--%>
-  <%--        <div class="avatar">--%>
-  <%--            <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile Picture">--%>
-  <%--        </div>--%>
-  <%--    </div>--%>
   <div class="right-section">
-
     <div class="notification">
-      <a href="${pageContext.request.contextPath}/reception/clear-notification" >
+      <input type="checkbox" id="noti-toggle" class="noti-checkbox">
+
+      <label for="noti-toggle" class="bell-wrapper">
         <i class="bi bi-bell bell-icon"></i>
+        <c:if test="${sessionScope.notificationCount > 0}">
+          <span class="noti-count">${sessionScope.notificationCount}</span>
+        </c:if>
+      </label>
 
-        <span class="noti-count">
-          ${sessionScope.notificationCount}
-        </span>
-      </a>
-
-
-      <!-- Dropdown -->
       <div class="noti-dropdown">
-
         <div class="noti-header">
-          New Bookings
+          <span>New Notification </span>
+          <a href="${pageContext.request.contextPath}/reception/clear-notification" class="clear-btn">
+           Has seen
+          </a>
         </div>
 
         <div class="noti-list">
-
-          <c:forEach var="n" items="${sessionScope.notifications}">
-            <div class="noti-item">
-
-              <b>ID:${n.bookingID}-${n.ownerName} - ${n.phone}</b><br>
-              <fmt:formatDate value="${n.appointmentDate}" pattern="dd/MM/yyyy" /> on
-              <fmt:formatDate value="${n.appointmentTime}" pattern="HH:mm" />
-            </div>
-          </c:forEach>
-
+          <c:choose>
+            <c:when test="${not empty sessionScope.notifications}">
+              <c:forEach var="n" items="${sessionScope.notifications}">
+                <div class="noti-item">
+                  <div class="noti-icon">
+                    <i class="bi bi-calendar-check"></i>
+                  </div>
+                  <div class="noti-content">
+                    <p class="noti-title">ID: ${n.bookingID} - <strong>${n.ownerName}</strong></p>
+                    <p class="noti-detail">
+                      <i class="bi bi-clock"></i>
+                      <fmt:formatDate value="${n.appointmentDate}" pattern="dd/MM/yyyy" />
+                      to <fmt:formatDate value="${n.appointmentTime}" pattern="HH:mm" />
+                    </p>
+                  </div>
+                </div>
+              </c:forEach>
+            </c:when>
+            <c:otherwise>
+              <div class="noti-empty">Do not New Notification</div>
+            </c:otherwise>
+          </c:choose>
         </div>
-
       </div>
-
     </div>
 
-    <!-- User -->
     <div class="user-info">
-
-      <span class="name">Welcome ${acc.fullName}</span>
-
+      <span class="name">WellCome, <strong>${acc.fullName}</strong></span>
       <div class="avatar">
-        <img src="${pageContext.request.contextPath}/image/default.jpg"
-             alt="Profile Picture">
+        <img src="${pageContext.request.contextPath}/image/default.jpg" alt="Profile">
       </div>
-
     </div>
-
   </div>
 </header>

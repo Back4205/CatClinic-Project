@@ -31,9 +31,10 @@
     <main class="main-content">
 
         <div class="hub-header">
-            <h2>Receptionist Hub</h2>
-            <p>Welcome back, ${sessionScope.acc.fullName}. Here is your control center for today.</p>
+            <h2>Billing & Payment</h2>
+            <p>Receptionist: ${sessionScope.acc.fullName}. Manage customer invoices and process transactions here.</p>
         </div>
+
 
         <div class="table-section">
 
@@ -115,6 +116,7 @@
 
                 <thead>
                 <tr>
+                    <th>Image</th>
                     <th>Patient</th>
                     <th>Check In</th>
                     <th>Check Out</th>
@@ -128,16 +130,25 @@
                 <c:forEach items="${billingList}" var="b">
 
                     <tr>
+                        <td>
+                            <img src="${pageContext.request.contextPath}/${b.getImage()}"
+                                 class="pet-img"
+                                 alt="Pet">
+                        </td>
 
                         <td>
                             <div class="patient-cell">
 
-                                <div class="cat-avatar">🐱</div>
+
 
                                 <div>
                                     <p class="patient-name">${b.catName}</p>
                                     <p class="patient-id">
                                         Owner: ${b.ownerName}
+                                    </p>
+                                    <p class="patient-id">
+
+                                        Phone: ${b.phone}
                                     </p>
                                 </div>
 
@@ -272,4 +283,5 @@ Not Yet
 </div>
 
 </body>
+
 </html>

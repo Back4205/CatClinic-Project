@@ -337,3 +337,31 @@ td {
     text-align: center;
     margin-top: 20px;
 }
+.form-group {
+    margin-bottom: 16px;
+}
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #64748B;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1E293B;
+    background-color: #fff;
+    transition: all 0.3s ease;
+    outline: none;
+    height: 42px;
+}
+textarea.form-control {
+    min-height: 80px;
+    resize: vertical;
+    height: auto;
+}

@@ -1,8 +1,6 @@
 package com.mycompany.catclinicproject.dao;
 
-import com.mycompany.catclinicproject.model.RegisterDTO;
-import com.mycompany.catclinicproject.model.User;
-import com.mycompany.catclinicproject.model.VeterinarianInfo;
+import com.mycompany.catclinicproject.model.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -346,6 +344,61 @@ public class UserDAO extends DBContext {
         }
 
         return list;
+    }
+    public List<StaffDTO> getAllStaffByPosition(String position) {
+        List<StaffDTO> list = new ArrayList<>();
+        // SQL khớp với cấu trúc bạn vừa đưa ra
+        String sql = "SELECT u.UserID, u.FullName, u.Phone, s.Position, s.StaffID "
+                + "FROM Staffs s "
+                + "JOIN Users u ON u.UserID = s.UserID "
+                + "WHERE s.Position = ? AND u.IsActive = 1";
+
+        try (
+             PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, position);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                StaffDTO u = new StaffDTO();
+                u.setUserID(rs.getInt("UserID"));
+                u.setFullName(rs.getString("FullName"));
+                u.setPhone(rs.getString("Phone"));
+
+                u.setStaffID(rs.getInt("StaffID"));
+
+                list.add(u);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    public Owner getUserByPhone(String phone) {
+        Owner owner = null;
+        String sql = "SELECT u.UserID, u.FullName, u.Email, u.Phone, o.Address " +
+                "FROM Users u " +
+                "JOIN Owners o ON o.UserID = u.UserID " +
+                "WHERE u.Phone = ? AND u.IsActive = 1";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    owner = new Owner();
+
+                    owner.setUserID(rs.getInt("UserID"));
+                    owner.setFullName(rs.getString("FullName"));
+                    owner.setAddress(rs.getString("Address"));
+                    owner.setEmail(rs.getString("Email"));
+                    owner.setPhone(rs.getString("Phone"));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi getUserByPhone: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return owner;
     }
 
 }

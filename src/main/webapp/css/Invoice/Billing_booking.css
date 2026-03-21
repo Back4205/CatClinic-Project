@@ -172,4 +172,10 @@
     border-color: #ea580c;
     font-weight:600;
 }
-
+.pet-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
