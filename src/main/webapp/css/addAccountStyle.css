@@ -171,3 +171,8 @@ input:-webkit-autofill {
     background: #ff7a00;
     color: #fff;
 }
+
+.error {
+    color: red;
+    font-size: 0.85em;
+}

@@ -1,4 +1,6 @@
-/* ====== Global ====== */
+/* ===============================
+   GLOBAL
+================================= */
 body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #fff8f2;
@@ -6,19 +8,35 @@ body {
     padding: 0;
 }
 
+/* ===============================
+   MAIN LAYOUT (Flex chuẩn)
+================================= */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===============================
+   SIDEBAR
+================================= */
+.sidebar {
+    width: 240px;
+    background: #ffffff;
+    border-right: 1px solid #e5e5e5;
+    flex-shrink: 0;      /* Không cho co lại */
+}
+
+/* ===============================
+   CONTENT CONTAINER
+================================= */
 .container {
-    width: 90%;
-    margin: 40px auto;
+    flex: 1;             /* Chiếm toàn bộ phần còn lại */
+    padding: 30px 40px;
 }
 
-.title {
-    text-align: center;
-    color: #ff6b00;
-    margin-bottom: 30px;
-}
-
-/* ====== Button Top ====== */
-/* ===== Header Layout ===== */
+/* ===============================
+   HEADER
+================================= */
 .header {
     display: flex;
     justify-content: space-between;
@@ -33,7 +51,9 @@ body {
     font-weight: bold;
 }
 
-
+/* ===============================
+   BUTTON ADD NEW
+================================= */
 .btn-primary {
     background-color: #ff6b00;
     color: white;
@@ -48,12 +68,16 @@ body {
     background-color: #e65c00;
 }
 
-/* ====== Table ====== */
+/* ===============================
+   TABLE
+================================= */
 .styled-table {
     width: 100%;
     border-collapse: collapse;
     background-color: white;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .styled-table thead {
@@ -63,12 +87,12 @@ body {
 
 .styled-table th,
 .styled-table td {
-    padding: 12px 15px;
+    padding: 14px 16px;
     text-align: center;
 }
 
 .styled-table tbody tr {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
     transition: 0.2s;
 }
 
@@ -76,7 +100,9 @@ body {
     background-color: #fff2e6;
 }
 
-/* ====== Banner ====== */
+/* ===============================
+   BANNER IMAGE
+================================= */
 .banner-img {
     width: 100px;
     height: 60px;
@@ -84,24 +110,30 @@ body {
     border-radius: 6px;
 }
 
-/* ====== Status ====== */
+/* ===============================
+   STATUS BADGE
+================================= */
 .status-active {
     color: white;
     background-color: #28a745;
-    padding: 5px 10px;
+    padding: 5px 12px;
     border-radius: 20px;
     font-size: 13px;
+    font-weight: bold;
 }
 
 .status-inactive {
     color: white;
     background-color: #dc3545;
-    padding: 5px 10px;
+    padding: 5px 12px;
     border-radius: 20px;
     font-size: 13px;
+    font-weight: bold;
 }
 
-/* ====== Action Buttons ====== */
+/* ===============================
+   ACTION BUTTONS
+================================= */
 .action-buttons {
     display: flex;
     justify-content: center;

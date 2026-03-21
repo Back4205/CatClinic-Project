@@ -1,0 +1,294 @@
+/* =================================================
+   GLOBAL EMR LAYOUT
+=================================================*/
+
+.emr-container {
+    padding: 30px;
+    display: flex;
+    justify-content: center;
+    background: #f9fafb;
+}
+
+.emr-card {
+    width: 100%;
+    max-width: 950px;
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 18px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.06);
+}
+
+/* =================================================
+   HEADER
+=================================================*/
+
+.emr-header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ff7a00;
+    margin-bottom: 25px;
+}
+
+/* =================================================
+   BACK LINK
+=================================================*/
+
+.back-link {
+    margin-right:  15px;
+}
+
+.back-link a {
+    text-decoration: none;
+    color: #ff7a00;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.back-link a:hover {
+    color: #e56700;
+}
+
+/* =================================================
+   FORM GROUP
+=================================================*/
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+}
+
+/* =================================================
+   INPUT STYLE
+=================================================*/
+
+.input-control,
+#drugSearch,
+.form-group input[type="date"] {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+    font-size: 14px;
+    transition: 0.25s ease;
+    background: #fff;
+}
+
+.input-control:focus,
+#drugSearch:focus,
+.form-group input:focus {
+    outline: none;
+    border-color: #ff7a00;
+    box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.15);
+}
+
+/* =================================================
+   SEARCH DROPDOWN
+=================================================*/
+
+#searchResult {
+    background: #ffffff;
+    border-radius: 12px;
+    margin-top: 6px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    max-height: 240px;
+    overflow-y: auto;
+    display: none;
+    border: 1px solid #f0f0f0;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.search-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    transition: 0.2s ease;
+    font-size: 14px;
+}
+
+.search-item:hover {
+    background: #fff3e6;
+}
+
+/* =================================================
+   ADD BUTTON
+=================================================*/
+
+.add-btn {
+    background: #ff7a00;
+    border: none;
+    color: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.add-btn:hover {
+    background: #e56700;
+    transform: scale(1.08);
+}
+
+/* =================================================
+   PRESCRIPTION CONTAINER
+=================================================*/
+
+#prescriptionContainer {
+    margin-top: 12px;
+}
+
+/* =================================================
+   DRUG CARD (HORIZONTAL LAYOUT)
+=================================================*/
+
+.drug-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    border-left: 6px solid #ff7a00;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    animation: fadeIn 0.25s ease;
+}
+
+.drug-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: #333;
+}
+
+/* ROW CONTAINER */
+
+.drug-content {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+/* =================================================
+   DRUG FIELD
+=================================================*/
+
+.drug-field {
+    flex: 1;
+    min-width: 170px;
+}
+
+.drug-field label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #555;
+}
+
+.drug-field input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    font-size: 13px;
+    transition: 0.2s ease;
+}
+
+.drug-field input:focus {
+    outline: none;
+    border-color: #ff7a00;
+}
+
+/* =================================================
+   REMOVE BUTTON
+=================================================*/
+
+.remove-btn {
+    background: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s ease;
+    height: 40px;
+}
+
+.remove-btn:hover {
+    background: #d9363e;
+    transform: translateY(-2px);
+}
+
+/* =================================================
+   EMPTY BOX
+=================================================*/
+
+#emptyBox {
+    padding: 30px;
+    text-align: center;
+    background: #fff8f2;
+    border-radius: 14px;
+    color: #ff7a00;
+    font-style: italic;
+    border: 1px dashed #ffb266;
+}
+
+/* =================================================
+   SUBMIT BUTTON
+=================================================*/
+
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #ff7a00, #ff9f3f);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255, 122, 0, 0.35);
+}
+
+/* =================================================
+   SCROLLBAR (OPTIONAL)
+=================================================*/
+
+#searchResult::-webkit-scrollbar {
+    width: 6px;
+}
+
+#searchResult::-webkit-scrollbar-thumb {
+    background: #ffb266;
+    border-radius: 10px;
+}
+
+/* =================================================
+   ANIMATION
+=================================================*/
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

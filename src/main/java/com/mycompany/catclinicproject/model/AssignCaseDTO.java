@@ -6,15 +6,25 @@ public class AssignCaseDTO {
     private String catName;
     private String fullName;
     private String status;
+    private int slot;
     
     public AssignCaseDTO() {
     }
 
-    public AssignCaseDTO(int bookingID, String catName, String fullName, String status) {
+    public AssignCaseDTO(int bookingID, String catName, String fullName, String status,int slot) {
         this.bookingID = bookingID;
         this.catName = catName;
         this.fullName = fullName;
         this.status = status;
+        this.slot = slot;
+    }
+
+    public int getSlot() {
+        return slot;
+    }
+
+    public void setSlot(int slot) {
+        this.slot = slot;
     }
 
     public int getBookingID() {

@@ -8,24 +8,16 @@
         </div>
 
         <nav class="menu">
-            <a href="DashboardController" class="menu-item ${activePage == 'dashboard' ? 'active' : ''}">
+            <a href="DashboardController?page=${i}&dateFrom=${dateFrom}&dateTo=${dateTo}" class="menu-item ${activePage == 'dashboard' ? 'active' : ''}">
                 <i class="fa-solid fa-chart-line"></i> Dashboard
             </a>
 
             <a href="assignedCases" class="menu-item ${activePage == 'assigned' ? 'active' : ''}">
-                <i class="fa-solid fa-folder-open"></i> Assigned Cases
+                <i class="fa-solid fa-folder-open"></i> Treatment records
             </a>
 
-            <a href="emr" class="menu-item ${activePage == 'emr' ? 'active' : ''}">
-                <i class="fa-solid fa-file-medical"></i> EMR Management
-            </a>
-
-            <a href="lab" class="menu-item ${activePage == 'lab' ? 'active' : ''}">
+            <a href="testlist" class="menu-item ${activePage == 'testlist' ? 'active' : ''}">
                 <i class="fa-solid fa-vials"></i> Lab / X-ray
-            </a>
-
-            <a href="hospital" class="menu-item ${activePage == 'hospital' ? 'active' : ''}">
-                <i class="fa-solid fa-bed"></i> Hospitalization
             </a>
 
             <a href="schedule" class="menu-item ${activePage == 'schedule' ? 'active' : ''}">

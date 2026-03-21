@@ -37,7 +37,7 @@
         </div>
         <a href="aboutUs">About Us</a>
         <a href="new">News</a>
-        <a href="vete">Veterinarian</a>
+        <a href="ViewAllVeterinarian">Veterinarian</a>
     </nav>
     <!-- RIGHT: AUTH -->
     <div class="auth">

@@ -4,6 +4,7 @@
  */
 package com.mycompany.catclinicproject.controller.Veterinarian;
 
+import com.mycompany.catclinicproject.dao.MedicalRecordDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,8 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author Son
  */
-@WebServlet(name = "AssignCaseController", urlPatterns = {"/assignedCases"})
-public class AssignCaseController extends HttpServlet {
+@WebServlet(name = "CheckRecordStatus", urlPatterns = {"/checkRecordStatus"})
+public class CheckRecordStatus extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,10 +37,10 @@ public class AssignCaseController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AssignCaseController</title>");
+            out.println("<title>Servlet CheckRecordStatus</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AssignCaseController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet CheckRecordStatus at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -56,10 +57,12 @@ public class AssignCaseController extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.setAttribute("activePage", "dashboard");
-        request.getRequestDispatcher("WEB-INF/views/veterinarian/assigncase.jsp")
-                .forward(request, response);
+            throws IOException {
+
+        MedicalRecordDAO dao = new MedicalRecordDAO();
+        boolean changed = dao.autoUpdateAndCheckChanges();
+        response.setContentType("text/plain");
+        response.getWriter().write(changed ? "changed" : "same");
     }
 
     /**

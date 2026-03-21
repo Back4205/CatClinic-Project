@@ -23,6 +23,7 @@
             </c:if>
 
             <form action="login" method="post">
+                <input type="hidden" name="from" value="${from}">
                 <div class="form-group">
                     <label class="form-label">Username</label>
                     <input type="text" class="form-control" name="username" value="${username}" required>

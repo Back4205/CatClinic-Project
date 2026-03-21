@@ -40,26 +40,19 @@ public class CreateService extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         request.setCharacterEncoding("UTF-8");
-
         String name = request.getParameter("name").trim();
         String priceRaw = request.getParameter("price");
         String description = request.getParameter("description").trim();
         String timeRaw = request.getParameter("time");
         String categoryRaw = request.getParameter("categoryID");
         boolean isActive = request.getParameter("isActive") != null;
-
         String error = null;
-
-        // ===== VALIDATE NAME =====
         if (name == null || name.trim().isEmpty()) {
             error = "Service name cannot be empty!";
         } else if (name.length() > 100) {
             error = "Service name must be less than 100 characters!";
         }
-
-        // ===== VALIDATE PRICE =====
         double price = 0;
         if (error == null) {
             try {

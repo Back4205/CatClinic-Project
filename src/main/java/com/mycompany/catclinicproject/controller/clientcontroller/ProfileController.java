@@ -26,21 +26,15 @@ public class ProfileController extends HttpServlet {
          return;
      }
      int userID = user.getUserID();
-
-//        int userID = 5;
-
         ProfileDAO dao = new ProfileDAO();
         UserDTO userProfile = dao.getUserProfile(userID);
-
         request.setAttribute("user", userProfile);
         request.getRequestDispatcher("/WEB-INF/views/client/my-profile.jsp").forward(request, response);
     }
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-//        int userID = 5;
          HttpSession session = request.getSession(false);
      User user = (User)session.getAttribute("acc");
      if(user == null){

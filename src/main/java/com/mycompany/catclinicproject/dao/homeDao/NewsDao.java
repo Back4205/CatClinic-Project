@@ -55,6 +55,40 @@ public class NewsDao extends DBContext {
 
         return list;
     }
+    public List<NewsDTO> getNews() {
+
+        List<NewsDTO> list = new ArrayList<>();
+
+        String sql
+                = "SELECT * FROM News "
+                + "WHERE IsActive = 1 "
+                + "ORDER BY NewID DESC ";
+
+        try (
+                PreparedStatement ps = c.prepareStatement(sql)) {
+
+            
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                NewsDTO news = new NewsDTO(
+                        rs.getInt("NewID"),
+                        rs.getString("Img"),
+                        rs.getString("Title"),
+                        rs.getString("Description"),
+                        rs.getBoolean("IsActive")
+                );
+
+                list.add(news);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 
     public List<NewsDTO> getLastNews() {
         List<NewsDTO> list = new ArrayList<>();

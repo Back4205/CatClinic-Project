@@ -1,0 +1,41 @@
+/* ============================================
+   NOTIFICATION BAR
+   ============================================ */
+
+.notification-bar {
+  background: linear-gradient(90deg, #FF9F43 0%, #FF8C00 100%) !important;
+  padding: 16px 40px !important;
+  text-align: center !important;
+  box-shadow: 0 4px 15px rgba(255, 159, 67, 0.3) !important;
+  border-bottom: 3px solid #FF7A3D !important;
+}
+
+.scrolling-text {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 15px !important;
+}
+
+.scrolling-text span {
+  color: white !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.5px !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.scrolling-text span::before {
+  content: '🔔' !important;
+  margin-right: 10px !important;
+}
+
+@media (max-width: 768px) {
+  .notification-bar {
+    padding: 12px 20px !important;
+  }
+
+  .scrolling-text span {
+    font-size: 0.9rem !important;
+  }
+}
