@@ -1,6 +1,7 @@
 package com.mycompany.catclinicproject.controller.receptionistController;
 
 import com.mycompany.catclinicproject.dao.BookingDAO;
+import com.mycompany.catclinicproject.model.BookingHistory2DTO;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import java.io.IOException;
 import java.util.List;
@@ -21,9 +22,7 @@ public class CheckoutController extends HttpServlet {
             try {
                 int id = Integer.parseInt(request.getParameter("id"));
                 String condition = request.getParameter("condition");
-
                 boolean success = dao.updateCheckoutStatus(id, condition);
-
                 if (success) {
                     response.sendRedirect("checkout-queue?status=success");
                 } else {
@@ -35,7 +34,6 @@ public class CheckoutController extends HttpServlet {
             }
             return;
         }
-
         String search = request.getParameter("search");
         String dateFilter = request.getParameter("dateFilter");
 
@@ -56,8 +54,7 @@ public class CheckoutController extends HttpServlet {
         if (total % pageSize != 0) {
             endPage++;
         }
-
-        List<BookingHistoryDTO> list = dao.getCheckoutPaging(search, dateFilter, (index - 1) * pageSize, pageSize);
+        List<BookingHistory2DTO> list = dao.getCheckoutPaging(search, dateFilter, (index - 1) * pageSize, pageSize);
 
         request.setAttribute("checkoutList", list);
         request.setAttribute("currentDate", dateFilter);

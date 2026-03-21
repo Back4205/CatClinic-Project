@@ -1,8 +1,11 @@
 package com.mycompany.catclinicproject.dao;
 
 import com.mycompany.catclinicproject.model.BillingBookingDTO;
+import com.mycompany.catclinicproject.model.BoardingRecordDTO;
 import com.mycompany.catclinicproject.model.Booking;
+import com.mycompany.catclinicproject.model.BookingHistory2DTO;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
+import com.mycompany.catclinicproject.model.FeedbackDTO;
 import com.mycompany.catclinicproject.model.TimeSlotVet;
 
 import java.sql.*;
@@ -10,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookingDAO extends DBContext {
-
 
     public List<BookingHistoryDTO> getHistoryByUserID(int userID) {
         List<BookingHistoryDTO> list = new ArrayList<>();
@@ -72,33 +74,32 @@ public class BookingDAO extends DBContext {
         return catID;
     }
 
-
     public int createBookingWithInvoice(Booking booking,
-                                        List<Integer> serviceIDs,
-                                        List<Double> prices,
-                                        double totalAmount) {
+            List<Integer> serviceIDs,
+            List<Double> prices,
+            double totalAmount) {
 
         int bookingID = -1;
 
-        String lockSlotSQL =
-                "SELECT Status FROM TimeSlot_Vet WITH (UPDLOCK, ROWLOCK) " +
-                        "WHERE VetID=? AND SlotID=? AND Date=?";
+        String lockSlotSQL
+                = "SELECT Status FROM TimeSlot_Vet WITH (UPDLOCK, ROWLOCK) "
+                + "WHERE VetID=? AND SlotID=? AND Date=?";
 
-        String insertBookingSQL =
-                "INSERT INTO Bookings (CatID, VetID, SlotID, AppointmentDate, BookingDate, EndDate, AppointmentTime, Status, Note, StaffID) " +
-                        "VALUES (?, ?, ?, ?, GETDATE(), ?, ?, ?, ?, ?)";
+        String insertBookingSQL
+                = "INSERT INTO Bookings (CatID, VetID, SlotID, AppointmentDate, BookingDate, EndDate, AppointmentTime, Status, Note, StaffID) "
+                + "VALUES (?, ?, ?, ?, GETDATE(), ?, ?, ?, ?, ?)";
 
-        String insertSlotSQL =
-                "INSERT INTO TimeSlot_Vet (VetID, SlotID, Date, Status) VALUES (?, ?, ?, 'Booked')";
+        String insertSlotSQL
+                = "INSERT INTO TimeSlot_Vet (VetID, SlotID, Date, Status) VALUES (?, ?, ?, 'Booked')";
 
-        String updateSlotSQL =
-                "UPDATE TimeSlot_Vet SET Status='Booked' WHERE VetID=? AND SlotID=? AND Date=?";
+        String updateSlotSQL
+                = "UPDATE TimeSlot_Vet SET Status='Booked' WHERE VetID=? AND SlotID=? AND Date=?";
 
-        String insertDetailSQL =
-                "INSERT INTO Appointment_Service (BookingID, ServiceID, PriceAtBooking) VALUES (?, ?, ?)";
+        String insertDetailSQL
+                = "INSERT INTO Appointment_Service (BookingID, ServiceID, PriceAtBooking) VALUES (?, ?, ?)";
 
-        String insertInvoiceSQL =
-                "INSERT INTO Invoices (BookingID, TotalAmount, PaymentStatus, CreatedDate) VALUES (?, ?, 'Unpaid', GETDATE())";
+        String insertInvoiceSQL
+                = "INSERT INTO Invoices (BookingID, TotalAmount, PaymentStatus, CreatedDate) VALUES (?, ?, 'Unpaid', GETDATE())";
 
         try {
 
@@ -106,7 +107,7 @@ public class BookingDAO extends DBContext {
 
             // convert date an toàn cho JDBC
             java.sql.Date apptDate = new java.sql.Date(booking.getAppointmentDate().getTime());
-            java.sql.Date endDate  = new java.sql.Date(booking.getEndDate().getTime());
+            java.sql.Date endDate = new java.sql.Date(booking.getEndDate().getTime());
 
             if (booking.getVeterinarianID() > 0 && booking.getSlotID() > 0) {
 
@@ -154,15 +155,17 @@ public class BookingDAO extends DBContext {
 
                 ps.setInt(1, booking.getCatID());
 
-                if (booking.getVeterinarianID() <= 0)
+                if (booking.getVeterinarianID() <= 0) {
                     ps.setNull(2, Types.INTEGER);
-                else
+                } else {
                     ps.setInt(2, booking.getVeterinarianID());
+                }
 
-                if (booking.getSlotID() <= 0)
+                if (booking.getSlotID() <= 0) {
                     ps.setNull(3, Types.INTEGER);
-                else
+                } else {
                     ps.setInt(3, booking.getSlotID());
+                }
 
                 ps.setDate(4, apptDate);
                 ps.setDate(5, endDate);
@@ -170,10 +173,11 @@ public class BookingDAO extends DBContext {
                 ps.setString(7, "PendingPayment");
                 ps.setString(8, booking.getNote());
 
-                if (booking.getStaffID() <= 0)
+                if (booking.getStaffID() <= 0) {
                     ps.setNull(9, Types.INTEGER);
-                else
+                } else {
                     ps.setInt(9, booking.getStaffID());
+                }
 
                 ps.executeUpdate();
 
@@ -218,22 +222,28 @@ public class BookingDAO extends DBContext {
 
         } catch (Exception e) {
 
-            try { c.rollback(); } catch (Exception ex) {}
+            try {
+                c.rollback();
+            } catch (Exception ex) {
+            }
 
             e.printStackTrace();
             return -4;
 
         } finally {
 
-            try { c.setAutoCommit(true); } catch (Exception e) {}
+            try {
+                c.setAutoCommit(true);
+            } catch (Exception e) {
+            }
         }
     }
 
     public boolean confirmBooking(int bookingID) {
 
-        String updateBookingSQL =
-                "UPDATE Bookings SET Status = 'Confirmed' " +
-                        "WHERE BookingID = ? AND Status = 'PendingPayment'";
+        String updateBookingSQL
+                = "UPDATE Bookings SET Status = 'Confirmed' "
+                + "WHERE BookingID = ? AND Status = 'PendingPayment'";
 
         try {
 
@@ -258,22 +268,25 @@ public class BookingDAO extends DBContext {
 
         } catch (Exception e) {
 
-            try { c.rollback(); } catch (Exception ex) {}
+            try {
+                c.rollback();
+            } catch (Exception ex) {
+            }
 
             System.out.println(" ERROR in confirmBooking: " + e.getMessage());
             e.printStackTrace();
 
         } finally {
 
-            try { c.setAutoCommit(true); } catch (Exception e) {}
+            try {
+                c.setAutoCommit(true);
+            } catch (Exception e) {
+            }
 
         }
 
         return false;
     }
-
-
-
 
     public void autoCancelExpiredBookings() {
 
@@ -281,12 +294,11 @@ public class BookingDAO extends DBContext {
 
             c.setAutoCommit(false);
 
-
-            String selectSql =
-                    "SELECT BookingID, VetID, SlotID, AppointmentDate " +
-                            "FROM Bookings " +
-                            "WHERE Status = 'PendingPayment' " +
-                            "AND DATEDIFF(MINUTE, BookingDate, GETDATE()) >= 5";
+            String selectSql
+                    = "SELECT BookingID, VetID, SlotID, AppointmentDate "
+                    + "FROM Bookings "
+                    + "WHERE Status = 'PendingPayment' "
+                    + "AND DATEDIFF(MINUTE, BookingDate, GETDATE()) >= 5";
 
             PreparedStatement psSelect = c.prepareStatement(selectSql);
             ResultSet rs = psSelect.executeQuery();
@@ -306,11 +318,10 @@ public class BookingDAO extends DBContext {
 
             psSelect.close();
 
-
-            String cancelSql =
-                    "UPDATE Bookings SET Status = 'Cancelled' " +
-                            "WHERE Status = 'PendingPayment' " +
-                            "AND DATEDIFF(MINUTE, BookingDate, GETDATE()) >= 5";
+            String cancelSql
+                    = "UPDATE Bookings SET Status = 'Cancelled' "
+                    + "WHERE Status = 'PendingPayment' "
+                    + "AND DATEDIFF(MINUTE, BookingDate, GETDATE()) >= 5";
 
             PreparedStatement psCancel = c.prepareStatement(cancelSql);
 
@@ -318,9 +329,9 @@ public class BookingDAO extends DBContext {
 
             if (!slots.isEmpty()) {
 
-                String releaseSql =
-                        "UPDATE TimeSlot_Vet SET Status = 'Available' " +
-                                "WHERE VetID = ? AND SlotID = ? AND Date = ?";
+                String releaseSql
+                        = "UPDATE TimeSlot_Vet SET Status = 'Available' "
+                        + "WHERE VetID = ? AND SlotID = ? AND Date = ?";
 
                 PreparedStatement psRelease = c.prepareStatement(releaseSql);
 
@@ -332,8 +343,8 @@ public class BookingDAO extends DBContext {
 
                     psRelease.executeUpdate();
 
-                    System.out.println(" Slot released: VetID=" + t.getVetID() +
-                            ", SlotID=" + t.getSlotID() + ", Date=" + t.getDate());
+                    System.out.println(" Slot released: VetID=" + t.getVetID()
+                            + ", SlotID=" + t.getSlotID() + ", Date=" + t.getDate());
                 }
 
                 System.out.println(" Released " + slots.size() + " slots");
@@ -346,28 +357,31 @@ public class BookingDAO extends DBContext {
 
         } catch (Exception e) {
 
-            try { c.rollback(); } catch (Exception ex) {}
+            try {
+                c.rollback();
+            } catch (Exception ex) {
+            }
 
             System.out.println(" ERROR in autoCancelExpiredBookings: " + e.getMessage());
             e.printStackTrace();
 
         } finally {
 
-            try { c.setAutoCommit(true); } catch (Exception e) {}
+            try {
+                c.setAutoCommit(true);
+            } catch (Exception e) {
+            }
 
         }
     }
 
-
-
-
     public boolean isCatHotelConflict(int catID, Date newStart, Date newEnd) {
 
-        String sql =
-                "SELECT 1 FROM Bookings " +
-                        "WHERE CatID = ? " +
-                        "AND Status IN ('PendingPayment','Confirmed') " +
-                        "AND NOT (EndDate <= ? OR AppointmentDate >= ?)";
+        String sql
+                = "SELECT 1 FROM Bookings "
+                + "WHERE CatID = ? "
+                + "AND Status IN ('PendingPayment','Confirmed') "
+                + "AND NOT (EndDate <= ? OR AppointmentDate >= ?)";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -384,16 +398,17 @@ public class BookingDAO extends DBContext {
 
         return false;
     }
-    public boolean isCatBusyAtSlot(int catID,
-                                   java.sql.Date appointmentDate,
-                                   int slotID) {
 
-        String sql =
-                "SELECT 1 FROM Bookings " +
-                        "WHERE CatID = ? " +
-                        "AND AppointmentDate = ? " +
-                        "AND SlotID = ? " +
-                        "AND Status IN ('PendingPayment','Confirmed','Completed')";
+    public boolean isCatBusyAtSlot(int catID,
+            java.sql.Date appointmentDate,
+            int slotID) {
+
+        String sql
+                = "SELECT 1 FROM Bookings "
+                + "WHERE CatID = ? "
+                + "AND AppointmentDate = ? "
+                + "AND SlotID = ? "
+                + "AND Status IN ('PendingPayment','Confirmed','Completed')";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
 
@@ -411,6 +426,7 @@ public class BookingDAO extends DBContext {
 
         return false;
     }
+
     public boolean isCatBusyAtTime(int catID, java.sql.Date date, java.sql.Time time) {
 
         String sql = "SELECT 1 FROM Bookings "
@@ -435,6 +451,7 @@ public class BookingDAO extends DBContext {
 
         return false;
     }
+
     public int getLatestBookingID() {
         String sql = "SELECT MAX(BookingID) FROM Bookings";
         try {
@@ -448,25 +465,26 @@ public class BookingDAO extends DBContext {
         }
         return 0;
     }
+
     public List<BillingBookingDTO> getNewBookings(int lastSeenID) {
         List<BillingBookingDTO> list = new ArrayList<>();
 
-        String sql = "SELECT \n" +
-                "    b.BookingID,\n" +
-                "    u.FullName AS ownerName,\n" +
-                "    u.Phone,\n" +
-                "    b.AppointmentDate,\n" +
-                "    b.AppointmentTime\n" +
-                "FROM Bookings b\n" +
-                "JOIN Cats c ON b.CatID = c.CatID\n" +
-                "JOIN Owners o ON c.OwnerID = o.OwnerID\n" +
-                "JOIN Users u ON o.UserID = u.UserID\n" +
-                "WHERE b.BookingID > ?\n" +
-                "  AND b.Status IN ('Confirmed', 'Completed')\n" +
-                "ORDER BY b.BookingID DESC";
+        String sql = "SELECT \n"
+                + "    b.BookingID,\n"
+                + "    u.FullName AS ownerName,\n"
+                + "    u.Phone,\n"
+                + "    b.AppointmentDate,\n"
+                + "    b.AppointmentTime\n"
+                + "FROM Bookings b\n"
+                + "JOIN Cats c ON b.CatID = c.CatID\n"
+                + "JOIN Owners o ON c.OwnerID = o.OwnerID\n"
+                + "JOIN Users u ON o.UserID = u.UserID\n"
+                + "WHERE b.BookingID > ?\n"
+                + "  AND b.Status IN ('Confirmed', 'Completed')\n"
+                + "ORDER BY b.BookingID DESC";
 
         try (
-             PreparedStatement ps = c.prepareStatement(sql)) {
+                PreparedStatement ps = c.prepareStatement(sql)) {
 
             ps.setInt(1, lastSeenID);
 
@@ -490,11 +508,13 @@ public class BookingDAO extends DBContext {
 
         return list;
     }
+    
     public BookingHistoryDTO getBookingDetailByID(int bookingID) {
         String sql = "SELECT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, "
                 + "b.EndDate, b.AppointmentTime, b.Status, b.Note, s.NameService, "
                 + "ad.PriceAtBooking, u_vet.FullName AS VetName, "
-                + "u_owner.FullName AS OwnerName, u_owner.Phone "
+                + "u_owner.FullName AS OwnerName, u_owner.Phone, "
+                + "br.CheckInTime, br.CheckOutTime "
                 + "FROM Bookings b "
                 + "JOIN Cats c ON b.CatID = c.CatID "
                 + "JOIN Owners o ON c.OwnerID = o.OwnerID "
@@ -503,8 +523,8 @@ public class BookingDAO extends DBContext {
                 + "LEFT JOIN Users u_vet ON v.UserID = u_vet.UserID "
                 + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
                 + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
+                + "LEFT JOIN BoardingRecords br ON b.BookingID = br.BookingID "
                 + "WHERE b.BookingID = ?";
-
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, bookingID);
             try (ResultSet rs = ps.executeQuery()) {
@@ -524,26 +544,590 @@ public class BookingDAO extends DBContext {
                     d.setVetName(rs.getString("VetName"));
                     d.setCustomerName(rs.getString("OwnerName"));
                     d.setCustomerPhone(rs.getString("Phone"));
+                    d.setCheckInTime(rs.getTimestamp("CheckInTime"));
+                    d.setCheckOutTime(rs.getTimestamp("CheckOutTime"));
                     return d;
                 }
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return null;
     }
-    public boolean updateStatusPendingCancelRefund(int bookingID) {
-    String sql = "UPDATE Booking SET Status = ? WHERE BookingID = ?";
-    
-    try {
-        PreparedStatement ps = c.prepareStatement(sql);
-        ps.setString(1, "PendingCancelRefund");
-        ps.setInt(2, bookingID);
-        
-        return ps.executeUpdate() > 0;
-        
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return false;
-}
 
+    
+
+    public boolean updateStatusPendingCancelRefund(int bookingID) {
+        String sql = "UPDATE Booking SET Status = ? WHERE BookingID = ?";
+
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, "PendingCancelRefund");
+            ps.setInt(2, bookingID);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean cancelAndRequestRefund(int bookingID, String refundNote, int slotID) {
+        String updateBookingSQL = "UPDATE Bookings SET Status = N'PendingCancel', Note = ? WHERE BookingID = ?";
+        String releaseSlotSQL = "UPDATE TimeSlots SET Status = N'Available' WHERE SlotID = ?";
+
+        try {
+            c.setAutoCommit(false);
+            try (PreparedStatement ps1 = c.prepareStatement(updateBookingSQL)) {
+                ps1.setString(1, refundNote);
+                ps1.setInt(2, bookingID);
+                ps1.executeUpdate();
+            }
+            if (slotID > 0) {
+                try (PreparedStatement ps2 = c.prepareStatement(releaseSlotSQL)) {
+                    ps2.setInt(1, slotID);
+                    ps2.executeUpdate();
+                }
+            }
+            c.commit();
+            return true;
+        } catch (SQLException e) {
+            try {
+                c.rollback();
+            } catch (SQLException ex) {
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                c.setAutoCommit(true);
+            } catch (SQLException e) {
+            }
+        }
+    }
+
+    public boolean updateCheckoutStatus(int bookingId, String condition) {
+
+        String sql = "UPDATE BoardingRecords "
+                + "SET CheckOutTime = GETDATE(), "
+                + "    CheckOutCondition = ? "
+                + "WHERE BookingID = ? AND CheckOutTime IS NULL";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, (condition == null || condition.trim().isEmpty()) ? "Healthy" : condition);
+            ps.setInt(2, bookingId);
+
+            int rowAffected = ps.executeUpdate();
+            return rowAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int countCheckoutQueue(String search, String dateFilter) {
+        int total = 0;
+        String sql = "SELECT COUNT(DISTINCT b.BookingID) FROM Bookings b "
+                + "JOIN BoardingRecords br ON b.BookingID = br.BookingID "
+                + "LEFT JOIN MedicalRecords m ON b.BookingID = m.BookingID "
+                + "LEFT JOIN TestOrders t ON m.MedicalRecordID = t.MedicalRecordID "
+                + "LEFT JOIN Staffs s ON b.StaffID = s.StaffID "
+                + "JOIN Cats c ON b.CatID = c.CatID "
+                + "JOIN Users u ON (SELECT OwnerID FROM Cats WHERE CatID = b.CatID) = u.UserID "
+                + "WHERE br.CheckInTime IS NOT NULL AND br.CheckOutTime IS NULL "
+                + "AND CAST(br.CheckInTime AS DATE) = ? ";
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND (c.Name LIKE ? OR u.Phone LIKE ?)";
+        }
+
+        sql += " AND ((b.VetID IS NOT NULL AND m.Status = 'Completed') OR (s.Position IN ('Technician','Care') AND t.Status = 'Completed'))";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, dateFilter);
+            if (search != null && !search.trim().isEmpty()) {
+                String p = "%" + search.trim() + "%";
+                ps.setString(2, p);
+                ps.setString(3, p);
+            }
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
+    public List<BookingHistory2DTO> getCheckoutPaging(String search, String dateFilter, int offset, int pageSize) {
+        List<BookingHistory2DTO> list = new ArrayList<>();
+        String sql = "SELECT DISTINCT b.BookingID, c.Name AS CatName, u.FullName AS OwnerName, u.Phone AS OwnerPhone, br.CheckInTime "
+                + "FROM Bookings b "
+                + "JOIN Cats c ON b.CatID = c.CatID "
+                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+                + "JOIN Users u ON o.UserID = u.UserID "
+                + "JOIN BoardingRecords br ON b.BookingID = br.BookingID "
+                + "LEFT JOIN MedicalRecords m ON b.BookingID = m.BookingID "
+                + "LEFT JOIN TestOrders t ON m.MedicalRecordID = t.MedicalRecordID "
+                + "LEFT JOIN Staffs s ON b.StaffID = s.StaffID "
+                + "WHERE br.CheckInTime IS NOT NULL AND br.CheckOutTime IS NULL "
+                + "AND CAST(br.CheckInTime AS DATE) = ? ";
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND (c.Name LIKE ? OR u.Phone LIKE ?)";
+        }
+
+        sql += " AND ((b.VetID IS NOT NULL AND m.Status = 'Completed') OR (s.Position IN ('Technician','Care') AND t.Status = 'Completed')) ";
+        sql += " ORDER BY br.CheckInTime DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            int idx = 1;
+            ps.setString(idx++, dateFilter);
+            if (search != null && !search.trim().isEmpty()) {
+                String p = "%" + search.trim() + "%";
+                ps.setString(idx++, p);
+                ps.setString(idx++, p);
+            }
+            ps.setInt(idx++, offset);
+            ps.setInt(idx++, pageSize);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                BookingHistory2DTO b = new BookingHistory2DTO();
+                b.setBookingID(rs.getInt("BookingID"));
+                b.setCatName(rs.getString("CatName"));
+                b.setOwnerName(rs.getString("OwnerName"));
+                b.setOwnerPhone(rs.getString("OwnerPhone"));
+                b.setCheckInTime(rs.getTimestamp("CheckInTime"));
+                list.add(b);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int countTotalBookings(String dateFilter) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Bookings WHERE CAST(AppointmentDate AS DATE) = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, dateFilter);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+    public boolean checkInWithRecord(int bookingID, String condition) {
+        String sqlUpdate = "UPDATE Bookings SET Status = 'Completed' WHERE BookingID = ?";
+
+        String sqlInsert = "INSERT INTO BoardingRecords (BookingID, CheckInTime, CheckInCondition) VALUES (?, GETDATE(), ?)";
+
+        try {
+            c.setAutoCommit(false);
+
+            try (PreparedStatement ps1 = c.prepareStatement(sqlUpdate)) {
+                ps1.setInt(1, bookingID);
+                ps1.executeUpdate();
+            }
+
+            try (PreparedStatement ps2 = c.prepareStatement(sqlInsert)) {
+                ps2.setInt(1, bookingID);
+                ps2.setString(2, (condition == null || condition.trim().isEmpty()) ? "Normal" : condition);
+                ps2.executeUpdate();
+            }
+
+            c.commit();
+            return true;
+        } catch (SQLException e) {
+            try {
+                c.rollback();
+            } catch (SQLException ex) {
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                c.setAutoCommit(true);
+            } catch (SQLException e) {
+            }
+        }
+        return false;
+    }
+
+    public boolean updateBookingStatus(int bookingID, String status) {
+        String sql = "UPDATE Bookings SET status = ? WHERE bookingID = ?";
+
+        try (
+                PreparedStatement ps = c.prepareStatement(sql)) {
+
+            ps.setString(1, status);
+            ps.setInt(2, bookingID);
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<BookingHistoryDTO> getBookingHistory(String search, String status, String dateFilter, int offset, int pageSize) {
+        List<BookingHistoryDTO> list = new ArrayList<>();
+        String sql
+                = "SELECT "
+                + "b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, "
+                + "b.AppointmentDate, b.EndDate, b.AppointmentTime, b.Status, b.Note, "
+                + "u.FullName AS OwnerName, u.Phone AS OwnerPhone, "
+                + "vetUser.FullName AS VetName, s.NameService "
+                + "FROM Bookings b "
+                + "JOIN Cats c ON b.CatID = c.CatID "
+                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+                + "JOIN Users u ON o.UserID = u.UserID "
+                + "LEFT JOIN Veterinarians v ON b.VetID = v.VetID "
+                + "LEFT JOIN Users vetUser ON v.UserID = vetUser.UserID "
+                + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
+                + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
+                + "WHERE 1=1 ";
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND (c.Name LIKE ? OR u.FullName LIKE ? OR u.Phone LIKE ?) ";
+        }
+        if (status != null && !status.trim().isEmpty()) {
+            sql += " AND b.Status = ? ";
+        }
+        if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+            sql += " AND CAST(b.AppointmentDate AS DATE) = ? ";
+        }
+
+        sql += " ORDER BY b.AppointmentDate DESC, b.AppointmentTime DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            int index = 1;
+            if (search != null && !search.trim().isEmpty()) {
+                String p = "%" + search.trim() + "%";
+                ps.setString(index++, p);
+                ps.setString(index++, p);
+                ps.setString(index++, p);
+            }
+            if (status != null && !status.trim().isEmpty()) {
+                ps.setString(index++, status);
+            }
+            if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+                ps.setString(index++, dateFilter);
+            }
+            ps.setInt(index++, offset);
+            ps.setInt(index++, pageSize);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    BookingHistoryDTO dto = new BookingHistoryDTO();
+                    dto.setBookingID(rs.getInt("BookingID"));
+                    dto.setCatName(rs.getString("CatName"));
+                    dto.setCatBreed(rs.getString("Breed"));
+                    dto.setAppointmentDate(rs.getDate("AppointmentDate"));
+                    dto.setAppointmentTime(rs.getTime("AppointmentTime"));
+                    dto.setServiceName(rs.getString("NameService"));
+                    dto.setOwnerName(rs.getString("OwnerName"));
+                    dto.setOwnerPhone(rs.getString("OwnerPhone"));
+                    dto.setStatus(rs.getString("Status"));
+                    list.add(dto);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public int countBookings(String search, String status, String dateFilter) {
+        int total = 0;
+        String sql = "SELECT COUNT(*) FROM Bookings b "
+                + "JOIN Cats c ON b.CatID = c.CatID "
+                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+                + "JOIN Users u ON o.UserID = u.UserID "
+                + "WHERE 1=1 ";
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND (c.Name LIKE ? OR u.FullName LIKE ? OR u.Phone LIKE ?) ";
+        }
+        if (status != null && !status.trim().isEmpty()) {
+            sql += " AND b.Status = ? ";
+        }
+        if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+            sql += " AND CAST(b.AppointmentDate AS DATE) = ? ";
+        }
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            int index = 1;
+            if (search != null && !search.trim().isEmpty()) {
+                String p = "%" + search.trim() + "%";
+                ps.setString(index++, p);
+                ps.setString(index++, p);
+                ps.setString(index++, p);
+            }
+            if (status != null && !status.trim().isEmpty()) {
+                ps.setString(index++, status);
+            }
+            if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+                ps.setString(index++, dateFilter);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    total = rs.getInt(1);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+    public int countPendingPayment(String dateFilter) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Bookings WHERE Status = 'PendingPayment' AND CAST(AppointmentDate AS DATE) = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, dateFilter);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) count = rs.getInt(1);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return count;
+    }
+    public int countConfirmed(String dateFilter) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Bookings WHERE Status = 'Confirmed' AND CAST(AppointmentDate AS DATE) = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, dateFilter);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) count = rs.getInt(1);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return count;
+    }
+    public int countCompleted(String dateFilter) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Bookings WHERE Status = 'Completed' AND CAST(AppointmentDate AS DATE) = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, dateFilter);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) count = rs.getInt(1);
+        } catch (Exception e) { e.printStackTrace(); }
+        return count;
+    }
+    public int countCancelled(String dateFilter) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Bookings WHERE Status = 'Cancelled' AND CAST(AppointmentDate AS DATE) = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, dateFilter);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) count = rs.getInt(1);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return count;
+    }
+    public int countPendingCancelRefund(String dateFilter) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM Bookings WHERE Status = 'PendingCancel' AND CAST(AppointmentDate AS DATE) = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setString(1, dateFilter);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) count = rs.getInt(1);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return count;
+    }
+    public BoardingRecordDTO getBoardingRecordByBookingID(int bookingID) {
+        String sql = "SELECT * FROM BoardingRecords WHERE BookingID = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, bookingID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    BoardingRecordDTO d = new BoardingRecordDTO();
+                    d.setCheckInTime(rs.getString("CheckInTime"));
+                    d.setCheckInCondition(rs.getString("CheckInCondition"));
+                    d.setCheckOutTime(rs.getString("CheckOutTime")); // Sẽ null nếu chưa check-out
+                    d.setCheckOutCondition(rs.getString("CheckOutCondition"));
+                    return d;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public FeedbackDTO getFeedbackByBookingID(int bookingID) {
+        String sql = "SELECT FeedbackID, BookingID, Rating, Comment FROM Feedbacks WHERE BookingID = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, bookingID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    FeedbackDTO fb = new FeedbackDTO();
+                    fb.setFeedbackID(rs.getInt("FeedbackID"));
+                    fb.setBookingID(rs.getInt("BookingID"));
+                    fb.setRating(rs.getInt("Rating"));
+                    fb.setComment(rs.getString("Comment"));
+                    return fb;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public boolean insertFeedback(int bookingID, int rating, String comment) {
+        String sql = "INSERT INTO Feedbacks (BookingID, Rating, Comment) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, bookingID);
+            ps.setInt(2, rating);
+            ps.setString(3, (comment == null) ? "" : comment);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public List<BookingHistoryDTO> getClientHistoryPaging(int userID, String search, String status, String dateFilter, int offset, int pageSize) {
+        List<BookingHistoryDTO> list = new ArrayList<>();
+        String sql = "SELECT DISTINCT b.BookingID, b.SlotID, c.Name AS CatName, c.Breed, b.AppointmentDate, b.EndDate, "
+                + "b.AppointmentTime, b.Status, b.Note, s.NameService, ad.PriceAtBooking, br.CheckOutTime "
+                + "FROM Bookings b "
+                + "JOIN Cats c ON b.CatID = c.CatID "
+                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+                + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
+                + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
+                + "LEFT JOIN BoardingRecords br ON b.BookingID = br.BookingID "
+                + "WHERE o.UserID = ? ";
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND (c.Name LIKE ? OR s.NameService LIKE ?) ";
+        }
+        if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("ALL")) {
+            sql += " AND b.Status = ? ";
+        }
+        if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+            sql += " AND b.AppointmentDate = ? ";
+        }
+
+        sql += " ORDER BY b.BookingID DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            int index = 1;
+            ps.setInt(index++, userID);
+
+            if (search != null && !search.trim().isEmpty()) {
+                String p = "%" + search.trim() + "%";
+                ps.setString(index++, p);
+                ps.setString(index++, p);
+            }
+            if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("ALL")) {
+                ps.setString(index++, status);
+            }
+            if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+                ps.setString(index++, dateFilter);
+            }
+
+            ps.setInt(index++, offset);
+            ps.setInt(index++, pageSize);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    BookingHistoryDTO d = new BookingHistoryDTO();
+                    d.setBookingID(rs.getInt("BookingID"));
+                    d.setCatName(rs.getString("CatName"));
+                    d.setCatBreed(rs.getString("Breed"));
+                    d.setAppointmentDate(rs.getDate("AppointmentDate"));
+                    d.setAppointmentTime(rs.getTime("AppointmentTime"));
+                    d.setStatus(rs.getString("Status"));
+                    d.setServiceName(rs.getString("NameService"));
+                    d.setPrice(rs.getDouble("PriceAtBooking"));
+                    d.setCheckOutTime(rs.getTimestamp("CheckOutTime"));
+                    list.add(d);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    public int countClientBookings(int userID, String search, String status, String dateFilter) {
+        int total = 0;
+        String sql = "SELECT COUNT(DISTINCT b.BookingID) FROM Bookings b "
+                + "JOIN Cats c ON b.CatID = c.CatID "
+                + "JOIN Owners o ON c.OwnerID = o.OwnerID "
+                + "LEFT JOIN Appointment_Service ad ON b.BookingID = ad.BookingID "
+                + "LEFT JOIN Services s ON ad.ServiceID = s.ServiceID "
+                + "WHERE o.UserID = ? ";
+
+
+        if (search != null && !search.trim().isEmpty()) {
+            sql += " AND (c.Name LIKE ? OR s.NameService LIKE ?) ";
+        }
+
+        if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("ALL")) {
+            sql += " AND b.Status = ? ";
+        }
+
+        if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+            sql += " AND b.AppointmentDate = ? ";
+        }
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            int index = 1;
+            ps.setInt(index++, userID);
+
+            if (search != null && !search.trim().isEmpty()) {
+                String p = "%" + search.trim() + "%";
+                ps.setString(index++, p);
+                ps.setString(index++, p);
+            }
+            if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("ALL")) {
+                ps.setString(index++, status);
+            }
+            if (dateFilter != null && !dateFilter.trim().isEmpty()) {
+                ps.setString(index++, dateFilter);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    total = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+    public boolean isNotCheckedOut(int bookingId) {
+        String sql = "SELECT CheckOutTime FROM BoardingRecords WHERE BookingID = ?";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, bookingId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getTimestamp("CheckOutTime") == null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    public void cancelNoShowBookings() {
+        String sql = "UPDATE Bookings SET Status = 'Cancelled', Note = 'System: No-show auto-cancel' " +
+                "WHERE Status = 'Confirmed' " +
+                "AND CAST(AppointmentDate AS DATETIME) + CAST(AppointmentTime AS DATETIME) < GETDATE()";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

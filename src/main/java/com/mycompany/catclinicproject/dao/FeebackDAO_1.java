@@ -4,7 +4,7 @@
  */
 package com.mycompany.catclinicproject.dao;
 
-import com.mycompany.catclinicproject.model.FeedbackDTO;
+import com.mycompany.catclinicproject.model.Feedback3DTO;
 import com.mycompany.catclinicproject.model.ServiceFeedback;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,10 +15,10 @@ import java.util.List;
  *
  * @author Son
  */
-public class FeebackDAO extends DBContext{
+public class FeebackDAO_1 extends DBContext{
     
-    public List<FeedbackDTO> getAllFeedback() {
-    List<FeedbackDTO> list = new ArrayList<>();
+    public List<Feedback3DTO> getAllFeedback() {
+    List<Feedback3DTO> list = new ArrayList<>();
 
     String sql = "SELECT f.BookingID, f.Rating, f.Comment, f.CreatedAt, u.FullName "
             + "FROM Feedbacks f "
@@ -32,7 +32,7 @@ public class FeebackDAO extends DBContext{
         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
-            FeedbackDTO f = new FeedbackDTO(
+            Feedback3DTO f = new Feedback3DTO(
                     rs.getInt("BookingID"),
                     rs.getInt("Rating"),
                     rs.getString("Comment"),

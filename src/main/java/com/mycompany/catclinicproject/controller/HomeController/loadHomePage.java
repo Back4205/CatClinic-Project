@@ -5,12 +5,11 @@
 package com.mycompany.catclinicproject.controller.HomeController;
 
 import com.mycompany.catclinicproject.dao.CategoryDao;
-import com.mycompany.catclinicproject.dao.FeebackDAO;
-import com.mycompany.catclinicproject.dao.ServiceDAO;
+import com.mycompany.catclinicproject.dao.FeebackDAO_1;
 import com.mycompany.catclinicproject.dao.homeDao.NewsDao;
 import com.mycompany.catclinicproject.dao.homeDao.ServiceDaoo;
 import com.mycompany.catclinicproject.model.Category;
-import com.mycompany.catclinicproject.model.FeedbackDTO;
+import com.mycompany.catclinicproject.model.Feedback3DTO;
 import com.mycompany.catclinicproject.model.NewsDTO;
 import com.mycompany.catclinicproject.model.ServiceDTO;
 import com.mycompany.catclinicproject.model.ServiceFeedback;
@@ -74,8 +73,8 @@ public class loadHomePage extends HttpServlet {
         ServiceDaoo sdao = new ServiceDaoo();
         List<ServiceDTO> lists = sdao.getAllServices();
         List<NewsDTO> listn = ndao.getNews();
-        FeebackDAO fdao = new FeebackDAO();
-        List<FeedbackDTO> listf = fdao.getAllFeedback();
+        FeebackDAO_1 fdao = new FeebackDAO_1();
+        List<Feedback3DTO> listf = fdao.getAllFeedback();
         List<ServiceFeedback> listsf = fdao.getAllBookingServices();
         request.setAttribute("listfeedback", listf);
         request.setAttribute("listnameservice", listsf);
