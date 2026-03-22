@@ -49,7 +49,7 @@ public class ReportResultController extends HttpServlet {
 
         if (filePart != null && filePart.getSize() > 0) {
             String fileName = "test_" + System.currentTimeMillis();
-            result = CloudinaryUntil.uploadImage(filePart, fileName);
+            result = CloudinaryUntil.uploadImage(filePart, fileName,"my_tech");
 
             if (result == null) {
                 request.setAttribute("error", "Upload failed!");

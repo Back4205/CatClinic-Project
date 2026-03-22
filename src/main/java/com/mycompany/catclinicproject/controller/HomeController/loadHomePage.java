@@ -6,10 +6,12 @@ package com.mycompany.catclinicproject.controller.HomeController;
 
 import com.mycompany.catclinicproject.dao.CategoryDao;
 import com.mycompany.catclinicproject.dao.FeebackDAO_1;
+import com.mycompany.catclinicproject.dao.NewDAO;
 import com.mycompany.catclinicproject.dao.homeDao.NewsDao;
 import com.mycompany.catclinicproject.dao.homeDao.ServiceDaoo;
 import com.mycompany.catclinicproject.model.Category;
 import com.mycompany.catclinicproject.model.Feedback3DTO;
+import com.mycompany.catclinicproject.model.News;
 import com.mycompany.catclinicproject.model.NewsDTO;
 import com.mycompany.catclinicproject.model.ServiceDTO;
 import com.mycompany.catclinicproject.model.ServiceFeedback;
@@ -68,7 +70,7 @@ public class loadHomePage extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         CategoryDao cdao = new CategoryDao();
-        NewsDao ndao = new NewsDao();
+        NewDAO ndao = new NewDAO();
         List<Category> list = cdao.getAllCategory();
         ServiceDaoo sdao = new ServiceDaoo();
         List<ServiceDTO> lists = sdao.getAllServices();
@@ -76,8 +78,10 @@ public class loadHomePage extends HttpServlet {
         FeebackDAO_1 fdao = new FeebackDAO_1();
         List<Feedback3DTO> listf = fdao.getAllFeedback();
         List<ServiceFeedback> listsf = fdao.getAllBookingServices();
+        List<News> top3List = ndao.getTop3LatestNews();
         request.setAttribute("listfeedback", listf);
         request.setAttribute("listnameservice", listsf);
+        request.setAttribute("top3List", top3List);
 //        request.setAttribute("NewsList", listn);
         request.setAttribute("listService", lists);
         request.setAttribute("CategoryList", list);

@@ -180,11 +180,11 @@
                 </div>
 
                 <div class="newslist-container">
-                    <c:forEach var="n" items="${NewsList}">
+                    <c:forEach var="n" items="${top3List}">
                         <div class="blog-card">
                             <div class="blog-image-wrapper">
-                                <a href="ViewNewsDetail?id=${n.newID}">
-                                    <img src="${n.img}" alt="${n.title}" loading="lazy">
+                                <a href="ViewNewsDetail?id=${n.newsId}">
+                                    <img src="${n.banner}" alt="banner" loading="lazy">
                                 </a>
                                 <div class="blog-date-badge">
                                     <i class="fas fa-calendar-alt"></i>
@@ -192,8 +192,12 @@
                             </div>
                             <div class="blog-body">
                                 <h4>${n.title}</h4>
-                                <p>${n.description}</p>
-                                <a href="ViewNewsDetail?id=${n.newID}" class="read-more">
+                                <p>
+                                ${fn:length(n.description) > 100 
+                                  ? fn:substring(n.description, 0, 100).concat("...") 
+                                  : n.description}
+                            </p>
+                                <a href="ViewNewsDetail?id=${n.newsId}" class="read-more">
                                     Read More
                                     <i class="fas fa-arrow-right"></i>
                                 </a>

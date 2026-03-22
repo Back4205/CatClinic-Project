@@ -15,8 +15,8 @@ public class PasswordUtil {
             return null;
         }
     }
-//    public static void main(String[] args) {
-//        // Thay tenHamMaHoaCuaBan bằng đúng tên hàm bạn viết nhé
-//        System.out.println(hashPassword("123"));
-//    }
+    public static void main(String[] args) {
+        // Thay tenHamMaHoaCuaBan bằng đúng tên hàm bạn viết nhé
+        System.out.println(hashPassword("123"));
+    }
 }
