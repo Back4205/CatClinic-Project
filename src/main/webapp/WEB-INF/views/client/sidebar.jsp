@@ -32,9 +32,21 @@
             </a>
 
         </c:if>
-        <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID != 5}">
+        <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID == 3}">
 
             <a href="${pageContext.request.contextPath}/view-booking-list" >
+                <i class="bi bi-box-arrow-left"></i> Back to Dashboard
+            </a>
+        </c:if>
+        <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID == 4 && sessionScope.position.toLowerCase() == 'care'}">
+
+            <a href="${pageContext.request.contextPath}/staff/daily-care-tasks" >
+                <i class="bi bi-box-arrow-left"></i> Back to Dashboard
+            </a>
+        </c:if>
+        <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID == 4 && sessionScope.position.toLowerCase() == 'technician'}">
+
+            <a href="${pageContext.request.contextPath}//technician/lab-hub" >
                 <i class="bi bi-box-arrow-left"></i> Back to Dashboard
             </a>
         </c:if>

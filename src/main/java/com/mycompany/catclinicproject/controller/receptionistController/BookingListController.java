@@ -28,6 +28,7 @@ public class BookingListController extends HttpServlet {
         String dateFilter = request.getParameter("dateFilter");
         if (dateFilter == null || dateFilter.trim().isEmpty()) {
             dateFilter = java.time.LocalDate.now().toString();
+//            dateFilter = null ;
         }
 
 

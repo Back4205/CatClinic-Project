@@ -56,7 +56,7 @@
 
     if (vetId && vetId !== "null") {
         const socket = new WebSocket(
-                "ws://localhost:8080/CatClinicProject/notification/" + vetId
+                "ws://localhost:9999/CatClinicProject/notification/" + vetId
                 );
 
         socket.onopen = function () {

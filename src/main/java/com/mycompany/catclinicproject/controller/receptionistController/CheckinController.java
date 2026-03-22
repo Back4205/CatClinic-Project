@@ -1,9 +1,10 @@
 package com.mycompany.catclinicproject.controller.receptionistController;
 
 import com.mycompany.catclinicproject.dao.BookingDAO;
-import java.io.IOException;
-
 import com.mycompany.catclinicproject.dao.CheckInBookingDAO;
+import com.mycompany.catclinicproject.model.BookingHistoryDTO;
+import java.io.IOException;
+import java.time.LocalDate;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -27,6 +28,19 @@ public class CheckinController extends HttpServlet {
 
             if (idRaw != null) {
                 id = Integer.parseInt(idRaw);
+
+
+                BookingHistoryDTO booking = dao.getBookingDetailByID(id);
+                if (booking != null && "Completed".equals(status)) {
+                    LocalDate appointmentDate = booking.getAppointmentDate().toLocalDate();
+                    LocalDate today = LocalDate.now();
+
+
+                    if (appointmentDate.isAfter(today)) {
+                        response.sendRedirect("appointmentdetail?id=" + id + "&error=not_today");
+                        return;
+                    }
+                }
 
                 if ("Completed".equals(status)) {
                     boolean isSuccess = dao.checkInWithRecord(id, condition);

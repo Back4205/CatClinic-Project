@@ -1,6 +1,7 @@
 package com.mycompany.catclinicproject.controller.carestaffController;
 
 import com.mycompany.catclinicproject.dao.CareDAO;
+import com.mycompany.catclinicproject.dao.UserDAO;
 import com.mycompany.catclinicproject.model.CareTaskDTO;
 import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
@@ -24,8 +25,11 @@ public class CareTaskController extends HttpServlet {
         User user = (session != null) ? (User) session.getAttribute("acc") : null;
 
         // Cập nhật lấy ID chuẩn
-        int staffId = 1; // Tạm fix cứng staffId = 1 để test. Khi ráp code thực, hãy dùng hàm lấy StaffID từ UserID
+//        int staffId = 1; // Tạm fix cứng staffId = 1 để test. Khi ráp code thực, hãy dùng hàm lấy StaffID từ UserID
 
+        int userID = user.getUserID();
+        UserDAO userDAO = new UserDAO();
+        Integer staffId = userDAO.getStaffIDByUserID(userID);
         CareDAO dao = new CareDAO();
         Map<Integer, String> masterTasks = dao.getMasterCareTasks();
         List<CareTaskDTO> allTasks = dao.getDailyTasks(staffId);

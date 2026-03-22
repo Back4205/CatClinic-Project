@@ -471,5 +471,36 @@ public class UserDAO extends DBContext {
         }
         return owner;
     }
+    public Integer getStaffIDByUserID(int userID) {
+        String sql = "SELECT StaffID FROM Staffs WHERE UserID = ?";
 
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("StaffID");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null; // không tìm thấy
+    }
+    public String getPositionByUserID(int userID) {
+        String sql = "SELECT Position FROM Staffs WHERE UserID = ?";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("Position"); // Technician, Care, Vet
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

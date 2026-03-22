@@ -71,6 +71,10 @@ public class LoginController extends HttpServlet {
 
             HttpSession session = request.getSession();
             session.setAttribute("acc", account);
+            if (account != null && account.getRoleID() == 4) {
+                String position = dao.getPositionByUserID(account.getUserID());
+                session.setAttribute("position", position);
+            }
 
             Cookie cu = new Cookie("cUser", u);
             Cookie cp = new Cookie("cPass", p);
@@ -106,7 +110,7 @@ public class LoginController extends HttpServlet {
                             break;
                         }
                         if ("Technician".equalsIgnoreCase(position)) {
-                            response.sendRedirect("technician/dashboard");
+                            response.sendRedirect("technician/lab-hub");
                             break;
                         }
                         break;

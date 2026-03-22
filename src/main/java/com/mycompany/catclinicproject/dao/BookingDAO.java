@@ -719,6 +719,7 @@ public class BookingDAO extends DBContext {
                 + "LEFT JOIN MedicalRecords m ON b.BookingID = m.BookingID "
                 + "LEFT JOIN TestOrders t ON m.MedicalRecordID = t.MedicalRecordID "
                 + "LEFT JOIN Staffs s ON b.StaffID = s.StaffID "
+                + " LEFT JOIN CareJourneys cj ON b.BookingID = cj.BookingID "
                 + "WHERE br.CheckInTime IS NOT NULL AND br.CheckOutTime IS NULL "
                 + "AND CAST(br.CheckInTime AS DATE) = ? ";
 
@@ -726,7 +727,13 @@ public class BookingDAO extends DBContext {
             sql += " AND (c.Name LIKE ? OR u.Phone LIKE ?)";
         }
 
-        sql += " AND ((b.VetID IS NOT NULL AND m.Status = 'Completed') OR (s.Position IN ('Technician','Care') AND t.Status = 'Completed')) ";
+        sql += "  AND (\n" +
+                "        (b.VetID IS NOT NULL AND m.Status = 'Completed') \n" +
+                "        OR \n" +
+                "        (s.Position IN ('Technician') AND t.Status = 'Completed')\n" +
+                "\t\t OR \n" +
+                "        (s.Position IN ('Care') AND cj.Status = 'Completed')\n" +
+                "    ) ";
         sql += " ORDER BY br.CheckInTime DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {

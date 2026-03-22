@@ -23,6 +23,7 @@
     <c:set var="activePage" value="dashboard" scope="request" />
     <%@include file="sidebar.jsp" %>
     <main class="main-content">
+
         <div class="appointment-card">
             <div class="card-header">
                 <div class="pet-icon-bg"><i class="fa-solid fa-cat"></i></div>
@@ -55,7 +56,7 @@
                         <div class="value-text">${empty booking.vetName ? 'Assigning...' : booking.vetName}</div>
                     </div>
                     <div class="info-row price-row">
-                        <div class="label-with-icon"><i class="fa-solid fa-money-bill-wave icon"></i> TOTAL PRICE</div>
+                        <div class="label-with-icon"><i class="fa-solid fa-money-bill-wave icon"></i>PRICE AT BOOKING</div>
                         <div class="value-text price"><fmt:formatNumber value="${booking.price}" type="number"/> VND</div>
                     </div>
                 </div>
@@ -112,6 +113,16 @@
                                 <div class="value-text italic">"${boarding.checkOutCondition}"</div>
                             </div>
                         </c:if>
+                    </div>
+                </div>
+            </c:if>
+            <c:if test="${param.error == 'not_today'}">
+                <div style="background-color: #ffebee; color: #c62828; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #ef9a9a; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-circle-exclamation" style="font-size: 20px;"></i>
+                    <div>
+                        <strong>Check-in Error:</strong>The cat date is<b> <fmt:parseDate value="${booking.appointmentDate}" pattern="yyyy-MM-dd" var="parsedDate" />
+                        <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy" /> </b>.
+                        You can only check in on the scheduled date (Today).
                     </div>
                 </div>
             </c:if>

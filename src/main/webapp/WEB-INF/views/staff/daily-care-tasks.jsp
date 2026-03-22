@@ -44,6 +44,9 @@
                 <a href="#" class="nav-item">
                     <i class="fa-solid fa-book-medical"></i> Record Care Diary
                 </a>
+                <a href="${pageContext.request.contextPath}/profile" class="nav-item">
+                    <i class="fa-solid fa-address-card"></i> profile
+                </a>
             </nav>
             <a href="${pageContext.request.contextPath}/logout" class="logout-btn">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout

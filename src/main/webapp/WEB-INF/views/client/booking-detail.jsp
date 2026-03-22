@@ -50,7 +50,7 @@
                         <span class="info-value">${booking.serviceName}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">TOTAL PRICE</span>
+                        <span class="info-label">PRICE AT BOOKING</span>
                         <span class="info-value" style="color: var(--primary-orange); font-size: 18px;">
                             <fmt:formatNumber value="${booking.price}" type="number"/> VND
                         </span>

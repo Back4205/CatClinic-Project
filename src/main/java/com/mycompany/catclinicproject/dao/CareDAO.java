@@ -105,7 +105,7 @@ public class CareDAO extends DBContext {
     // 4. Chuyển hồ sơ cho Lễ Tân (Checkout)
     public void setReadyForCheckout(int bookingID) {
         try {
-            PreparedStatement ps = c.prepareStatement("UPDATE Bookings SET Status = 'Ready for Checkout' WHERE BookingID = ?");
+            PreparedStatement ps = c.prepareStatement("UPDATE Bookings SET Status = 'Completed' WHERE BookingID = ?");
             ps.setInt(1, bookingID);
             ps.executeUpdate();
         } catch (Exception e) { e.printStackTrace(); }
