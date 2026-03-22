@@ -117,7 +117,7 @@ public class CreateService extends HttpServlet {
         String imageUrl = null;
         if (filePart != null && filePart.getSize() > 0) {
             String fileName = "service_" + System.currentTimeMillis();
-            imageUrl = CloudinaryUntil.uploadImage(filePart, fileName);
+            imageUrl = CloudinaryUntil.uploadImage(filePart, fileName,"my_service");
         }
 
         // ===== CREATE SERVICE =====

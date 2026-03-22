@@ -1,0 +1,73 @@
+/* ===== ADMIN SIDEBAR ===== */
+
+.admin-sidebar {
+    width: 240px;
+    background: #ffffff;
+    border-right: 1px solid #eee; /* Đường kẻ dọc này sẽ chạy hết trang */
+    padding: 25px 18px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0; /* Không cho sidebar bị co lại */
+    /* Không đặt height ở đây để nó tự giãn theo .admin-layout */
+}
+
+.admin-logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: #ff7a00;
+    margin-bottom: 35px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.admin-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #555;
+    font-size: 15px;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.admin-menu a:hover {
+    background: #fff2e6;
+    color: #ff7a00;
+}
+
+.admin-menu a.active {
+    background: linear-gradient(90deg, #ff7a00, #ffa64d);
+    color: white;
+}
+.admin-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 🔥 KEY */
+}
+
+/* Logout style */
+.logout {
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #dc2626;
+    text-decoration: none;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.logout:hover {
+    background: #fee2e2;
+    color: #b91c1c;
+}

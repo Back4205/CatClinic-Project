@@ -1,64 +1,102 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
-
 package com.mycompany.catclinicproject.controller.CategoryManagement;
 
 import com.mycompany.catclinicproject.Untils.CloudinaryUntil;
 import com.mycompany.catclinicproject.dao.CategoryDao;
 import com.mycompany.catclinicproject.model.Category;
-import com.mycompany.catclinicproject.model.Service;
+
 import java.io.IOException;
-import java.io.PrintWriter;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
+import jakarta.servlet.http.*;
 
-/**
- *
- * @author ADMIN
- */
-@WebServlet(name="CreateCategory", urlPatterns={"/CreateCategory"})
+@WebServlet(name = "CreateCategory", urlPatterns = {"/CreateCategory"})
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2,
         maxFileSize = 1024 * 1024 * 10,
         maxRequestSize = 1024 * 1024 * 50
 )
 public class CreateCategory extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
+
         request.getRequestDispatcher("/WEB-INF/views/manager/categoryCreate.jsp")
-               .forward(request, response);
-    } 
+                .forward(request, response);
+    }
+
+    private String escapeHtml(String input) {
+    return input
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\"", "&quot;")
+            .replace("'", "&#x27;");
+}
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        String categoryName = request.getParameter("name").trim();
-        Part filePart = request.getPart("image");
-        String fileName = "service_" + System.currentTimeMillis();
-        String imageUrl = CloudinaryUntil.uploadImage(filePart, fileName);
+            throws ServletException, IOException {
+
+        CategoryDao cdao = new CategoryDao();
+
+        String categoryName = request.getParameter("name");
         String description = request.getParameter("description");
         boolean isActive = request.getParameter("isActive") != null;
-        Category s = new Category();
-        s.setCategoryName(categoryName);
-        s.setBanner(imageUrl);
-        s.setDescription(description);
-        s.setActive(isActive);
-        CategoryDao cdao = new CategoryDao();
+
+        // Clean HTML tags
+        categoryName = escapeHtml(categoryName);
+        description = escapeHtml(description);
+
+        if (categoryName != null) {
+            categoryName = categoryName.trim();
+        }
+
+        // Validate empty
+        if (categoryName == null || categoryName.isEmpty()) {
+            request.setAttribute("error", "Category name cannot be empty!");
+            request.getRequestDispatcher("/WEB-INF/views/manager/categoryCreate.jsp")
+                    .forward(request, response);
+            return;
+        }
+
+        // Validate multiple spaces
+        if (categoryName.matches(".*\\s{2,}.*")) {
+            request.setAttribute("error", "Category name cannot contain multiple spaces!");
+            request.getRequestDispatcher("/WEB-INF/views/manager/categoryCreate.jsp")
+                    .forward(request, response);
+            return;
+        }
+
+        // Check duplicate name
         if (cdao.isCategoryNameExists(categoryName)) {
             request.setAttribute("error", "Category name already exists!");
             request.getRequestDispatcher("/WEB-INF/views/manager/categoryCreate.jsp")
-                    .forward(request, response);}
-        else{
-            cdao.insertCategory(s);
-            response.sendRedirect(request.getContextPath() + "/ViewCategoryList");
+                    .forward(request, response);
+            return;
         }
-    }
 
+        // Upload image
+        Part filePart = request.getPart("image");
+        String imageUrl = null;
+
+        if (filePart != null && filePart.getSize() > 0) {
+            String fileName = "category_" + System.currentTimeMillis();
+            imageUrl = CloudinaryUntil.uploadImage(filePart, fileName,"my_category");
+        }
+
+        // Create category object
+        Category category = new Category();
+        category.setCategoryName(categoryName);
+        category.setBanner(imageUrl);
+        category.setDescription(description);
+        category.setActive(isActive);
+
+        // Insert database
+        cdao.insertCategory(category);
+
+        response.sendRedirect(request.getContextPath() + "/ViewCategoryList");
+    }
 }

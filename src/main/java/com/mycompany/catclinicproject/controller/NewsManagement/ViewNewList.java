@@ -2,15 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.mycompany.catclinicproject.controller.HomeController;
 
-import com.mycompany.catclinicproject.dao.CategoryDao;
+package com.mycompany.catclinicproject.controller.NewsManagement;
+
 import com.mycompany.catclinicproject.dao.NewDAO;
-import com.mycompany.catclinicproject.dao.homeDao.NewsDao;
-
-import com.mycompany.catclinicproject.model.Category;
 import com.mycompany.catclinicproject.model.News;
-import com.mycompany.catclinicproject.model.NewsDTO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,53 +17,66 @@ import java.util.List;
 
 /**
  *
- * @author Son
+ * @author ADMIN
  */
-@WebServlet(name = "NewController", urlPatterns = {"/new"})
-
-public class NewsController extends HttpServlet {
-
+@WebServlet(name="ViewNewList", urlPatterns={"/ViewNewList"})
+public class ViewNewList extends HttpServlet {
+   
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        NewDAO ndao = new NewDAO();        
-        CategoryDao cdao = new CategoryDao();
-        List<News> nlist = ndao.getActiveNew();
-        List<Category> list = cdao.getAllCategory();
-        List<News> top3List = ndao.getTop3LatestNews();
+
+        NewDAO dao = new NewDAO();
+        List<News> fullList = dao.getAllNew();
+
         String keyword = request.getParameter("search");
-        if (keyword == null) keyword = "";
+        String filterStatus = request.getParameter("status");
+
         // ===== SEARCH + FILTER =====
         List<News> filteredList = new java.util.ArrayList<>();
 
-        for (News s : nlist) {
+        for (News c : fullList) {
 
             boolean matchKeyword = true;
+            boolean matchStatus = true;
+
             // SEARCH title
-            if (!keyword.trim().isEmpty()) {
-                String k = keyword.toLowerCase();
-                String name = s.getTitle() != null ? s.getTitle().toLowerCase() : "";
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String k = keyword.toLowerCase().trim();
+                String name = c.getTitle() != null ? c.getTitle().toLowerCase() : "";
 
                 if (!name.contains(k)) {
                     matchKeyword = false;
                 }
             }
+            // FILTER STATUS
+            if (filterStatus != null && !filterStatus.equals("ALL") && !filterStatus.isEmpty()) {
 
-            if (matchKeyword) {
-                filteredList.add(s);
+                if (filterStatus.equals("Active") && !c.isIsActive()) {
+                    matchStatus = false;
+                }
+
+                if (filterStatus.equals("Inactive") && c.isIsActive()) {
+                    matchStatus = false;
+                }
+            }
+
+            if (matchKeyword && matchStatus) {
+                filteredList.add(c);
             }
         }
 
         // ===== PAGINATION =====
-        int pageSize = 3;
-        int currentPage = 1;
+        int pageSize = 5;
 
+        int currentPage = 1;
         String pageParam = request.getParameter("page");
 
         if (pageParam != null) {
             try {
                 currentPage = Integer.parseInt(pageParam);
-            } catch (Exception e) {
+                if (currentPage < 1) currentPage = 1;
+            } catch (NumberFormatException e) {
                 currentPage = 1;
             }
         }
@@ -75,41 +84,27 @@ public class NewsController extends HttpServlet {
         int totalRecord = filteredList.size();
         int totalPage = (int) Math.ceil((double) totalRecord / pageSize);
 
-        if (totalPage == 0) totalPage = 1;
-
-        if (currentPage > totalPage) currentPage = totalPage;
+        if (currentPage > totalPage && totalPage != 0) {
+            currentPage = totalPage;
+        }
 
         int start = (currentPage - 1) * pageSize;
         int end = Math.min(start + pageSize, totalRecord);
 
         List<News> pagedList = new java.util.ArrayList<>();
 
-        if (totalRecord > 0) {
+        if (totalRecord > 0 && start < totalRecord) {
             pagedList = filteredList.subList(start, end);
         }
-        request.setAttribute("CategoryList", list);
+
+        // ===== SEND TO JSP =====
         request.setAttribute("newList", pagedList);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("currentSearch", keyword);
-        request.setAttribute("top3List", top3List);
-        request.getRequestDispatcher("/WEB-INF/views/common/NewsPage.jsp")
-                .forward(request, response);
-    }
+        request.setAttribute("currentStatus", filterStatus);
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        request.getRequestDispatcher("WEB-INF/views/manager/newList.jsp").forward(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }

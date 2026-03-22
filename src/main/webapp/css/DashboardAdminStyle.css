@@ -1,0 +1,41 @@
+/* ===== ADMIN LAYOUT ===== */
+.admin-layout {
+    display: flex;
+    height: 100vh;
+}
+
+.admin-main {
+    flex: 1;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    /* Xóa padding ở đây nếu có để Header tràn viền */
+}
+
+/* Fix khoảng cách giữa Header và Nội dung */
+.admin-dashboard {
+    padding: 10px 30px 30px 30px; /* Giảm padding top từ 30px xuống 10px */
+}
+
+/* ===== TITLE ===== */
+.admin-title {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 20px; /* Giảm bớt margin bottom */
+}
+
+/* ===== CARDS & OTHERS (Giữ nguyên hoặc tinh chỉnh nhẹ) ===== */
+.admin-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.admin-card {
+    background: #fff;
+    border-left: 6px solid #ff7a00;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+/* ... các phần dưới giữ nguyên ... */

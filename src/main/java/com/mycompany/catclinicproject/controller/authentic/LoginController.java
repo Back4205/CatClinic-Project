@@ -94,7 +94,7 @@ public class LoginController extends HttpServlet {
             } else {
                 switch (account.getRoleID()) {
                     case 1:
-                        request.getRequestDispatcher("WEB-INF/views/manager/AdminDashboard.jsp").forward(request, response);
+                        response.sendRedirect("AdminDashboard");
                         break;
                     case 2:
                         response.sendRedirect("DashboardController");

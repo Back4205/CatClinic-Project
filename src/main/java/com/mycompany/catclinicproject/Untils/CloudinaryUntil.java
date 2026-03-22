@@ -22,13 +22,13 @@ public class CloudinaryUntil {
         ));
     }
     
-    public static String uploadImage(Part part, String fileName) {
+    public static String uploadImage(Part part, String fileName,String folderName) {
     try {
         byte[] fileBytes = part.getInputStream().readAllBytes();
         Map uploadResult = cloudinary.uploader().upload(
             fileBytes,
             ObjectUtils.asMap(
-                "folder", "my_brand",
+                "folder", folderName,
                 "public_id", fileName,
                 "resource_type", "image"
             )
