@@ -68,55 +68,66 @@
                 </div>
                 <div class="info-label">CLIENT NOTES</div>
                 <div class="notes-container">
-                    <p class="notes-text">"${empty booking.note ? 'No special requests for this visit.' : booking.note}"</p>
-                </div>
+                    <c:choose>
+                    
+                        <c:when test="${booking.status == 'CancelRefund' && not empty booking.note}">
+                            <img src="${booking.note}" alt="Refund Image" style="max-width: 300px; border-radius: 10px; margin-top: 10px;">
+                        </c:when>
+
+
+                        <c:otherwise>
+                            <p class="notes-text">
+                                "${empty booking.note ? 'No special requests for this visit.' : booking.note}"
+                            </p>
+                        </c:otherwise>
+                    </c:choose>                </div>
             </div>
 
             <c:if test="${booking.checkOutTime != null}">                <div class="detail-section" style="margin-top: 25px; border-top: 1px dashed #FFE8D9; padding-top: 25px;">
-                    <div class="section-title"><i class="bi bi-star-fill" style="color: #FF6B00;"></i> Service Feedback</div>
-                    <c:choose>
-                        <c:when test="${empty feedback}">
-                            <div class="feedback-banner">
-                                <div class="feedback-banner-left">
-                                    <div class="feedback-icon-wrapper">
-                                        <i class="bi bi-star-fill"></i>
-                                    </div>
-                                    <div class="feedback-text">
-                                        <h4>We value your feedback!</h4>
-                                        <p>How was your experience with ${booking.catName} today?</p>
-                                    </div>
+                <div class="section-title"><i class="bi bi-star-fill" style="color: #FF6B00;"></i> Service Feedback</div>
+                <c:choose>
+                    <c:when test="${empty feedback}">
+                        <div class="feedback-banner">
+                            <div class="feedback-banner-left">
+                                <div class="feedback-icon-wrapper">
+                                    <i class="bi bi-star-fill"></i>
                                 </div>
+                                <div class="feedback-text">
+                                    <h4>We value your feedback!</h4>
+                                    <p>How was your experience with ${booking.catName} today?</p>
+                                </div>
+                            </div>
                             <button type="button" class="btn-rate-visit" onclick="document.getElementById('rateModal').style.display='flex'">
-                                    Rate This Visit
-                                </button>
+                                Rate This Visit
+                            </button>
 
-                            </div>
-                        </c:when>
+                        </div>
+                    </c:when>
 
-                        <c:otherwise>
-                            <div class="feedback-result-box">
-                                <div class="feedback-score-section">
-                                    <div class="feedback-stars">
-                                        <c:forEach begin="1" end="${feedback.rating}">★</c:forEach><c:forEach begin="${feedback.rating + 1}" end="5">☆</c:forEach>
-                                    </div>
-                                    <span class="feedback-score-text">${feedback.rating}.0 / 5</span>
+                    <c:otherwise>
+                        <div class="feedback-result-box">
+                            <div class="feedback-score-section">
+                                <div class="feedback-stars">
+                                    <c:forEach begin="1" end="${feedback.rating}">★</c:forEach><c:forEach begin="${feedback.rating + 1}" end="5">☆</c:forEach>
                                 </div>
-                                <div class="feedback-comment-section">
-                                    <c:choose>
-                                        <%-- Nếu có bình luận thì in ra --%>
-                                        <c:when test="${not empty feedback.comment}">
-                                            <p>"${feedback.comment}"</p>
-                                        </c:when>
-                                        <%-- Nếu không có bình luận thì hiện chữ mờ --%>
-                                        <c:otherwise>
-                                            <p style="color: #94a3b8; opacity: 0.7;">No additional comments.</p>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
+                                <span class="feedback-score-text">${feedback.rating}.0 / 5</span>
                             </div>
-                        </c:otherwise>
-                    </c:choose>
-                </div>
+                            <div class="feedback-comment-section">
+                                <c:choose>
+                                    <%-- Nếu có bình luận thì in ra --%>
+                                    <c:when test="${not empty feedback.comment}">
+                                        <p>"${feedback.comment}"</p>
+                                    </c:when>
+                                    <%-- Nếu không có bình luận thì hiện chữ mờ --%>
+                                    <c:otherwise>
+                                        <p style="color: #94a3b8; opacity: 0.7;">No additional comments.</p>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+                    </c:otherwise>
+                </c:choose>
+            </div>
             </c:if>
             <div class="btn-action-group">
                 <c:if test="${not empty booking.checkOutTime}">

@@ -2,30 +2,39 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Visit History | CatClinic</title>
 
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/base.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/header.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/sidebar.css">
 
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/clientcss/booking-history.css">
+
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body>
 
+
 <%@include file="header.jsp" %>
 
+
 <div class="container">
+
 
     <c:set var="activePage" value="history" />
     <%@include file="sidebar.jsp" %>
 
+
     <main class="content">
+
 
         <div class="page-header-actions">
             <div class="page-title">
@@ -37,6 +46,7 @@
             </a>
         </div>
 
+
         <div class="stats-container">
             <div class="stat-card">
                 <div class="stat-icon icon-total"><i class="bi bi-clock-history"></i></div>
@@ -46,6 +56,7 @@
                 </div>
             </div>
 
+
             <div class="stat-card">
                 <div class="stat-icon icon-pending"><i class="bi bi-credit-card"></i></div>
                 <div class="stat-info">
@@ -53,6 +64,7 @@
                     <p>PendingPayment</p>
                 </div>
             </div>
+
 
             <div class="stat-card">
                 <div class="stat-icon icon-scheduled"><i class="bi bi-calendar-check"></i></div>
@@ -62,6 +74,7 @@
                 </div>
             </div>
 
+
             <div class="stat-card">
                 <div class="stat-icon icon-completed"><i class="bi bi-check-circle-fill"></i></div>
                 <div class="stat-info">
@@ -69,6 +82,7 @@
                     <p>Completed</p>
                 </div>
             </div>
+
 
             <div class="stat-card">
                 <div class="stat-icon icon-cancelled"><i class="bi bi-x-circle"></i></div>
@@ -88,6 +102,7 @@
             </div>
         </div>
 
+
         <form action="booking-history#bookingSection" method="GET">
             <div class="filter-bar">
                 <input type="text" name="search" class="search-input"
@@ -100,13 +115,18 @@
                     <option value="Completed" ${currentStatus == 'Completed' ? 'selected' : ''}>COMPLETED</option>
                     <option value="Cancelled" ${currentStatus == 'Cancelled' ? 'selected' : ''}>CANCELLED</option>
                     <option value="PendingCancel" ${currentStatus == 'PendingCancel' ? 'selected' : ''}>PENDING CANCEL</option>
+                    <option value="CancelRefund" ${currentStatus == 'CancelRefund' ? 'selected' : ''}>REFUNDED</option>
+                    <option value="RejectedCancelRefund" ${currentStatus == 'RejectedCancelRefund' ? 'selected' : ''}>REJECTED CANCEL</option>
                 </select>
+
 
                 <button type="submit" class="btn-search">Search</button>
             </div>
         </form>
 
+
         <div class="booking-list" id="bookingSection">
+
 
             <table class="booking-table">
                 <thead>
@@ -120,7 +140,9 @@
                 </tr>
                 </thead>
 
+
                 <tbody>
+
 
                 <c:forEach var="b" items="${bookingList}">
                     <tr>
@@ -129,6 +151,7 @@
                             <span style="font-size:12px;color:#777;">${b.catBreed}</span>
                         </td>
 
+
                         <td>
                                 ${b.appointmentDate}
                             <div style="font-size:12px;color:#777;">
@@ -136,40 +159,64 @@
                             </div>
                         </td>
 
+
                         <td>
                             <i class="bi ${b.serviceType == 'Spa' ? 'bi-scissors' : 'bi-capsule'}"></i>
                                 ${b.serviceName}
                         </td>
 
+
                         <td>
                             <fmt:formatNumber value="${b.price}" type="number"/> VND
                         </td>
 
+
                         <td>
                             <c:choose>
-
                                 <c:when test="${b.status == 'PendingPayment'}">
                                     <span class="status-badge status-pendingpayment">Pending Payment</span>
                                 </c:when>
+
 
                                 <c:when test="${b.status == 'Confirmed'}">
                                     <span class="status-badge status-upcoming">Confirmed</span>
                                 </c:when>
 
+
                                 <c:when test="${b.status == 'Completed'}">
                                     <span class="status-badge status-completed">Completed</span>
                                 </c:when>
+
 
                                 <c:when test="${b.status == 'PendingCancel'}">
                                     <span class="status-badge status-pendingcancel">Pending Cancel</span>
                                 </c:when>
 
+
                                 <c:when test="${b.status == 'Cancelled'}">
                                     <span class="status-badge status-cancelled">Cancelled</span>
                                 </c:when>
 
+
+
+                                <c:when test="${b.status == 'CancelRefund'}">
+                                    <span class="status-badge" style="background: #e0e7ff; color: #334155; border: 1px solid #cbd5e1;">Refunded</span>
+                                </c:when>
+
+
+
+                                <c:when test="${b.status == 'RejectedCancelRefund' || b.status == 'RejectedCancel'}">
+                                    <span class="status-badge" style="background: #fee2e2; color: #991b1b; border: 1px solid #f87171;">Cancel Rejected</span>
+                                </c:when>
+
+
+
+                                <c:otherwise>
+                                    <span class="status-badge" style="background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0;">${b.status}</span>
+                                </c:otherwise>
                             </c:choose>
                         </td>
+
 
                         <td>
                             <a href="booking-detail?id=${b.bookingID}" class="btn-view">Detail</a>
@@ -177,8 +224,10 @@
                     </tr>
                 </c:forEach>
 
+
                 </tbody>
             </table>
+
 
             <c:if test="${empty bookingList}">
                 <div class="empty-state-container">
@@ -193,12 +242,14 @@
                 </div>
             </c:if>
 
+
         </div>
         <c:if test="${totalPage > 1}">
             <div class="pagination-container">
                 <div class="pagination">
 
-                        <%-- 1. Nút Prev --%>
+
+
                     <c:if test="${currentPage > 1}">
                         <a href="booking-history?page=${currentPage - 1}&search=${currentSearch}&status=${currentStatus}&dateFilter=${currentDate}#bookingSection"
                            class="page-item">
@@ -206,15 +257,18 @@
                         </a>
                     </c:if>
 
-                        <%-- 2. THUẬT TOÁN TRƯỢT SỐ TRANG --%>
+
+
                     <c:set var="maxVisible" value="3" />
                     <c:set var="startPage" value="${currentPage - 1}" />
                     <c:set var="endPage" value="${currentPage + 1}" />
+
 
                     <c:if test="${startPage < 1}">
                         <c:set var="startPage" value="1" />
                         <c:set var="endPage" value="${startPage + maxVisible - 1}" />
                     </c:if>
+
 
                     <c:if test="${endPage > totalPage}">
                         <c:set var="endPage" value="${totalPage}" />
@@ -224,7 +278,8 @@
                         </c:if>
                     </c:if>
 
-                        <%-- 3. In các nút số trang --%>
+
+
                     <c:forEach begin="${startPage}" end="${endPage}" var="i">
                         <a href="booking-history?page=${i}&search=${currentSearch}&status=${currentStatus}&dateFilter=${currentDate}#bookingSection"
                            class="page-item ${i == currentPage ? 'active' : ''}">
@@ -232,12 +287,14 @@
                         </a>
                     </c:forEach>
 
-                        <%-- 4. Nút Next --%>
+
+
                     <c:if test="${currentPage < totalPage}">
                         <a href="booking-history?page=${currentPage + 1}&search=${currentSearch}&status=${currentStatus}&dateFilter=${currentDate}#bookingSection" class="page-item">
                             &raquo;
                         </a>
                     </c:if>
+
 
                 </div>
             </div>

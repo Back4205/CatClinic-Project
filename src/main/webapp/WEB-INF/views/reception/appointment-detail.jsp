@@ -139,7 +139,7 @@
                 </c:if>
 
 
-                <%-- Trường hợp ca khám mới đặt chưa confirm cũng cho phép Cancel --%>
+
                 <c:if test="${booking.status == 'PendingPayment'}">
                     <a href="reception-cancel?id=${booking.bookingID}" class="btn-cancel-outline">
                         <i class="fa-solid fa-trash-can"></i> &nbsp; Cancel Booking
@@ -150,7 +150,6 @@
     </main>
 </div>
 
-<%-- GIỮ NGUYÊN TOÀN BỘ MODAL VÀ SCRIPT CŨ CỦA CẬU --%>
 <div id="checkinModal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header-orange">
@@ -176,7 +175,7 @@
         if (!note.trim()) { alert("Vui lòng ghi nhận tình trạng bé mèo lúc tiếp nhận!"); return; }
         window.location.href = "checkin?id=" + bookingId + "&status=Completed&condition=" + encodeURIComponent(note);
     }
-   
+
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('status') === 'checkin_success') {
