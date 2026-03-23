@@ -20,6 +20,7 @@ public class CareTaskDTO {
     private String ownerName;
     private String ownerPhone;
     private String address;
+    private String note;
 
     private List<Integer> completedTaskIds; // Lưu các ID công việc đã tích
     private int totalTasks; // Tổng số công việc (4)
@@ -59,4 +60,9 @@ public class CareTaskDTO {
     public void setCompletedTaskIds(List<Integer> completedTaskIds) { this.completedTaskIds = completedTaskIds; }
     public int getTotalTasks() { return totalTasks; }
     public void setTotalTasks(int totalTasks) { this.totalTasks = totalTasks; }
+    public String getNote() { return note; }
+    public void setNote(String note) { this.note = note; }
+    private java.sql.Timestamp checkOutTime;
+    public java.sql.Timestamp getCheckOutTime() { return checkOutTime; }
+    public void setCheckOutTime(java.sql.Timestamp checkOutTime) { this.checkOutTime = checkOutTime; }
 }

@@ -26,12 +26,14 @@ public class CareDAO extends DBContext {
         List<CareTaskDTO> list = new ArrayList<>();
         String sql = "SELECT cj.CareJID, cj.Status, cj.BookingID, b.EndDate, b.Status as BookingStatus, " +
                 "c.CatID, c.Name as CatName, c.Age, c.Breed, c.Gender, c.Image, " +
-                "u.FullName as OwnerName, u.Phone as OwnerPhone, o.Address " +
+                "u.FullName as OwnerName, u.Phone as OwnerPhone, o.Address, cj.Note , " + // Thêm cj.Note
+                "br.CheckOutTime " +
                 "FROM CareJourneys cj " +
                 "JOIN Bookings b ON cj.BookingID = b.BookingID " +
                 "JOIN Cats c ON cj.CatID = c.CatID " +
                 "JOIN Owners o ON c.OwnerID = o.OwnerID " +
                 "JOIN Users u ON o.UserID = u.UserID " +
+                "JOIN BoardingRecords br ON b.BookingID = br.BookingID " +
                 "WHERE cj.StaffID = ? AND CAST(cj.RecordTime AS DATE) = CAST(GETDATE() AS DATE)";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
@@ -41,30 +43,26 @@ public class CareDAO extends DBContext {
                 CareTaskDTO dto = new CareTaskDTO();
                 dto.setCareJID(rs.getInt("CareJID"));
                 dto.setStatus(rs.getString("Status"));
-                dto.setBookingID(rs.getInt("BookingID"));
-                dto.setEndDate(rs.getDate("EndDate"));
-                dto.setBookingStatus(rs.getString("BookingStatus"));
-
-                dto.setCatID(rs.getInt("CatID"));
                 dto.setCatName(rs.getString("CatName"));
                 dto.setCatAge(rs.getInt("Age"));
                 dto.setBreed(rs.getString("Breed"));
-                // Xử lý Gender kiểu BIT
-                boolean isMale = rs.getBoolean("Gender");
+                boolean isMale = rs.getBoolean("Gender"); // Tùy theo CSDL lưu kiểu BIT hay Chuỗi
                 dto.setGender(isMale ? "Male" : "Female");
-                dto.setCatImage(rs.getString("Image"));
-
                 dto.setOwnerName(rs.getString("OwnerName"));
                 dto.setOwnerPhone(rs.getString("OwnerPhone"));
                 dto.setAddress(rs.getString("Address"));
+                dto.setCatImage(rs.getString("Image"));
+                dto.setNote(rs.getString("Note")); // THÊM DÒNG NÀY ĐỂ MAPPING NOTE
+                dto.setCheckOutTime(rs.getTimestamp("CheckOutTime"));
 
-                // Lấy các task đã hoàn thành (tích xanh)
                 dto.setCompletedTaskIds(getCompletedTaskIds(dto.getCareJID()));
                 list.add(dto);
             }
+
         } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
+
 
     private List<Integer> getCompletedTaskIds(int careJID) {
         List<Integer> list = new ArrayList<>();
@@ -109,5 +107,21 @@ public class CareDAO extends DBContext {
             ps.setInt(1, bookingID);
             ps.executeUpdate();
         } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    // Lưu Record Care Diary (Cập nhật Note và Status)
+    public boolean updateCareDiary(int careJID, String note, String status) {
+        String sql = "UPDATE CareJourneys SET Note = ?, Status = ? WHERE CareJID = ?";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setString(1, note);
+            ps.setString(2, status);
+            ps.setInt(3, careJID);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

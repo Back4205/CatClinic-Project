@@ -41,11 +41,11 @@
                 <a href="${pageContext.request.contextPath}/staff/daily-care-tasks" class="nav-item active">
                     <i class="fa-regular fa-calendar-check"></i> View Care Task
                 </a>
-                <a href="#" class="nav-item">
+                <a href="${pageContext.request.contextPath}/staff/record-care-diary" class="nav-item">
                     <i class="fa-solid fa-book-medical"></i> Record Care Diary
                 </a>
                 <a href="${pageContext.request.contextPath}/profile" class="nav-item">
-                    <i class="fa-solid fa-address-card"></i> profile
+                    <i class="fa-solid fa-address-card"></i> Profile
                 </a>
             </nav>
             <a href="${pageContext.request.contextPath}/logout" class="logout-btn">
@@ -105,6 +105,12 @@
 
                         <div class="card-right">
                             <c:choose>
+                                <%-- Đã Check-out thành công --%>
+                                <c:when test="${not empty t.checkOutTime}">
+                                    <div class="waiting-reception" style="color: #16a34a; border-color: #16a34a; background: #dcfce7;">
+                                        <i class="bi bi-check2-all"></i> Checked Out Successfully
+                                    </div>
+                                </c:when>
                                 <%-- 1. Nếu Booking đã ở trạng thái Ready for Checkout --%>
                                 <c:when test="${t.bookingStatus == 'Ready for Checkout'}">
                                     <div class="waiting-reception">
@@ -146,6 +152,34 @@
 </div>
 
 <div id="petDetailModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="bi bi-info-circle"></i> Cat Details</h3>
+            <button class="close-btn" onclick="closeDetailModal()"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <!-- Cột trái: Ảnh -->
+            <img id="mdImage" src="" alt="Cat Image" class="md-img">
+
+            <!-- Cột phải: Thông tin -->
+            <div class="md-info">
+                <div id="mdName" class="md-name"></div>
+
+                <div class="md-grid">
+                    <div><span>Breed</span><strong id="mdBreed"></strong></div>
+                    <div><span>Gender</span><strong id="mdGender"></strong></div>
+                    <div><span>Age</span><strong id="mdAge"></strong></div>
+                </div>
+
+                <div class="md-owner-box">
+                    <h4>Owner Information</h4>
+                    <div><i class="bi bi-person"></i> <span id="mdOwner"></span></div>
+                    <div><i class="bi bi-telephone"></i> <span id="mdPhone"></span></div>
+                    <div><i class="bi bi-geo-alt"></i> <span id="mdAddress"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- SCRIPT XỬ LÝ POPUP -->
 <script>
