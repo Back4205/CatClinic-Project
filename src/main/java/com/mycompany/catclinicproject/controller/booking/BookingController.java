@@ -68,7 +68,7 @@ public class BookingController extends HttpServlet {
             Service service = serviceDAO.getServiceById(serviceID);
 
             if (category == null || service == null) {
-                throw new Exception("Dịch vụ không tồn tại.");
+                throw new Exception("The service does not exist.");
             }
 
             String categoryName = category.getCategoryName().toLowerCase();
@@ -96,11 +96,11 @@ public class BookingController extends HttpServlet {
                 TimeSlot slot = slotDAO.getSlotByID(slotID);
 
                 if (slot == null) {
-                    throw new Exception("Khung giờ không hợp lệ.");
+                    throw new Exception("Invalid time slot.");
                 }
 
                 if (bookingDAO.isCatBusyAtSlot(catID, appointmentDate, slotID)) {
-                    throw new Exception("Mèo đã có lịch vào khung giờ này.");
+                    throw new Exception("The cat already has a schedule for this time slot.");
                 }
 
                 booking.setVeterinarianID(vetID);
@@ -120,7 +120,7 @@ public class BookingController extends HttpServlet {
                         java.sql.Time.valueOf(request.getParameter("checkInTime") + ":00");
 
                 if (bookingDAO.isCatBusyAtTime(catID, date, time )) {
-                    throw new Exception("Mèo đã bận vào khung giờ này.");
+                    throw new Exception("The cat already has a schedule for this time slot.");
                 }
 
                 booking.setAppointmentDate(date);
@@ -130,7 +130,7 @@ public class BookingController extends HttpServlet {
                 Integer staffID = userDAO.getRandomStaffByPosition("Technician");
 
                 if (staffID == null) {
-                    throw new Exception("Không có kỹ thuật viên khả dụng.");
+                    throw new Exception("No technicians are available.");
                 }
 
                 booking.setStaffID(staffID);
@@ -144,7 +144,7 @@ public class BookingController extends HttpServlet {
                 LocalDate end = LocalDate.parse(request.getParameter("endDate"));
 
                 if (end.isBefore(start)) {
-                    throw new Exception("Ngày kết thúc phải sau ngày bắt đầu.");
+                    throw new Exception("The end date must be after the start date.");
                 }
 
                 if (bookingDAO.isCatHotelConflict(
@@ -152,7 +152,7 @@ public class BookingController extends HttpServlet {
                         java.sql.Date.valueOf(start),
                         java.sql.Date.valueOf(end))) {
 
-                    throw new Exception("Thời gian lưu trú bị trùng.");
+                    throw new Exception("The length of stay overlaps.");
                 }
 
                 long days = ChronoUnit.DAYS.between(start, end) + 1;
@@ -169,7 +169,7 @@ public class BookingController extends HttpServlet {
                 Integer staffID = userDAO.getRandomStaffByPosition("Care");
 
                 if (staffID == null) {
-                    throw new Exception("Không có nhân viên chăm sóc.");
+                    throw new Exception("There is no caregiver present.");
                 }
 
                 booking.setStaffID(staffID);
@@ -196,15 +196,15 @@ public class BookingController extends HttpServlet {
             }
 
             if (bookingID == -2)
-                throw new Exception("Khung giờ đã được đặt.");
+                throw new Exception("The time slot has been booked.");
 
             if (bookingID == -1)
-                throw new Exception("Không thể tạo booking.");
+                throw new Exception("Unable to create a booking.");
 
             if (bookingID == -4)
-                throw new Exception("Lỗi hệ thống.");
+                throw new Exception("System error.");
 
-            throw new Exception("Lỗi không xác định.");
+            throw new Exception("An unknown error.");
 
         }
 
@@ -253,11 +253,11 @@ public class BookingController extends HttpServlet {
             int categoryID = Integer.parseInt(categoryIDStr);
             Category category = categoryDAO.getCategoryById(categoryID);
             request.setAttribute("selectedCategoryID", categoryID);
-
+            int     categoryIDtmp  =  category.getCategoryID();
             if (category != null) {
                 String name = category.getCategoryName().toLowerCase();
-                boolean isBoarding = name.contains("boarding");
-                boolean isParaclinical = name.contains("paraclinical");
+                boolean isBoarding = name.contains("boarding") || (categoryIDtmp == 4);
+                boolean isParaclinical = name.contains("paraclinical")|| (categoryIDtmp == 5);
                 boolean needsVet = !isBoarding && !isParaclinical;
 
                 request.setAttribute("isBoarding", isBoarding);

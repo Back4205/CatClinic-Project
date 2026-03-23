@@ -51,7 +51,7 @@ public class CatAddController extends HttpServlet {
             }
         }
 
-        // ======== NẾU HỢP LỆ, CHO PHÉP VÀO TRANG THÊM MÈO ========
+
         request.setAttribute("from", from);
         request.setAttribute("f", from2);
         request.setAttribute("phone", phone);
@@ -68,8 +68,8 @@ public class CatAddController extends HttpServlet {
         CatDAO catDAO = new CatDAO();
         UserDAO userDAO = new UserDAO();
         String message = "";
+        String letterOnlyRegex = "^[a-zA-ZÀ-ỹ\\s]+$";
 
-        // Luôn lấy 'from' ở đầu doPost để sử dụng trong cả trường hợp thành công và thất bại
         String from = request.getParameter("from");
         String from2 = request.getParameter("from2");
         String phone = request.getParameter("phone");
@@ -86,26 +86,26 @@ public class CatAddController extends HttpServlet {
 
         int ownerID = 0;
 
-        // --- BƯỚC 1: XÁC ĐỊNH HOẶC TẠO OWNER ID ---
+
         if ("Counterbooking".equals(from2) && phone != null && !phone.trim().isEmpty()) {
 
-            // ======== THÊM VALIDATE DỮ LIỆU TẠI ĐÂY ========
+
             String errorMsg = "";
 
-            // 1. Phone: Bắt đầu bằng 0, tổng cộng 10-11 số
+
             if (!phone.matches("^0\\d{9,10}$")) {
                 errorMsg = "Phone number must start with 0 and contain 10-11 digits!";
             }
-            // 2. Full Name: Chỉ chữ cái (bao gồm tiếng Việt) và khoảng trắng
+
             else if (fullName == null || fullName.trim().isEmpty() || !fullName.matches("^[\\p{L}\\s]+$")) {
                 errorMsg = "Full name can only contain letters (no numbers or special characters)!";
             }
-            // 3. Email: Phải có đuôi @gmail.com
+
             else if (email == null || email.trim().isEmpty() || !email.matches("^[\\w.-]+@gmail\\.com$")) {
                 errorMsg = "Email must be a valid @gmail.com address!";
             }
 
-            // Nếu có lỗi, trả về trang form và giữ nguyên dữ liệu
+
             if (!errorMsg.isEmpty()) {
                 request.setAttribute("from", from);
                 request.setAttribute("f", from2);
@@ -113,7 +113,7 @@ public class CatAddController extends HttpServlet {
                 request.setAttribute("fullName", fullName);
                 request.setAttribute("email", email);
 
-                // Giữ lại thông tin mèo Lễ tân đang nhập dở
+
                 Cat tempCat = new Cat();
                 tempCat.setName(request.getParameter("name"));
                 tempCat.setBreed(request.getParameter("breed"));
@@ -125,11 +125,11 @@ public class CatAddController extends HttpServlet {
 
                 request.setAttribute("message", errorMsg);
                 request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
-                return; // Dừng luồng xử lý, không lưu vào DB
+                return;
             }
-            // ======== KẾT THÚC VALIDATE ========
 
-            // Lễ tân đang thao tác tạo mới Khách + Mèo
+
+
             Owner existingCustomer = userDAO.getUserByPhone(phone);
 
             if (existingCustomer == null) {
@@ -137,37 +137,53 @@ public class CatAddController extends HttpServlet {
                 newCustomer.setFullName(fullName);
                 newCustomer.setPhone(phone);
                 newCustomer.setEmail(email);
-                newCustomer.setPassword(phone); // Lấy số điện thoại làm mật khẩu mặc định
+                newCustomer.setPassword(phone);
 
                 userDAO.registerCustomer(newCustomer);
 
-                // Tìm lại User vừa tạo để lấy ID gán cho mèo
+
                 Owner justCreatedCustomer = userDAO.getUserByPhone(phone);
                 if (justCreatedCustomer != null) {
                     ownerID = catDAO.getOwnerIdByUserId(justCreatedCustomer.getUserID());
                 }
 
             } else {
-                // Nếu vô tình SĐT đã tồn tại thì lấy thẳng ID của người đó
+
                 ownerID = catDAO.getOwnerIdByUserId(existingCustomer.getUserID());
             }
         } else {
-            // Khách hàng đang tự thêm mèo cho chính họ
+
             ownerID = catDAO.getOwnerIdByUserId(user.getUserID());
         }
 
         try {
             String name = request.getParameter("name");
             String breed = request.getParameter("breed");
-            int gender = Integer.parseInt(request.getParameter("gender"));
-            int age = Integer.parseInt(request.getParameter("age"));
+            String  genderStr = request.getParameter("gender");
+            String ageStr = request.getParameter("age");
 
-            // Kiểm tra trùng tên mèo của cùng một chủ
-            if (catDAO.checkCatNameExistbyOwnerID(ownerID, name)) {
+            if( name == null || name.trim().isEmpty()){
+                message = "Cat name cannot be empty!";
+            }
+            else if (catDAO.checkCatNameExistbyOwnerID(ownerID, name)) {
                 message = "This owner already has a cat with this name!";
             }
+            else if (breed == null || breed.trim().isEmpty()) {
+                message = "breed cannot be empty!";
+            } else if (!breed.matches(letterOnlyRegex)) {
+                message = "breed cannot contain numbers or special characters!";
+            }
+            else if (genderStr == null || ageStr == null || ageStr.trim().isEmpty()) {
+                message = "Gender and Age are required!";
+            }
 
+            int gender = Integer.parseInt(genderStr);
+            int age = Integer.parseInt(ageStr);
+            if (age < 0 || age >15 ){
+                message = "Age must be between 0 and 15";
+            }
             if (!message.isEmpty()) {
+
                 Cat cat = new Cat();
                 cat.setOwnerID(ownerID);
                 cat.setName(name);
@@ -175,7 +191,7 @@ public class CatAddController extends HttpServlet {
                 cat.setGender(gender);
                 cat.setAge(age);
 
-                // Cần set lại 'from' để thẻ hidden trong JSP không bị mất giá trị khi forward
+
                 request.setAttribute("from", from);
                 request.setAttribute("cat", cat);
                 request.setAttribute("message", message);
@@ -244,7 +260,7 @@ public class CatAddController extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            // Đảm bảo 'from' vẫn tồn tại nếu quay lại form do lỗi hệ thống
+
             request.setAttribute("from", from);
             request.setAttribute("from2", from2);
             request.setAttribute("message", "Add cat failed!");

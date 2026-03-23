@@ -113,7 +113,7 @@
                         <div class="row">
                             <div class="field">
                                 <label>Age</label>
-                                <input type="number" name="age" value="${cat.age}" min="0" required>
+                                <input type="number" name="age" value="${cat.age}" min="0" max="15" required>
                                 <div class="note">Set 0 if under 1 year.</div>
                             </div>
 
