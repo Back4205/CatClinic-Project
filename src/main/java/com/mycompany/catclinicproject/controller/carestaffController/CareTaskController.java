@@ -59,6 +59,14 @@ public class CareTaskController extends HttpServlet {
             int bookingID = Integer.parseInt(request.getParameter("bookingID"));
             dao.setReadyForCheckout(bookingID); // Bàn giao cho Lễ tân
         }
+        else if ("saveDiary".equals(action)) {
+            int careJID = Integer.parseInt(request.getParameter("careJID"));
+            String note = request.getParameter("note"); // Chuỗi đã được JS gom lại
+            String status = request.getParameter("status"); // Trạng thái Pending/In Progress/Completed
+
+            dao.updateCareDiary(careJID, note, status);
+        }
+
 
         response.sendRedirect(request.getContextPath() + "/staff/daily-care-tasks");
     }
