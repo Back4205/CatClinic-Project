@@ -120,7 +120,7 @@
             </c:if>
             <div class="btn-action-group">
                 <c:if test="${not empty booking.checkOutTime}">
-                    <a href="view-invoice?id=${booking.bookingID}" class="btn-custom btn-invoice">
+                    <a href="reception/invoice_detail?bookingID=${booking.bookingID}" class="btn-custom btn-invoice">
                         <i class="bi bi-receipt"></i> View Invoice
                     </a>
                 </c:if>

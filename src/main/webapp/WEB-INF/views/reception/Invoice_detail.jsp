@@ -24,7 +24,9 @@
 
 <div class="app-container">
   <c:set var="activePage" value="billing" scope="request"/>
+  <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID == 3}">
   <%@include file="sidebar.jsp"%>
+  </c:if>
 
   <main class="main-content">
     <div class="hub-header">
@@ -103,14 +105,29 @@
 
             <div class="invoice-total-box">
 
+              <c:choose>
+                <c:when test="${deposit == 0}">
+                  <c:set var="actualDeposit" value="0" />
+                  <c:set var="actualPaid"    value="${hasPaid}" />
+                </c:when>
+                <c:when test="${hasPaid <= deposit}">
+                  <c:set var="actualDeposit" value="${deposit}" />
+                  <c:set var="actualPaid"    value="0" />
+                </c:when>
+                <c:otherwise>
+                  <c:set var="actualDeposit" value="${deposit}" />
+                  <c:set var="actualPaid"    value="${hasPaid - deposit}" />
+                </c:otherwise>
+              </c:choose>
 
-              <c:set var="actualDeposit" value="${deposit}" />
-              <c:set var="actualPaid" value="${hasPaid - actualDeposit}" />
-
-              <c:if test="${hasPaid == deposit}">
-                <c:set var="actualDeposit" value="0" />
-                <c:set var="actualPaid" value="${hasPaid}" />
-              </c:if>
+              <c:choose>
+                <c:when test="${inforInvoiceDetail.invoiceStatus == 'Paid'}">
+                  <c:set var="remaining" value="0" />
+                </c:when>
+                <c:otherwise>
+                  <c:set var="remaining" value="${totalServiceAmount - hasPaid}" />
+                </c:otherwise>
+              </c:choose>
 
               <div class="total-row">
                 <span class="label">Total Service</span>
@@ -122,7 +139,6 @@
               <div class="total-row">
                 <span class="label">Deposit</span>
                 <span class="value">
-
       <fmt:formatNumber value="${actualDeposit}" type="number" groupingUsed="true"/> VND
     </span>
               </div>
@@ -130,7 +146,6 @@
               <div class="total-row">
                 <span class="label">Paid</span>
                 <span class="value">
-
       <fmt:formatNumber value="${actualPaid}" type="number" groupingUsed="true"/> VND
     </span>
               </div>
@@ -138,17 +153,12 @@
               <div class="total-row total-final">
                 <span class="label">Remaining</span>
                 <span class="value">
-      <c:choose>
-        <c:when test="${inforInvoiceDetail.invoiceStatus == 'Paid'}">
-          0 VND
-        </c:when>
-        <c:otherwise>
-          <fmt:formatNumber value="${totalServiceAmount - hasPaid}" type="number" groupingUsed="true"/> VND
-        </c:otherwise>
-      </c:choose>
+      <fmt:formatNumber value="${remaining}" type="number" groupingUsed="true"/> VND
     </span>
               </div>
+
             </div>
+
           </div>
         </div>
 
@@ -183,10 +193,17 @@
                 </button>
               </form>
             </c:if>
+            <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID == 3}">
+              <a href="${pageContext.request.contextPath}/reception/billing-bookings" class="btn-back">
+                <i class="fa-solid fa-arrow-left-long"></i> Back to Billing Booking
+              </a>
+            </c:if>
+            <c:if test="${sessionScope.acc != null && sessionScope.acc.roleID == 5}">
+              <a href="${pageContext.request.contextPath}/booking-history" class="btn-back">
+                <i class="fa-solid fa-arrow-left-long"></i> Back to Booking History
+              </a>
+            </c:if>
 
-            <a href="${pageContext.request.contextPath}/reception/billing-bookings" class="btn-back">
-              <i class="fa-solid fa-arrow-left-long"></i> Back to Billing Booking
-            </a>
           </div>
         </div>
       </div>
