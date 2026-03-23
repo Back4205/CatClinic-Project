@@ -25,7 +25,6 @@
             </a>
         </nav>
     </div>
-
     <div class="bottom-menu">
         <a href="VetProfile" class="menu-item">
             <i class="fa-solid fa-gear"></i> Settings

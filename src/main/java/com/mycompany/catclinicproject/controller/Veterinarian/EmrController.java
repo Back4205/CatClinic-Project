@@ -65,7 +65,7 @@ public class EmrController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        
+
         String idParam = request.getParameter("medicalRecordID");
         try {
             int medicalRecordID = Integer.parseInt(idParam);
@@ -96,11 +96,13 @@ public class EmrController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         int medicalRecordID = Integer.parseInt(request.getParameter("medicalRecordID"));
         String diagnosis = request.getParameter("diagnosis");
         String symptoms = request.getParameter("symptoms");
         String treatmentPlan = request.getParameter("treatmentPlan");
         String button = request.getParameter("button");
+        String status = request.getParameter("status");
 
         BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
         dao.updateMedicalRecord(medicalRecordID, diagnosis, symptoms, treatmentPlan);
@@ -108,11 +110,16 @@ public class EmrController extends HttpServlet {
         if (button.equalsIgnoreCase("next")) {
             response.sendRedirect("xray?medicalRecordID=" + medicalRecordID);
         } else if (button.equalsIgnoreCase("save")) {
-            response.sendRedirect("EmrController/?medicalRecordID=" + medicalRecordID);
+            session.setAttribute("toast-messenger-complete", "save succesfully!");
+            response.sendRedirect("EmrController?medicalRecordID=" + medicalRecordID);
 
         } else if (button.equalsIgnoreCase("completed")) {
             DrugVeterinarianDAO daod = new DrugVeterinarianDAO();
-
+            if (status.equalsIgnoreCase("Waiting result")) {
+                session.setAttribute("toast-messenger", "Another testing order is currently underway.");
+                response.sendRedirect("EmrController?medicalRecordID=" + medicalRecordID);
+                return;
+            }
             MedicalRecordVeterinarianDao daom = new MedicalRecordVeterinarianDao();
             List<DrugVeteCompletedDTO> list = daom.getDrugsByMedicalRecordID(medicalRecordID);
             for (DrugVeteCompletedDTO d : list) {
@@ -120,6 +127,8 @@ public class EmrController extends HttpServlet {
             }
             BookingDaoVeterinarian daob = new BookingDaoVeterinarian();
             daob.completeMedicalRecord(medicalRecordID);
+            session.setAttribute("toast-messenger-complete", "Complete succesfully!");
+
             response.sendRedirect("EmrController?medicalRecordID=" + medicalRecordID);
         }
     }

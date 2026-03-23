@@ -15,12 +15,8 @@
             <jsp:include page="sidebar.jsp"/>
 
             <main class="main">
-
-
                 <jsp:include page="header.jsp"/>
-
                 <div class="dashboard-content">
-
                     <jsp:include page="notificationbar.jsp"/>
                     <div class="filter-bar">
                         <form method="get" action="DashboardController" class="filter-form">

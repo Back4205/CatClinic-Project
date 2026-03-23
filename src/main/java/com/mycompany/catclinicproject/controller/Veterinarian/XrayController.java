@@ -110,6 +110,7 @@ public class XrayController extends HttpServlet {
                 medicalRecordID,
                 "requestX"
         );
+                
         }
         response.sendRedirect("xray?medicalRecordID=" + medicalRecordID);
     }

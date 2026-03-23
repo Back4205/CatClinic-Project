@@ -14,7 +14,7 @@
 
         <div class="notification-wrapper" onclick="toggleNoti()">
 
-            <i class="fa-regular fa-bell notification"></i>
+            <i class="fa-regular fa-bell bell-icon"></i>
 
             <span id="notiCount" class="noti-count">
                 ${unreadNoti}
@@ -24,7 +24,7 @@
                 <ul id="notiUl">
                     <c:forEach var="noti" items="${listNoti}">
                         <li class="${noti.isRead ? 'noti-read' : 'noti-unread'}">
-                            <a href="notification?NotificationId=${noti.notificationID}">
+                            <a href="notificationvet?NotificationId=${noti.notificationID}">
                                 ${noti.message} id = ${noti.notificationID}
                                 <small>${noti.createdAt}</small>
                             </a>
@@ -42,13 +42,8 @@
             <div class="avatar">
                 <i class="fa-solid fa-user"></i>
             </div>
-
         </div>
-
     </div>
-
-
-
 </div>
 
 <script>

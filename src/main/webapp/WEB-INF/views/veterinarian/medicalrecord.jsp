@@ -11,7 +11,6 @@
         <link href="css/headerVeteStyle.css" rel="stylesheet">
         <link href="css/EMRStyle.css" rel="stylesheet">
 
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     </head>
 
     <body>
@@ -34,7 +33,7 @@
                             <i class="fa fa-arrow-left"></i> Back to List
                         </a>
                     </div>
-                 
+
 
                     <!-- ===== MEDICAL RECORD CARD ===== -->
                     <div class="emr-card">
@@ -111,7 +110,7 @@
                         <hr class="divider"/>
 
                         <!-- ===== CLINICAL SECTION ===== -->
-                         <div class="step-nav">
+                        <div class="step-nav">
 
                             <a href="EmrController?medicalRecordID=${emr.medicalRecordID}"
                                class="step-item ${activeStep == 1 ? 'active' : ''}">
@@ -124,8 +123,8 @@
                                 <span class="step-number">2</span>
                                 <span class="step-label">X-RAY</span>
                             </a>
-                                
-                                <a href="bloodtest?medicalRecordID=${emr.medicalRecordID}"
+
+                            <a href="bloodtest?medicalRecordID=${emr.medicalRecordID}"
                                class="step-item ${activeStep == 3 ? 'active' : ''}">
                                 <span class="step-number">3</span>
                                 <span class="step-label">BLOOD TEST</span>
@@ -138,54 +137,118 @@
                             </a>
 
                         </div>
-                        
+
                         <form action="EmrController" method="post">
-                            
+
                             <input type="hidden" name="medicalRecordID" 
                                    value="${emr.medicalRecordID}"/>
+                            <input type="hidden" name="status" 
+                                   value="${status}"/>
                             <div class="form-grid">
-
                                 <div class="form-group">
                                     <label>Symptoms & Observations</label>
                                     <textarea name="symptoms"
-                                              placeholder="Enter observed symptoms...">${emr.symptoms}</textarea>
+                                              placeholder="Enter observed symptoms..."
+                                              ${status eq 'Completed' ? 'readonly' : ''}>${emr.symptoms}</textarea>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Diagnosis</label>
                                     <textarea name="diagnosis"
-                                              placeholder="Enter final or working diagnosis...">${emr.diagnosis}</textarea>
+                                              placeholder="Enter final or working diagnosis..."
+                                              ${status eq 'Completed' ? 'readonly' : ''}>${emr.diagnosis}</textarea>
                                 </div>
 
                                 <div class="form-group">
                                     <label>Treatment Protocol</label>
                                     <textarea name="treatmentPlan"
-                                              placeholder="Describe treatment steps...">${emr.treatmentPlan}</textarea>
+                                              placeholder="Describe treatment steps..."
+                                              ${status eq 'Completed' ? 'readonly' : ''}>${emr.treatmentPlan}</textarea>
                                 </div>
-
                             </div>
 
                             <div class="form-actions">
-                                 <c:if test="${status ne 'Completed'}">
-                                <button type="submit"  class="btn-save " name="button" value="save">
-                                    Save 
-                                </button>
-                                
-                                <button type="submit"  class="btn-complete " name="button" value="completed">
-                                    Completed
-                                </button>
-                                 </c:if>
+                                <c:if test="${status ne 'Completed'}">
+                                    <button type="submit"  class="btn-save " name="button" value="save">
+                                        Save 
+                                    </button>
+
+                                    <button type="submit"  class="btn-complete " name="button" value="completed">
+                                        Completed
+                                    </button>
+                                </c:if>
                                 <button type="submit" class="btn-next" name="button" value="next">
                                     Next <i class="fa fa-arrow-right"></i> X-Ray
                                 </button>
                             </div>
-                                
-                                
+
+
                         </form>
 
                     </div>
                 </div>
+                <c:if test="${not empty sessionScope['toast-messenger']}">
+
+                    <div id="toast-message">
+                        ${sessionScope['toast-messenger']}
+                    </div>
+
+                    <c:remove var="toast-messenger" scope="session"/>
+
+                </c:if>
+                <c:if test="${not empty sessionScope['toast-messenger-complete']}">
+
+                    <div id="bubble-overlay">
+                        <div id="bubble-box">
+
+                            <div class="bubble-icon">
+                                ✔
+                            </div>
+
+                            <p class="bubble-text">
+                                ${sessionScope['toast-messenger-complete']}
+                            </p>
+
+                            <button id="bubble-continue-btn">
+                                Continue
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <c:remove var="toast-messenger-complete" scope="session"/>
+
+                </c:if>
             </main>
         </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+                const toast = document.getElementById("toast-message");
+
+                if (toast) {
+                    setTimeout(function () {
+                        toast.style.opacity = "0";
+
+                        setTimeout(function () {
+                            toast.remove();
+                        }, 500);
+
+                    }, 5000);
+                }
+
+            });
+            document.addEventListener("DOMContentLoaded", function () {
+
+                const btn = document.getElementById("bubble-continue-btn");
+
+                if (btn) {
+                    btn.addEventListener("click", function () {
+                        window.location.href = "EmrController?medicalRecordID=${param.medicalRecordID}";
+                    });
+                }
+
+            });
+        </script>
     </body>
 </html>

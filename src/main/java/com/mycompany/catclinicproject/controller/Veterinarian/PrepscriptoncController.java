@@ -17,6 +17,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import static jakarta.ws.rs.core.Response.status;
 import java.net.URLEncoder;
 import java.util.Arrays;
@@ -96,8 +97,10 @@ public class PrepscriptoncController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         int medicalRecordID = Integer.parseInt(request.getParameter("medicalRecordID"));
         String advice = request.getParameter("advice");
+        String statusstr = request.getParameter("status");
         DrugVeterinarianDAO dao = new DrugVeterinarianDAO();
         Integer prescriptionID
                 = dao.getPrescriptionIDByMedicalRecordID(medicalRecordID);
@@ -105,23 +108,21 @@ public class PrepscriptoncController extends HttpServlet {
             dao.deletePrescriptionDrugByPrescriptionID(prescriptionID);
             dao.deletePrescriptionByMedicalRecordID(medicalRecordID);
         }
-        // 1️⃣ Tạo Prescription trước
         int prescriptionIDs = dao.createPrescription(medicalRecordID, advice);
-        if (prescriptionIDs == 0) {
-            response.getWriter().println("Create Prescription failed!");
-            return;
-        }
         String status = "";
         String action = request.getParameter("action");
         if (action.equalsIgnoreCase("complete")) {
+             if (statusstr.equalsIgnoreCase("Waiting result")) {
+                session.setAttribute("toast-messenger", "Another testing order is currently underway.");
+                response.sendRedirect("preController?medicalRecordID=" + medicalRecordID);
+                return;
+            }
+            session.setAttribute("toast-messenger-complete", "Complete succesfully!");
             BookingDaoVeterinarian daob = new BookingDaoVeterinarian();
             daob.completeMedicalRecord(medicalRecordID);
             status = daob.getStatusByMedicalRecordID(medicalRecordID);
-
         }
-        
         String[] drugIDs = request.getParameterValues("drugID");
-
         if (drugIDs != null) {
             for (String dID : drugIDs) {
                 int drugID = Integer.parseInt(dID);
@@ -146,6 +147,7 @@ public class PrepscriptoncController extends HttpServlet {
             }
 
         }
+        session.setAttribute("toast-messenger-complete", "Save succesfully!");
         response.sendRedirect("preController?medicalRecordID=" + medicalRecordID + "&status=" + URLEncoder.encode(status, "UTF-8"));
     }
 

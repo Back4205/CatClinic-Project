@@ -99,8 +99,11 @@
             const emailError = document.getElementById("emailError");
             const phoneError = document.getElementById("phoneError");
             usernameInput.addEventListener("input", () => {
-                if (usernameInput.value.trim().length < 3) {
-                    usernameError.innerText = "Username must be at least 3 characters";
+                const username = usernameInput.value.trim();
+                const regex = /^[A-Za-z0-9]{3,30}$/;
+
+                if (!regex.test(username)) {
+                    usernameError.innerText = "Form invalid! Please enter characters {A-z}{0-9} with length of username bigger than three and smaller than 30";
                 } else {
                     usernameError.innerText = "";
                 }
