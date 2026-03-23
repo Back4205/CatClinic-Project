@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.sql.Date ;
 
 public class CareDAO extends DBContext {
 
@@ -54,6 +55,9 @@ public class CareDAO extends DBContext {
                 dto.setCatImage(rs.getString("Image"));
                 dto.setNote(rs.getString("Note")); // THÊM DÒNG NÀY ĐỂ MAPPING NOTE
                 dto.setCheckOutTime(rs.getTimestamp("CheckOutTime"));
+                dto.setBookingID(rs.getInt("BookingID"));
+                dto.setBookingStatus(rs.getString("BookingStatus"));
+                dto.setEndDate(rs.getDate("EndDate"));
 
                 dto.setCompletedTaskIds(getCompletedTaskIds(dto.getCareJID()));
                 list.add(dto);
