@@ -355,9 +355,7 @@
                 const card = document.getElementById("drug_" + id);
                 if (card)
                     card.remove();
-
                 addedDrugs = addedDrugs.filter(d => d !== id);
-
                 if (container.children.length === 0) {
                     container.innerHTML =
                             '<div id="emptyBox">No medicines added yet.</div>';
@@ -380,19 +378,14 @@
 
             });
             document.addEventListener("DOMContentLoaded", function () {
-
                 const btn = document.getElementById("bubble-continue-btn");
-
                 if (btn) {
                     btn.addEventListener("click", function () {
                         window.location.href = "preController?medicalRecordID=${param.medicalRecordID}";
                     });
                 }
-
             });
         </script>
-
-        <!-- AUTO LOAD IF HAS PRESCRIPTION -->
         <c:if test="${not empty prescriptionList}">
             <script>
                 window.addEventListener("DOMContentLoaded", function () {

@@ -158,7 +158,6 @@
                                               placeholder="Enter final or working diagnosis..."
                                               ${status eq 'Completed' ? 'readonly' : ''}>${emr.diagnosis}</textarea>
                                 </div>
-
                                 <div class="form-group">
                                     <label>Treatment Protocol</label>
                                     <textarea name="treatmentPlan"
@@ -166,7 +165,6 @@
                                               ${status eq 'Completed' ? 'readonly' : ''}>${emr.treatmentPlan}</textarea>
                                 </div>
                             </div>
-
                             <div class="form-actions">
                                 <c:if test="${status ne 'Completed'}">
                                     <button type="submit"  class="btn-save " name="button" value="save">
@@ -181,67 +179,47 @@
                                     Next <i class="fa fa-arrow-right"></i> X-Ray
                                 </button>
                             </div>
-
-
                         </form>
-
                     </div>
                 </div>
                 <c:if test="${not empty sessionScope['toast-messenger']}">
-
                     <div id="toast-message">
                         ${sessionScope['toast-messenger']}
                     </div>
-
                     <c:remove var="toast-messenger" scope="session"/>
-
                 </c:if>
                 <c:if test="${not empty sessionScope['toast-messenger-complete']}">
-
                     <div id="bubble-overlay">
                         <div id="bubble-box">
-
                             <div class="bubble-icon">
                                 ✔
                             </div>
-
                             <p class="bubble-text">
                                 ${sessionScope['toast-messenger-complete']}
                             </p>
-
                             <button id="bubble-continue-btn">
                                 Continue
                             </button>
-
                         </div>
                     </div>
-
                     <c:remove var="toast-messenger-complete" scope="session"/>
-
                 </c:if>
             </main>
         </div>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-
                 const toast = document.getElementById("toast-message");
-
                 if (toast) {
                     setTimeout(function () {
                         toast.style.opacity = "0";
-
                         setTimeout(function () {
                             toast.remove();
                         }, 500);
-
                     }, 5000);
                 }
-
             });
             document.addEventListener("DOMContentLoaded", function () {
-
                 const btn = document.getElementById("bubble-continue-btn");
-
                 if (btn) {
                     btn.addEventListener("click", function () {
                         window.location.href = "EmrController?medicalRecordID=${param.medicalRecordID}";

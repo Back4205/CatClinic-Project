@@ -148,7 +148,10 @@
                                             <p><strong>Result:</strong> 
                                                 <c:choose>
                                                     <c:when test="${not empty t.result}">
-                                                        ${t.result}
+                                                        <img 
+                                                            src="https://res.cloudinary.com/dydnbzspg/image/upload/v1770545442/Screenshot_2025-08-16_211540_gwikxv.png"
+                                                            class="result-img"
+                                                            />      
                                                     </c:when>
                                                     <c:otherwise>
                                                         Waiting for result...
