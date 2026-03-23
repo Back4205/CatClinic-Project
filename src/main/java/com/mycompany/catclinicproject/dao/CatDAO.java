@@ -210,7 +210,40 @@ public class CatDAO extends DBContext {
         return list;
     }
 
+    public List<Cat> getCatsPagingByOwner(int ownerID, int pageSize, int pageIndex) {
+        List<Cat> list = new ArrayList<>();
 
+        int offset = (pageIndex - 1) * pageSize;
+
+        String sql = "SELECT * FROM Cats "
+                + "WHERE IsActive = 1 AND ownerID = ? "
+                + "ORDER BY catID DESC "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, ownerID);
+            ps.setInt(2, offset);
+            ps.setInt(3, pageSize);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Cat cat = new Cat();
+                cat.setCatID(rs.getInt("catID"));
+                cat.setOwnerID(rs.getInt("ownerID"));
+                cat.setName(rs.getString("name"));
+                cat.setGender(rs.getInt("gender"));
+                cat.setBreed(rs.getString("breed"));
+                cat.setAge(rs.getInt("age"));
+                cat.setImg(rs.getString("Image"));
+                cat.setIsActive(rs.getInt("IsActive"));
+                list.add(cat);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 
     public Cat getCatByID(int catID) {
         String sql = "SELECT * FROM Cats WHERE catID = ?";
@@ -289,7 +322,22 @@ public class CatDAO extends DBContext {
 
         return 0;
     }
+    public int countCatsByOwner(int ownerID) {
+        String sql = "SELECT COUNT(*) FROM Cats WHERE IsActive = 1 AND ownerID = ?";
 
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, ownerID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
     public boolean checkCatNameExistbyOwnerID(int ownerId , String name) {
         String sql = "SELECT 1 FROM Cats WHERE ownerID = ? AND name = ?";
         try{

@@ -256,6 +256,33 @@
       color: #DB2777; /* Chữ hồng đậm */
       border: 1px solid #FBCFE8;
     }
+    .pagination-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #444;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .pagination-btn:hover {
+      border-color: #ea580c;
+      color: #ea580c;
+    }
+
+    .pagination-btn.active {
+      background: #ea580c;
+      border-color: #ea580c;
+      color: #fff;
+    }
   </style>
 </head>
 
@@ -401,25 +428,36 @@
               </tbody>
             </table>
 
-            <c:if test="${not empty totalPages && totalPages > 1}">
-              <div style="margin-top: 20px; display: flex; justify-content: center; gap: 8px;">
-                <c:if test="${currentPage > 1}">
-                  <button type="button" onclick="changePage(${currentPage - 1})" class="pagination-btn">
-                    <i class="bi bi-chevron-left"></i> Prev
-                  </button>
-                </c:if>
-                <c:forEach begin="1" end="${totalPages}" var="i">
-                  <button type="button" onclick="changePage(${i})" class="pagination-btn ${i == currentPage ? 'active' : ''}">
-                      ${i}
-                  </button>
-                </c:forEach>
-                <c:if test="${currentPage < totalPages}">
-                  <button type="button" onclick="changePage(${currentPage + 1})" class="pagination-btn">
-                    Next <i class="bi bi-chevron-right"></i>
-                  </button>
-                </c:if>
-              </div>
-            </c:if>
+            <!-- PREV -->
+            <div style="display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 16px;">
+
+              <c:if test="${currentPage > 1}">
+                <a href="javascript:void(0)"
+                   onclick="changePage(${currentPage - 1})"
+                   class="pagination-btn" style="width: auto; padding: 0 14px;">
+                  <i class="fa-solid fa-chevron-left" style="font-size:11px; margin-right:4px;"></i> Prev
+                </a>
+              </c:if>
+
+              <!-- NUMBER -->
+              <c:forEach begin="1" end="${totalPages}" var="i">
+                <a href="javascript:void(0)"
+                   onclick="changePage(${i})"
+                   class="pagination-btn ${i == currentPage ? 'active' : ''}">
+                    ${i}
+                </a>
+              </c:forEach>
+
+              <!-- NEXT -->
+              <c:if test="${currentPage < totalPages}">
+                <a href="javascript:void(0)"
+                   onclick="changePage(${currentPage + 1})"
+                   class="pagination-btn" style="width: auto; padding: 0 14px;">
+                  Next <i class="fa-solid fa-chevron-right" style="font-size:11px; margin-left:4px;"></i>
+                </a>
+              </c:if>
+
+            </div>
           </div>
 
         </div>
@@ -610,6 +648,7 @@
     document.getElementById('bookingForm').submit();
   }
 
+
   function setSlotDate() {
     const r = document.querySelector('input[name="slotID"]:checked');
     if (r) document.getElementById('slotDate').value = r.getAttribute('data-slot-date');
@@ -638,8 +677,8 @@
     for (const [k, v] of new FormData(document.getElementById('bookingForm')).entries()) {
       if (v && k !== 'action') params.append(k, v);
     }
-    params.set('catPage', page);
-    window.location.href = contextPath + '/Booking?' + params.toString();
+    params.set('page', page);
+    window.location.href = contextPath + '/Booking2?' + params.toString();
   }
 
   function updateEndDateMin() {
@@ -724,6 +763,7 @@
       btn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> Booking Now';
     }
   }
+
 
   document.addEventListener('DOMContentLoaded', function () {
     calculatePrice();

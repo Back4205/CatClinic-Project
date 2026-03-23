@@ -244,7 +244,23 @@ public class BookingController extends HttpServlet {
         }
 
         int ownerID = catDAO.getOwnerIdByUserId(user.getUserID());
-        request.setAttribute("catList", catDAO.getCatsByOwnerID(ownerID));
+        int page = 1;
+        int pageSize = 5;
+
+        String pageStr = request.getParameter("page");
+        if (pageStr != null) {
+            try {
+                page = Integer.parseInt(pageStr);
+            } catch (Exception e) {
+                page = 1;
+            }
+        }
+        List<Cat> list = catDAO.getCatsPagingByOwner(ownerID, pageSize, page);
+        int totalItems = catDAO.countCatsByOwner(ownerID);
+        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+        request.setAttribute("catList", list);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.setAttribute("categoryList", categoryDAO.getAllCategories());
         request.setAttribute("currentDate", LocalDate.now().toString());
 
@@ -280,6 +296,20 @@ public class BookingController extends HttpServlet {
                     }
                 }
             }
+        }
+        String noteParam = request.getParameter("note");
+        if (noteParam != null) {
+            request.setAttribute("savedNote", noteParam);
+        }
+
+        String startDateParam = request.getParameter("startDate");
+        if (startDateParam != null && !startDateParam.isEmpty()) {
+            request.setAttribute("selectedStartDate", startDateParam);
+        }
+
+        String endDateParam = request.getParameter("endDate");
+        if (endDateParam != null && !endDateParam.isEmpty()) {
+            request.setAttribute("selectedEndDate", endDateParam);
         }
     }
 }

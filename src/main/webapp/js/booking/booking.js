@@ -20,24 +20,6 @@ function submitForm() {
     document.getElementById('bookingForm').submit();
 }
 
-
-function changePage(page) {
-    const form = document.getElementById('bookingForm');
-    const formData = new FormData(form);
-    const params = new URLSearchParams();
-
-    for (const [key, value] of formData.entries()) {
-        if (value && key !== 'action') {
-            params.append(key, value);
-        }
-    }
-
-    params.set('catPage', page);
-    document.body.classList.add('submitting');
-    window.location.href = contextPath + '/Booking?' + params.toString();
-}
-
-
 function updateEndDateMin() {
     const startDate = document.getElementById('startDate');
     const endDate = document.getElementById('endDate');

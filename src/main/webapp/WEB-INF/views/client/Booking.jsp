@@ -89,26 +89,69 @@
                         </tbody>
                     </table>
 
-                    <c:if test="${not empty totalPages && totalPages > 1}">
+                    <%-- ===== THÊM ĐOẠN NÀY TRƯỚC BLOCK PAGINATION ===== --%>
+                    <%-- Build chuỗi param để giữ lại khi chuyển trang --%>
+                    <c:set var="pp" value=""/>
+                    <c:if test="${not empty param.categoryID}">
+                        <c:set var="pp" value="${pp}&amp;categoryID=${param.categoryID}"/>
+                    </c:if>
+                    <c:if test="${not empty param.serviceID}">
+                        <c:set var="pp" value="${pp}&amp;serviceID=${param.serviceID}"/>
+                    </c:if>
+                    <c:if test="${not empty param.assigneeInfo}">
+                        <c:set var="pp" value="${pp}&amp;assigneeInfo=${param.assigneeInfo}"/>
+                    </c:if>
+                    <c:if test="${not empty param.startDate}">
+                        <c:set var="pp" value="${pp}&amp;startDate=${param.startDate}"/>
+                    </c:if>
+                    <c:if test="${not empty param.endDate}">
+                        <c:set var="pp" value="${pp}&amp;endDate=${param.endDate}"/>
+                    </c:if>
+                    <c:if test="${not empty param.checkInTime}">
+                        <c:set var="pp" value="${pp}&amp;checkInTime=${param.checkInTime}"/>
+                    </c:if>
+                    <c:if test="${not empty param.slotID}">
+                        <c:set var="pp" value="${pp}&amp;slotID=${param.slotID}"/>
+                    </c:if>
+                    <c:if test="${not empty param.slotDate}">
+                        <c:set var="pp" value="${pp}&amp;slotDate=${param.slotDate}"/>
+                    </c:if>
+                    <c:if test="${not empty param.vetID}">
+                        <c:set var="pp" value="${pp}&amp;vetID=${param.vetID}"/>
+                    </c:if>
+                    <c:if test="${not empty param.note}">
+                        <c:set var="pp" value="${pp}&amp;note=${param.note}"/>
+                    </c:if>
+
+                    <%-- ===== THAY TOÀN BỘ BLOCK PAGINATION CŨ BẰNG ĐOẠN NÀY ===== --%>
+                    <c:if test="${totalPages > 1}">
                         <div style="margin-top: 20px; display: flex; justify-content: center; gap: 8px;">
+
+                            <!-- PREV -->
                             <c:if test="${currentPage > 1}">
-                                <button type="button" onclick="changePage(${currentPage - 1})" class="pagination-btn">
+                                <a href="Booking?page=${currentPage - 1}${pp}" class="pagination-btn">
                                     <i class="bi bi-chevron-left"></i> Prev
-                                </button>
+                                </a>
                             </c:if>
+
+                            <!-- NUMBER -->
                             <c:forEach begin="1" end="${totalPages}" var="i">
-                                <button type="button" onclick="changePage(${i})"
-                                        class="pagination-btn ${i == currentPage ? 'active' : ''}">
+                                <a href="Booking?page=${i}${pp}"
+                                   class="pagination-btn ${i == currentPage ? 'active' : ''}">
                                         ${i}
-                                </button>
+                                </a>
                             </c:forEach>
+
+                            <!-- NEXT -->
                             <c:if test="${currentPage < totalPages}">
-                                <button type="button" onclick="changePage(${currentPage + 1})" class="pagination-btn">
+                                <a href="Booking?page=${currentPage + 1}${pp}" class="pagination-btn">
                                     Next <i class="bi bi-chevron-right"></i>
-                                </button>
+                                </a>
                             </c:if>
+
                         </div>
                     </c:if>
+
                 </div>
             </div>
 

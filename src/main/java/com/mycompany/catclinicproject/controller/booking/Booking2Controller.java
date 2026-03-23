@@ -199,15 +199,34 @@ public class Booking2Controller extends HttpServlet {
         CategoryDao categoryDAO = new CategoryDao();
 
         String phone = request.getParameter("phone");
+        int ownerID = 0 ;
         if (phone != null && !phone.trim().isEmpty()) {
             Owner existingCustomer = userDAO.getUserByPhone(phone);
             if (existingCustomer != null) {
                 request.setAttribute("customerInfo", existingCustomer);
-                int ownerID = catDAO.getOwnerIdByUserId(existingCustomer.getUserID());
+                 ownerID = catDAO.getOwnerIdByUserId(existingCustomer.getUserID());
                 request.setAttribute("catList", catDAO.getCatsByOwnerID(ownerID));
             }
         }
+        int page = 1;
+        int pageSize = 5;
 
+        String pageStr = request.getParameter("page");
+        if (pageStr != null) {
+            try {
+                page = Integer.parseInt(pageStr);
+            } catch (Exception e) {
+                page = 1;
+            }
+        }
+
+        List<Cat> list = catDAO.getCatsPagingByOwner(ownerID, pageSize, page);
+        int totalItems = catDAO.countCatsByOwner(ownerID);
+        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+
+        request.setAttribute("catList", list);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.setAttribute("categoryList", categoryDAO.getAllCategories());
         request.setAttribute("currentDate", LocalDate.now().toString());
 
@@ -248,7 +267,7 @@ public class Booking2Controller extends HttpServlet {
             }
         }
 
-        // Giữ lại các giá trị đã chọn để UI không bị reset
+
         request.setAttribute("selectedCatID", request.getParameter("catID"));
         request.setAttribute("selectedServiceID", request.getParameter("serviceID"));
         request.setAttribute("selectedStartDate", request.getParameter("startDate"));
