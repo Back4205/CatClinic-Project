@@ -106,14 +106,17 @@
             <div class="invoice-total-box">
 
               <c:choose>
-                <c:when test="${deposit == 0}">
+                <%-- Không có cọc: deposit=0 hoặc thanh toán 1 lần (deposit == hasPaid == totalService) --%>
+                <c:when test="${deposit == 0 or (deposit == hasPaid and deposit == totalServiceAmount)}">
                   <c:set var="actualDeposit" value="0" />
                   <c:set var="actualPaid"    value="${hasPaid}" />
                 </c:when>
+                <%-- Chỉ mới cọc, chưa thanh toán thêm --%>
                 <c:when test="${hasPaid <= deposit}">
                   <c:set var="actualDeposit" value="${deposit}" />
                   <c:set var="actualPaid"    value="0" />
                 </c:when>
+                <%-- Đã cọc + thanh toán thêm --%>
                 <c:otherwise>
                   <c:set var="actualDeposit" value="${deposit}" />
                   <c:set var="actualPaid"    value="${hasPaid - deposit}" />
@@ -158,6 +161,7 @@
               </div>
 
             </div>
+
 
           </div>
         </div>

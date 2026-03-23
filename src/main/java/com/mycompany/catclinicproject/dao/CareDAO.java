@@ -32,7 +32,7 @@ public class CareDAO extends DBContext {
                 "JOIN Cats c ON cj.CatID = c.CatID " +
                 "JOIN Owners o ON c.OwnerID = o.OwnerID " +
                 "JOIN Users u ON o.UserID = u.UserID " +
-                "WHERE cj.StaffID = ? AND CAST(cj.RecordTime AS DATE) = CAST(GETDATE() AS DATE)";
+                "WHERE cj.StaffID = ? AND CAST(cj.RecordTime AS DATE) = CAST(GETDATE() AS DATE) and b.Status = 'Completed'  ";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, staffId);
