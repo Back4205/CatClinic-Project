@@ -83,8 +83,6 @@ public class CreateNew extends HttpServlet {
         n.setIsActive(isActive);
         // 🔥 1. Insert News
     int newID = dao.insertNews(n);
-
-    // 🔥 2. Upload nhiều ảnh
     for (Part part : request.getParts()) {
         if (part.getName().equals("images") && part.getSize() > 0) {
             String fileName2 = "new_" + System.currentTimeMillis();

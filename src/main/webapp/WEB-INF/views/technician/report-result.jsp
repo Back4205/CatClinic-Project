@@ -18,13 +18,10 @@
 
         <!-- Chỉ hiển thị phần ảnh nếu là X-Ray -->
         <c:if test="${testOrder.testName == 'X-Ray'}">
-            <!-- Hiển thị ảnh cũ -->
-            <c:if test="${not empty testOrder.result}">
                 <div class="current-image">
                     <p>Current Image:</p>
                     <img src="${testOrder.result}" />
                 </div>
-            </c:if>
 
             <div class="form-group">
                 <label>Upload New Result Image</label>
@@ -42,13 +39,13 @@
                 </div>
             </div>
         </c:if>
-
+            <c:if test="${testOrder.testName == 'Blood Test'}">
         <div class="form-group">
             <label>Laboratory Findings</label>
-            <textarea name="resultName"
-                      placeholder="Enter detailed laboratory findings...">${testOrder.resultName} </textarea>
+            <textarea name="resultFile"
+                      placeholder="Enter detailed laboratory findings...">${testOrder.result} </textarea>
         </div>
-
+        </c:if>
         <div class="button-group">
             <button type="submit" name="action" value="draft" class="btn draft-btn">
                 Save Draft

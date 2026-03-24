@@ -39,15 +39,11 @@ public class ChangeStatus extends HttpServlet {
         News n = dao.getNewsById(id);
         
         if (n.isIsActive()) {
-            // Đang Active -> Ẩn đi (Hide)
             dao.updateStatus(id, false);
             response.sendRedirect("ViewNewList");
         } else {
-            // Đang Inactive -> Chuyển sang trang Preview
             List<NewsImages> images = dao.getNewsImagesByNewsId(id);
             String processedContent = n.getDescription();
-            
-            // Xử lý đan xen ảnh giống như đã bàn
             if (images != null) {
                 for (int i = 0; i < images.size(); i++) {
                     String placeholder = "[IMG" + (i + 1) + "]";

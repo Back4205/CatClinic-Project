@@ -6,25 +6,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Vet Schedule | Orange Theme</title>
-    <!-- Nạp các file CSS chung của sidebar và header để hiển thị đúng giao diện hệ thống -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/DashboardAdminStyle.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar-admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header-admin.css">
-    <!-- Giữ nguyên toàn bộ file CSS riêng của trang lịch bạn đã viết -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="${pageContext.request.contextPath}/css/ScheduleViewStyle.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-    <!-- Cấu trúc layout chung admin giống hệt AccountList.jsp để sidebar/header hoạt động đúng -->
     <div class="admin-layout">
-        <!-- Lồng sidebar chung của hệ thống -->
         <jsp:include page="sidebar.jsp"/>
 
         <div class="admin-main">
-            <!-- Lồng header chung của hệ thống -->
             <jsp:include page="header.jsp"/>
-
-            <!-- TOÀN BỘ NỘI DUNG TRANG LỊCH CỦA BẠN ĐƯỢC GIỮ NGUYÊN 100%, KHÔNG SỬA GÌ -->
             <div class="schedule-container">
                 <header class="sched-header">
                     <div class="vet-profile">
@@ -154,7 +147,6 @@
                     </div>
                 </footer>
             </div>
-            <!-- HẾT NỘI DUNG TRANG LỊCH CỦA BẠN -->
         </div>
     </div>
 </body>

@@ -128,23 +128,21 @@ public class LabDAO extends DBContext {
         return null;
     }
 
-    public void saveDraftFull(int testOrderID, String resultName, String resultPath) {
-    String sql = "UPDATE TestOrders SET ResultName = ?, Result = ?  WHERE TestOrderID = ?";
+    public void saveDraftFull(int testOrderID, String resultPath) {
+    String sql = "UPDATE TestOrders SET  Result = ?  WHERE TestOrderID = ?";
     try (PreparedStatement ps = c.prepareStatement(sql)) {
-        ps.setString(1, resultName);
-        ps.setString(2, resultPath);
-        ps.setInt(3, testOrderID);
+        ps.setString(1, resultPath);
+        ps.setInt(2, testOrderID);
         ps.executeUpdate();
     } catch (Exception e) {
         e.printStackTrace();
     }
 }
-    public void submitFull(int testOrderID, String resultName, String resultPath) {
-    String sql = "UPDATE TestOrders SET ResultName = ?, Result = ?, Status = 'Completed' WHERE TestOrderID = ?";
+    public void submitFull(int testOrderID,  String resultPath) {
+    String sql = "UPDATE TestOrders SET  Result = ?, Status = 'Completed' WHERE TestOrderID = ?";
     try (PreparedStatement ps = c.prepareStatement(sql)) {
-        ps.setString(1, resultName);
-        ps.setString(2, resultPath);
-        ps.setInt(3, testOrderID);
+        ps.setString(1, resultPath);
+        ps.setInt(2, testOrderID);
         ps.executeUpdate();
     } catch (Exception e) {
         e.printStackTrace();
