@@ -93,11 +93,12 @@ public class XrayController extends HttpServlet {
         HttpSession session = request.getSession();
         NotificationDAO ndao = new NotificationDAO();
         String idParam = request.getParameter("medicalRecordID");
+        String resultName = request.getParameter("resultName");
         int medicalRecordID = Integer.parseInt(idParam);
         BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
           MedicalRecordDAO mdao = new MedicalRecordDAO();
         mdao.updateStatusToWaiting(medicalRecordID);
-        boolean k = dao.insertTestOrder(medicalRecordID);
+        boolean k = dao.insertTestOrder(medicalRecordID,resultName);
         User acc = (User) session.getAttribute("acc");
         int UserID = acc.getUserID();
         int VetID = ndao.getVetIDByUserID(UserID);

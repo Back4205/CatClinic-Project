@@ -695,7 +695,7 @@ public class BookingDaoVeterinarian extends DBContext {
         return list;
     }
 
-    public boolean insertTestOrder(int medicalRecordID) {
+    public boolean insertTestOrder(int medicalRecordID,String resultName) {
 
         String sql = "INSERT INTO TestOrders "
                 + "(MedicalRecordID, TestName, ResultName, Result, Status, StaffID) "
@@ -706,7 +706,7 @@ public class BookingDaoVeterinarian extends DBContext {
 
             ps.setInt(1, medicalRecordID);
             ps.setString(2, "X-Ray");
-            ps.setString(3, "Chest");
+            ps.setString(3, resultName);
             ps.setString(4, "");
             ps.setString(5, "Pending");
             ps.setInt(6, 1);
@@ -721,7 +721,7 @@ public class BookingDaoVeterinarian extends DBContext {
 
     }
 
-    public boolean insertTestOrderBloodTest(int medicalRecordID) {
+    public boolean insertTestOrderBloodTest(int medicalRecordID,String resultName) {
 
         String sql = "INSERT INTO TestOrders "
                 + "(MedicalRecordID, TestName, ResultName, Result, Status, StaffID) "
@@ -732,7 +732,7 @@ public class BookingDaoVeterinarian extends DBContext {
 
             ps.setInt(1, medicalRecordID);
             ps.setString(2, "Blood Test");
-            ps.setString(3, "Hemoglobin");
+            ps.setString(3,resultName);
             ps.setString(4, "");
             ps.setString(5, "Pending");
             ps.setInt(6, 1);

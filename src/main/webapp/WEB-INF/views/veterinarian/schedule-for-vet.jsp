@@ -17,7 +17,6 @@
                     Back
                 </a>
             <header class="sched-header">
-               
                 <div class="vet-profile">
                     <div class="icon-wrapper"><i class="fas fa-paw"></i></div>
                     <div class="header-text">
