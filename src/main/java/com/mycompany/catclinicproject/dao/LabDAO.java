@@ -170,4 +170,40 @@ public class LabDAO extends DBContext {
         e.printStackTrace();
     }
 }
+    public int getMedicalRecordIdByTestOrderId(int testOrderId) {
+        String sql = "SELECT MedicalRecordID FROM TestOrders WHERE TestOrderID = ?";
+        
+        try (PreparedStatement st = c.prepareStatement(sql)) {
+            st.setInt(1, testOrderId);
+            
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("MedicalRecordID");
+                }
+            }
+        } catch (SQLException e) {
+        }
+        return -1; 
+    }
+    public int getVetIdByTestOrderId(int testOrderId) {
+        String sql = "SELECT b.VetID " +
+                     "FROM TestOrders t " +
+                     "INNER JOIN MedicalRecords m ON t.MedicalRecordID = m.MedicalRecordID " +
+                     "INNER JOIN Bookings b ON m.BookingID = b.BookingID " +
+                     "WHERE t.TestOrderID = ?";
+
+        try (PreparedStatement st = c.prepareStatement(sql)) {
+            st.setInt(1, testOrderId);
+
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    // Trả về VetID từ bảng Bookings
+                    return rs.getInt("VetID");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi thực hiện join lấy VetID: " + e.getMessage());
+        }
+        return -1;
+    }
 }
