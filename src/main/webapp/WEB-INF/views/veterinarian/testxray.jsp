@@ -167,7 +167,7 @@
 
                             <c:otherwise>
 
-                                <form action="xray" method="post">
+                                <form action="xray" method="post" id="xrayForm">
                                     <input type="hidden" name="action" id="actionField">
                                     <input type="hidden" name="medicalRecordID"
                                            value="${emr.medicalRecordID}"/>
@@ -176,7 +176,7 @@
                                             <c:when test="${sessionScope.status ne 'Completed'}">
                                                 <button type="button"
                                                         class="btn-request"
-                                                        onclick="confirmAction('request')">
+                                                        onclick="openPopup()">
                                                     Request X-ray
                                                 </button>
                                             </c:when>
@@ -221,6 +221,18 @@
                 </div>
 
         </div>
+        <div id="popupForm" class="popup-overlay">
+            <div class="popup-box">
+                <h3>Enter Result Name</h3>
+
+                <input type="text" name="resultName" id="resultName" placeholder="Enter result name..." required/>
+
+                <div class="popup-actions">
+                    <button type="button" onclick="submitPopup()" class="btn-confirm">Submit</button>
+                    <button type="button" onclick="closePopup()" class="btn-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
 
     </main>
 </div>
@@ -239,6 +251,35 @@
             document.getElementById("actionField").value = actionType;
             document.querySelector("form").submit();
         }
+    }
+    function openPopup() {
+        document.getElementById("popupForm").style.display = "flex";
+    }
+
+    function closePopup() {
+        document.getElementById("popupForm").style.display = "none";
+    }
+
+    function submitPopup() {
+        let resultName = document.getElementById("resultName").value.trim();
+
+        if (resultName === "") {
+            alert("Please enter result name!");
+            return;
+        }
+
+        let form = document.getElementById("xrayForm");
+
+        document.getElementById("actionField").value = "request";
+
+        let input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "resultName";
+        input.value = resultName;
+
+        form.appendChild(input);
+
+        form.submit();
     }
 </script>
 </body>
