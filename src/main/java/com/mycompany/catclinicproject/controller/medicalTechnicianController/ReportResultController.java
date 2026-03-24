@@ -3,16 +3,16 @@ package com.mycompany.catclinicproject.controller.medicalTechnicianController;
 import com.mycompany.catclinicproject.Untils.CloudinaryUntil;
 import com.mycompany.catclinicproject.dao.LabDAO;
 import com.mycompany.catclinicproject.model.TestOrders;
+import com.mycompany.catclinicproject.model.User;
+import com.mycompany.catclinicproject.websocket.NotificationSocket;
 import java.io.IOException;
-import java.io.PrintWriter;
-
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 
 @WebServlet(name="ReportResultController", urlPatterns={"/ReportResultController"})
@@ -26,7 +26,13 @@ public class ReportResultController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+        HttpSession session = request.getSession(false);
+        User user = (User)session.getAttribute("acc");
+        if(user == null){
+            response.sendRedirect(request.getContextPath()+"/login");
+            return;
+        }
+        int id = Integer.parseInt(request.getParameter("id"));   
         LabDAO ldao = new LabDAO();
         TestOrders testOrder = ldao.getTestOrderById(id);
         request.setAttribute("testOrder", testOrder);
@@ -34,7 +40,7 @@ public class ReportResultController extends HttpServlet {
     }
 
 
-    @Override
+     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -42,33 +48,48 @@ public class ReportResultController extends HttpServlet {
         String resultName = request.getParameter("resultName");
         String action = request.getParameter("action");
 
-        Part filePart = request.getPart("resultFile");
-        String result;
-
         LabDAO ldao = new LabDAO();
+        TestOrders testOrder = ldao.getTestOrderById(testOrderID);
 
-        if (filePart != null && filePart.getSize() > 0) {
-            String fileName = "test_" + System.currentTimeMillis();
-            result = CloudinaryUntil.uploadImage(filePart, fileName,"my_tech");
 
-            if (result == null) {
-                request.setAttribute("error", "Upload failed!");
-                request.getRequestDispatcher("/WEB-INF/views/technician/report-result.jsp")
-                        .forward(request, response);
-                return;
+        String testName = testOrder.getTestName();
+        String result = testOrder.getResult(); 
+
+        if ("X-ray".equalsIgnoreCase(testName)) {
+
+            Part filePart = request.getPart("resultFile");
+
+            if (filePart != null && filePart.getSize() > 0) {
+                String fileName = "test_" + System.currentTimeMillis();
+                String uploadedUrl = CloudinaryUntil.uploadImage(filePart, fileName, "my_tech");
+
+                if (uploadedUrl == null) {
+                    request.setAttribute("error", "Upload failed!");
+                    request.setAttribute("testOrder", testOrder);
+                    request.getRequestDispatcher("/WEB-INF/views/technician/report-result.jsp")
+                            .forward(request, response);
+                    return;
+                }
+
+                result = uploadedUrl;
             }
-        } else {
-            TestOrders old = ldao.getTestOrderById(testOrderID);
-            result = old.getResult();
         }
 
         if ("draft".equals(action)) {
-            ldao.saveDraft(testOrderID, resultName, result);
-        }
-        else if ("submit".equals(action)) {
-            ldao.submitResult(testOrderID, resultName, result);
-        }
 
+            if ("Blood Test".equalsIgnoreCase(testName)) {
+                ldao.saveDraftTextOnly(testOrderID, resultName);
+            } else {
+                ldao.saveDraftFull(testOrderID, resultName, result);
+            }
+
+        } else if ("submit".equals(action)) {
+            if ("Blood Test".equalsIgnoreCase(testName)) {
+                ldao.submitTextOnly(testOrderID, resultName);
+            } else {
+                ldao.submitFull(testOrderID, resultName, result);
+            }
+        }
         response.sendRedirect(request.getContextPath() + "/technician/home");
     }
 }

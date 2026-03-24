@@ -1,4 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,32 +8,52 @@
     <title>Create News | Cat Clinic Management</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/new_create.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+    .error-text {
+        color: #e53935;
+        font-size: 13px;
+        margin-top: 8px;
+        padding: 6px 10px;
+        background-color: #ffeaea;
+        border-radius: 6px;
+        display: inline-block;
+    }
+
+    .input-error {
+        border: 1px solid #e53935 !important;
+        background-color: #fff5f5;
+    }
+</style>
 </head>
 <body>
 
-<form action="CreateNew" method="post" enctype="multipart/form-data" class="container">
-    
-    <div class="left-col">
-        <div class="card">
-            <div class="card-title">
-                <i class="fa-regular fa-file-lines"></i> Description
-            </div>
-            <textarea name="description" placeholder="Tip: Insert [IMG1], [IMG2]... where you want the images to appear within the article content."></textarea>
-        </div>
-    </div>
+    <form action="CreateNew" method="post" enctype="multipart/form-data" class="container">
 
-    <div class="right-col">
-        <div class="card">
-            <div class="card-title">
-                <i class="fa-solid fa-pen-to-square"></i> Title
-            </div>
-            <input type="text" name="title" placeholder="Enter article title..." required>
-
-            <div class="switch-container">
-                <div>
-                    <div style="font-weight: bold; font-size: 14px;">Active Status</div>
-                    <div style="font-size: 12px; color: #888;">Visible to the public</div>
+        <div class="left-col">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fa-regular fa-file-lines"></i> Description
                 </div>
+                <textarea name="description" placeholder="Tip: Insert [IMG1], [IMG2]... where you want the images to appear within the article content."></textarea>
+            </div>
+        </div>
+
+        <div class="right-col">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fa-solid fa-pen-to-square"></i> Title
+                </div>
+                <input type="text" name="title" placeholder="Enter article title..." required>
+                <c:if test="${not empty error}">
+                    <div class="error-text">
+                        ${error}
+                    </div>
+                </c:if>
+                <div class="switch-container">
+                    <div>
+                        <div style="font-weight: bold; font-size: 14px;">Active Status</div>
+                        <div style="font-size: 12px; color: #888;">Visible to the public</div>
+                    </div>
                 <label class="switch">
                     <input type="checkbox" name="isActive" checked>
                     <span class="slider"></span>
@@ -49,7 +71,7 @@
                     <div style="font-weight: 600; font-size: 14px;">Select cover image</div>
                 </div>
                 <img id="bannerImg" class="banner-preview" src="#" alt="Banner Preview">
-                <input type="file" id="bannerInput" name="image" accept="image/*" style="display: none;">
+                <input type="file" id="bannerInput" name="image" accept="image/*" style="display: none;" >
             </div>
         </div>
 

@@ -7,12 +7,14 @@ package com.mycompany.catclinicproject.controller.RefundManagement;
 
 import com.mycompany.catclinicproject.dao.BookingDAO;
 import com.mycompany.catclinicproject.model.CancelBookingDTO;
+import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -25,7 +27,12 @@ public class ViewCancelBookingList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        HttpSession session = request.getSession(false);
+        User user = (User)session.getAttribute("acc");
+        if(user == null){
+            response.sendRedirect(request.getContextPath()+"/login");
+            return;
+        }
         BookingDAO dao = new BookingDAO();
         List<CancelBookingDTO> list = dao.getAllCancelBookings();
         double totalMonth = dao.getTotalRefundedThisMonth();

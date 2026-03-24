@@ -127,37 +127,44 @@ public class LabDAO extends DBContext {
         } catch (Exception e) { e.printStackTrace(); }
         return null;
     }
-//    public boolean saveDraft(int testOrderID, String resultName, String resultPath) {
-//        String sql = "UPDATE TestOrders SET ResultName = ?, Result = ? WHERE TestOrderID = ?";
-//        try (PreparedStatement ps = c.prepareStatement(sql)) {
-//            ps.setString(1, resultName);
-//            ps.setString(2, resultPath);
-//            ps.setInt(3, testOrderID);
-//            return ps.executeUpdate() > 0;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
-    public void saveDraft(int testOrderID, String resultName, String resultPath) {
-        String sql = "UPDATE TestOrders SET ResultName = ?, Result = ? WHERE TestOrderID = ?"          
-        ;
 
-        try (PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setString(1, resultName);
-            ps.setString(2, resultPath);
-            ps.setInt(3, testOrderID);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void saveDraftFull(int testOrderID, String resultName, String resultPath) {
+    String sql = "UPDATE TestOrders SET ResultName = ?, Result = ?  WHERE TestOrderID = ?";
+    try (PreparedStatement ps = c.prepareStatement(sql)) {
+        ps.setString(1, resultName);
+        ps.setString(2, resultPath);
+        ps.setInt(3, testOrderID);
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
     }
-    public void submitResult(int testOrderID, String resultName, String resultPath) {
+}
+    public void submitFull(int testOrderID, String resultName, String resultPath) {
     String sql = "UPDATE TestOrders SET ResultName = ?, Result = ?, Status = 'Completed' WHERE TestOrderID = ?";
     try (PreparedStatement ps = c.prepareStatement(sql)) {
         ps.setString(1, resultName);
         ps.setString(2, resultPath);
         ps.setInt(3, testOrderID);
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+    public void submitTextOnly(int testOrderID, String resultName) {
+    String sql = "UPDATE TestOrders SET ResultName = ?, Status = 'Completed' WHERE TestOrderID = ?";
+    try (PreparedStatement ps = c.prepareStatement(sql)) {
+        ps.setString(1, resultName);
+        ps.setInt(2, testOrderID);
+        ps.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+    public void saveDraftTextOnly(int testOrderID, String resultName) {
+    String sql = "UPDATE TestOrders SET ResultName = ? WHERE TestOrderID = ?";
+    try (PreparedStatement ps = c.prepareStatement(sql)) {
+        ps.setString(1, resultName);
+        ps.setInt(2, testOrderID);
         ps.executeUpdate();
     } catch (Exception e) {
         e.printStackTrace();

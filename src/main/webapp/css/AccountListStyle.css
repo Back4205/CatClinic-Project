@@ -29,14 +29,24 @@ font-size:13px;
 }
 
 /* buttons */
+.account-page .btn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 600;
+    /* THÊM 2 DÒNG DƯỚI ĐÂY */
+    text-decoration: none; 
+    display: inline-flex; 
+    align-items: center;
+    justify-content: center;
+}
 
-.account-page .btn{
-padding:10px 18px;
-border-radius:10px;
-border:none;
-font-size:13px;
-cursor:pointer;
-font-weight:600;
+/* Đảm bảo khi di chuột vào cũng không hiện gạch chân */
+.account-page .btn:hover {
+    text-decoration: none;
+    filter: brightness(90%); /* Tạo hiệu ứng tối đi một chút khi hover */
 }
 
 .account-page .btn-primary{

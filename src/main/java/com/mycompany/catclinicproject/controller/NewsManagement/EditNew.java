@@ -9,6 +9,7 @@ import com.mycompany.catclinicproject.Untils.CloudinaryUntil;
 import com.mycompany.catclinicproject.dao.NewDAO;
 import com.mycompany.catclinicproject.model.News;
 import com.mycompany.catclinicproject.model.NewsImages;
+import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -16,6 +17,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.util.List;
 
@@ -34,6 +36,12 @@ public class EditNew extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User user = (User)session.getAttribute("acc");
+        if(user == null){
+            response.sendRedirect(request.getContextPath()+"/login");
+            return;
+        }
         int newsId = Integer.parseInt(request.getParameter("newsId"));
         NewDAO ndao = new NewDAO();
         News news = ndao.getNewsById(newsId);
@@ -57,14 +65,32 @@ public class EditNew extends HttpServlet {
         }
     String title = request.getParameter("title");
     String description = request.getParameter("description");
+    if (title != null) {
+            title = title.trim();
+        }
+
+        if (description != null) {
+            description = description.trim();
+        }
+        if (title == null || title.isEmpty()) {
+            request.setAttribute("error", "Title must not be empty!");
+            request.setAttribute("title", title);
+            request.setAttribute("description", description);
+            request.getRequestDispatcher("/WEB-INF/views/manager/newEdit.jsp").forward(request, response);
+            return;
+        }
+        if (description == null || description.isEmpty()) {
+            request.setAttribute("error", "Description must not be empty!");
+            request.setAttribute("title", title);
+            request.setAttribute("description", description);
+            request.getRequestDispatcher("/WEB-INF/views/manager/newEdit.jsp").forward(request, response);
+            return;
+        }
     boolean isActive = request.getParameter("isActive") != null;   
     n.setTitle(title);
     n.setDescription(description);
     n.setIsActive(isActive);
-    // 🔥 1. Update News
     newsDAO.updateNews(n,newsId);
-
-    // 🔥 2. Check có ảnh mới không
     boolean hasNewImages = false;
 
     for (Part part : request.getParts()) {
@@ -74,12 +100,9 @@ public class EditNew extends HttpServlet {
         }
     }
 
-    // 🔥 3. Nếu có → xoá ảnh cũ
     if (hasNewImages) {
         newsDAO.deleteByNewsId(newsId);
     }
-
-    // 🔥 4. Insert ảnh mới
     for (Part part : request.getParts()) {
         if (part.getName().equals("images") && part.getSize() > 0) {
             String fileName = "new_" + System.currentTimeMillis();

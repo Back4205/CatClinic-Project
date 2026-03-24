@@ -191,7 +191,7 @@
                                 </div>
                             </div>
                             <div class="blog-body">
-                                <h4>${n.title}</h4>
+                                <h4><c:out value="${n.title}" /></h4>
                                 <p>
                                 ${fn:length(n.description) > 100 
                                   ? fn:substring(n.description, 0, 100).concat("...") 

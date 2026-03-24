@@ -1,7 +1,8 @@
 /* ===== ADMIN LAYOUT ===== */
 .admin-layout {
     display: flex;
-    height: 100vh;
+    min-height: 100vh; /* Chiều cao tối thiểu bằng màn hình, tự giãn nếu nội dung dài hơn */
+    height: auto;
 }
 
 .admin-main {

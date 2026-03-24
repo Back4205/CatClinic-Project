@@ -1,5 +1,4 @@
 <div class="admin-sidebar">
-
     <div>
         <div class="admin-logo">
             <i class="fa-solid fa-cat"></i>
@@ -7,7 +6,6 @@
         </div>
 
         <div class="admin-menu">
-
             <a href="AdminDashboard">
                 <i class="fa-solid fa-chart-line"></i>
                 Dashboard
@@ -16,6 +14,11 @@
             <a href="account">
                 <i class="fa-solid fa-users"></i>
                 Account Management
+            </a>
+
+            <a href="viewschedule">
+                <i class="fa-solid fa-calendar-check"></i>
+                Vet Schedule Management
             </a>
 
             <a href="ViewCategoryList">
@@ -32,14 +35,11 @@
                 <i class="fa-solid fa-newspaper"></i>
                 News Management
             </a>
-
         </div>
     </div>
-
 
     <a href="logout" class="logout">
         <i class="fa-solid fa-right-from-bracket"></i>
         Logout
     </a>
-
 </div>

@@ -3,10 +3,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Tin tức & Sự kiện</title>
+    <title>News & Events</title>
     <link href="css/NewStyle.css" rel="stylesheet" type="text/css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
@@ -18,16 +18,13 @@
 <section class="news-wrapper">
     <div class="news-container">
 
-        <!-- ================= SIDEBAR ================= -->
         <aside class="sidebar">
-            <h3>Bài Viết Mới Nhất</h3>
-
-            <c:forEach var="l" items="${top3List}">
+            <h3>Latest Posts</h3> <c:forEach var="l" items="${top3List}">
                 <div class="sidebar-item">
                     <img src="${l.banner}" alt="">
                     <div class="sidebar-content">
                         <a href="ViewNewsDetail?id=${l.newsId}">
-                            ${l.title}
+                            <c:out value="${l.title}" />
                         </a>
                     </div>
                 </div>
@@ -37,18 +34,14 @@
 
         <div class="main-content">
 
-            <!-- SEARCH -->
             <div class="search-box">
                 <form action="new" method="get">
-                    <input type="text"
-                           name="search"
-                           value="${currentSearch}"
-                           placeholder="Tìm kiếm bài viết...">
-                    <button type="submit">Tìm</button>
-                </form>
+                    <input type="text" 
+                           name="search" 
+                           value="${currentSearch}" 
+                           placeholder="Search posts..."> <button type="submit">Search</button> </form>
             </div>
 
-            <!-- BLOG GRID -->
             <div class="blog-grid">
 
                 <c:forEach var="n" items="${newList}">
@@ -59,9 +52,8 @@
                         </a>
 
                         <div class="blog-body">
-                            <h4>${n.title}</h4>
+                            <h4><c:out value="${n.title}" /></h4>
 
-                            <!-- NGÀY ĐĂNG -->
                             <small class="date">
                                 ${n.createdDate}
                             </small>
@@ -73,8 +65,7 @@
                             </p>
 
                             <a href="ViewNewsDetail?id=${n.newsId}" class="read-more">
-                                More →
-                            </a>
+                                Read More → </a>
                         </div>
 
                     </div>
@@ -85,10 +76,9 @@
         </div>
     </div>
 
-    <!-- PAGINATION -->
     <div class="pagination">
         <c:forEach begin="1" end="${totalPage}" var="i">
-            <a href="new?page=${i}&search=${currentSearch}"
+            <a href="new?page=${i}&search=${currentSearch}" 
                class="${i == currentPage ? 'active' : ''}">
                 ${i}
             </a>
