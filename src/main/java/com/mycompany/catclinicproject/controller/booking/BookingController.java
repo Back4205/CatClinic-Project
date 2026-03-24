@@ -116,8 +116,9 @@ public class BookingController extends HttpServlet {
                 java.sql.Date date =
                         java.sql.Date.valueOf(request.getParameter("startDate"));
 
-                java.sql.Time time =
-                        java.sql.Time.valueOf(request.getParameter("checkInTime") + ":00");
+                java.sql.Time time = java.sql.Time.valueOf(
+                        request.getParameter("checkInTime") + ":00"
+                );
 
                 if (bookingDAO.isCatBusyAtTime(catID, date, time )) {
                     throw new Exception("The cat already has a schedule for this time slot.");

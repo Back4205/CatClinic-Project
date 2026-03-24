@@ -161,7 +161,7 @@
 
                             <c:otherwise>
 
-                                <form action="bloodtest" method="post">
+                                <form action="bloodtest" method="post" id="xrayForm">
                                     <input type="hidden" name="action" id="actionField">
                                     <input type="hidden" name="medicalRecordID"
                                            value="${emr.medicalRecordID}"/>

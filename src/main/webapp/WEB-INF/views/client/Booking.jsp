@@ -244,6 +244,11 @@
 
 
                         <c:if test="${isBoarding or isParaclinical}">
+                            <%-- 1. Khai báo lấy ngày và giờ hiện tại từ hệ thống --%>
+                            <jsp:useBean id="now" class="java.util.Date" />
+                            <fmt:formatDate value="${now}" pattern="yyyy-MM-dd" var="todayDate" />
+                            <fmt:formatDate value="${now}" pattern="H" var="currentHourNum" />
+
                             <div>
                                 <label for="checkInTime">
                                     <c:choose>
@@ -256,11 +261,19 @@
                                     <option value="">-- Select Time --</option>
                                     <c:forEach begin="7" end="17" var="h">
                                         <c:if test="${h != 12}">
-                                            <c:set var="currentHour" value="${h < 10 ? '0' : ''}${h}:00"/>
-                                            <option value="${currentHour}"
-                                                ${param.checkInTime == currentHour ? 'selected' : ''}>
-                                                    ${currentHour}
-                                            </option>
+                                            <c:set var="timeStr" value="${h < 10 ? '0' : ''}${h}:00"/>
+
+                                            <%-- 2. Logic kiểm tra:
+                                                 Nếu ngày được chọn (startDate) là hôm nay VÀ giờ (h) <= giờ hiện tại
+                                                 thì sẽ KHÔNG hiển thị khung giờ đó --%>
+                                            <c:set var="isSelectedDateToday" value="${(param.startDate == todayDate) or (selectedStartDate == todayDate)}" />
+
+                                            <c:if test="${!(isSelectedDateToday and h <= currentHourNum)}">
+                                                <option value="${timeStr}"
+                                                    ${param.checkInTime == timeStr ? 'selected' : ''}>
+                                                        ${timeStr}
+                                                </option>
+                                            </c:if>
                                         </c:if>
                                     </c:forEach>
                                 </select>

@@ -618,7 +618,7 @@ public class BookingDAO extends DBContext {
         String sql = "SELECT 1 FROM Bookings "
                 + "WHERE CatID = ? "
                 + "AND AppointmentDate = ? "
-                + "AND AppointmentTime = ? "
+                + "AND CAST(AppointmentTime AS TIME) = CAST(? AS TIME) "
                 + "AND Status IN ('PendingPayment','Confirmed','Completed')";
 
 
