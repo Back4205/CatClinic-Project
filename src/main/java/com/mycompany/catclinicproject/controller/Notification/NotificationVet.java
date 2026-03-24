@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package com.mycompany.catclinicproject.NotiFicationController;
+package com.mycompany.catclinicproject.controller.Notification;
 
 import com.mycompany.catclinicproject.dao.NotificationDAO;
 import com.mycompany.catclinicproject.model.NotificationDTO;
@@ -18,8 +18,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author Son
  */
-@WebServlet(name = "NotificationController", urlPatterns = {"/notification"})
-public class NotificationController extends HttpServlet {
+@WebServlet(name = "NotificationVet", urlPatterns = {"/notificationvet"})
+public class NotificationVet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +38,10 @@ public class NotificationController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet NotificationController</title>");
+            out.println("<title>Servlet NotificationVet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet NotificationController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet NotificationVet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,7 +57,7 @@ public class NotificationController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+   protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String ID = request.getParameter("NotificationId");
         NotificationDAO dao = new NotificationDAO();
@@ -73,7 +73,6 @@ public class NotificationController extends HttpServlet {
         } else if (type.equalsIgnoreCase("requestX")) {
             response.sendRedirect("xray?medicalRecordID=" + medicalRecord);
         }
-
     }
 
     /**

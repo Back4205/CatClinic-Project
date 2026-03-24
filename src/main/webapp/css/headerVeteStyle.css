@@ -1,203 +1,245 @@
-/* ================= HEADER ================= */
-
+/* ================= HEADER TỔNG ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
 .header {
-    width: 100%;                  /* full ngang main */
-    height: 80px;                 /* chiều cao header */
+    width: 100%;
+    min-height: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 40px;              /* khoảng cách 2 bên */
-    background-color: #fff;    /* nền giống ảnh bạn gửi */
-
-    border-bottom: 1px solid #dcdcdc;
+    padding: 0 40px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 9999;
 }
-
-/* ===== LEFT SIDE ===== */
-
+/* ===== HEADER BÊN TRÁI ===== */
 .header-left {
     display: flex;
     align-items: center;
     gap: 25px;
 }
-
+/* Thêm icon mèo trước tên Cat Clinic (dùng Font Awesome bạn đã import) */
 .header-left h1 {
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 700;
     color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
-
+.header-left h1::before {
+    content: "\f6be"; /* Mã icon fa-cat của Font Awesome 6 */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    color: #FF8C42; /* Màu cam chủ đạo thân thiện với thú cưng */
+}
 .today-date {
     font-size: 14px;
-    color: #555;
-    border-left: 1px solid #bdbdbd;
+    color: #64748b;
+    border-left: 1px solid #cbd5e1;
     padding-left: 20px;
+    font-weight: 400;
 }
 
-/* ===== RIGHT SIDE ===== */
-
+/* ===== HEADER BÊN PHẢI ===== */
 .header-right {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 35px;
 }
-
-.notification {
-    font-size: 18px;
-    color: #444;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.notification:hover {
-    color: #ff7a00;
-}
-
-/* ===== USER INFO ===== */
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.user-name {
-    font-weight: 500;
-    color: #333;
-}
-
-.avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border: 2px solid #ff7a00;
-    color: #2563eb;
-    font-size: 16px;
-}
+/* Wrapper chứa chuông thông báo */
 .notification-wrapper{
     position: relative;
     cursor: pointer;
 }
-
-.notification{
-    font-size: 20px;
+.bell-icon {
+    font-size: 22px;
+    color: #FF8C42;
+    transition: all 0.3s ease;
 }
-
+/* Hover hiệu ứng chuông */
+.notification-wrapper:hover .bell-icon{
+    color: #e67329;
+    transform: scale(1.1);
+}
+/* Số thông báo chưa đọc */
 .noti-count{
     position: absolute;
-    top: -5px;
-    right: -8px;
-
-    background: red;
+    top: -8px;
+    right: -10px;
+    background: #ef4444;
     color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 7px;
+    border-radius: 10px;
+    min-width: 20px;
+    text-align: center;
+}
+/* Animation rung chuông khi có thông báo mới */
+@keyframes ringBell {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(15deg); }
+    40% { transform: rotate(-15deg); }
+    60% { transform: rotate(15deg); }
+    80% { transform: rotate(-15deg); }
+}
+.noti-count:not(:empty):not([data-count="0"]) + .bell-icon {
+    animation: ringBell 2s infinite;
+}
 
-    font-size: 12px;
-    padding: 2px 6px;
+/* Thông tin người dùng */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.user-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #334155;
+}
+.avatar {
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #FF8C42;
+    background-color: #fff7ed;
+    color: #FF8C42;
+    font-size: 17px;
+    transition: all 0.3s ease;
 }
-/* ===== NOTIFICATION DROPDOWN ===== */
+.user-info:hover .avatar {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 4px rgba(255, 140, 66, 0.1);
+}
 
-/* Dùng chính xác class/id bạn có, không thêm mới */
+/* ===== DROPDOWN DANH SÁCH THÔNG BÁO ===== */
 #notiList.noti-list {
-  /* Vị trí hiển thị danh sách thông báo bật ra từ chuông */
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  width: 360px;
-  max-height: 420px;
-  /* Style giao diện */
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-  overflow: hidden;
-  /* Mặc định ẩn khi không mở chuông, chỉ hiển thị khi JS toggle thêm class show */
-  display: none;
-  z-index: 999; /* Đảm bảo hiển thị trên tất cả các phần khác của trang */
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    width: 400px;
+    max-height: 450px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    overflow: hidden;
+    display: none;
+    z-index: 99999;
 }
-/* Class thêm bởi JS toggleNoti() để hiện danh sách */
-#notiList.noti-list.show {
-  display: block;
-}
-
-/* Reset style mặc định của ul */
+/* Reset danh sách ul */
 ul#notiUl {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  max-height: 400px;
-  overflow-y: auto; /* Tạo thanh cuộn khi có quá nhiều thông báo */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 430px;
+    overflow-y: auto;
 }
-/* Tùy chỉnh thanh cuộn nhìn đẹp hơn */
+/* Tùy chỉnh thanh cuộn */
 ul#notiUl::-webkit-scrollbar {
-  width: 6px;
+    width: 6px;
 }
 ul#notiUl::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 3px;
+    background: #d1d5db;
+    border-radius: 3px;
+}
+ul#notiUl::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
 }
 
-/* Style từng item thông báo */
+/* Từng item thông báo */
 #notiUl li {
-  margin: 0;
-  border-bottom: 1px solid #f3f4f6;
-  transition: background 0.2s;
+    margin: 0;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.2s ease;
 }
 #notiUl li:last-child {
-  border-bottom: none; /* Bỏ đường kẻ của item cuối cùng */
+    border-bottom: none;
 }
-/* Hover hiệu ứng khi di chuột vào thông báo */
 #notiUl li:hover {
-  background: #fff7ed; /* Màu cam nhạt chủ đạo của CatClinic */
+    background: #fff7ed;
 }
 
-/* Style thông báo CHƯA ĐỌC (nổi bật) */
+/* Thông báo CHƯA ĐỌC */
 #notiUl li.noti-unread {
-  background: #f8fafc;
-  position: relative;
+    background: #f8fafc;
+    position: relative;
 }
-/* Thêm dấu chấm xanh báo chưa đọc bên trái */
+/* Dấu chấm xanh báo chưa đọc */
 #notiUl li.noti-unread::before {
-  content: "";
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e; /* Xanh lá thông báo chưa đọc */
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #36B37E; /* Xanh lá sức khỏe y tế */
 }
-/* Style cho link thông báo */
 #notiUl li.noti-unread a {
-  padding: 14px 14px 14px 26px; /* Dời chữ vào trong để không đè lên dấu chấm xanh */
-  display: block;
-  color: #1e293b;
-  font-weight: 600;
-  text-decoration: none;
+    padding: 16px 16px 16px 28px;
+    display: block;
+    color: #1e293b;
+    font-weight: 600;
+    text-decoration: none;
+    line-height: 1.5;
 }
 
-/* Style thông báo ĐÃ ĐỌC (nhạt hơn) */
+/* Thông báo ĐÃ ĐỌC */
 #notiUl li.noti-read {
-  background: #ffffff;
-  opacity: 0.75;
+    background: #ffffff;
+    opacity: 0.8;
 }
 #notiUl li.noti-read a {
-  padding: 14px;
-  display: block;
-  color: #64748b;
-  text-decoration: none;
-  font-weight: 400;
+    padding: 16px;
+    display: block;
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
-/* Style thời gian tạo thông báo */
+/* Thời gian thông báo */
 #notiUl li small {
-  display: block;
-  margin-top: 4px;
-  font-size: 0.75rem;
-  color: #94a3b8;
+    display: block;
+    margin-top: 6px;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+/* ===== RESPONSIVE CHO ĐIỆN THOẠI ===== */
+@media screen and (max-width: 768px) {
+    .header {
+        min-height: 65px;
+        padding: 0 20px;
+    }
+    .header-left h1 {
+        font-size: 20px;
+    }
+    .today-date {
+        display: none; /* Ẩn ngày trên màn hình nhỏ */
+    }
+    .header-right {
+        gap: 20px;
+    }
+    .user-name {
+        display: none; /* Ẩn tên bác sĩ trên màn hình nhỏ */
+    }
+    #notiList.noti-list {
+        width: 90vw; /* Chiếm 90% màn hình điện thoại */
+        right: -20px;
+    }
 }

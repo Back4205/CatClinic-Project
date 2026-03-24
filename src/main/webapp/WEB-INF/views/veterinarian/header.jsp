@@ -14,7 +14,7 @@
 
         <div class="notification-wrapper" onclick="toggleNoti()">
 
-            <i class="fa-regular fa-bell notification"></i>
+            <i class="fa-regular fa-bell bell-icon"></i>
 
             <span id="notiCount" class="noti-count">
                 ${unreadNoti}
@@ -24,7 +24,7 @@
                 <ul id="notiUl">
                     <c:forEach var="noti" items="${listNoti}">
                         <li class="${noti.isRead ? 'noti-read' : 'noti-unread'}">
-                            <a href="notification?NotificationId=${noti.notificationID}">
+                            <a href="notificationvet?NotificationId=${noti.notificationID}">
                                 ${noti.message} id = ${noti.notificationID}
                                 <small>${noti.createdAt}</small>
                             </a>
@@ -42,13 +42,8 @@
             <div class="avatar">
                 <i class="fa-solid fa-user"></i>
             </div>
-
         </div>
-
     </div>
-
-
-
 </div>
 
 <script>
@@ -62,13 +57,10 @@
         socket.onopen = function () {
             console.log("WebSocket connected for vet:", vetId);
         };
-
         socket.onmessage = function (event) {
             let data = JSON.parse(event.data); // {id, message, type, createdAt}
-
             let count = document.getElementById("notiCount");
             let ul = document.getElementById("notiUl");
-
             if (count) {
                 let current = parseInt(count.innerText) || 0;
                 count.innerText = current + 1;
@@ -77,7 +69,6 @@
             if (ul) {
                 let li = document.createElement("li");
                 li.classList.add("noti-unread");
-
                 let timestamp = data.createdAt ? new Date(data.createdAt) : new Date(); // nếu server không gửi thì dùng thời gian hiện tại
                 li.innerHTML = `
         <a href="notification?NotificationId=${data.id}">
@@ -88,14 +79,11 @@
                 ul.prepend(li);
             }
 
-            // Nếu muốn reload page cho loại notification nhất định
             if (data.type === "record_changed") {
-                location.reload(); // reload page hiện tại
+                location.reload(); 
             }
         };
     }
-
-// toggle hiển thị notification
     function toggleNoti() {
         let list = document.getElementById("notiList");
         list.style.display = (list.style.display === "block") ? "none" : "block";

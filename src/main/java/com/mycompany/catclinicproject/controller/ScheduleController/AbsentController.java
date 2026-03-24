@@ -13,7 +13,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,13 +64,20 @@ public class AbsentController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String requestType = request.getParameter("requestType");
-        int VetID = 1;
+        String vetID = request.getParameter("VetID");
+        int VetID = Integer.parseInt(vetID);
+        TimeSlotDAO dao = new TimeSlotDAO();
         List<TimeSlotDetailDTO> list = new ArrayList<>();
         if ("range".equals(requestType)) {
-            String dateFromstr = request.getParameter("dateSingle");
-            String dateTostr = request.getParameter("dateSingle");
+            String dateFromstr = request.getParameter("dateFrom");
+            String dateTostr = request.getParameter("dateTo");
+            Date DateFrom = Date.valueOf(dateFromstr);
+            Date DateTo = Date.valueOf(dateTostr);
+            list = dao.getActiveAbsentSlotsRange(VetID, DateFrom, DateTo);
+            request.setAttribute("dateFrom", DateFrom);
+            request.setAttribute("dateTo", DateTo);
         } else {
             String date = request.getParameter("dateSingle");
             Date sqlDate = null;
@@ -77,11 +86,10 @@ public class AbsentController extends HttpServlet {
             } else {
                 sqlDate = Date.valueOf(date);
             }
-            TimeSlotDAO dao = new TimeSlotDAO();
             list = dao.getActiveAbsentSlots(VetID, sqlDate);
             request.setAttribute("dateSingle", sqlDate);
         }
-        
+        request.setAttribute("requestType", requestType);
         request.setAttribute("list", list);
         request.getRequestDispatcher("WEB-INF/views/manager/viewlistabsent.jsp").forward(request, response);
     }
@@ -97,7 +105,52 @@ public class AbsentController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession();
+        String[] selectedIds = request.getParameterValues("selectedIds");
+        String vetstr = request.getParameter("VetID");
+        int vetid = Integer.parseInt(vetstr);
+        TimeSlotDAO dao = new TimeSlotDAO();
+        Date today = Date.valueOf(LocalDate.now());
+
+        if (selectedIds == null || selectedIds.length == 0) {
+            request.setAttribute("message", "Bạn chưa chọn lịch nghỉ nào!");
+        } else {
+            List<String[]> toDelete = new ArrayList<>();
+            for (String value : selectedIds) {
+                String[] parts = value.split("\\|");
+                String vetID = parts[0];
+                String slotID = parts[1];
+                String date = parts[2];
+                int VetID = Integer.parseInt(vetID);
+                int SlotID = Integer.parseInt(slotID);
+                Date currentdate = Date.valueOf(date);
+                if (currentdate.before(today)) {
+                    session.setAttribute("toast-messenger", "Phải chọn ngày lớn hơn hoặc bằng hôm nay!");
+                    response.sendRedirect("absentController?VetID=" + vetid);
+                    return;
+                }
+                if (currentdate.equals(today)) {
+                    String status = dao.getStatus(VetID, SlotID, today);
+                    if ("Booked".equalsIgnoreCase(status)) {
+                        session.setAttribute("toast-messenger", "Đã có booked không thể hủy!");
+                        response.sendRedirect("absentController?VetID=" + vetid);
+                        return;
+                    }
+                }
+                toDelete.add(new String[]{vetID, slotID, date});
+            }
+
+            for (String[] item : toDelete) {
+                int VetID = Integer.parseInt(item[0]);
+                int SlotID = Integer.parseInt(item[1]);
+                Date currentdate = Date.valueOf(item[2]);
+                dao.deleteTimeSlot(VetID, SlotID, currentdate);
+            }
+
+            session.setAttribute("toast-messenger-success", "Đã hủy các lịch nghỉ đã chọn!");
+        }
+        response.sendRedirect("absentController?VetID=" + vetid);
+
     }
 
     /**

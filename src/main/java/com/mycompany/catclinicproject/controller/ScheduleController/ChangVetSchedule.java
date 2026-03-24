@@ -71,7 +71,7 @@ public class ChangVetSchedule extends HttpServlet {
         String VetID = request.getParameter("VetID");
         String type = request.getParameter("requestType");
         List<TimeSlot2DTO> slots = tdao.getAllTimeSlots2();
-          VeterinarianDAO vdao = new VeterinarianDAO();
+        VeterinarianDAO vdao = new VeterinarianDAO();
         List<VeteNameID> listVet = vdao.getAllVets();
         request.setAttribute("listvet", listVet);
         request.setAttribute("requestType", type);
@@ -91,6 +91,7 @@ public class ChangVetSchedule extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String vetIDstr = request.getParameter("VetID");
         int VetID = Integer.parseInt(vetIDstr);
         String type = request.getParameter("requestType");
@@ -101,15 +102,8 @@ public class ChangVetSchedule extends HttpServlet {
             Date date = Date.valueOf(dateStr);
             Date today = new Date(System.currentTimeMillis());
             if (date.before(today)) {
-                String VetIDs = request.getParameter("VetID");
-                String types = request.getParameter("requestType");
-                List<TimeSlot2DTO> slots = tdao.getAllTimeSlots2();
-                request.setAttribute("requestType", types);
-                request.setAttribute("slots", slots);
-                request.setAttribute("VetID", VetIDs);
-                request.getRequestDispatcher("WEB-INF/views/manager/changeschedule.jsp").forward(request, response);
-                request.setAttribute("error", "Date cannot be in the past!");
-                request.getRequestDispatcher("").forward(request, response);
+                session.setAttribute("toast-messenger", "Phải chọn ngày sau hoặc bằng hôm nay!");
+                response.sendRedirect("changvetschedule?VetID=" + VetID);
                 return;
             }
             String[] slots = request.getParameterValues("slot");
@@ -124,7 +118,6 @@ public class ChangVetSchedule extends HttpServlet {
                     int bookingID = tdao.getBookingID(VetID, slotID, date);
                     sendCancelMail(bookingID, date);
                     dao.updateStatusPendingCancelRefund(bookingID);
-
                 }
                 tdao.updateAbsent(VetID, slotID, date);
             }
@@ -138,6 +131,17 @@ public class ChangVetSchedule extends HttpServlet {
             int slotss = tdao.getTotalSlots() + 1;
             Date fromDate = Date.valueOf(request.getParameter("fromDate"));
             Date toDate = Date.valueOf(request.getParameter("toDate"));
+            Date today = new Date(System.currentTimeMillis());
+
+            if (!fromDate.after(today)) {
+                session.setAttribute("toast-messenger", "Phải chọn ngày bằng hoặc sau hôm nay!");
+                response.sendRedirect("changvetschedule?VetID=" + VetID);
+                return;
+            } else if (!fromDate.before(toDate)) {
+                session.setAttribute("toast-messenger", "Phải chọn ngày kết thúc sau ngày bắt đầu!");
+                response.sendRedirect("changvetschedule?VetID=" + VetID);
+                return;
+            }
             long oneDay = 24 * 60 * 60 * 1000;
             for (long d = fromDate.getTime(); d <= toDate.getTime(); d += oneDay) {
                 Date currentDate = new Date(d);
@@ -160,6 +164,8 @@ public class ChangVetSchedule extends HttpServlet {
                     tdao.insertAbsent(VetID, i, currentDate);
                 }
             }
+            session.setAttribute("toast-messenger-success", "Đã hủy các lịch nghỉ đã chọn!");
+
         }
         response.sendRedirect("changvetschedule");
     }
@@ -167,22 +173,14 @@ public class ChangVetSchedule extends HttpServlet {
     public void sendCancelMail(int bookingID, Date date) {
         TimeSlotDAO dao = new TimeSlotDAO();
         String email = dao.getEmailByBookingID(bookingID);
-        String link = "http://localhost:8080/catclinic/refund?bookingID=" + bookingID;
+        String link = "http://localhost:8080/booking-detail?id=" + bookingID;
 
         String message
                 = "<h3>Cat Clinic Notification</h3>"
-                + "<p>Your appointment has been cancelled.</p>"
+                + "<p>Your appointment has been cancelled. The doctor had an unexpected commitment, we sincerely apologize for this, but we will issue a refund..\n Please check Detail booking</p>"
                 + "<p>Booking ID: " + bookingID + "</p>"
                 + "<p>Date: " + date + "</p>"
-                + "<br>"
-                + "<a href='" + link + "' "
-                + "style='background-color:#4CAF50;"
-                + "color:white;"
-                + "padding:10px 20px;"
-                + "text-decoration:none;"
-                + "border-radius:5px;'>"
-                + "Confirm Refund"
-                + "</a>";
+                + "<br>";
 
         SendMail.send(email, "Appointment Cancelled", message);
     }

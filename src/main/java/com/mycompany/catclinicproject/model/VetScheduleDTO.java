@@ -19,6 +19,7 @@ public class VetScheduleDTO {
     private String fullName;
     private String catName;
     private String status;
+    private String statusBooking;
     public VetScheduleDTO(){}
     public VetScheduleDTO(int slotID, String startTime, String endTime, Date date, Integer bookingID, String fullName, String catName, String status) {
         this.slotID = slotID;
@@ -31,6 +32,14 @@ public class VetScheduleDTO {
         this.status = status;
     }
 
+    public String getStatusBooking() {
+        return statusBooking;
+    }
+
+    public void setStatusBooking(String statusBooking) {
+        this.statusBooking = statusBooking;
+    }
+    
     public void setSlotID(int slotID) {
         this.slotID = slotID;
     }

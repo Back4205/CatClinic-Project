@@ -1,36 +1,31 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title>Vet Schedule | Orange Theme</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>JSP Page</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-        <link href="css/ScheduleViewStyle.css" rel="stylesheet" type="text/css"/>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/slidebar-admin.css">
-
-    </head>
+        <link href="css/ScheduleViewStyle.css" rel="stylesheet" type="text/css"/>    </head>
     <body>
         <div class="schedule-container">
+             <a href="DashboardController" class="btn-back">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Back
+                </a>
             <header class="sched-header">
+               
                 <div class="vet-profile">
                     <div class="icon-wrapper"><i class="fas fa-paw"></i></div>
                     <div class="header-text">
                         <h2>Vet Schedule</h2>
                     </div>
                 </div>
-                <div class="change">
-                    <c:forEach var="v" items="${listVet}">
-                        <c:if test="${v.vetID == VetID}">
-                            <div class="change">
-                                <a href="changvetschedule?VetID=${VetID}">
-                                    Change schedule for ${v.fullName}
-                                </a>
-                            </div>
-                        </c:if>
-                    </c:forEach>                </div>
-                <form method="get" action="viewschedule" class="filter-form">
+                <form method="get" action="scheduleviewforvet" class="filter-form">
+                    <input type="hidden" name="VetID" value="${VetID}"> 
                     <div class="filter-group">
                         <label>Year</label>
                         <select name="year" onchange="this.form.submit()">
@@ -45,15 +40,6 @@
                         <select name="week" onchange="this.form.submit()">
                             <c:forEach var="w" items="${weeks}">
                                 <option value="${w}" ${w == week ? "selected" : ""}>${w}</option>
-                            </c:forEach>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label>Veterinarian</label>
-                        <select name="VetID" onchange="this.form.submit()">
-                            <c:forEach var="v" items="${listVet}">
-                                <option value="${v.vetID}" ${v.vetID == VetID ? "selected" : ""}>${v.fullName}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -143,6 +129,5 @@
                 </div>
             </footer>
         </div>
-
     </body>
 </html>

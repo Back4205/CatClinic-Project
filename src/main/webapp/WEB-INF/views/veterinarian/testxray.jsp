@@ -148,7 +148,10 @@
                                             <p><strong>Result:</strong> 
                                                 <c:choose>
                                                     <c:when test="${not empty t.result}">
-                                                        ${t.result}
+                                                        <img 
+                                                            src="${t.result}"
+                                                            class="result-img"
+                                                            />      
                                                     </c:when>
                                                     <c:otherwise>
                                                         Waiting for result...

@@ -353,3 +353,33 @@ select[name="VetID"] {
     box-shadow: 0 4px 12px rgba(230, 126, 0, 0.3);
     transform: translateY(-2px);
 }
+/* Nút Back ở header */
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;                     /* Khoảng cách giữa icon và chữ */
+    padding: 8px 16px;
+    background-color: #ff8c00;    /* Màu cam chủ đạo */
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(255,140,0,0.3);
+}
+
+.btn-back svg {
+    stroke: #fff;                 /* Đảm bảo icon màu trắng */
+}
+
+.btn-back:hover {
+    background-color: #e67e00;    /* Darker cam khi hover */
+    box-shadow: 0 4px 12px rgba(230,126,0,0.3);
+    transform: translateY(-1px);
+}
+
+.btn-back:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(230,126,0,0.2);
+}

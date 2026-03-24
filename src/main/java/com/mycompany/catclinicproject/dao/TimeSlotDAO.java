@@ -24,7 +24,7 @@ public class TimeSlotDAO extends DBContext {
         String sql = "SELECT SlotID, StartTime, EndTime, IsActive FROM TimeSlots WHERE SlotID = ?";
 
         try (
-             PreparedStatement ps = c.prepareStatement(sql)) {
+                PreparedStatement ps = c.prepareStatement(sql)) {
 
             ps.setInt(1, slotID);
             ResultSet rs = ps.executeQuery();
@@ -61,7 +61,6 @@ public class TimeSlotDAO extends DBContext {
 //        }
 //        return false;
 //    }
-
 
     public List<TimeSlotDTO> getAvailableSlotsNext7Days(int vetID, java.sql.Date fromDate) {
 
@@ -100,7 +99,6 @@ public class TimeSlotDAO extends DBContext {
                     continue;
                 }
 
-
                 TimeSlotDTO dto = new TimeSlotDTO();
                 dto.setSlotID(master.getSlotID());
                 dto.setStartTime(master.getStartTime());
@@ -114,10 +112,11 @@ public class TimeSlotDAO extends DBContext {
 
         return allSlots;
     }
+
     private Map<String, Boolean> getBookedSlotsMap(int vetID, java.sql.Date fromDate) {
         Map<String, Boolean> map = new HashMap<>();
-        String sql = "SELECT SlotID, Date FROM TimeSlot_Vet " +
-                "WHERE VetID = ? AND Date >= ? AND Date < DATEADD(DAY, 7, ?) AND Status in ( 'Booked' , 'Absent' ) ";
+        String sql = "SELECT SlotID, Date FROM TimeSlot_Vet "
+                + "WHERE VetID = ? AND Date >= ? AND Date < DATEADD(DAY, 7, ?) AND Status in ( 'Booked' , 'Absent' ) ";
 
         try (PreparedStatement ps = c.prepareStatement(sql)) {
             ps.setInt(1, vetID);
@@ -140,8 +139,7 @@ public class TimeSlotDAO extends DBContext {
         List<TimeSlot> list = new ArrayList<>();
 
         try (
-             Statement st = c.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
+                Statement st = c.createStatement(); ResultSet rs = st.executeQuery(sql)) {
 
             while (rs.next()) {
                 TimeSlot slot = new TimeSlot();
@@ -158,13 +156,12 @@ public class TimeSlotDAO extends DBContext {
         return list;
     }
 
-
     public List<VetScheduleDTO> getVetSchedule(int vetID, LocalDate startDate, LocalDate endDate) {
 
         List<VetScheduleDTO> list = new ArrayList<>();
 
         String sql = "SELECT ts.SlotID, ts.StartTime, ts.EndTime, tsv.Date, "
-                + "b.BookingID, u.FullName, c.Name AS CatName, "
+                + "b.BookingID, u.FullName, c.Name AS CatName,b.Status As StatusBooking, "
                 + "CASE "
                 + "WHEN tsv.Status = 'Absent' THEN 'Absent' "
                 + "WHEN b.BookingID IS NOT NULL THEN 'Booked' "
@@ -175,12 +172,13 @@ public class TimeSlotDAO extends DBContext {
                 + "LEFT JOIN Bookings b ON b.VetID = tsv.VetID "
                 + "AND b.SlotID = tsv.SlotID "
                 + "AND b.AppointmentDate = tsv.Date "
+                + "AND b.Status IN ('Completed', 'Confirmed') "
                 + "LEFT JOIN Cats c ON b.CatID = c.CatID "
                 + "LEFT JOIN Owners o ON c.OwnerID = o.OwnerID "
                 + "LEFT JOIN Users u ON o.UserID = u.UserID "
                 + "WHERE tsv.VetID = ? "
                 + "AND tsv.Date BETWEEN ? AND ? "
-                + "ORDER BY tsv.Date, ts.StartTime";;
+                + "ORDER BY tsv.Date, ts.StartTime";
 
         try {
 
@@ -188,9 +186,7 @@ public class TimeSlotDAO extends DBContext {
             ps.setInt(1, vetID);
             ps.setDate(2, java.sql.Date.valueOf(startDate));
             ps.setDate(3, java.sql.Date.valueOf(endDate));
-
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
                 VetScheduleDTO slot = new VetScheduleDTO();
                 slot.setSlotID(rs.getInt("SlotID"));
@@ -200,6 +196,7 @@ public class TimeSlotDAO extends DBContext {
                 slot.setBookingID(rs.getObject("BookingID") != null ? rs.getInt("BookingID") : null);
                 slot.setFullName(rs.getString("FullName"));
                 slot.setCatName(rs.getString("CatName"));
+                slot.setStatusBooking(rs.getString("StatusBooking"));
                 slot.setStatus(rs.getString("Status"));
                 list.add(slot);
             }
@@ -210,6 +207,7 @@ public class TimeSlotDAO extends DBContext {
 
         return list;
     }
+
     public int getVetIDByUserID(int userID) {
 
         String sql = "SELECT VetID FROM Veterinarians WHERE UserID = ?";
@@ -444,8 +442,8 @@ public class TimeSlotDAO extends DBContext {
 
         StringBuilder sql = new StringBuilder(
                 "SELECT SlotID FROM TimeSlot_Vet "
-                        + "WHERE VetID = ? AND Date = ? "
-                        + "AND Status = 'Booked' AND SlotID IN ("
+                + "WHERE VetID = ? AND Date = ? "
+                + "AND Status = 'Booked' AND SlotID IN ("
         );
 
         for (int i = 0; i < slots.length; i++) {
@@ -557,7 +555,41 @@ public class TimeSlotDAO extends DBContext {
         }
         return list;
     }
-      public List<TimeSlot2DTO> getAllTimeSlots2() {
+
+    public List<TimeSlotDetailDTO> getActiveAbsentSlotsRange(int vetID, Date dateFrom, Date dateTo) {
+        List<TimeSlotDetailDTO> list = new ArrayList<>();
+        String sql = "SELECT ts.SlotID, ts.StartTime, ts.EndTime, tsv.Date, tsv.Status, ts.IsActive "
+                + "FROM TimeSlots ts "
+                + "INNER JOIN TimeSlot_Vet tsv ON ts.SlotID = tsv.SlotID "
+                + "WHERE tsv.VetID = ? "
+                + "AND tsv.Status = 'Absent' "
+                + "AND tsv.Date BETWEEN ? AND ? "
+                + "AND ts.IsActive = 1";
+
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, vetID);
+            ps.setDate(2, dateFrom);
+            ps.setDate(3, dateTo);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                TimeSlotDetailDTO dto = new TimeSlotDetailDTO(
+                        rs.getInt("SlotID"),
+                        rs.getTime("StartTime"),
+                        rs.getTime("EndTime"),
+                        rs.getDate("Date"),
+                        rs.getString("Status"),
+                        rs.getBoolean("IsActive")
+                );
+                list.add(dto);
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi DAO: " + e.getMessage());
+        }
+        return list;
+    }
+
+    public List<TimeSlot2DTO> getAllTimeSlots2() {
 
         List<TimeSlot2DTO> list = new ArrayList<>();
 
@@ -584,5 +616,38 @@ public class TimeSlotDAO extends DBContext {
         }
 
         return list;
+    }
+
+    public boolean deleteTimeSlot(int vetID, int slotID, Date date) {
+        String sql = "DELETE FROM TimeSlot_Vet WHERE VetID = ? AND SlotID = ? AND Date = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, vetID);
+            ps.setInt(2, slotID);
+            ps.setDate(3, date);
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public String getStatus(int vetID, int slotID, Date date) {
+        String status = null;
+        String sql = "SELECT Status FROM TimeSlot_Vet WHERE VetID = ? AND SlotID = ? AND Date = ?";
+        try (PreparedStatement ps = c.prepareStatement(sql)) {
+            ps.setInt(1, vetID);
+            ps.setInt(2, slotID);
+            ps.setDate(3, date);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                status = rs.getString("status");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return status; // null nếu không có record
     }
 }

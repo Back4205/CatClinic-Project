@@ -1,6 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/CatClinicProject">
-    <Resources className="org.apache.catalina.webresources.StandardRoot">
-        <PreResources base="D:/FU-learning/SPRING-2026_ky5/SWP391/CatClinicimg" className="org.apache.catalina.webresources.DirResourceSet" webAppMount="/image"/>
-    </Resources>
-</Context>
+<Context path=""/> 

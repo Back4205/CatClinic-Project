@@ -32,9 +32,9 @@
 
 
                     <div class="emr-card">
-
                         <form action="preController" method="post">
-
+                             <input type="hidden" name="status"
+                                   value="${status}"/>
                             <input type="hidden" name="medicalRecordID"
                                    value="${medicalRecordID}"/>
                             <!-- SEARCH -->
@@ -156,8 +156,8 @@
                                 <button type="submit"
                                         name="action"
                                         value="complete"
-                                        class="submit-btn">
-                                    <i class="fa fa-file-medical"></i> Completed Medical Record
+                                        class="submit-btn completed">
+                                    <i class="fa fa-file-medical"></i> Completed
                                 </button>
 
                             </c:if>
@@ -174,6 +174,38 @@
                         </div>
                     </div>
                 </div>
+                                <c:if test="${not empty sessionScope['toast-messenger']}">
+
+                    <div id="toast-message">
+                        ${sessionScope['toast-messenger']}
+                    </div>
+
+                    <c:remove var="toast-messenger" scope="session"/>
+
+                </c:if>
+                <c:if test="${not empty sessionScope['toast-messenger-complete']}">
+
+                    <div id="bubble-overlay">
+                        <div id="bubble-box">
+
+                            <div class="bubble-icon">
+                                ✔
+                            </div>
+
+                            <p class="bubble-text">
+                                ${sessionScope['toast-messenger-complete']}
+                            </p>
+
+                            <button id="bubble-continue-btn">
+                                Continue
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <c:remove var="toast-messenger-complete" scope="session"/>
+
+                </c:if>
             </main>
         </div>
 
@@ -323,17 +355,37 @@
                 const card = document.getElementById("drug_" + id);
                 if (card)
                     card.remove();
-
                 addedDrugs = addedDrugs.filter(d => d !== id);
-
                 if (container.children.length === 0) {
                     container.innerHTML =
                             '<div id="emptyBox">No medicines added yet.</div>';
                 }
             }
-        </script>
+             document.addEventListener("DOMContentLoaded", function () {
 
-        <!-- AUTO LOAD IF HAS PRESCRIPTION -->
+                const toast = document.getElementById("toast-message");
+
+                if (toast) {
+                    setTimeout(function () {
+                        toast.style.opacity = "0";
+
+                        setTimeout(function () {
+                            toast.remove();
+                        }, 500);
+
+                    }, 5000);
+                }
+
+            });
+            document.addEventListener("DOMContentLoaded", function () {
+                const btn = document.getElementById("bubble-continue-btn");
+                if (btn) {
+                    btn.addEventListener("click", function () {
+                        window.location.href = "preController?medicalRecordID=${param.medicalRecordID}";
+                    });
+                }
+            });
+        </script>
         <c:if test="${not empty prescriptionList}">
             <script>
                 window.addEventListener("DOMContentLoaded", function () {
