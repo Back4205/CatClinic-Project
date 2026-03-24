@@ -16,34 +16,37 @@
         <input type="hidden" name="testOrderID" value="${testOrder.testOrderID}" />
         <input type="hidden" name="oldimage" value="${testOrder.result}" />
 
-        <!-- Hiển thị ảnh cũ -->
-        <c:if test="${not empty testOrder.result}">
-            <div class="current-image">
-                <p>Current Image:</p>
-                <img src="${testOrder.result}" />
+        <!-- Chỉ hiển thị phần ảnh nếu là X-Ray -->
+        <c:if test="${testOrder.testName == 'X-Ray'}">
+            <!-- Hiển thị ảnh cũ -->
+            <c:if test="${not empty testOrder.result}">
+                <div class="current-image">
+                    <p>Current Image:</p>
+                    <img src="${testOrder.result}" />
+                </div>
+            </c:if>
+
+            <div class="form-group">
+                <label>Upload New Result Image</label>
+
+                <div class="upload-box">
+                    <input type="file" name="resultFile" id="resultFile" accept="image/*" onchange="previewImage(event)" required>
+                    <div class="upload-content">
+                        <span class="upload-icon">📁</span>
+                        <p>Click to choose image</p>
+                    </div>
+                </div>
+
+                <div class="preview-container">
+                    <img id="imagePreview" src="#" alt="Preview Image" style="display:none;"/>
+                </div>
             </div>
         </c:if>
 
         <div class="form-group">
-            <label>Upload New Result Image</label>
-
-            <div class="upload-box">
-                <input type="file" name="resultFile" id="resultFile" accept="image/*" onchange="previewImage(event)">
-                <div class="upload-content">
-                    <span class="upload-icon">📁</span>
-                    <p>Click to choose image</p>
-                </div>
-            </div>
-
-            <div class="preview-container">
-                <img id="imagePreview" src="#" alt="Preview Image"/>
-            </div>
-        </div>
-
-        <div class="form-group">
             <label>Laboratory Findings</label>
             <textarea name="resultName"
-                      placeholder="Enter detailed laboratory findings...">${testOrder.resultName}</textarea>
+                      placeholder="Enter detailed laboratory findings...">${testOrder.resultName} </textarea>
         </div>
 
         <div class="button-group">
@@ -58,6 +61,7 @@
 
     </form>
 </div>
+
 <script>
     function previewImage(event) {
         const input = event.target;

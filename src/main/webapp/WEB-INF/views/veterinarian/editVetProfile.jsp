@@ -2,132 +2,164 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
-
 <html>
 <head>
-    <title>Edit Profile</title>
+    <meta charset="UTF-8">
+    <title>Edit Veterinarian Profile</title>
 
-<!-- GLOBAL CSS -->
-<link rel="stylesheet" href="css/DashboardVeteStyle.css">
-<link rel="stylesheet" href="css/sidebar.css">
-<link rel="stylesheet" href="css/headerVeteStyle.css">
+    <link rel="stylesheet" href="css/DashboardVeteStyle.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/headerVeteStyle.css">
 
-<!-- PAGE CSS -->
-<link rel="stylesheet" href="css/edit-profile.css">
+    <link rel="stylesheet" href="css/edit-profile.css">
 
-<!-- ICON -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
+    <style>
+        /* Style bổ sung cho thông báo */
+        .msg-error {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+        .msg-error::before {
+            content: "\f06a"; /* FontAwesome Exclamation Circle */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-right: 10px;
+        }
+        .msg-success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .form-group label {
+            font-weight: bold;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 5px;
+            display: block;
+        }
+        /* Hiệu ứng focus cho input khi có lỗi (tùy chọn) */
+        .input-error {
+            border: 1px solid #dc3545 !important;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="layout">
 
-<!-- SIDEBAR -->
-<jsp:include page="sidebar.jsp"/>
+    <jsp:include page="sidebar.jsp"/>
 
-<!-- MAIN -->
-<main class="main">
+    <main class="main">
 
-    <!-- HEADER -->
-    <jsp:include page="header.jsp"/>
+        <jsp:include page="header.jsp"/>
 
-    <div class="dashboard-content">
+        <div class="dashboard-content">
 
+            <form action="EditVeterinarianProfile" method="post" enctype="multipart/form-data" class="edit-wrapper">
 
-        <form action="EditVeterinarianProfile" method="post" enctype="multipart/form-data" class="edit-wrapper">
+                <div class="card avatar-card">
+                    <img src="${not empty vet.image ? vet.image : 'images/default-avatar.png'}" 
+                         alt="Avatar" class="avatar-img" id="previewImage">
 
-            <!-- ===== AVATAR ===== -->
-            <div class="card avatar-card">
-
-                <img src="${vet.image}" alt="Avatar" class="avatar-img" id="previewImage">
-
-                <label class="upload-btn">
-                    <i class="fa fa-upload"></i> Upload Image
-                    <input type="file" name="image" id="imageInput" accept="image/*">
-                </label>
-
-            </div>
-
-            <!-- ===== FORM ===== -->
-            <div class="card form-card">
-
-                <div class="card-header">
-                    <h3>Profile Information</h3>
+                    <label class="upload-btn">
+                        <i class="fa fa-upload"></i> Upload Photo
+                        <input type="file" name="image" id="imageInput" accept="image/*">
+                    </label>
+                    <p style="font-size: 11px; color: #888; margin-top: 10px;">Max size: 2MB (JPG, PNG)</p>
                 </div>
 
-                <!-- MESSAGE -->
-                <c:if test="${not empty error}">
-                    <p class="msg-error">${error}</p>
-                </c:if>
+                <div class="card form-card">
 
-                <c:if test="${param.success == 1}">
-                    <p class="msg-success">Update successful!</p>
-                </c:if>
-
-                <div class="form-grid">
-
-                    <div class="form-group">
-                        <label>FULL NAME</label>
-                        <input type="text" name="fullName" value="${vet.fullName}">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-user-doctor"></i> Profile Information</h3>
                     </div>
 
-                    <div class="form-group">
-                        <label>EMAIL</label>
-                        <input type="text" name="email" value="${vet.email}">
+                    <c:if test="${not empty error}">
+                        <div class="msg-error">
+                            ${error}
+                        </div>
+                    </c:if>
+
+                    <c:if test="${param.success == 1}">
+                        <div class="msg-success">
+                            <i class="fa fa-check-circle"></i> Your profile has been updated successfully!
+                        </div>
+                    </c:if>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label>FULL NAME</label>
+                            <input type="text" name="fullName" value="${vet.fullName}" placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>EMAIL</label>
+                            <input type="email" name="email" value="${vet.email}" placeholder="example@clinic.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>PHONE</label>
+                            <input type="text" name="phone" value="${vet.phone}" placeholder="0123456789">
+                        </div>
+
+                        <div class="form-group">
+                            <label>GENDER</label>
+                            <select name="male">
+                                <option value="true" ${vet.male ? "selected" : ""}>Male</option>
+                                <option value="false" ${!vet.male ? "selected" : ""}>Female</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>DEGREE</label>
+                            <input type="text" name="degree" value="${vet.degree}" placeholder="e.g. Master of Veterinary">
+                        </div>
+
+                        <div class="form-group">
+                            <label>EXPERIENCE (YEARS)</label>
+                            <input type="number" name="experienceYear" value="${vet.experienceYear}" min="0">
+                        </div>
+
+                        <div class="form-group full">
+                            <label>BIO / INTRODUCTION</label>
+                            <textarea name="bio" rows="4" placeholder="Tell us about your professional background...">${vet.bio}</textarea>
+                        </div>
+
                     </div>
 
-                    <div class="form-group">
-                        <label>PHONE</label>
-                        <input type="text" name="phone" value="${vet.phone}">
-                    </div>
+                    <div class="form-actions">
+                        <a href="VetProfile" class="btn-cancel">
+                            Cancel
+                        </a>
 
-                    <div class="form-group">
-                        <label>GENDER</label>
-                        <select name="male">
-                            <option value="true" ${vet.male ? "selected" : ""}>Male</option>
-                            <option value="false" ${!vet.male ? "selected" : ""}>Female</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>DEGREE</label>
-                        <input type="text" name="degree" value="${vet.degree}">
-                    </div>
-
-                    <div class="form-group">
-                        <label>EXPERIENCE</label>
-                        <input type="number" name="experienceYear" value="${vet.experienceYear}">
-                    </div>
-
-                    <div class="form-group full">
-                        <label>BIO</label>
-                        <textarea name="bio">${vet.bio}</textarea>
+                        <button type="submit" class="btn-save">
+                            <i class="fa fa-save"></i> Save Changes
+                        </button>
                     </div>
 
                 </div>
 
-                <div class="form-actions">
-                    <a href="VetProfile" class="btn-cancel">
-                        Cancel
-                    </a>
+            </form>
 
-                    <button type="submit" class="btn-save">
-                        <i class="fa fa-save"></i> Save Profile
-                    </button>
-                </div>
+        </div>
 
-            </div>
-
-        </form>
-
-    </div>
-
-</main>
+    </main>
 </div>
-
-<!-- ===== PREVIEW IMAGE SCRIPT ===== -->
 
 <script>
     const imageInput = document.getElementById("imageInput");
@@ -137,25 +169,25 @@
         const file = this.files[0];
 
         if (file) {
-
-            // Validate file type
+            // 1. Validate file type (Client-side)
             if (!file.type.startsWith("image/")) {
-                alert("Please upload an image file!");
+                alert("Please select an image file (jpg, png, etc.)");
+                this.value = "";
                 return;
             }
 
-            // Validate size (max 2MB)
+            // 2. Validate size (Max 2MB)
             if (file.size > 2 * 1024 * 1024) {
-                alert("Image must be smaller than 2MB!");
+                alert("Image is too large! Please select a file under 2MB.");
+                this.value = "";
                 return;
             }
 
+            // 3. Show Preview
             const reader = new FileReader();
-
             reader.onload = function (e) {
                 previewImage.src = e.target.result;
             };
-
             reader.readAsDataURL(file);
         }
     });

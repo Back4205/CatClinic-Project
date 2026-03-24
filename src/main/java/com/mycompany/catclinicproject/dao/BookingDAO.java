@@ -1245,10 +1245,10 @@ public class BookingDAO extends DBContext {
             + "    ON b.BookingID = a.BookingID "
             + "INNER JOIN Services s "
             + "    ON a.ServiceID = s.ServiceID "
-            + "WHERE b.Status IN ('PendingCancelRefund', 'CancelRefund', 'RejectedCancelRefund') "
+            + "WHERE b.Status IN ('PendingCancel', 'CancelRefund', 'RejectedCancelRefund') "
             + "ORDER BY "
             + "    CASE "
-            + "        WHEN b.Status = 'PendingCancelRefund' THEN 1 "
+            + "        WHEN b.Status = 'PendingCancel' THEN 1 "
             + "        WHEN b.Status = 'CancelRefund' THEN 2 "
             + "        WHEN b.Status = 'RejectedCancelRefund' THEN 3 "
             + "    END, "
@@ -1287,7 +1287,7 @@ public class BookingDAO extends DBContext {
             + "    ON b.BookingID = a.BookingID "
             + "INNER JOIN Services s "
             + "    ON a.ServiceID = s.ServiceID "
-            + "WHERE b.Status = 'PendingCancelRefund' AND b.BookingID = ?";
+            + "WHERE b.Status = 'PendingCancel' AND b.BookingID = ?";
 
     try (PreparedStatement ps = c.prepareStatement(sql)) {
         ps.setInt(1, bookingID);

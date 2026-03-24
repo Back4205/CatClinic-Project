@@ -3,18 +3,70 @@ body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background-color: #f3f5f9;
+    /* Thêm padding-top để hero không bị header (đã fixed position) che mất nội dung */
+    padding-top: 80px;
 }
 
-/* ===== HERO ===== */
-.hero {
-    text-align: center;
-    padding: 80px 20px 40px;
+/* ===== HERO THIẾT KẾ LẠI THEO MÀU CAM CHỦ ĐẠO, KHÔNG BỊ VỠ */
+body > section.hero {
+    text-align: center !important;
+    /* Thêm padding đủ lớn để không bị header fixed che mất nội dung */
+    padding: 120px 20px 80px !important;
+    /* Nền gradient cam đẹp, không bị phẳng như cũ, phù hợp theme hệ thống */
+    background: linear-gradient(135deg, #ff7a00 0%, #ff9533 100%) !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    clear: both !important;
+}
+
+/* Chữ "OUR EXPERTS" */
+body > section.hero small {
+    color: rgba(255,255,255,0.9) !important;
+    font-weight: bold !important;
+    letter-spacing: 2px !important;
+    font-size: 1.1rem !important;
+    display: block !important;
+    margin-bottom: 15px !important;
+}
+
+/* Tiêu đề chính */
+body > section.hero h1 {
+    font-size: 48px !important;
+    color: #ffffff !important;
+    margin: 0 0 20px 0 !important;
+    text-align: center !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Mô tả dưới tiêu đề */
+body > section.hero p {
+    color: rgba(255,255,255,0.95) !important;
+    max-width: 650px !important;
+    margin: 0 auto !important;
+    font-size: 1.2rem !important;
+    line-height: 1.7 !important;
+    text-align: center !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+/* Responsive cho mobile */
+@media (max-width: 768px) {
+    body > section.hero h1 {
+        font-size: 32px !important;
+    }
+    body > section.hero p {
+        font-size: 1rem !important;
+    }
 }
 
 .hero small {
     color: #ff7a00;
     font-weight: bold;
     letter-spacing: 1px;
+    font-size: 1rem;
+    /* Đảm bảo chữ nhỏ luôn hiển thị được, không bị trùng màu */
+    display: block;
+    margin-bottom: 10px;
 }
 
 .hero h1 {
@@ -26,13 +78,67 @@ body {
 .hero p {
     color: #6c757d;
     max-width: 650px;
-    margin: auto;
+    margin: 20px auto 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+/* ===== FIX XUNG ĐỘT VỚI HEADER.CSS ===== */
+.vet-page-hero {
+    /* Đảm bảo phần này luôn nằm dưới Header fixed */
+    margin-top: 0 !important;
+    padding: 150px 20px 80px !important; /* Tăng padding-top để đẩy chữ xuống */
+    
+    /* Cấu hình nền và căn lề */
+    background: linear-gradient(135deg, #ff7a00 0%, #ff9533 100%) !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 
-/* ===== SEARCH ===== */
+.vet-page-hero h1 {
+    font-size: 48px !important;
+    color: #ffffff !important;
+    margin: 20px 0 !important;
+    display: block !important; /* Chống bị ẩn bởi header.css */
+}
+
+.vet-page-hero small {
+    color: rgba(255,255,255,0.9) !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+}
+
+.vet-page-hero p {
+    color: #ffffff !important;
+    max-width: 650px !important;
+    margin: 0 auto !important;
+    font-size: 1.2rem !important;
+    line-height: 1.7 !important;
+}
+
+/* Responsive cho Mobile để không bị vỡ chữ */
+@media (max-width: 768px) {
+    .vet-page-hero {
+        padding: 100px 15px 50px !important;
+    }
+    .vet-page-hero h1 {
+        font-size: 30px !important;
+    }
+}
+/* ===== SEARCH - SỬA LỖI NÚT TÌM KIẾM KHÔNG NHẬN CSS ===== */
 .search-box {
     width: 50%;
     margin: 30px auto 60px;
+}
+
+.search-box form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
 }
 
 .search-box input {
@@ -42,6 +148,32 @@ body {
     border: 1px solid #ddd;
     outline: none;
     font-size: 14px;
+    transition: 0.3s;
+    flex: 1;
+}
+
+.search-box input:focus {
+    border-color: #ff7a00;
+    box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+}
+
+.search-btn {
+    padding: 14px 24px;
+    background: #ff7a00;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    transition: 0.3s;
+}
+
+.search-btn:hover {
+    background: #e66e00;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 122, 0, 0.3);
 }
 
 /* ===== GRID ===== */
@@ -148,13 +280,118 @@ body {
     color: white;
 }
 
+/* ----------------------
+   THÊM DESIGN SEARCH & PAGINATION VÀO ĐÂY
+   ---------------------- */
+/* Trạng thái không tìm thấy dữ liệu */
+.empty-state {
+    width: 100%;
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    color: #6c757d;
+}
+
+.btn-reset {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 24px;
+    background: #fff1e6;
+    color: #ff7a00;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-reset:hover {
+    background: #ff7a00;
+    color: white;
+}
+
+/* Phân trang */
+.pagination-container {
+    width: 85%;
+    margin: 0 auto 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.page-btn {
+    padding: 12px 24px;
+    background: #fff1e6;
+    color: #ff7a00;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.page-btn:hover {
+    background: #ff7a00;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 122, 0, 0.3);
+}
+
+.page-numbers {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.page-number {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.page-number.active {
+    background: #ff7a00;
+    border-color: #ff7a00;
+    color: white;
+}
+
+.page-number:hover:not(.active) {
+    border-color: #ff7a00;
+    color: #ff7a00;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .search-box {
         width: 90%;
     }
 
+    .search-box form {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .search-box input {
+        width: 100%;
+    }
+
     .hero h1 {
         font-size: 28px;
+    }
+
+    .pagination-container {
+        gap: 12px;
     }
 }

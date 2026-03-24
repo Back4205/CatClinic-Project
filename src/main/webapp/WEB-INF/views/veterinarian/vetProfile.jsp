@@ -51,17 +51,17 @@
 
                 <div class="item">
                     <label>FULL NAME</label>
-                    <p>${vet.fullName}</p>
+                    <p><c:out value="${vet.fullName}"/></p>
                 </div>
 
                 <div class="item">
                     <label>EMAIL</label>
-                    <p>${vet.email}</p>
+                    <p><c:out value="${vet.email}"/></p>
                 </div>
 
                 <div class="item">
                     <label>PHONE</label>
-                    <p>${vet.phone}</p>
+                    <p><c:out value="${vet.phone}"/></p>
                 </div>
 
                 <div class="item">
@@ -76,17 +76,17 @@
 
                 <div class="item">
                     <label>DEGREE</label>
-                    <p>${vet.degree}</p>
+                    <p><c:out value="${vet.degree}"/></p>
                 </div>
 
                 <div class="item">
                     <label>EXPERIENCE</label>
-                    <p>${vet.experienceYear} Years</p>
+                    <p><c:out value="${vet.experienceYear}"/> Years</p>
                 </div>
 
                 <div class="item full">
                     <label>BIO</label>
-                    <p>${vet.bio}</p>
+                    <p><c:out value="${vet.bio}"/></p>
                 </div>
 
             </div>

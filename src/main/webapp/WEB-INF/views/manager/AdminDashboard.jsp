@@ -1,99 +1,148 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Admin Dashboard - Cat Clinic</title>
-    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Clinic Admin - Dashboard</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-dashboard.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/DashboardAdminStyle.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar-admin.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header-admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-dashboard.css">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
-
 <body>
-<div class="admin-layout">
-    <jsp:include page="sidebar.jsp"/>
+    <div class="admin-layout">
+        <jsp:include page="sidebar.jsp"/>
 
-    <div class="admin-main">
-        <jsp:include page="header.jsp"/>
+        <div class="admin-main">
+            <jsp:include page="header.jsp"/>
+            <div class="container">
+                <header>
+                    <h1>Admin Dashboard</h1>
+                    <p style="margin-top: 5px; color: #777; font-size: 14px;">Welcome back, the system is running smoothly.</p>
+                </header>
 
-        <div class="admin-dashboard">
-            <h2 class="admin-title">Admin Management Dashboard</h2>
+                <div class="stats-grid">
+                    <div class="card">
+                        <div class="icon-box"><i class="fa-solid fa-paw"></i></div>
+                        <div class="info">
+                            <p>Active Services</p>
+                            <h3>${DASHBOARD_DATA.activeServicesCount}</h3>
+                        </div>
+                    </div>
 
-            <div class="admin-cards">
-                <div class="admin-card">
-                    <i class="fa-solid fa-bell-concierge"></i>
-                    <p>Active Services</p>
-                    <h3>${data.totalServices}</h3>
+                    <div class="card">
+                        <div class="icon-box"><i class="fa-solid fa-calendar-xmark"></i></div>
+                        <div class="info">
+                            <p>Refund Requests</p>
+                            <h3 class="status-pending">${DASHBOARD_DATA.pendingCancelCount}</h3>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="icon-box"><i class="fa-solid fa-coins"></i></div>
+                        <div class="info">
+                            <p>Monthly Revenue</p>
+                            <h3 class="revenue-value">
+                                <fmt:formatNumber value="${DASHBOARD_DATA.monthlyRevenue}" type="currency" currencySymbol="$"/>
+                            </h3>
+                        </div>
+                    </div>
                 </div>
-                <div class="admin-card" style="border-left: 4px solid #ef4444;">
-                    <i class="fa-solid fa-hand-holding-dollar" style="color: #ef4444;"></i>
-                    <p>Refund Requests</p>
-                    <h3 style="color: #ef4444;">${data.pendingCancelCount}</h3>
+
+                <div class="details-grid">
+                    <div class="content-box">
+                        <h2><i class="fa-solid fa-users-gear"></i> Personnel Distribution by Role</h2>
+                        <table class="role-stats-table">
+                            <thead>
+                                <tr>
+                                    <th>User Role</th>
+                                    <th style="text-align: right;">Total Accounts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="entry" items="${DASHBOARD_DATA.accountStats}">
+                                    <tr>
+                                        <td>
+                                            <span class="role-badge">
+                                                <i class="fa-solid fa-user-shield" style="font-size: 12px; margin-right: 8px; color: #ccc;"></i>
+                                                ${entry.key}
+                                            </span>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <span class="count-circle">${entry.value}</span>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="content-box">
+                        <h2><i class="fa-solid fa-chart-pie"></i> Account Activity Ratio</h2>
+                        <div class="chart-container">
+                            <canvas id="accountChart"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="admin-grid">
-                
-                <div class="admin-welcome-stats">
-                    <h3><i class="fa-solid fa-users-gear"></i> Account Classification</h3>
-                    
-                    <form action="AdminDashboard" method="GET">
-                        <div class="role-list-container">
-                            <c:forEach items="${data.accountStats}" var="entry">
-                                <label class="role-item-label">
-                                    <span class="role-info-wrapper">
-                                        <input type="checkbox" name="roles" value="${entry.key}" 
-                                            ${fn:contains(paramValues.roles, entry.key) ? 'checked' : ''}>
-                                        <span class="role-name">${entry.key}</span>
-                                    </span>
-                                    <span class="role-badge">${entry.value}</span>
-                                </label>
-                            </c:forEach>
-                        </div>
-                        <button type="submit" class="btn-update-stats">Update Statistics</button>
-                    </form>
-                    
-                    <div class="total-display-box">
-                        <p class="total-label">Total Selected Accounts</p>
-                        <h2 class="total-number">${totalSelected}</h2>
-                    </div>
-                </div>
-
-                <div class="admin-welcome-stats chart-container">
-                    <h3><i class="fa-solid fa-chart-pie"></i> Service Usage Rate</h3>
-                    
-                    <div class="pie-chart" style="background: conic-gradient(${pieGradient});"></div>
-
-                    <div class="chart-legend">
-                        <c:forEach items="${data.serviceUsages}" var="item" varStatus="status">
-                            <c:if test="${status.index < 4}">
-                                <div class="legend-item">
-                                    <span class="dot" style="background: 
-                                        ${status.index==0 ? '#4338ca' : 
-                                          status.index==1 ? '#10b981' : 
-                                          status.index==2 ? '#f59e0b' : '#ef4444'};">
-                                    </span> 
-                                    ${item.name} (${item.count})
-                                </div>
-                            </c:if>
-                        </c:forEach>
-                        <c:if test="${fn:length(data.serviceUsages) > 4}">
-                            <div class="legend-item">
-                                <span class="dot" style="background: #94a3b8;"></span> Others...
-                            </div>
-                        </c:if>
-                    </div>
-                </div>
-
-            </div> </div>
+        </div>
     </div>
-</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const activeCount = ${DASHBOARD_DATA.activeAccounts};
+        const inactiveCount = ${DASHBOARD_DATA.inactiveAccounts};
+        const total = activeCount + inactiveCount;
+        const activePercentage = total > 0 ? Math.round((activeCount / total) * 100) : 0;
+
+        const ctx = document.getElementById('accountChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Active', 'Locked'],
+                datasets: [{
+                    data: [activeCount, inactiveCount],
+                    backgroundColor: ['#FF8C00', '#333333'],
+                    borderWidth: 0,
+                    hoverOffset: 15,
+                    cutout: '80%' 
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 20 } }
+                }
+            },
+            plugins: [{
+                id: 'centerText',
+                beforeDraw: function(chart) {
+                    const { width, height, ctx } = chart;
+                    ctx.restore();
+                    ctx.font = "bold 2.5em sans-serif";
+                    ctx.textBaseline = "middle";
+                    ctx.fillStyle = "#FF8C00"; 
+                    const text = activePercentage + "%";
+                    const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                    ctx.fillText(text, textX, height / 2 - 10);
+
+                    ctx.font = "600 1em sans-serif";
+                    ctx.fillStyle = "#777";
+                    const subText = "Active";
+                    const subTextX = Math.round((width - ctx.measureText(subText).width) / 2);
+                    ctx.fillText(subText, subTextX, height / 2 + 25);
+                    ctx.save();
+                }
+            }]
+        });
+    });
+    </script>
 </body>
 </html>

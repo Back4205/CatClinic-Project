@@ -8,6 +8,10 @@
     
     <!-- CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/ViewVetDetail.css">
+    <link href="css/header.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link href="css/all.css" rel="stylesheet" type="text/css"/>
+<link href="css/footerx.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>

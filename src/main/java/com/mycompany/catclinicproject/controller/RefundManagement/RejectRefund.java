@@ -7,6 +7,7 @@ package com.mycompany.catclinicproject.controller.RefundManagement;
 
 import com.mycompany.catclinicproject.dao.BookingDAO;
 import com.mycompany.catclinicproject.model.CancelBookingDTO;
+import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -33,6 +35,12 @@ public class RejectRefund extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User user = (User)session.getAttribute("acc");
+        if(user == null){
+            response.sendRedirect(request.getContextPath()+"/login");
+            return;
+        }
         int bookingID = Integer.parseInt(request.getParameter("bookingID"));
         BookingDAO bdao = new BookingDAO();
         bdao.rejectRefund(bookingID);

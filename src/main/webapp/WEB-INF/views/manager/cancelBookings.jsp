@@ -25,7 +25,6 @@
         <div class="admin-dashboard">
             <div class="page-container">
                 
-                <%-- SỬA ĐỔI TẠI ĐÂY: Thêm khối tổng tiền đối diện tiêu đề --%>
                 <div class="header-section">
                     <h2 class="main-title">Refund Management</h2>
                     
@@ -43,7 +42,7 @@
                         <input type="text" name="search" value="${search}" placeholder="Search service name...">
                         <select name="status">
                             <option value="ALL" ${status == 'ALL' ? 'selected' : ''}>All Status</option>
-                            <option value="PendingCancelRefund" ${status == 'PendingCancelRefund' ? 'selected' : ''}>Pending</option>
+                            <option value="PendingCancelRefund" ${status == 'PendingCancel' ? 'selected' : ''}>Pending</option>
                             <option value="CancelRefund" ${status == 'CancelRefund' ? 'selected' : ''}>Refunded</option>
                             <option value="RejectedCancelRefund" ${status == 'RejectedCancelRefund' ? 'selected' : ''}>Rejected</option>
                         </select>
@@ -51,7 +50,6 @@
                     </form>
                 </div>
 
-                <%-- Phần Table giữ nguyên như code cũ của bạn --%>
                 <table class="data-table">
                     <thead>
                         <tr>
@@ -68,8 +66,8 @@
                             <tr>
                                 <td class="font-bold">${b.nameService}</td>
                                 <td>
-                                    <span class="badge ${b.status == 'PendingCancelRefund' ? 'st-pending' : (b.status == 'CancelRefund' ? 'st-approved' : 'st-rejected')}">
-                                        ${b.status == 'PendingCancelRefund' ? 'Pending' : (b.status == 'CancelRefund' ? 'Refunded' : 'Rejected')}
+                                    <span class="badge ${b.status == 'PendingCancel' ? 'st-pending' : (b.status == 'CancelRefund' ? 'st-approved' : 'st-rejected')}">
+                                        ${b.status == 'PendingCancel' ? 'Pending' : (b.status == 'CancelRefund' ? 'Refunded' : 'Rejected')}
                                     </span>
                                 </td>
                                 <td>
@@ -99,7 +97,7 @@
                                     </c:choose>
                                 </td>
                                 <td class="text-center">
-                                    <c:if test="${b.status == 'PendingCancelRefund'}">
+                                    <c:if test="${b.status == 'PendingCancel'}">
                                         <div class="action-btns">
                                             <a href="ApproveRefund?bookingID=${b.bookingID}" class="btn-approve">Approve</a>
                                             <a href="RejectRefund?bookingID=${b.bookingID}" class="btn-reject">Reject</a>

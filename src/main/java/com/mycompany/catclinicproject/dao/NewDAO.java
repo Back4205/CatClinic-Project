@@ -20,7 +20,7 @@ public class NewDAO extends DBContext {
 
     public List<News> getAllNew() {
         List<News> list = new ArrayList<>();
-        String sql = "select * from News";
+        String sql = "select * from News ORDER BY NewID DESC;";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -206,7 +206,7 @@ public class NewDAO extends DBContext {
     }
     public List<News> getTop3LatestNews() {
     List<News> list = new ArrayList<>();
-    String sql = "SELECT TOP 3 * FROM News WHERE IsActive = 1 ORDER BY CreatedDate DESC";
+    String sql = "SELECT TOP 3 * FROM News WHERE IsActive = 1 ORDER BY NewID DESC";
 
     try {
         PreparedStatement ps = c.prepareStatement(sql);
