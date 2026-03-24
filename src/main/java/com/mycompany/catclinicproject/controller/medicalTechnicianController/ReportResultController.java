@@ -50,7 +50,6 @@ public class ReportResultController extends HttpServlet {
         if (filePart != null && filePart.getSize() > 0) {
             String fileName = "test_" + System.currentTimeMillis();
             result = CloudinaryUntil.uploadImage(filePart, fileName,"my_tech");
-
             if (result == null) {
                 request.setAttribute("error", "Upload failed!");
                 request.getRequestDispatcher("/WEB-INF/views/technician/report-result.jsp")
@@ -66,6 +65,7 @@ public class ReportResultController extends HttpServlet {
             ldao.saveDraft(testOrderID, resultName, result);
         }
         else if ("submit".equals(action)) {
+            
             ldao.submitResult(testOrderID, resultName, result);
         }
 

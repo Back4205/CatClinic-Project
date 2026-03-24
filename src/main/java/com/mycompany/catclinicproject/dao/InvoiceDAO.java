@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InvoiceDAO extends DBContext{
-
     public Invoice getInvoiceByBookingID(int bookingID) {
 
         String sql = "SELECT * FROM Invoices WHERE BookingID = ?";

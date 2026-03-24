@@ -11,6 +11,7 @@ import com.mycompany.catclinicproject.dao.ServiceDAO;
 import com.mycompany.catclinicproject.model.EMRDTO;
 import com.mycompany.catclinicproject.model.TestOrderDTO;
 import com.mycompany.catclinicproject.model.User;
+import com.mycompany.catclinicproject.websocket.NotificationSocket;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -104,12 +105,11 @@ public class XrayController extends HttpServlet {
         int bookingID = svdao.getBookingIDByMedicalRecordID(medicalRecordID);
         svdao.addServiceToBooking(bookingID, 6);
         if(k == true){
-             ndao.createNotification(
-                VetID,
-                "Lab create Medical Record for Xray ",
-                medicalRecordID,
-                "requestX"
-        );
+             String message = "You have just create a X-ray request.";
+                int notiID = ndao.createNotification(VetID, message, medicalRecordID, "requestX");
+                if (notiID != -1) {
+                    NotificationSocket.sendNotification(VetID, notiID, message, "requestX");
+                }
                 
         }
         response.sendRedirect("xray?medicalRecordID=" + medicalRecordID);

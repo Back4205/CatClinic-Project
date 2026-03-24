@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,6 +19,9 @@
             <div class="header">
             Create a vacation schedule
             </div>
+               <a href="absentController?VetID=${VetID}" class="viewlistabsent">
+                VIEW LIST ABSENT
+            </a>
             <form action="changvetschedule" method="post" onsubmit="return validateForm()">
                 <input type="hidden" name="VetID" value="${VetID}">
                 <label>REQUEST TYPE</label>
@@ -59,7 +61,29 @@
                 <button type="submit">Submit Request</button>
             </form>
         </div>
-
+                 <c:if test="${not empty sessionScope['toast-messenger']}">
+                    <div id="toast-message">
+                        ${sessionScope['toast-messenger']}
+                    </div>
+                    <c:remove var="toast-messenger" scope="session"/>
+             </c:if>
+              
+            <c:if test="${not empty sessionScope['toast-messenger-success']}">
+                <div id="bubble-overlay">
+                    <div id="bubble-box">
+                        <div class="bubble-icon">
+                            ✔
+                        </div>
+                        <p class="bubble-text">
+                            ${sessionScope['toast-messenger-success']}
+                        </p>
+                        <button id="bubble-continue-btn">
+                            Continue
+                        </button>
+                    </div>
+                </div>
+                <c:remove var="toast-messenger-success" scope="session"/>
+            </c:if>
         <script>
 
             const typeSelect = document.getElementById("requestType");
@@ -118,6 +142,26 @@
                 return confirm("Are you sure you want to submit this request?");
 
             }
+            document.addEventListener("DOMContentLoaded", function () {
+                const btn = document.getElementById("bubble-continue-btn");
+                if (btn) {
+                    btn.addEventListener("click", function () {
+                        window.location.href = "changvetschedule?VetID=${param.VetID}";
+                    });
+                }
+
+            });
+            document.addEventListener("DOMContentLoaded", function () {
+                const toast = document.getElementById("toast-message");
+                if (toast) {
+                    setTimeout(function () {
+                        toast.style.opacity = "0";
+                        setTimeout(function () {
+                            toast.remove();
+                        }, 500);
+                    }, 5000);
+                }
+            });
             
 
         </script>
