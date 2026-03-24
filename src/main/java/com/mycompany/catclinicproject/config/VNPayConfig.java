@@ -12,10 +12,10 @@ public class VNPayConfig {
     public static final String vnp_HashSecret = "S7JYOZNY652POLRSZJFUSW8VFF0LSNWP";
     public static final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 
-    public static final String vnp_ReturnUrl =
-            "http://localhost:9999/CatClinicProject/vnpay-return";
-//public static final String vnp_ReturnUrl =
-    //    " https://zaria-untrimmed-yuette.ngrok-free.dev/CatClinicProject/vnpay-return";
+//    public static final String vnp_ReturnUrl =
+//            "http://localhost:9999/CatClinicProject/vnpay-return";
+public static final String vnp_ReturnUrl =
+        " https://zaria-untrimmed-yuette.ngrok-free.dev/CatClinicProject/vnpay-return";
 
     // HASH ALL FIELDS
     public static String hashAllFields(Map<String, String> fields) {
