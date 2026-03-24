@@ -1,154 +1,186 @@
-
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Refund Management | Cat Clinic</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/DashboardAdminStyle.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar-admin.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header-admin.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/booking/cancel-booking.css">
+    <title>Receptionist Dashboard | CatClinic</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/base.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
+    <link href="${pageContext.request.contextPath}/css/receptiondashboard-style.css" rel="stylesheet">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/view-booking-list.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 </head>
 <body>
 
+<%@include file="header.jsp" %>
 
-<div class="admin-layout">
-    <jsp:include page="sidebar.jsp"/>
+<div class="app-container">
+    <c:set var="activePage" value="dashboard" scope="request"/>
+    <%@include file="sidebar.jsp" %>
 
+    <main class="main-content">
+        <div class="top-bar">
+            <a href="counter-booking" class="btn-new-booking">+ New Booking</a>
+        </div>
 
-    <div class="admin-main">
-        <jsp:include page="header.jsp"/>
+        <div class="hub-header">
+            <h2>Receptionist Hub</h2>
+            <p>Welcome back, ${sessionScope.acc.fullName}. Here is your control center for today.</p>
+        </div>
 
-
-        <div class="admin-dashboard">
-            <div class="page-container">
-
-                <div class="header-section">
-                    <h2 class="main-title">Refund Management</h2>
-
-                    <div class="total-refund-box">
-                        <span class="total-label">Monthly Total Refund (${currentMonthName})</span>
-                        <div class="total-amount">
-                            <fmt:formatNumber value="${totalRefundMonth != null ? totalRefundMonth : 0}" type="number"/>
-                            <span class="total-currency">VND</span>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="filter-box">
-                    <form action="ViewCancelBookingList" method="get">
-                        <input type="text" name="search" value="${search}" placeholder="Search service name...">
-                        <select name="status">
-                            <option value="ALL" ${status == 'ALL' ? 'selected' : ''}>All Status</option>
-                            <option value="PendingCancel" ${status == 'PendingCancel' ? 'selected' : ''}>Pending</option>
-                            <option value="CancelRefund" ${status == 'CancelRefund' ? 'selected' : ''}>Refunded</option>
-                            <option value="RejectedCancelRefund" ${status == 'RejectedCancelRefund' ? 'selected' : ''}>Rejected</option>
-                        </select>
-                        <button type="submit">Filter</button>
-                    </form>
-                </div>
-
-                
-                <table class="data-table">
-                    <thead>
-                    <tr>
-                        <th width="20%">Service</th>
-                        <th width="12%">Status</th>
-                        <th width="25%">Notes / Evidence</th>
-                        <th width="15%">Amount</th>
-                        <th width="13%" class="text-center">Refund Date</th>
-                        <th width="15%" class="text-center">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach var="b" items="${cancelList}">
-                        <tr>
-                            <td class="font-bold">${b.nameService}</td>
-                            <td>
-                                   <span class="badge ${b.status == 'PendingCancel' ? 'st-pending' : (b.status == 'CancelRefund' ? 'st-approved' : 'st-rejected')}">
-                                           ${b.status == 'PendingCancel' ? 'Pending' : (b.status == 'CancelRefund' ? 'Refunded' : 'Rejected')}
-                                   </span>
-                            </td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${b.status == 'CancelRefund'}">
-                                        <div class="img-container">
-                                            <img src="${b.note}" class="img-preview" onclick="openImage('${b.note}')" alt="Evidence">
-                                            <span class="view-hint">Click to view</span>
-                                        </div>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <span class="note-box">${b.note}</span>
-                                    </c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td class="price-text">
-                                <fmt:formatNumber value="${b.priceAtBooking}" type="number"/> <span class="currency">VND</span>
-                            </td>
-                            <td class="text-center">
-                                <c:choose>
-                                    <c:when test="${not empty b.refundDate}">
-                                           <span class="text-date">
-                                               <fmt:formatDate value="${b.refundDate}" pattern="MM/dd/yy"/>
-                                           </span>
-                                    </c:when>
-                                    <c:otherwise><span class="text-empty">—</span></c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td class="text-center">
-                                <c:if test="${b.status == 'PendingCancel'}">
-                                    <div class="action-btns">
-                                        <a href="ApproveRefund?bookingID=${b.bookingID}" class="btn-approve">Approve</a>
-                                        <a href="RejectRefund?bookingID=${b.bookingID}" class="btn-reject">Reject</a>
-                                    </div>
-                                </c:if>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                    <c:if test="${empty cancelList}">
-                        <tr>
-                            <td colspan="6" class="no-data">No refund requests found.</td>
-                        </tr>
-                    </c:if>
-                    </tbody>
-                </table>
-
-
-                <c:if test="${totalPage > 1}">
-                    <div class="pagination">
-                        <c:forEach begin="1" end="${totalPage}" var="i">
-                            <a href="ViewCancelBookingList?page=${i}&search=${search}&status=${status}"
-                               class="${i == currentPage ? 'active' : ''}">${i}</a>
-                        </c:forEach>
-                    </div>
-                </c:if>
-
-
+        <div class="stat-cards">
+            <div class="stat-card card-black">
+                <div class="stat-icon icon-black"><i class="fa-solid fa-list-check"></i></div>
+                <div class="stat-title">TOTAL BOOKINGS</div>
+                <p class="stat-number">${stats['Total'] != null ? stats['Total'] : 0}</p>
+            </div>
+            <div class="stat-card card-orange">
+                <div class="stat-icon icon-orange"><i class="fa-regular fa-clock"></i></div>
+                <div class="stat-title">PENDING PAYMENT</div>
+                <p class="stat-number">${stats['PendingPayment'] != null ? stats['PendingPayment'] : 0}</p>
+            </div>
+            <div class="stat-card card-sky">
+                <div class="stat-icon icon-sky"><i class="fa-solid fa-clipboard-user"></i></div>
+                <div class="stat-title">CONFIRMED</div>
+                <p class="stat-number">${stats['Confirmed'] != null ? stats['Confirmed'] : 0}</p>
+            </div>
+            <div class="stat-card card-purple">
+                <div class="stat-icon icon-purple"><i class="fa-solid fa-stethoscope"></i></div>
+                <div class="stat-title">COMPLETED</div>
+                <p class="stat-number">${stats['Completed'] != null ? stats['Completed'] : 0}</p>
+            </div>
+            <div class="stat-card card-green">
+                <div class="stat-icon icon-green"><i class="fa-regular fa-circle-check"></i></div>
+                <div class="stat-title">PENDING CANCEL</div>
+                <p class="stat-number">${stats['PendingCancelRefund'] != null ? stats['PendingCancelRefund'] : 0}</p>
+            </div>
+            <div class="stat-card card-red">
+                <div class="stat-icon icon-red"><i class="fa-solid fa-xmark"></i></div>
+                <div class="stat-title">CANCELLED</div>
+                <p class="stat-number">${stats['Cancelled'] != null ? stats['Cancelled'] : 0}</p>
             </div>
         </div>
-    </div>
+
+        <div class="table-section" id="table-section">
+            <div class="table-header">
+                <h3>View Booking List</h3>
+                <p>Overview of today's patient flow</p>
+            </div>
+
+            <form action="view-booking-list#table-section" method="GET">
+                <div class="table-toolbar">
+                    <input type="hidden" name="page" value="1">
+                    <div class="table-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" name="search" value="${currentSearch}" placeholder="Search by cat name, phone or owner...">
+                    </div>
+
+                    <div style="margin-left: 10px;">
+                        <input type="date" name="dateFilter" value="${currentDate}"
+                               style="padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; color: #475569;">
+                    </div>
+
+                    <div class="filter-bar">
+                        <select name="status">
+                            <option value="" ${empty currentStatus ? 'selected' : ''}>ALL STATUS</option>
+                            <option value="PendingPayment" ${currentStatus == 'PendingPayment' ? 'selected' : ''}>PENDING PAYMENT</option>
+                            <option value="Confirmed" ${currentStatus == 'Confirmed' ? 'selected' : ''}>CONFIRMED</option>
+                            <option value="Completed" ${currentStatus == 'Completed' ? 'selected' : ''}>COMPLETED</option>
+                            <option value="Cancelled" ${currentStatus == 'Cancelled' ? 'selected' : ''}>CANCELLED</option>
+                            <option value="CancelRefund" ${currentStatus == 'CancelRefund' ? 'selected' : ''}>REFUNDED</option>
+                            <option value="RejectedCancelRefund" ${currentStatus == 'RejectedCancelRefund' ? 'selected' : ''}>REJECTED CANCEL</option>
+
+                        </select>
+                        <button type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+
+            <table class="modern-table">
+                <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th class="col-actions">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${bookingList}" var="b">
+                    <tr>
+                        <td>
+                            <div class="patient-cell">
+                                <div class="cat-avatar">🐱</div>
+                                <div>
+                                    <p class="patient-name"><strong>${b.catName}</strong></p>
+                                    <p class="patient-id">Owner: ${b.bookingID} ${b.ownerName} - ${b.ownerPhone}</p>
+                                    <p style="color: #FF6B00; font-size: 12px; font-weight: 600; margin-top: 2px;">
+                                        Service: ${empty b.serviceName ? 'General Check' : b.serviceName}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="date-text"><i class="fa-regular fa-calendar table-icon"></i> ${b.appointmentDate}</span><br>
+                            <span class="time-text"><i class="fa-regular fa-clock table-icon"></i> ${b.appointmentTime}</span>
+                        </td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${fn:contains(b.status, 'PendingPayment')}"><span class="badge pendingpayment">${b.status}</span></c:when>
+                                <c:when test="${fn:contains(b.status, 'Confirmed')}"><span class="badge confirmed">${b.status}</span></c:when>
+                                <c:when test="${fn:contains(b.status, 'Completed')}"><span class="badge completed">${b.status}</span></c:when>
+                                <c:when test="${fn:contains(b.status, 'PendingCancel')}"><span class="badge pendingcancelrefund">${b.status}</span></c:when>
+                                <c:when test="${fn:contains(b.status, 'Cancelled')}"><span class="badge cancelled">${b.status}</span></c:when>
+                                <%-- Sửa lại: Dùng dấu == để so sánh chính xác tuyệt đối 100%, chống lỗi trùng chuỗi --%>
+                                <c:when test="${b.status == 'CancelRefund'}">
+                                    <span class="badge" style="background-color: #e0e7ff; color: #3730a3; border: 1px solid #c7d2fe;">Refunded</span>
+                                </c:when>
+                                <c:when test="${b.status == 'RejectedCancelRefund' || b.status == 'RejectedCancel'}">
+                                    <span class="badge" style="background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca;">Cancel Rejected</span>
+                                </c:when>
+
+                                <c:otherwise><span class="badge" style="background-color: #f1f5f9; color: #475569;">${b.status}</span></c:otherwise>
+                            </c:choose>
+                        </td>
+                        <td class="col-actions">
+                            <a href="${pageContext.request.contextPath}/appointmentdetail?id=${b.bookingID}" class="btn-text">Details ></a>
+                        </td>
+                    </tr>
+                </c:forEach>
+                <c:if test="${empty bookingList}">
+                    <tr><td colspan="4" class="empty-message">No appointments found.</td></tr>
+                </c:if>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+
+                <c:if test="${currentPage > 1}">
+                    <a href="view-booking-list?page=${currentPage - 1}&status=${currentStatus}&search=${currentSearch}&dateFilter=${currentDate}#table-section">&laquo;</a>
+                </c:if>
+
+                <c:set var="p_begin" value="${currentPage - 1}" />
+                <c:set var="p_end" value="${currentPage + 1}" />
+                <c:if test="${p_begin < 1}"><c:set var="p_begin" value="1" /><c:set var="p_end" value="${totalPage < 3 ? totalPage : 3}" /></c:if>
+                <c:if test="${p_end > totalPage}"><c:set var="p_end" value="${totalPage}" /><c:set var="p_begin" value="${totalPage - 2 > 0 ? totalPage - 2 : 1}" /></c:if>
+
+                <c:forEach begin="${p_begin}" end="${p_end}" var="i">
+                    <a href="view-booking-list?page=${i}&status=${currentStatus}&search=${currentSearch}&dateFilter=${currentDate}#table-section"
+                       class="${i == currentPage ? 'active-page' : ''}">${i}</a>
+                </c:forEach>
+
+                <c:if test="${currentPage < totalPage}">
+                    <a href="view-booking-list?page=${currentPage + 1}&status=${currentStatus}&search=${currentSearch}&dateFilter=${currentDate}#table-section">&raquo;</a>
+                </c:if>
+            </div>
+        </div>
+    </main>
 </div>
-
-
-<div id="imageModal" class="simple-modal" onclick="this.style.display='none'">
-    <img id="modalImg">
-</div>
-
-
-<script>
-    function openImage(src){
-        document.getElementById("imageModal").style.display = "flex";
-        document.getElementById("modalImg").src = src;
-    }
-</script>
-
-
+<%@include file="footer.jsp" %>
 </body>
 </html>
