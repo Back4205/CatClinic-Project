@@ -360,16 +360,21 @@
               <div class="table-header" style="margin-bottom: 0;">
                 <h3><i class="fa-solid fa-paw table-icon"></i>Cat List</h3>
               </div>
+              <c:set var="passPhone"    value="${not empty param.phone    ? param.phone    : customerInfo.phone}"/>
+              <c:set var="passFullName" value="${not empty param.fullName ? param.fullName : customerInfo.fullName}"/>
+              <c:set var="passEmail"    value="${not empty param.email    ? param.email    : customerInfo.email}"/>
+
               <c:choose>
                 <c:when test="${not empty customerInfo and customerInfo.userID gt 0}">
-                  <a href="${pageContext.request.contextPath}/cats/cat-add?from=booking" class="btn-new-booking" style="padding: 8px 16px; font-size: 13px;">
+                  <a href="${pageContext.request.contextPath}/cats/cat-add?f=Counterbooking&phone=${passPhone}&fullName=${passFullName}&email=${passEmail}"
+                     class="btn-new-booking" style="padding: 8px 16px; font-size: 13px;">
                     <i class="fa-solid fa-plus"></i> Add New
                   </a>
                 </c:when>
                 <c:otherwise>
-                  <a href="${pageContext.request.contextPath}/cats/cat-add?f=Counterbooking&phone=${param.phone}&fullName=${param.fullName}&email=${param.email}"
+                  <a href="${pageContext.request.contextPath}/cats/cat-add?f=Counterbooking&phone=${passPhone}&fullName=${passFullName}&email=${passEmail}"
                      class="btn-new-booking" style="padding: 8px 16px; font-size: 13px;">
-                    <i class="fa-solid fa-plus"></i>Add New Owner and  cat
+                    <i class="fa-solid fa-plus"></i> Add New Owner and cat
                   </a>
                 </c:otherwise>
               </c:choose>
