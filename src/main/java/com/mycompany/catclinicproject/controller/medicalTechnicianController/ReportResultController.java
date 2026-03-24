@@ -2,6 +2,7 @@
 package com.mycompany.catclinicproject.controller.medicalTechnicianController;
 import com.mycompany.catclinicproject.Untils.CloudinaryUntil;
 import com.mycompany.catclinicproject.dao.LabDAO;
+import com.mycompany.catclinicproject.dao.NotificationDAO;
 import com.mycompany.catclinicproject.model.TestOrders;
 import com.mycompany.catclinicproject.model.User;
 import com.mycompany.catclinicproject.websocket.NotificationSocket;
@@ -43,7 +44,7 @@ public class ReportResultController extends HttpServlet {
      @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+         NotificationDAO ndao = new NotificationDAO();
         int testOrderID = Integer.parseInt(request.getParameter("testOrderID"));
         String resultName = request.getParameter("resultName");
         String action = request.getParameter("action");
@@ -86,8 +87,24 @@ public class ReportResultController extends HttpServlet {
         } else if ("submit".equals(action)) {
             if ("Blood Test".equalsIgnoreCase(testName)) {
                 ldao.submitTextOnly(testOrderID, resultName);
+                int medicalRecordID = ldao.getMedicalRecordIdByTestOrderId(testOrderID);
+                int VetID = ldao.getMedicalRecordIdByTestOrderId(testOrderID);
+                String message = "You have just updated a medical record.";
+                int notiID = ndao.createNotification(VetID, message, medicalRecordID, "request BL");
+                if (notiID != -1) {
+                    NotificationSocket.sendNotification(VetID, notiID, message, "request BL");
+                }
             } else {
+                
                 ldao.submitFull(testOrderID, resultName, result);
+                ldao.submitTextOnly(testOrderID, resultName);
+                int medicalRecordID = ldao.getMedicalRecordIdByTestOrderId(testOrderID);
+                int VetID = ldao.getMedicalRecordIdByTestOrderId(testOrderID);
+                String message = "You have just updated a medical record.";
+                int notiID = ndao.createNotification(VetID, message, medicalRecordID, "requestX");
+                if (notiID != -1) {
+                    NotificationSocket.sendNotification(VetID, notiID, message, "request");
+                }
             }
         }
         response.sendRedirect(request.getContextPath() + "/technician/home");
