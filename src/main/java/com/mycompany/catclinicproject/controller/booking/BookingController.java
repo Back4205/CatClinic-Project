@@ -13,6 +13,11 @@ import java.util.*;
 @WebServlet(name = "BookingController", urlPatterns = {"/Booking"})
 public class BookingController extends HttpServlet {
 
+    private   BookingDAO bookingDAO = new BookingDAO();
+    private   CategoryDao categoryDAO = new CategoryDao();
+    private  ServiceDAO serviceDAO = new ServiceDAO();
+    private   UserDAO userDAO = new UserDAO();
+    private  TimeSlotDAO slotDAO = new TimeSlotDAO();
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -51,12 +56,6 @@ public class BookingController extends HttpServlet {
         }
 
         try {
-
-            BookingDAO bookingDAO = new BookingDAO();
-            CategoryDao categoryDAO = new CategoryDao();
-            ServiceDAO serviceDAO = new ServiceDAO();
-            UserDAO userDAO = new UserDAO();
-            TimeSlotDAO slotDAO = new TimeSlotDAO();
 
             int catID = Integer.parseInt(request.getParameter("catID"));
             int categoryID = Integer.parseInt(request.getParameter("categoryID"));

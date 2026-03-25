@@ -69,6 +69,9 @@
                                    class="date-input-custom"
                                    onchange="document.getElementById('filterForm').submit()">
                         </div>
+                        <button type="submit" style="border:none;background:none;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
 
                     </div>
 

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 @WebServlet(name = "CatAddController", urlPatterns = {"/cats/cat-add"})
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 10)
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 6, maxRequestSize = 1024 * 1024 * 10)
 public class CatAddController extends HttpServlet {
 
     private static final String UPLOAD_DIR = "D:/FU-learning/SPRING-2026_ky5/SWP391/CatClinicimg/cats";
@@ -193,6 +193,7 @@ public class CatAddController extends HttpServlet {
 
 
                 request.setAttribute("from", from);
+                request.setAttribute("f", from2);
                 request.setAttribute("cat", cat);
                 request.setAttribute("message", message);
                 request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
@@ -204,7 +205,30 @@ public class CatAddController extends HttpServlet {
             String imagePath = "image/cats/default.jpg";
 
             if (filePart != null && filePart.getSize() > 0) {
+                if (filePart.getSize() > 5 * 1024 * 1024) {
 
+                    request.setAttribute("from", from);
+                    request.setAttribute("from2", from2);
+                    request.setAttribute("phone", phone);
+                    request.setAttribute("fullName", fullName);
+                    request.setAttribute("email", email);
+
+                    // giữ lại dữ liệu cat
+                    Cat cat = new Cat();
+                    cat.setOwnerID(ownerID);
+                    cat.setName(name);
+                    cat.setBreed(breed);
+                    cat.setGender(gender);
+                    cat.setAge(age);
+
+                    request.setAttribute("cat", cat);
+                    request.setAttribute("message", "Image size must be less than 5MB!");
+                    request.setAttribute("from", from);
+                    request.setAttribute("from2", from2);
+                    request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp")
+                            .forward(request, response);
+                    return;
+                }
 
                 if (!isImageFile(filePart)) {
                     request.setAttribute("from", from);
@@ -217,6 +241,8 @@ public class CatAddController extends HttpServlet {
                     cat.setAge(age);
 
                     request.setAttribute("cat", cat);
+                    request.setAttribute("from", from);
+                    request.setAttribute("from2", from2);
                     request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
                     return;
                 }

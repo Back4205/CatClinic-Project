@@ -87,16 +87,27 @@ public class CatUpdateController extends HttpServlet {
                 message = "breed cannot contain numbers or special characters!";
             }
             else if (filePart != null && filePart.getSize() > 0) {
-                if (!isImageFile(filePart)) {
+                if (filePart.getSize() > 1 * 1024 * 1024) {
+                    message = "Image size must be less than 1MB!";
+                }
+
+                else if (!isImageFile(filePart)) {
                     message = "The uploaded file is not a valid image (it might be a renamed text/exe file)!";
                 }
             }
 
 
-
+            Cat tempCat = new Cat();
+            tempCat.setCatID(catId);
+            tempCat.setOwnerID(ownerID);
+            tempCat.setName(name);
+            tempCat.setBreed(breed);
+            tempCat.setGender(gender);
+            tempCat.setAge(newAge);
+            tempCat.setImg(cat.getImg());
             if (!message.isEmpty()) {
                 request.setAttribute("message", message);
-                request.setAttribute("cat", cat);
+                request.setAttribute("cat", tempCat);
                 request.getRequestDispatcher("/WEB-INF/views/client/cat-form.jsp").forward(request, response);
                 return;
             }
