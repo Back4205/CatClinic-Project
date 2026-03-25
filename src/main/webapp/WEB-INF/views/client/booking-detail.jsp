@@ -135,6 +135,7 @@
                         <i class="bi bi-receipt"></i> View Invoice
                     </a>
                 </c:if>
+                
                 <a href="booking-history" class="btn-custom btn-back-history">Back to History</a>
 
                 <c:choose>
@@ -143,6 +144,12 @@
                             <i class="bi bi-trash"></i> Cancel Booking
                         </a>
                     </c:when>
+                    <c:when test="${booking.status == 'RejectedCancelRefund'}">
+                        <a href="cancel-booking?id=${booking.bookingID}" class="btn-custom btn-cancel">
+                            <i class="bi bi-trash"></i> Cancel Booking
+                        </a>
+                    </c:when>
+
 
                     <c:when test="${booking.status == 'PendingPayment'}">
                         <a href="${pageContext.request.contextPath}//vnpay?bookingID=${booking.bookingID}" class="btn-custom btn-pay">

@@ -25,7 +25,7 @@
 
     <main class="main-content">
         <div class="top-bar">
-            <a href="counter-booking" class="btn-new-booking">+ New Booking</a>
+            <a href="booking2" class="btn-new-booking">+ New Booking</a>
         </div>
 
         <div class="hub-header">

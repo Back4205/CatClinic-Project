@@ -138,8 +138,13 @@
                     </a>
                 </c:if>
 
-
-
+                <c:if test="${booking.status == 'RejectedCancelRefund'}">
+                    <button type="button" onclick="openCheckinModal()" class="btn-action btn-orange-fixed"><i class="fa-solid fa-check"></i> &nbsp; Check-in Now</button>
+                    <%-- NÚT CANCEL MỚI THÊM --%>
+                    <a href="reception-cancel?id=${booking.bookingID}" class="btn-cancel-outline">
+                        <i class="fa-solid fa-trash-can"></i> &nbsp; Cancel Booking
+                    </a>
+                </c:if>
                 <c:if test="${booking.status == 'PendingPayment'}">
                     <a href="reception-cancel?id=${booking.bookingID}" class="btn-cancel-outline">
                         <i class="fa-solid fa-trash-can"></i> &nbsp; Cancel Booking
