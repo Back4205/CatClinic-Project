@@ -296,12 +296,12 @@ public class CatAddController extends HttpServlet {
 
 
     public  boolean isImageFile(Part filePart) {
-        String contentType = filePart.getContentType();
+        String contentType = filePart.getContentType(); // get mime type (loại file )
         if (contentType == null || !contentType.startsWith("image/")) {
             return false;
         }
-        try (java.io.InputStream is = filePart.getInputStream()) {
-            java.awt.image.BufferedImage bi = javax.imageio.ImageIO.read(is);
+        try (java.io.InputStream is = filePart.getInputStream()) {    // luồng đọc dữ liệu (data stream) từ một nguồn
+            java.awt.image.BufferedImage bi = javax.imageio.ImageIO.read(is); // dọc dữ liệu binary ảnh và biên dịch nó object ảnh trong jsva
             return bi != null; // Trả về true nếu thực sự là ảnh
         } catch (IOException e) {
             return false;
