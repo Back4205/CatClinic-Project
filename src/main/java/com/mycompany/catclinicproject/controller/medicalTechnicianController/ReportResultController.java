@@ -46,7 +46,6 @@ public class ReportResultController extends HttpServlet {
             throws ServletException, IOException {
          NotificationDAO ndao = new NotificationDAO();
         int testOrderID = Integer.parseInt(request.getParameter("testOrderID"));
-        String resultName = request.getParameter("resultName");
         String action = request.getParameter("action");
 
         LabDAO ldao = new LabDAO();
@@ -56,7 +55,7 @@ public class ReportResultController extends HttpServlet {
         String testName = testOrder.getTestName();
         String result = testOrder.getResult(); 
 
-        if ("X-ray".equalsIgnoreCase(testName)) {
+        if ("X-Ray".equalsIgnoreCase(testName)) {
 
             Part filePart = request.getPart("resultFile");
 
@@ -75,35 +74,30 @@ public class ReportResultController extends HttpServlet {
                 result = uploadedUrl;
             }
         }
+        else{
+            result = request.getParameter("resultFile");
+        }
 
         if ("draft".equals(action)) {
 
-            if ("Blood Test".equalsIgnoreCase(testName)) {
-                ldao.saveDraftTextOnly(testOrderID, resultName);
-            } else {
-                ldao.saveDraftFull(testOrderID, resultName, result);
-            }
-
+                ldao.saveDraftFull(testOrderID, result);
         } else if ("submit".equals(action)) {
+            ldao.submitFull(testOrderID, result);
             if ("Blood Test".equalsIgnoreCase(testName)) {
-                ldao.submitTextOnly(testOrderID, resultName);
                 int medicalRecordID = ldao.getMedicalRecordIdByTestOrderId(testOrderID);
-                int VetID = ldao.getMedicalRecordIdByTestOrderId(testOrderID);
-                String message = "You have just updated a medical record.";
+                int VetID = ldao.getVetIdByTestOrderId(testOrderID);
+                String message = "You have just received result a bloodtest.";
                 int notiID = ndao.createNotification(VetID, message, medicalRecordID, "request BL");
                 if (notiID != -1) {
                     NotificationSocket.sendNotification(VetID, notiID, message, "request BL");
                 }
             } else {
-                
-                ldao.submitFull(testOrderID, resultName, result);
-                ldao.submitTextOnly(testOrderID, resultName);
                 int medicalRecordID = ldao.getMedicalRecordIdByTestOrderId(testOrderID);
-                int VetID = ldao.getMedicalRecordIdByTestOrderId(testOrderID);
-                String message = "You have just updated a medical record.";
+                int VetID = ldao.getVetIdByTestOrderId(testOrderID);
+                String message = "You have just received result a X-Ray.";
                 int notiID = ndao.createNotification(VetID, message, medicalRecordID, "requestX");
                 if (notiID != -1) {
-                    NotificationSocket.sendNotification(VetID, notiID, message, "request");
+                    NotificationSocket.sendNotification(VetID, notiID, message, "requestX");
                 }
             }
         }
