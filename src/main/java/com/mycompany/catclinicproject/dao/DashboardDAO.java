@@ -38,8 +38,6 @@ public class DashboardDAO extends DBContext {
         } catch (Exception e) {
             System.out.println("Error at DashboardDAO: " + e.getMessage());
             e.printStackTrace();
-        } finally {
-            closeConnection();
         }
         return dto;
     }

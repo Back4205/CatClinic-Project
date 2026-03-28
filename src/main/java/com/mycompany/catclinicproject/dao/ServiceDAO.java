@@ -77,8 +77,6 @@ public class ServiceDAO extends DBContext {
             } catch (Exception ex) {
             }
             e.printStackTrace();
-        } finally {
-            closeConnection();
         }
     }
 
@@ -144,8 +142,6 @@ public class ServiceDAO extends DBContext {
             }
             e.printStackTrace();
 
-        } finally {
-            closeConnection();
         }
     }
 
