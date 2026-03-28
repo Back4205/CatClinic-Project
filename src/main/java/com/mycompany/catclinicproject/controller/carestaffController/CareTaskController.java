@@ -24,17 +24,22 @@ public class CareTaskController extends HttpServlet {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("acc") : null;
 
-        // Cập nhật lấy ID chuẩn
-//        int staffId = 1; // Tạm fix cứng staffId = 1 để test. Khi ráp code thực, hãy dùng hàm lấy StaffID từ UserID
 
         int userID = user.getUserID();
         UserDAO userDAO = new UserDAO();
         Integer staffId = userDAO.getStaffIDByUserID(userID);
         CareDAO dao = new CareDAO();
         Map<Integer, String> masterTasks = dao.getMasterCareTasks();
+        dao.generateDailyJourneysIfMissing(staffId);
         List<CareTaskDTO> allTasks = dao.getDailyTasks(staffId);
 
-        String today = LocalDate.now().toString();
+        String today = java.time.LocalDate.now().toString();
+
+        Map<Integer, List<String>> careHistories = new java.util.HashMap<>();
+        for (CareTaskDTO t : allTasks) {
+            careHistories.put(t.getBookingID(), dao.getCareHistoryLogs(t.getBookingID()));
+        }
+        request.setAttribute("careHistories", careHistories);
 
         request.setAttribute("masterTasks", masterTasks);
         request.setAttribute("allTasks", allTasks);
@@ -65,6 +70,11 @@ public class CareTaskController extends HttpServlet {
             String status = request.getParameter("status"); // Trạng thái Pending/In Progress/Completed
 
             dao.updateCareDiary(careJID, note, status);
+        }
+        else if ("extend".equals(action)) {
+            int bookingID = Integer.parseInt(request.getParameter("bookingID"));
+            String newEndDate = request.getParameter("newEndDate");
+            dao.extendBookingEndDate(bookingID, newEndDate);
         }
 
 

@@ -46,34 +46,45 @@
 
         <!-- CONTENT -->
         <div class="content-area">
-            <h1 class="page-title"><i class="bi bi-journal-text"></i> Record Care Diary</h1>
-            <p style="color: #6b7280; margin-bottom: 20px;">Select a patient to record their daily health and behavior log.</p>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+                <div>
+                    <h1 class="page-title" style="margin-bottom: 5px;">
+                        <i class="bi bi-journal-text"></i> Record Care Diary
+                    </h1>
+                    <p style="color: #6b7280; margin: 0;">Select a patient to record their daily health and behavior log.</p>
+                </div>
 
-            <div style="display: flex; gap: 15px; margin-bottom: 20px; font-weight: bold; font-size: 13px;">
-                <span><i class="dot bg-green"></i> Updated</span>
-                <span><i class="dot bg-orange"></i> Needs Update</span>
+                <%-- Ô hiển thị Ngày --%>
+                <div style="background: #fff7ed; border: 1px solid #fed7aa; padding: 10px 16px; border-radius: 8px; color: #ea580c; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <i class="bi bi-calendar3" style="margin-right: 5px;"></i> ${today}
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px; position: relative;">
+                <i class="bi bi-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #6b7280;"></i>
+                <input type="text" id="searchDiaryInput" onkeyup="searchDiary()" placeholder="Tìm kiếm theo tên mèo, tên chủ hoặc SĐT..."
+                       style="width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #e5e7eb; border-radius: 8px; outline: none; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <c:forEach items="${allTasks}" var="t">
                     <c:set var="isUpdated" value="${not empty t.note}" />
 
+
                     <%-- Thêm flex-direction: column để nội dung thẻ có thể xếp dọc (Header trên, Note dưới) --%>
-                    <div class="diary-card" style="display: flex; flex-direction: column;">
+                    <div class="diary-card" style="display: flex; flex-direction: column;" data-search="${t.catName} ${t.ownerName} ${t.ownerPhone}">
 
                             <%-- PHẦN 1: HEADER CỦA CARD (Nằm trên 1 hàng ngang) --%>
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
 
                                 <%-- Thông tin Mèo (Bên trái) --%>
-                            <div class="d-info">
-                                <img src="${pageContext.request.contextPath}/${t.catImage}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">
-                                <div>
-                                    <h3 style="margin:0; font-size: 16px;">${t.catName}
-                                        <i class="dot ${isUpdated ? 'bg-green' : 'bg-orange'}"></i>
-                                    </h3>
-                                    <span style="font-size:12px; color: #6b7280;"><i class="bi bi-check-circle-fill ${isUpdated ? 'text-green' : ''}"></i> ${isUpdated ? 'Updated' : 'Pending'}</span>
-                                </div>
-                            </div>
+                                    <div class="d-info">
+                                        <img src="${pageContext.request.contextPath}/${t.catImage}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">
+                                        <div style="display: flex; align-items: center;">
+
+                                            <h3 style="margin:0; font-size: 18px;">${t.catName}</h3>
+                                        </div>
+                                    </div>
 
                                 <%-- Trạng thái & Nút bấm (Bên phải) --%>
                             <div style="display: flex; gap: 20px; align-items: center;">
@@ -123,11 +134,16 @@
                         </c:if>
 
                     </div>
-                    <%-- KẾT THÚC THẺ DIARY-CARD Ở ĐÂY MỚI ĐÚNG NHÉ! --%>
+
                 </c:forEach>
             </div>
         </div>
     </div>
+    <footer class="footer">
+        <div class="footer-content">
+            &copy; 2026 CatClinic. All rights reserved.
+        </div>
+    </footer>
 </div>
 
 <!-- MODAL UI -->
@@ -189,22 +205,24 @@
 
 <script>
     function openDiaryModal(careJID, catName, status) {
-
         document.getElementById('mdCareJID').value = careJID;
         document.getElementById('mdStatus').value = status;
-
         document.getElementById('diaryCatName').innerText = catName;
-
         document.getElementById('mdStatusHidden').value = status;
 
+        // Clear input cũ
         document.getElementById('feedInput').value = "";
         document.getElementById('cleanInput').value = "";
         document.getElementById('medInput').value = "";
+
         document.getElementById('diaryModal').style.display = 'flex';
     }
-    function closeDiaryModal() { document.getElementById('diaryModal').style.display = 'none'; }
 
-    // GOM CHUỖI TRƯỚC KHI SUBMIT
+    function closeDiaryModal() {
+        document.getElementById('diaryModal').style.display = 'none';
+    }
+
+    // GOM CHUỖI TRƯỚC KHI SUBMIT (BẢN AN TOÀN CHO JSP)
     function submitDiary() {
         let appetite = document.getElementById('appetiteInput').value;
         let behavior = document.getElementById('behaviorInput').value;
@@ -213,14 +231,35 @@
         let clean = document.getElementById('cleanInput').value;
         let med = document.getElementById('medInput').value;
 
-        let finalNote = `[Appetite: \${appetite} | Behavior: \${behavior} | Vitals: \${vitals}]\n`;
-        if (feed) finalNote += `- Feeding: \${feed}\n`;
-        if (clean) finalNote += `- Cleaning: \${clean}\n`;
-        if (med) finalNote += `- Med/Others: \${med}`;
+        // Lấy Giờ:Phút hiện tại
+        let now = new Date();
+        let timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+        // Chèn timeString vào đầu câu (Sửa lại biến finalNote cũ của bạn)
+        let finalNote = "[" + timeString + "] [Appetite: " + appetite + " | Behavior: " + behavior + " | Vitals: " + vitals + "]\n";
+
+        if (feed) finalNote += "- Feeding: " + feed + "\n";
+        if (clean) finalNote += "- Cleaning: " + clean + "\n";
+        if (med) finalNote += "- Med/Others: " + med;
 
         document.getElementById('mdCombinedNote').value = finalNote.trim();
         document.getElementById('diaryForm').submit();
     }
+
+    function searchDiary() {
+        let input = document.getElementById('searchDiaryInput').value.toLowerCase();
+        let cards = document.getElementsByClassName('diary-card');
+
+        for (let i = 0; i < cards.length; i++) {
+            let searchData = cards[i].getAttribute('data-search').toLowerCase();
+            if (searchData.includes(input)) {
+                cards[i].style.display = "flex";
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+    }
+
 </script>
 </body>
 </html>
