@@ -149,6 +149,7 @@
                                     <label>Symptoms & Observations</label>
                                     <textarea name="symptoms"
                                               placeholder="Enter observed symptoms..."
+                                              required
                                               ${status eq 'Completed' ? 'readonly' : ''}>${emr.symptoms}</textarea>
                                 </div>
 
@@ -156,12 +157,14 @@
                                     <label>Diagnosis</label>
                                     <textarea name="diagnosis"
                                               placeholder="Enter final or working diagnosis..."
+                                              required
                                               ${status eq 'Completed' ? 'readonly' : ''}>${emr.diagnosis}</textarea>
                                 </div>
                                 <div class="form-group">
                                     <label>Treatment Protocol</label>
                                     <textarea name="treatmentPlan"
                                               placeholder="Describe treatment steps..."
+                                              required
                                               ${status eq 'Completed' ? 'readonly' : ''}>${emr.treatmentPlan}</textarea>
                                 </div>
                             </div>

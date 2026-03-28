@@ -33,7 +33,7 @@
 
                     <div class="emr-card">
                         <form action="preController" method="post">
-                             <input type="hidden" name="status"
+                            <input type="hidden" name="status"
                                    value="${status}"/>
                             <input type="hidden" name="medicalRecordID"
                                    value="${medicalRecordID}"/>
@@ -114,7 +114,7 @@
                                     <span class="step-label">PRESCRIPTION</span>
                                 </a>
                             </div>
-                                     <c:if test="${status ne 'Completed'}">
+                            <c:if test="${status ne 'Completed'}">
 
                                 <div class="form-group">
                                     <label>Search & Add Medicine</label>
@@ -145,21 +145,12 @@
                                 <input type="text" name="advice" class="input-control" value="${advice}">
                             </div>
                             <c:if test="${status ne 'Completed'}">
-
                                 <button type="submit"
                                         name="action"
                                         value="save"
                                         class="submit-btn">
                                     <i class="fa fa-file-medical"></i> Save Prescription
                                 </button>
-
-                                <button type="submit"
-                                        name="action"
-                                        value="complete"
-                                        class="submit-btn completed">
-                                    <i class="fa fa-file-medical"></i> Completed
-                                </button>
-
                             </c:if>
 
                         </form>
@@ -174,40 +165,19 @@
                         </div>
                     </div>
                 </div>
-                                <c:if test="${not empty sessionScope['toast-messenger']}">
 
-                    <div id="toast-message">
-                        ${sessionScope['toast-messenger']}
-                    </div>
-
-                    <c:remove var="toast-messenger" scope="session"/>
-
-                </c:if>
-                <c:if test="${not empty sessionScope['toast-messenger-complete']}">
-
-                    <div id="bubble-overlay">
-                        <div id="bubble-box">
-
-                            <div class="bubble-icon">
-                                ✔
-                            </div>
-
-                            <p class="bubble-text">
-                                ${sessionScope['toast-messenger-complete']}
-                            </p>
-
-                            <button id="bubble-continue-btn">
-                                Continue
-                            </button>
-
-                        </div>
-                    </div>
-
-                    <c:remove var="toast-messenger-complete" scope="session"/>
-
-                </c:if>
             </main>
         </div>
+        <c:if test="${not empty sessionScope['toast-messenger']}">
+
+            <div id="toast-message">
+                ${sessionScope['toast-messenger']}
+            </div>
+
+            <c:remove var="toast-messenger" scope="session"/>
+
+        </c:if>
+
 
         <!-- LOAD DRUG LIST -->
         <script>
@@ -221,6 +191,7 @@
         </script>
 
         <script>
+            const status = "${status}";
             const input = document.getElementById("drugSearch");
             const resultBox = document.getElementById("searchResult");
             const container = document.getElementById("prescriptionContainer");
@@ -352,6 +323,10 @@
             }
 
             function removeDrug(id) {
+
+                if (status === "Completed") {
+                    return; // ❌ không cho xóa
+                }
                 const card = document.getElementById("drug_" + id);
                 if (card)
                     card.remove();
@@ -361,8 +336,7 @@
                             '<div id="emptyBox">No medicines added yet.</div>';
                 }
             }
-             document.addEventListener("DOMContentLoaded", function () {
-
+            document.addEventListener("DOMContentLoaded", function () {
                 const toast = document.getElementById("toast-message");
 
                 if (toast) {
@@ -377,14 +351,7 @@
                 }
 
             });
-            document.addEventListener("DOMContentLoaded", function () {
-                const btn = document.getElementById("bubble-continue-btn");
-                if (btn) {
-                    btn.addEventListener("click", function () {
-                        window.location.href = "preController?medicalRecordID=${param.medicalRecordID}";
-                    });
-                }
-            });
+
         </script>
         <c:if test="${not empty prescriptionList}">
             <script>
