@@ -128,8 +128,6 @@ public class CategoryDao extends DBContext{
              }
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            closeConnection();
         }
 
         return s;

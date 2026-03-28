@@ -80,6 +80,7 @@ public class CareDAO extends DBContext {
     }
 
     // 3. Đánh dấu 1 task là hoàn thành và cập nhật Status tự động (Pending -> In Progress -> Completed)
+    // 3. Đánh dấu 1 task là hoàn thành
     public void markTaskAsDone(int careJID, int taskId) {
         try {
             // 1. Lưu task chi tiết
@@ -90,12 +91,8 @@ public class CareDAO extends DBContext {
             ps.setInt(3, careJID); ps.setInt(4, taskId);
             ps.executeUpdate();
 
-            // 2. Cập nhật Status của Journey (Chỉ có 3 mốc: Pending -> In Progress -> Completed)
-            List<Integer> doneTasks = getCompletedTaskIds(careJID);
+            // 2. GIỮ NGUYÊN IN PROGRESS ĐỂ LỄ TÂN KHÔNG THẤY
             String newStatus = "In Progress";
-            if (doneTasks.size() >= 4) {
-                newStatus = "Completed"; // Khi đủ 4 ô thì chốt là Completed
-            }
 
             PreparedStatement up = c.prepareStatement("UPDATE CareJourneys SET Status = ? WHERE CareJID = ?");
             up.setString(1, newStatus);
@@ -104,28 +101,117 @@ public class CareDAO extends DBContext {
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // 4. Chuyển hồ sơ cho Lễ Tân (Checkout)
+    // 4. Chuyển hồ sơ cho Lễ Tân (Chỉ khi bạn bấm nút Checkout)
     public void setReadyForCheckout(int bookingID) {
         try {
+            // Việc 1: Chốt đơn hàng tổng thành Completed (Dành cho chức năng thống kê doanh thu)
             PreparedStatement ps = c.prepareStatement("UPDATE Bookings SET Status = 'Completed' WHERE BookingID = ?");
             ps.setInt(1, bookingID);
             ps.executeUpdate();
+
+            // Việc 2: LÚC NÀY MỚI CHỐT SỔ THÀNH COMPLETED (Để đánh thức code của Lễ tân hút mèo sang)
+            PreparedStatement ps2 = c.prepareStatement("UPDATE CareJourneys SET Status = 'Completed' WHERE BookingID = ? AND CAST(RecordTime AS DATE) = CAST(GETDATE() AS DATE)");
+            ps2.setInt(1, bookingID);
+            ps2.executeUpdate();
         } catch (Exception e) { e.printStackTrace(); }
     }
 
-    // Lưu Record Care Diary (Cập nhật Note và Status)
+    // Lưu Record Care Diary (Cập nhật Note và Status - Hỗ trợ CỘNG DỒN)
     public boolean updateCareDiary(int careJID, String note, String status) {
-        String sql = "UPDATE CareJourneys SET Note = ?, Status = ? WHERE CareJID = ?";
+        // SQL thông minh: Nếu Note cũ trống thì lưu mới, nếu đã có thì nối thêm xuống dòng rồi cộng dồn
+        String sql = "UPDATE CareJourneys "
+                + "SET Note = CASE WHEN Note IS NULL OR DATALENGTH(Note) = 0 THEN ? "
+                + "ELSE Note + CHAR(13) + CHAR(10) + CHAR(13) + CHAR(10) + ? END, "
+                + "Status = ? WHERE CareJID = ?";
         try {
             PreparedStatement ps = c.prepareStatement(sql);
-            ps.setString(1, note);
-            ps.setString(2, status);
-            ps.setInt(3, careJID);
+            ps.setString(1, note); // Tham số 1: Dành cho trường hợp sổ mới tinh
+            ps.setString(2, note); // Tham số 2: Dành cho trường hợp cộng dồn
+            ps.setString(3, status);
+            ps.setInt(4, careJID);
+
             int rows = ps.executeUpdate();
             return rows > 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // 5. Tự động sinh sổ CareJourneys cho ngày mới nếu mèo chưa Check-out
+    public void generateDailyJourneysIfMissing(int staffID) {
+        String sql = "INSERT INTO CareJourneys (CatID, BookingID, RecordTime, StaffID, Status) " +
+                "SELECT b.CatID, b.BookingID, GETDATE(), ?, 'Pending' " +
+                "FROM Bookings b " +
+                "JOIN BoardingRecords br ON b.BookingID = br.BookingID " +
+                "WHERE br.CheckInTime IS NOT NULL AND br.CheckOutTime IS NULL " +
+                "AND NOT EXISTS (" +
+                "    SELECT 1 FROM CareJourneys cj " +
+                "    WHERE cj.BookingID = b.BookingID AND CAST(cj.RecordTime AS DATE) = CAST(GETDATE() AS DATE)" +
+                ")";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, staffID);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void extendBookingEndDate(int bookingID, String newEndDate) {
+        try {
+            c.setAutoCommit(false); // Bật chế độ Transaction để đảm bảo an toàn dữ liệu
+
+            // Việc 1: Cập nhật EndDate mới vào bảng Bookings
+            PreparedStatement ps1 = c.prepareStatement("UPDATE Bookings SET EndDate = ? WHERE BookingID = ?");
+            ps1.setString(1, newEndDate);
+            ps1.setInt(2, bookingID);
+            ps1.executeUpdate();
+
+            // Việc 2: Tính lại tiền lưu trú và ghi đè vào bảng Appointment_Service
+            // Công thức: Đơn giá 1 ngày (s.Price) * (Số ngày từ lúc nhập viện đến ngày xuất viện mới + 1)
+            // (Chỉ áp dụng cho dịch vụ Boarding có CategoryID = 4)
+            String sqlUpdatePrice =
+                    "UPDATE aps " +
+                            "SET aps.PriceAtBooking = s.Price * (DATEDIFF(DAY, b.AppointmentDate, ?) + 1) " +
+                            "FROM Appointment_Service aps " +
+                            "JOIN Bookings b ON aps.BookingID = b.BookingID " +
+                            "JOIN Services s ON aps.ServiceID = s.ServiceID " +
+                            "WHERE aps.BookingID = ? AND s.CategoryID = 4";
+
+            PreparedStatement ps2 = c.prepareStatement(sqlUpdatePrice);
+            ps2.setString(1, newEndDate); // Truyền ngày xuất viện mới vào hàm DATEDIFF
+            ps2.setInt(2, bookingID);
+            ps2.executeUpdate();
+
+            c.commit(); // Chốt lưu toàn bộ thay đổi xuống DB
+        } catch (Exception e) {
+            try { c.rollback(); } catch (Exception ex) {}
+            e.printStackTrace();
+        } finally {
+            try { c.setAutoCommit(true); } catch (Exception e) {}
+        }
+    }
+
+    // Lấy lịch sử ghi chú bệnh án của các ngày trước
+    public List<String> getCareHistoryLogs(int bookingID) {
+        List<String> history = new ArrayList<>();
+        // Sắp xếp giảm dần để ngày mới nhất lên đầu
+        String sql = "SELECT CAST(RecordTime AS DATE) as RecDate, Note " +
+                "FROM CareJourneys " +
+                "WHERE BookingID = ? AND Note IS NOT NULL " +
+                "ORDER BY RecordTime DESC";
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, bookingID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String log = "Ngày " + rs.getString("RecDate") + "|||" + rs.getString("Note");
+                history.add(log);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return history;
     }
 }
