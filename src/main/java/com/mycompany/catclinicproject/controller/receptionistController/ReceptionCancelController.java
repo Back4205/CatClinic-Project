@@ -21,8 +21,8 @@ public class ReceptionCancelController extends HttpServlet {
         if (idRaw != null) {
             BookingDAO dao = new BookingDAO();
             int bookingID = Integer.parseInt(idRaw);
-            boolean k = dao.hasValidTotalAmount(bookingID);
-            if (k == true) {
+            int  k = dao.hasValidTotalAmount(bookingID);
+            if (k == 0) {
                 dao.cancelBooking(bookingID);
                 session.setAttribute("toastMessage","cancel-success!" );
                 response.sendRedirect("appointmentdetail?id="+bookingID);

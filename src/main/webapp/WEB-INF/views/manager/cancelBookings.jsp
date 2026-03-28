@@ -42,7 +42,7 @@
                         <input type="text" name="search" value="${search}" placeholder="Search service name...">
                         <select name="status">
                             <option value="ALL" ${status == 'ALL' ? 'selected' : ''}>All Status</option>
-                            <option value="PendingCancelRefund" ${status == 'PendingCancel' ? 'selected' : ''}>Pending</option>
+                            <option value="PendingCancel" ${status == 'PendingCancel' ? 'selected' : ''}>Pending</option>
                             <option value="CancelRefund" ${status == 'CancelRefund' ? 'selected' : ''}>Refunded</option>
                             <option value="RejectedCancelRefund" ${status == 'RejectedCancelRefund' ? 'selected' : ''}>Rejected</option>
                         </select>

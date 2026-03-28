@@ -8,6 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html>
@@ -171,7 +172,28 @@
                                     <td>${sw.staffRole}</td>
                                     <td>${sw.testName}</td>
                                     <td>${sw.resultName}</td>
-                                    <td>${sw.result}</td>
+                                    <td>
+                                        <c:choose>
+                                            <%-- Kiểm tra nếu result chứa đuôi file ảnh (không phân biệt hoa thường) --%>
+                                            <c:when test="${fn:endsWith(fn:toLowerCase(sw.result), '.jpg')
+                     || fn:endsWith(fn:toLowerCase(sw.result), '.png')
+                     || fn:endsWith(fn:toLowerCase(sw.result), '.jpeg')
+                     || fn:endsWith(fn:toLowerCase(sw.result), '.gif')}">
+
+                                                <%-- Hiển thị ảnh thu nhỏ, click vào có thể mở ảnh mới --%>
+                                                <a href="${sw.result}" target="_blank">
+                                                    <img src="${sw.result}"
+                                                         alt="Test Result"
+                                                         style="max-width: 100px; border-radius: 4px; cursor: pointer; border: 1px solid #ddd;">
+                                                </a>
+                                            </c:when>
+
+                                            <%-- Nếu không phải ảnh thì hiển thị text bình thường --%>
+                                            <c:otherwise>
+                                                ${sw.result}
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </td>
                                 </tr>
                             </c:forEach>
                             </tbody>

@@ -1,6 +1,7 @@
 package com.mycompany.catclinicproject.controller.receptionistController;
 
 import com.mycompany.catclinicproject.dao.BookingDAO;
+import com.mycompany.catclinicproject.model.BillingBookingDTO;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +17,16 @@ public class BookingListController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        BookingDAO bookingDAO = new BookingDAO();
+
+        Integer lastSeenID = (Integer) session.getAttribute("lastSeenBookingID");
+        if (lastSeenID == null) lastSeenID = 0;
+
+        List<BillingBookingDTO> newBookings = bookingDAO.getNewBookings(lastSeenID);
+
+        session.setAttribute("notifications", newBookings);
+        session.setAttribute("notificationCount", newBookings.size());
         BookingDAO dao = new BookingDAO();
         int pageSize = 5;
 

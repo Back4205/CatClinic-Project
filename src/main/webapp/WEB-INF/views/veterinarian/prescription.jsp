@@ -381,7 +381,9 @@
                 const btn = document.getElementById("bubble-continue-btn");
                 if (btn) {
                     btn.addEventListener("click", function () {
-                        window.location.href = "preController?medicalRecordID=${param.medicalRecordID}";
+                        const overlay = document.getElementById("bubble-overlay");
+                        if (overlay) overlay.style.display = "none";
+                        window.location.href = "EmrController?medicalRecordID=${medicalRecordID}";
                     });
                 }
             });

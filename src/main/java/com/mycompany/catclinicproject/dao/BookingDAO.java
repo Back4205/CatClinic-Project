@@ -57,29 +57,26 @@ public class BookingDAO extends DBContext {
         }
         return list;
     }
-    public boolean hasValidTotalAmount(int bookingId) {
-    String sql = "SELECT TotalAmount FROM Invoices WHERE BookingID = ?";
+    public int  hasValidTotalAmount(int bookingId) {
+        String sql = "SELECT COUNT(*) \n" +
+                "FROM Payments p\n" +
+                "JOIN Invoices i ON p.InvoiceID = i.InvoiceID\n" +
+                "WHERE i.BookingID = ?" ;
 
-    try {
-        PreparedStatement ps = c.prepareStatement(sql);
-        ps.setInt(1, bookingId);
+        try {
+            PreparedStatement ps = c.prepareStatement(sql);
+            ps.setInt(1, bookingId);
 
-        ResultSet rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
 
-        if (rs.next()) {
-            double totalAmount = rs.getDouble("TotalAmount");
-
-            // check null hoặc = 0
-            if (rs.wasNull() || totalAmount == 0) {
-                return false;
+            if (rs.next()) {
+                return rs.getInt(1);
             }
-            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
 
-    return false;
+        return 0;
 }
     public boolean cancelBooking(int bookingId) {
     String sql = "UPDATE Bookings SET Status = ? WHERE BookingID = ?";
