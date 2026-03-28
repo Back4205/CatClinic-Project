@@ -63,11 +63,18 @@ public class AddEMR extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+                 request.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("acc") : null;
+        if (user == null || user.getRoleID() != 2) {
+            response.sendRedirect(request.getContextPath() + "/login?from=booking");
+            return;
+        }
         NotificationDAO daon = new NotificationDAO();
         User acc = (User) session.getAttribute("acc");
         int UserID = acc.getUserID();
         int VetID = daon.getVetIDByUserID(UserID);
+        
         int bookingID = Integer.parseInt(request.getParameter("bookingID"));
         BookingDaoVeterinarian dao = new BookingDaoVeterinarian();
         boolean checkstatus = dao.isAnyInTreatment(VetID);

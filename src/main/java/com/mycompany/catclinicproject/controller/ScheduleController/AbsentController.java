@@ -6,6 +6,7 @@ package com.mycompany.catclinicproject.controller.ScheduleController;
 
 import com.mycompany.catclinicproject.dao.TimeSlotDAO;
 import com.mycompany.catclinicproject.model.TimeSlotDetailDTO;
+import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -64,6 +65,13 @@ public class AbsentController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("acc") : null;
+
+        if (user == null || user.getRoleID() != 1) {
+            response.sendRedirect(request.getContextPath() + "/login?from=booking");
+            return;
+        }
 
         String requestType = request.getParameter("requestType");
         String vetID = request.getParameter("VetID");

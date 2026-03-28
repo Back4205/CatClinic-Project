@@ -68,12 +68,11 @@ public class DashboardController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("acc");
-
-        // Nếu chưa login
-        if (user == null) {
-            response.sendRedirect("login");
+         request.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("acc") : null;
+        if (user == null || user.getRoleID() != 2) {
+            response.sendRedirect(request.getContextPath() + "/login?from=booking");
             return;
         }
 

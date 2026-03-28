@@ -5,6 +5,7 @@
 package com.mycompany.catclinicproject.controller.Veterinarian;
 
 import com.mycompany.catclinicproject.dao.MedicalRecordDAO;
+import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -58,7 +60,13 @@ public class CheckRecordStatus extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-
+         request.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession(false);
+        User user = (User) session.getAttribute("acc");
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
         MedicalRecordDAO dao = new MedicalRecordDAO();
         boolean changed = dao.autoUpdateAndCheckChanges();
         response.setContentType("text/plain");

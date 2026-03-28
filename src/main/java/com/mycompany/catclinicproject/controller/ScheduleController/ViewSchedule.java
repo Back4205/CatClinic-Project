@@ -7,6 +7,7 @@ package com.mycompany.catclinicproject.controller.ScheduleController;
 import com.mycompany.catclinicproject.dao.TimeSlotDAO;
 import com.mycompany.catclinicproject.dao.VeterinarianDAO;
 import com.mycompany.catclinicproject.model.TimeSlot2DTO;
+import com.mycompany.catclinicproject.model.User;
 
 import com.mycompany.catclinicproject.model.VetScheduleDTO;
 import com.mycompany.catclinicproject.model.VeteNameID;
@@ -69,7 +70,13 @@ public class ViewSchedule extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("acc") : null;
+
+        if (user == null || user.getRoleID() != 1) {
+            response.sendRedirect(request.getContextPath() + "/login?from=booking");
+            return;
+        }
         int currentYear = LocalDate.now().getYear();
         int year = request.getParameter("year") != null
                 ? Integer.parseInt(request.getParameter("year"))

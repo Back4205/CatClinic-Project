@@ -8,6 +8,7 @@ import com.mycompany.catclinicproject.dao.BookingDAO;
 import com.mycompany.catclinicproject.dao.TimeSlotDAO;
 import com.mycompany.catclinicproject.dao.VeterinarianDAO;
 import com.mycompany.catclinicproject.model.TimeSlot2DTO;
+import com.mycompany.catclinicproject.model.User;
 import com.mycompany.catclinicproject.model.VeteNameID;
 import com.mycompany.catclinicproject.sendmail.SendMail;
 import java.io.IOException;
@@ -66,7 +67,13 @@ public class ChangVetSchedule extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+         HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("acc") : null;
+
+        if (user == null || user.getRoleID() != 1) {
+            response.sendRedirect(request.getContextPath() + "/login?from=booking");
+            return;
+        }
         TimeSlotDAO tdao = new TimeSlotDAO();
         String VetID = request.getParameter("VetID");
         String type = request.getParameter("requestType");

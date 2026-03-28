@@ -9,6 +9,7 @@ import com.mycompany.catclinicproject.dao.DrugVeterinarianDAO;
 import com.mycompany.catclinicproject.dao.MedicalRecordVeterinarianDao;
 import com.mycompany.catclinicproject.model.DrugVeteCompletedDTO;
 import com.mycompany.catclinicproject.model.EMRDTO;
+import com.mycompany.catclinicproject.model.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -96,7 +97,13 @@ public class EmrController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
+          request.setCharacterEncoding("UTF-8");
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("acc") : null;
+        if (user == null || user.getRoleID() != 2) {
+            response.sendRedirect(request.getContextPath() + "/login?from=booking");
+            return;
+        }
         int medicalRecordID = Integer.parseInt(request.getParameter("medicalRecordID"));
         String diagnosis = request.getParameter("diagnosis");
         String symptoms = request.getParameter("symptoms");
