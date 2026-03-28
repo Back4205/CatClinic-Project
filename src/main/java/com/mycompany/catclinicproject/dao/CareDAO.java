@@ -23,19 +23,25 @@ public class CareDAO extends DBContext {
     }
 
     // 2. Lấy dữ liệu CareJourneys trong ngày
+
     public List<CareTaskDTO> getDailyTasks(int staffId) {
         List<CareTaskDTO> list = new ArrayList<>();
-        String sql = "SELECT cj.CareJID, cj.Status, cj.BookingID, b.EndDate, b.Status as BookingStatus, " +
+        // Cập nhật SQL: Join thêm Appointment_Service để lọc ServiceID
+        String sql = "SELECT DISTINCT cj.CareJID, cj.Status, cj.BookingID, b.EndDate, b.Status as BookingStatus, " +
                 "c.CatID, c.Name as CatName, c.Age, c.Breed, c.Gender, c.Image, " +
-                "u.FullName as OwnerName, u.Phone as OwnerPhone, o.Address, cj.Note , " + // Thêm cj.Note
+                "u.FullName as OwnerName, u.Phone as OwnerPhone, o.Address, cj.Note, " +
                 "br.CheckOutTime " +
                 "FROM CareJourneys cj " +
                 "JOIN Bookings b ON cj.BookingID = b.BookingID " +
+                "JOIN Appointment_Service aps ON b.BookingID = aps.BookingID " + // Join bảng trung gian
                 "JOIN Cats c ON cj.CatID = c.CatID " +
                 "JOIN Owners o ON c.OwnerID = o.OwnerID " +
                 "JOIN Users u ON o.UserID = u.UserID " +
-                "JOIN BoardingRecords br ON b.BookingID = br.BookingID " +
-                "WHERE cj.StaffID = ? AND CAST(cj.RecordTime AS DATE) = CAST(GETDATE() AS DATE)";
+                "LEFT JOIN BoardingRecords br ON b.BookingID = br.BookingID " + // Dùng LEFT JOIN nếu chưa chắc chắn có record boarding
+                "WHERE cj.StaffID = ? " +
+                "AND aps.ServiceID = 8 " + // Fix cứng ServiceID = 8
+                "AND CAST(cj.RecordTime AS DATE) = CAST(GETDATE() AS DATE)";
+
         try {
             PreparedStatement ps = c.prepareStatement(sql);
             ps.setInt(1, staffId);
@@ -47,13 +53,16 @@ public class CareDAO extends DBContext {
                 dto.setCatName(rs.getString("CatName"));
                 dto.setCatAge(rs.getInt("Age"));
                 dto.setBreed(rs.getString("Breed"));
-                boolean isMale = rs.getBoolean("Gender"); // Tùy theo CSDL lưu kiểu BIT hay Chuỗi
+
+                // Xử lý Gender
+                boolean isMale = rs.getBoolean("Gender");
                 dto.setGender(isMale ? "Male" : "Female");
+
                 dto.setOwnerName(rs.getString("OwnerName"));
                 dto.setOwnerPhone(rs.getString("OwnerPhone"));
                 dto.setAddress(rs.getString("Address"));
                 dto.setCatImage(rs.getString("Image"));
-                dto.setNote(rs.getString("Note")); // THÊM DÒNG NÀY ĐỂ MAPPING NOTE
+                dto.setNote(rs.getString("Note"));
                 dto.setCheckOutTime(rs.getTimestamp("CheckOutTime"));
                 dto.setBookingID(rs.getInt("BookingID"));
                 dto.setBookingStatus(rs.getString("BookingStatus"));
@@ -62,8 +71,9 @@ public class CareDAO extends DBContext {
                 dto.setCompletedTaskIds(getCompletedTaskIds(dto.getCareJID()));
                 list.add(dto);
             }
-
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return list;
     }
 
