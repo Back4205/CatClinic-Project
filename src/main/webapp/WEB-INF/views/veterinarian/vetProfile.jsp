@@ -92,43 +92,6 @@
             </div>
 
         </div>
-
-        <!-- ===== CHANGE PASSWORD (BOTTOM) ===== -->
-        <div class="card password-card">
-
-            <div class="card-header">
-                <h3>Change Password</h3>
-            </div>
-
-            <form action="VetProfile" method="post" class="password-form">
-
-                <input type="hidden" name="action" value="changePassword">
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Current Password</label>
-                        <input type="password" name="oldPass" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>New Password</label>
-                        <input type="password" name="newPass" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input type="password" name="confirmPass" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-save">
-                    <i class="fa fa-key"></i> Change Password
-                </button>
-
-            </form>
-
-        </div>
-
     </div>
 
 </main>

@@ -42,18 +42,7 @@
                             <h3 class="status-pending">${DASHBOARD_DATA.pendingCancelCount}</h3>
                         </div>
                     </div>
-
-                    <div class="card">
-                        <div class="icon-box"><i class="fa-solid fa-coins"></i></div>
-                        <div class="info">
-                            <p>Monthly Revenue</p>
-                            <h3 class="revenue-value">
-                                <fmt:formatNumber value="${DASHBOARD_DATA.monthlyRevenue}" type="currency" currencySymbol="$"/>
-                            </h3>
-                        </div>
-                    </div>
-                </div>
-
+                </div>        
                 <div class="details-grid">
                     <div class="content-box">
                         <h2><i class="fa-solid fa-users-gear"></i> Personnel Distribution by Role</h2>
@@ -73,7 +62,7 @@
                                                 ${entry.key}
                                             </span>
                                         </td>
-                                        <td style="text-align: right;">
+                                        <td class="td-right">
                                             <span class="count-circle">${entry.value}</span>
                                         </td>
                                     </tr>

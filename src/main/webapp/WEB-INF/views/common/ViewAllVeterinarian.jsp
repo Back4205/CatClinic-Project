@@ -60,7 +60,7 @@
             <div class="vet-card">
                 <div class="img-wrapper">
                     <img class="vet-img"
-                         src="${pageContext.request.contextPath}/${v.image}"
+                         src="${v.image}"
                          alt="Doctor ${v.fullName}">
                     <div class="experience-badge">
                         ⭐ ${v.experienceYear} Years Exp.

@@ -169,9 +169,22 @@
             </div>
         </div>
     </div>
+            
 </div>
+            <c:if test="${not empty sessionScope.toastMessage}">
+                    <div id="toastBox" class="toast-box">
+                        ${sessionScope.toastMessage}
+                    </div>
+                    <c:remove var="toastMessage" scope="session"/>
+                </c:if>
 
 <script>
+    setTimeout(function () {
+        var toast = document.getElementById("toastBox");
+        if (toast) {
+            toast.style.display = "none";
+        }
+    }, 5000);
     function openCheckinModal() { document.getElementById('checkinModal').style.display = 'flex'; }
     function closeCheckinModal() { document.getElementById('checkinModal').style.display = 'none'; }
     function submitCheckinForm(bookingId) {

@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet(name = "ReceptionCancelController", urlPatterns = {"/reception-cancel"})
@@ -15,14 +16,17 @@ public class ReceptionCancelController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        HttpSession session = request.getSession(false);
         String idRaw = request.getParameter("id");
         if (idRaw != null) {
             BookingDAO dao = new BookingDAO();
             int bookingID = Integer.parseInt(idRaw);
             boolean k = dao.hasValidTotalAmount(bookingID);
-            if (k == false) {
+            if (k == true) {
                 dao.cancelBooking(bookingID);
+                session.setAttribute("toastMessage","cancel-success!" );
+                response.sendRedirect("appointmentdetail?id="+bookingID);
+                return;
             } else {
                 BookingHistoryDTO booking = dao.getBookingDetailByID(bookingID);
 

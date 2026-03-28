@@ -31,7 +31,7 @@
                     <div class="total-refund-box">
                         <span class="total-label">Monthly Total Refund (${currentMonthName})</span>
                         <div class="total-amount">
-                            <fmt:formatNumber value="${totalRefundMonth != null ? totalRefundMonth : 0}" type="number"/> 
+                            <fmt:formatNumber value="${totalRefundMonth != null ? totalRefundMonth*0.2 : 0}" type="number"/> 
                             <span class="total-currency">VND</span>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                                     </c:choose>
                                 </td>
                                 <td class="price-text">
-                                    <fmt:formatNumber value="${b.priceAtBooking}" type="number"/> <span class="currency">VND</span>
+                                    <fmt:formatNumber value="${b.priceAtBooking * 0.2}" type="number"/> <span class="currency">VND</span>
                                 </td>
                                 <td class="text-center">
                                     <c:choose>

@@ -174,3 +174,37 @@
     margin: 30px auto 0;     /* Căn giữa nút */
     padding: 14px 40px;      /* Tăng khoảng trống hai bên cho sang */
 }
+.toast-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 250px;
+    max-width: 350px;
+    padding: 15px 20px;
+    background-color: #4CAF50; /* màu xanh thành công */
+    color: #fff;
+    font-size: 14px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+
+    opacity: 0;
+    transform: translateY(-20px);
+    animation: slideIn 0.5s ease forwards, fadeOut 0.5s ease 3s forwards;
+}
+
+/* Animation hiện lên */
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animation biến mất */
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
