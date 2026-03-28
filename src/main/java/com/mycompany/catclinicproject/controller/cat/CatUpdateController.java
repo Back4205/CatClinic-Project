@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 @WebServlet(name = "CatUpdateController", urlPatterns = {"/cats/cat-update"})
-@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 10)
+@MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 6, maxRequestSize = 1024 * 1024 * 10)
 public class CatUpdateController extends HttpServlet {
 
     private static final String UPLOAD_DIR = "D:/FU-learning/SPRING-2026_ky5/SWP391/CatClinicimg/cats";
@@ -94,8 +94,8 @@ public class CatUpdateController extends HttpServlet {
                 message = "breed cannot contain numbers or special characters!";
             }
             else if (filePart != null && filePart.getSize() > 0) {
-                if (filePart.getSize() > 1 * 1024 * 1024) {
-                    message = "Image size must be less than 1MB!";
+                if (filePart.getSize() > 5 * 1024 * 1024) {
+                    message = "Image size must be less than 5MB!";
                 }
 
                 else if (!isImageFile(filePart)) {
