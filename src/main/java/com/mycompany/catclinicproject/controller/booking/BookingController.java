@@ -42,7 +42,7 @@ public class BookingController extends HttpServlet {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("acc") : null;
 
-        if (user == null) {
+        if (user == null || user.getRoleID() != 5) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }

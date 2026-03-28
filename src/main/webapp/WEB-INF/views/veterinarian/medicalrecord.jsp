@@ -55,7 +55,7 @@
 
                         <!-- link medical record history -->
                         <div class="btn-wrapper">
-                            <a href="${pageContext.request.contextPath}/cats/medical-history?catId=${catId}"
+                            <a href="${pageContext.request.contextPath}/cats/medical-history?catId=${catId}&medicalRecordID=${emr.medicalRecordID}"
                                class="complete-btn">
                                 Medical Record History
                             </a>

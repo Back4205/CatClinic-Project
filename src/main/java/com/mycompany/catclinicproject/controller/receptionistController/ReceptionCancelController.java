@@ -2,6 +2,7 @@ package com.mycompany.catclinicproject.controller.receptionistController;
 
 import com.mycompany.catclinicproject.dao.BookingDAO;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
+import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,7 +17,14 @@ public class ReceptionCancelController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
+//        HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
+
+        if (user == null || user.getRoleID() != 3) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
         String idRaw = request.getParameter("id");
         if (idRaw != null) {
             BookingDAO dao = new BookingDAO();

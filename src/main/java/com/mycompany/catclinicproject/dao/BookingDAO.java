@@ -541,12 +541,12 @@ public class BookingDAO extends DBContext {
                     psRelease.executeUpdate();
 
 
-                    System.out.println(" Slot released: VetID=" + t.getVetID()
-                            + ", SlotID=" + t.getSlotID() + ", Date=" + t.getDate());
+//                    System.out.println(" Slot released: VetID=" + t.getVetID()
+//                            + ", SlotID=" + t.getSlotID() + ", Date=" + t.getDate());
                 }
 
 
-                System.out.println(" Released " + slots.size() + " slots");
+//                System.out.println(" Released " + slots.size() + " slots");
 
 
                 psRelease.close();

@@ -5,11 +5,14 @@ import com.mycompany.catclinicproject.dao.CheckInBookingDAO;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import java.io.IOException;
 import java.time.LocalDate;
+
+import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "CheckinController", urlPatterns = {"/checkin"})
 public class CheckinController extends HttpServlet {
@@ -17,6 +20,13 @@ public class CheckinController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
+
+        if (user == null || user.getRoleID() != 3) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
         BookingDAO dao = new BookingDAO();
         CheckInBookingDAO daoCheckin = new CheckInBookingDAO();
         int id = -1;

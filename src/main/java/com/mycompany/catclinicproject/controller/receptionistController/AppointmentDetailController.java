@@ -4,11 +4,14 @@ import com.mycompany.catclinicproject.dao.BookingDAO;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import com.mycompany.catclinicproject.model.BoardingRecordDTO;
 import java.io.IOException;
+
+import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "AppointmentDetailController", urlPatterns = {"/appointmentdetail"})
 public class AppointmentDetailController extends HttpServlet {
@@ -16,6 +19,13 @@ public class AppointmentDetailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
+
+        if (user == null || user.getRoleID() != 3) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
         try {
             String idRaw = request.getParameter("id");

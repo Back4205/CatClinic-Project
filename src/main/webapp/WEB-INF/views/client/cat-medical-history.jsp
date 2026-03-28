@@ -33,16 +33,23 @@
 
 
     <main class="content">
-        <div class="page-header">
+        <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div class="page-title">
                 <h2>MEDICAL HISTORY</h2>
                 <p>View all past medical records and diagnoses.</p>
             </div>
+
+            <c:if test="${sessionScope.acc.roleID == 2}">
+                <a href="${pageContext.request.contextPath}/EmrController?medicalRecordID=${medicalRecordID}" class="btn-back-header">
+                    <i class="bi bi-arrow-left"></i> BACK
+                </a>
+            </c:if>
         </div>
 
         <div class="filter-section">
             <form action="${pageContext.request.contextPath}/cats/medical-history" method="GET" class="search-form">
                 <input type="hidden" name="catId" value="${catId}">
+                <input type="hidden" name="medicalRecordID" value="${medicalRecordID}">
 
                 <div class="filter-inputs">
                     <div class="filter-group">
@@ -88,7 +95,7 @@
                         </td>
                         <td class="note-cell">${h.clinicalNote}</td>
                         <td class="text-center">
-                            <a href="${pageContext.request.contextPath}/cats/medical-detail?idBooking=${h.bookingID}&catId=${catId}"
+                            <a href="${pageContext.request.contextPath}/cats/medical-detail?idBooking=${h.bookingID}&catId=${catId}&medicalRecordID=${medicalRecordID}"
                                class="btn-view-detail">
                                 VIEW DETAIL
                             </a>
@@ -108,6 +115,7 @@
                 </c:if>
                 </tbody>
             </table>
+
 
             <c:if test="${totalPages > 1}">
                 <div class="pagination">

@@ -16,6 +16,13 @@ public class Booking2Controller extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("acc") : null;
+
+        if (user == null || user.getRoleID() != 3 ) {
+            response.sendRedirect(request.getContextPath() + "/login?from=booking");
+            return;
+        }
         loadBookingData(request);
         request.getRequestDispatcher("/WEB-INF/views/reception/Booking2.jsp").forward(request, response);
     }

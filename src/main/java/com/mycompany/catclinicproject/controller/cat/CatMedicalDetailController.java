@@ -26,12 +26,12 @@ public class CatMedicalDetailController extends HttpServlet {
         MedicalRecordDAO dao = new MedicalRecordDAO();
         BookingDAO bdao = new BookingDAO();
         int catId = bdao.getCatIdByBookingID(bookingId);
-
+        int  medicalRecordID = Integer.parseInt(request.getParameter("medicalRecordID"));
         MedicalRecordDetailDTO medicalDetail = dao.getMedicalRecordDetailViewByBookingID(bookingId);
         List<Service> serviceList = dao.getServiceByBookingID(bookingId);
         List<PrescriptionDrugDTO> drugList = dao.getPrescriptionDrugByBookingID(bookingId);
         List<MedicalStaffWorkDTO> staffWorks = dao.getStaffWorkByBookingID(bookingId);
-
+        request.setAttribute("medicalRecordID", medicalRecordID);
         request.setAttribute("staffWorks", staffWorks);
         request.setAttribute("catId", catId);
         request.setAttribute("medicalDetail", medicalDetail);

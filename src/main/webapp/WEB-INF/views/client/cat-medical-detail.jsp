@@ -35,7 +35,7 @@
     </c:if>
 
     <main class="content">
-
+        <input type="hidden" name="medicalRecordID" value="${medicalRecordID}">
         <div class="page-header">
             <div class="page-title">
                 <h2>MEDICAL DETAIL</h2>
@@ -44,7 +44,7 @@
 
             <button type="button"
                     class="btn-back"
-                    onclick="window.location.href='${pageContext.request.contextPath}/cats/medical-history?catId=${catId}'">
+                    onclick="window.location.href='${pageContext.request.contextPath}/cats/medical-history?catId=${catId}&medicalRecordID=${medicalRecordID}'">
                 <i class="bi bi-arrow-left"></i>
                 BACK TO MEDICAL HISTORY
             </button>

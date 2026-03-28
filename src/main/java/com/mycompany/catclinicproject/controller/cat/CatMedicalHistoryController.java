@@ -8,13 +8,14 @@ import jakarta.servlet.http.HttpServlet;
 import java.util.List;
 @WebServlet(name = "CatMedicalHistoryController", urlPatterns = {"/cats/medical-history"})
 public class CatMedicalHistoryController extends HttpServlet {
-    private static final int PAGE_SIZE = 2;
+    private static final int PAGE_SIZE = 5;
     @Override
     protected void doGet(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response)
             throws jakarta.servlet.ServletException, java.io.IOException {
         int catId = Integer.parseInt(request.getParameter("catId"));
         String searchDate = request.getParameter("searchDate");
         String searchDoctor = request.getParameter("searchDoctor");
+        int  medicalRecordID = Integer.parseInt(request.getParameter("medicalRecordID"));
         int page = 1;
         String pageParam = request.getParameter("page");
         if (pageParam != null) {
@@ -27,6 +28,7 @@ public class CatMedicalHistoryController extends HttpServlet {
         List<MedicalHistoryDTO> medicalHistoryList = medicalRecordDAO.getMedicalHistoryWithFilterPaging(catId,searchDate,searchDoctor,page,PAGE_SIZE);
         //  List<MedicalHistoryDTO> medicalHistoryList = medicalRecordDAO.getMedicalHistoryByCatID(catId);
         request.setAttribute("currentPage", page);
+        request.setAttribute("medicalRecordID", medicalRecordID);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("catId", catId);
         request.setAttribute("medicalHistoryList", medicalHistoryList);

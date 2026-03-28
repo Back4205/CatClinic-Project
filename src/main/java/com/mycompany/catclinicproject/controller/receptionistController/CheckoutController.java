@@ -5,6 +5,8 @@ import com.mycompany.catclinicproject.model.BookingHistory2DTO;
 import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import java.io.IOException;
 import java.util.List;
+
+import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -15,6 +17,13 @@ public class CheckoutController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
+
+        if (user == null || user.getRoleID() != 3) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
         BookingDAO dao = new BookingDAO();
         String path = request.getServletPath();

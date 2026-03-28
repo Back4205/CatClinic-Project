@@ -23,6 +23,13 @@ public class CatUpdateController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
+
+        if (user == null || user.getRoleID() != 5) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
         int catId = Integer.parseInt(request.getParameter("catId"));
 
@@ -54,7 +61,7 @@ public class CatUpdateController extends HttpServlet {
             HttpSession session = request.getSession(false);
             User user = (User)session.getAttribute("acc");
             CatDAO catDAO = new CatDAO();
-            if(user == null){
+            if(user == null || user.getRoleID() != 5) {
                 response.sendRedirect(request.getContextPath()+"/login");
                 return;
             }

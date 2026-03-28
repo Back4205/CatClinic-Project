@@ -5,6 +5,7 @@ import com.mycompany.catclinicproject.dao.PaymentDAO;
 import com.mycompany.catclinicproject.model.InvoiceDetail;
 import com.mycompany.catclinicproject.model.InvoiceItem;
 
+import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -18,6 +19,13 @@ public class InvoiceDetailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
+
+        if (user == null || user.getRoleID() != 3) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
 
         int bookingID = Integer.parseInt(request.getParameter("bookingID"));
 

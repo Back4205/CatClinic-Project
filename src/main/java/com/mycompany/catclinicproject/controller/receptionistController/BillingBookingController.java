@@ -4,6 +4,7 @@ import com.mycompany.catclinicproject.dao.BookingDAO;
 import com.mycompany.catclinicproject.dao.PaymentDAO;
 import com.mycompany.catclinicproject.model.BillingBookingDTO;
 import com.mycompany.catclinicproject.model.Booking;
+import com.mycompany.catclinicproject.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -20,6 +21,12 @@ public class BillingBookingController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("acc");
+
+        if (user == null || user.getRoleID() != 3) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
         BookingDAO bookingDAO = new BookingDAO();
 
         Integer lastSeenID = (Integer) session.getAttribute("lastSeenBookingID");
