@@ -18,14 +18,19 @@ public class ReceptionCancelController extends HttpServlet {
 
         String idRaw = request.getParameter("id");
         if (idRaw != null) {
-            int bookingID = Integer.parseInt(idRaw);
             BookingDAO dao = new BookingDAO();
-            BookingHistoryDTO booking = dao.getBookingDetailByID(bookingID);
+            int bookingID = Integer.parseInt(idRaw);
+            boolean k = dao.hasValidTotalAmount(bookingID);
+            if (k == false) {
+                dao.cancelBooking(bookingID);
+            } else {
+                BookingHistoryDTO booking = dao.getBookingDetailByID(bookingID);
 
-            if (booking != null) {
-                request.setAttribute("booking", booking);
-                request.getRequestDispatcher("/WEB-INF/views/reception/reception-cancel.jsp").forward(request, response);
-                return;
+                if (booking != null) {
+                    request.setAttribute("booking", booking);
+                    request.getRequestDispatcher("/WEB-INF/views/reception/reception-cancel.jsp").forward(request, response);
+                    return;
+                }
             }
         }
         response.sendRedirect("reception-dashboard");

@@ -57,6 +57,47 @@ public class BookingDAO extends DBContext {
         }
         return list;
     }
+    public boolean hasValidTotalAmount(int bookingId) {
+    String sql = "SELECT TotalAmount FROM Invoices WHERE BookingID = ?";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setInt(1, bookingId);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            double totalAmount = rs.getDouble("TotalAmount");
+
+            // check null hoặc = 0
+            if (rs.wasNull() || totalAmount == 0) {
+                return false;
+            }
+            return true;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
+    public boolean cancelBooking(int bookingId) {
+    String sql = "UPDATE Bookings SET Status = ? WHERE BookingID = ?";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setString(1, "Cancelled");
+        ps.setInt(2, bookingId);
+
+        int rowsAffected = ps.executeUpdate();
+
+        return rowsAffected > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return false;
+}
 
 
     public int getCatIdByBookingID(int bookingID) {

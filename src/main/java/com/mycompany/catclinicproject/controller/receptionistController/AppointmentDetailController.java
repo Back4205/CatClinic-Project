@@ -25,6 +25,7 @@ public class AppointmentDetailController extends HttpServlet {
                 response.sendRedirect("view-booking-list");
                 return;
             }
+            
             int bookingID = Integer.parseInt(idRaw);
 
             BookingDAO dao = new BookingDAO();

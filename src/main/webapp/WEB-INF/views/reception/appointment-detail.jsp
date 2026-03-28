@@ -129,7 +129,6 @@
 
             <div class="button-group">
                 <a href="view-booking-list" class="btn-action btn-close"><i class="fa-solid fa-arrow-left"></i> &nbsp; Close</a>
-
                 <c:if test="${booking.status == 'Confirmed'}">
                     <button type="button" onclick="openCheckinModal()" class="btn-action btn-orange-fixed"><i class="fa-solid fa-check"></i> &nbsp; Check-in Now</button>
                     <%-- NÚT CANCEL MỚI THÊM --%>

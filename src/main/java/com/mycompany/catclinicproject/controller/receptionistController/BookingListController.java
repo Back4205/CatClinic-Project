@@ -5,8 +5,6 @@ import com.mycompany.catclinicproject.model.BookingHistoryDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import jdk.jshell.execution.Util;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;

@@ -144,13 +144,13 @@
                             <i class="bi bi-trash"></i> Cancel Booking
                         </a>
                     </c:when>
+                    
                     <c:when test="${booking.status == 'RejectedCancelRefund'}">
                         <a href="cancel-booking?id=${booking.bookingID}" class="btn-custom btn-cancel">
                             <i class="bi bi-trash"></i> Cancel Booking
                         </a>
                     </c:when>
-
-
+                
                     <c:when test="${booking.status == 'PendingPayment'}">
                         <a href="${pageContext.request.contextPath}//vnpay?bookingID=${booking.bookingID}" class="btn-custom btn-pay">
                             <i class="bi bi-credit-card"></i> Pay Deposit Now
