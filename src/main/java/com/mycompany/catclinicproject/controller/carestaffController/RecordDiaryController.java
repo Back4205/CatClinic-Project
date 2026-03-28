@@ -29,6 +29,9 @@ public class RecordDiaryController extends HttpServlet {
                 CareDAO dao = new CareDAO();
                 List<CareTaskDTO> allTasks = dao.getDailyTasks(staffId);
                 request.setAttribute("allTasks", allTasks);
+
+                String today = java.time.LocalDate.now().toString();
+                request.setAttribute("today", today);
             }
         }
         request.getRequestDispatcher("/WEB-INF/views/staff/record-care-diary.jsp").forward(request, response);

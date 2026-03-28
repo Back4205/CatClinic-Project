@@ -24,8 +24,6 @@ public class CareTaskController extends HttpServlet {
         HttpSession session = request.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("acc") : null;
 
-        // Cập nhật lấy ID chuẩn
-//        int staffId = 1; // Tạm fix cứng staffId = 1 để test.
 
         int userID = user.getUserID();
         UserDAO userDAO = new UserDAO();
@@ -35,7 +33,7 @@ public class CareTaskController extends HttpServlet {
         dao.generateDailyJourneysIfMissing(staffId);
         List<CareTaskDTO> allTasks = dao.getDailyTasks(staffId);
 
-        String today = LocalDate.now().toString();
+        String today = java.time.LocalDate.now().toString();
 
         Map<Integer, List<String>> careHistories = new java.util.HashMap<>();
         for (CareTaskDTO t : allTasks) {
