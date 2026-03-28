@@ -20,6 +20,70 @@ import java.util.List;
  */
 public class DrugVeterinarianDAO extends DBContext{
     
+    public int saveOrUpdatePrescription(int medicalRecordID, String note) {
+    int prescriptionID = 0;
+
+    try {
+        // 1. Check tồn tại
+        String checkSql = "SELECT PrescriptionID FROM Prescriptions WHERE MedicalRecordID = ?";
+        PreparedStatement checkPs = c.prepareStatement(checkSql);
+        checkPs.setInt(1, medicalRecordID);
+        ResultSet rs = checkPs.executeQuery();
+
+        if (rs.next()) {
+            // 👉 ĐÃ CÓ → UPDATE
+            prescriptionID = rs.getInt("PrescriptionID");
+
+            String updateSql = "UPDATE Prescriptions SET Note = ? WHERE PrescriptionID = ?";
+            PreparedStatement updatePs = c.prepareStatement(updateSql);
+            updatePs.setString(1, note);
+            updatePs.setInt(2, prescriptionID);
+            updatePs.executeUpdate();
+
+        } else {
+            // 👉 CHƯA CÓ → INSERT
+            String insertSql = "INSERT INTO Prescriptions (MedicalRecordID, Note) VALUES (?, ?)";
+            PreparedStatement insertPs = c.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS);
+
+            insertPs.setInt(1, medicalRecordID);
+            insertPs.setString(2, note);
+            insertPs.executeUpdate();
+
+            ResultSet rsInsert = insertPs.getGeneratedKeys();
+            if (rsInsert.next()) {
+                prescriptionID = rsInsert.getInt(1);
+            }
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return prescriptionID;
+}
+    public String getNoteByMedicalRecordID(int medicalRecordID) {
+    String note = null;
+    String sql = "SELECT TOP 1 Note " +
+                 "FROM Prescriptions " +
+                 "WHERE MedicalRecordID = ? " +
+                 "ORDER BY PrescriptionID DESC";
+
+    try {
+        PreparedStatement ps = c.prepareStatement(sql);
+        ps.setInt(1, medicalRecordID);
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            note = rs.getString("Note");
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return note;
+}
+
     public List<DrugDTO> getAllDrug() {
 
     List<DrugDTO> list = new ArrayList<>();

@@ -95,33 +95,23 @@ public class PrepscriptoncController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        HttpSession session = request.getSession();
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+
+   HttpSession session = request.getSession();
+
         int medicalRecordID = Integer.parseInt(request.getParameter("medicalRecordID"));
         String advice = request.getParameter("advice");
-        String statusstr = request.getParameter("status");
+        
+        
         DrugVeterinarianDAO dao = new DrugVeterinarianDAO();
-        Integer prescriptionID
-                = dao.getPrescriptionIDByMedicalRecordID(medicalRecordID);
-        if (prescriptionID != null) {
-            dao.deletePrescriptionDrugByPrescriptionID(prescriptionID);
+        Integer oldPreID = dao.getPrescriptionIDByMedicalRecordID(medicalRecordID);
+        if (oldPreID != null) {
+            dao.deletePrescriptionDrugByPrescriptionID(oldPreID);
             dao.deletePrescriptionByMedicalRecordID(medicalRecordID);
         }
-        int prescriptionIDs = dao.createPrescription(medicalRecordID, advice);
-        String status = "";
-        String action = request.getParameter("action");
-        if (action.equalsIgnoreCase("complete")) {
-             if (statusstr.equalsIgnoreCase("Waiting result")) {
-                session.setAttribute("toast-messenger", "Another testing order is currently underway.");
-                response.sendRedirect("preController?medicalRecordID=" + medicalRecordID);
-                return;
-            }
-            session.setAttribute("toast-messenger-complete", "Complete succesfully!");
-            BookingDaoVeterinarian daob = new BookingDaoVeterinarian();
-            daob.completeMedicalRecord(medicalRecordID);
-            status = daob.getStatusByMedicalRecordID(medicalRecordID);
-        }
+        int newPreID = dao.saveOrUpdatePrescription(medicalRecordID, advice);
+        String note = dao.getNoteByMedicalRecordID(medicalRecordID);
         String[] drugIDs = request.getParameterValues("drugID");
         if (drugIDs != null) {
             for (String dID : drugIDs) {
@@ -131,25 +121,14 @@ public class PrepscriptoncController extends HttpServlet {
                     continue;
                 }
                 int quantity = Integer.parseInt(qRaw);
-
-                if (action.equalsIgnoreCase("complete")) {
-                    dao.updateStockAfterPrescription(drugID, quantity);
-                }
-                String instruction
-                        = request.getParameter("instruction_" + drugID);
-
-                dao.insertPrescriptionDrug(
-                        prescriptionIDs,
-                        drugID,
-                        quantity,
-                        instruction
-                );
+                String instruction = request.getParameter("instruction_" + drugID);
+                dao.insertPrescriptionDrug(newPreID, drugID, quantity, instruction);
             }
-
         }
-        session.setAttribute("toast-messenger-complete", "Save succesfully!");
-        response.sendRedirect("preController?medicalRecordID=" + medicalRecordID + "&status=" + URLEncoder.encode(status, "UTF-8"));
-    }
+        session.setAttribute("advice", note);
+        session.setAttribute("toast-messenger", "Save successfully!");
+        response.sendRedirect("preController?medicalRecordID=" + medicalRecordID);
+}
 
     /**
      * Returns a short description of the servlet.

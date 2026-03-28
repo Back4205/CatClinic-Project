@@ -157,6 +157,7 @@
                                     <textarea name="diagnosis"
                                               placeholder="Enter final or working diagnosis..."
                                               ${status eq 'Completed' ? 'readonly' : ''}>${emr.diagnosis}</textarea>
+
                                 </div>
                                 <div class="form-group">
                                     <label>Treatment Protocol</label>
@@ -226,6 +227,33 @@
                     });
                 }
 
+            });
+            document.addEventListener("DOMContentLoaded", function () {
+
+                const btnComplete = document.querySelector("button[value='completed']");
+                const btnSave = document.querySelector("button[value='save']");
+
+                const symptoms = document.querySelector("textarea[name='symptoms']");
+                const diagnosis = document.querySelector("textarea[name='diagnosis']");
+                const treatment = document.querySelector("textarea[name='treatmentPlan']");
+
+                // Khi bấm COMPLETE → bật required
+                if (btnComplete) {
+                    btnComplete.addEventListener("click", function () {
+                        symptoms.required = true;
+                        diagnosis.required = true;
+                        treatment.required = true;
+                    });
+                }
+
+                // Khi bấm SAVE → tắt required
+                if (btnSave) {
+                    btnSave.addEventListener("click", function () {
+                        symptoms.required = false;
+                        diagnosis.required = false;
+                        treatment.required = false;
+                    });
+                }
             });
         </script>
     </body>
