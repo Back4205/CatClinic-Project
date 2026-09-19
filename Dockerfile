@@ -16,7 +16,7 @@ RUN rm -rf webapps/ROOT
 RUN sed -i 's/port="8005"/port="-1"/g' conf/server.xml
 
 # Copy built WAR file as ROOT.war so the app is served at the root URL /
-COPY --from=build /app/target/CatClinicProject-1.0-SNAPSHOT.war webapps/ROOT.war
+COPY --from=build /app/target/*.war webapps/ROOT.war
 
 EXPOSE 8080
 CMD ["catalina.sh", "run"]
