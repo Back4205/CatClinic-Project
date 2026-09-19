@@ -26,7 +26,14 @@ public class CatMedicalDetailController extends HttpServlet {
         MedicalRecordDAO dao = new MedicalRecordDAO();
         BookingDAO bdao = new BookingDAO();
         int catId = bdao.getCatIdByBookingID(bookingId);
-        int  medicalRecordID = Integer.parseInt(request.getParameter("medicalRecordID"));
+        Integer medicalRecordID = null;
+        String recIdStr = request.getParameter("medicalRecordID");
+        if (recIdStr != null && !recIdStr.trim().isEmpty()) {
+            try {
+                medicalRecordID = Integer.parseInt(recIdStr);
+            } catch (NumberFormatException ignored) {
+            }
+        }
         MedicalRecordDetailDTO medicalDetail = dao.getMedicalRecordDetailViewByBookingID(bookingId);
         List<Service> serviceList = dao.getServiceByBookingID(bookingId);
         List<PrescriptionDrugDTO> drugList = dao.getPrescriptionDrugByBookingID(bookingId);

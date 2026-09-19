@@ -8,8 +8,8 @@ import java.util.*;
 
 public class VNPayConfig {
 
-    public static final String vnp_TmnCode = "3XA4EGXP";
-    public static final String vnp_HashSecret = "S7JYOZNY652POLRSZJFUSW8VFF0LSNWP";
+    public static final String vnp_TmnCode = "3AWXGJUG";
+    public static final String vnp_HashSecret = "LZMIUIJWUEDKXJZFIQQLWKIGNJERXJQV";
     public static final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 
     public static final String vnp_ReturnUrl =

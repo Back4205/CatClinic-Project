@@ -15,11 +15,21 @@ public class CatMedicalHistoryController extends HttpServlet {
         int catId = Integer.parseInt(request.getParameter("catId"));
         String searchDate = request.getParameter("searchDate");
         String searchDoctor = request.getParameter("searchDoctor");
-        int  medicalRecordID = Integer.parseInt(request.getParameter("medicalRecordID"));
+        Integer medicalRecordID = null;
+        String recIdStr = request.getParameter("medicalRecordID");
+        if (recIdStr != null && !recIdStr.trim().isEmpty()) {
+            try {
+                medicalRecordID = Integer.parseInt(recIdStr);
+            } catch (NumberFormatException ignored) {
+            }
+        }
         int page = 1;
         String pageParam = request.getParameter("page");
-        if (pageParam != null) {
-            page = Integer.parseInt(pageParam);
+        if (pageParam != null && !pageParam.trim().isEmpty()) {
+            try {
+                page = Integer.parseInt(pageParam);
+            } catch (NumberFormatException ignored) {
+            }
         }
         MedicalRecordDAO medicalRecordDAO = new MedicalRecordDAO();
         int totalRecords = medicalRecordDAO.countMedicalHistoryWithFilter(catId, searchDate, searchDoctor);
