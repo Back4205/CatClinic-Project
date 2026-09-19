@@ -17,7 +17,11 @@ import java.nio.file.Paths;
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 6, maxRequestSize = 1024 * 1024 * 10)
 public class CatUpdateController extends HttpServlet {
 
-    private static final String UPLOAD_DIR = "D:/FU-learning/SPRING-2026_ky5/SWP391/CatClinicimg/cats";
+    private static final String UPLOAD_DIR = System.getenv("UPLOAD_DIR") != null 
+            ? System.getenv("UPLOAD_DIR") 
+            : (System.getProperty("os.name").toLowerCase().contains("win") 
+                ? "D:/FU-learning/SPRING-2026_ky5/SWP391/CatClinicimg/cats" 
+                : "/tmp/CatClinicimg/cats");
 
 
     @Override
