@@ -14,10 +14,10 @@ public class DBContext {
             String envPass = System.getenv("DB_PASS");
 
             String url = (envUrl != null && !envUrl.trim().isEmpty()) 
-                    ? envUrl 
-                    : "jdbc:sqlserver://cat_clinic.mssql.somee.com:1433;databaseName=cat_clinic;encrypt=false;trustServerCertificate=true";
-            String username = (envUser != null && !envUser.trim().isEmpty()) ? envUser : "klgames0510_SQLLogin_1";
-            String pass = (envPass != null) ? envPass : "Dinhkhanh2005";
+                    ? envUrl
+                    : "jdbc:sqlserver://localhost:1433;databaseName=CatClinic_ERD;encrypt=true;trustServerCertificate=true";
+            String username = (envUser != null && !envUser.trim().isEmpty()) ? envUser : "sa";
+            String pass = (envPass != null) ? envPass : "123";
 
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             c = DriverManager.getConnection(url, username, pass);
