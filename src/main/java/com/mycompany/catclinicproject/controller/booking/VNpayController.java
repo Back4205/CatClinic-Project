@@ -31,7 +31,6 @@ public class VNpayController extends HttpServlet {
         try {
             bookingIdInt = Integer.parseInt(bookingID);
         } catch (NumberFormatException e) {
-
             return;
         }
 
@@ -40,12 +39,10 @@ public class VNpayController extends HttpServlet {
         Invoice invoice = invoiceDAO.getInvoiceByBookingID(bookingIdInt);
         PaymentDAO paymentDAO = new PaymentDAO();
         if (invoice == null) {
-
             request.setAttribute("msg", "Invalid Invoice ID");
             request.getRequestDispatcher("/WEB-INF/views/client/error.jsp").forward(request, response);
             return;
         }
-
 
         double total = invoiceDAO.getTotalServiceAmount(bookingIdInt);
         double paid = paymentDAO.getPaidAmount(bookingIdInt);
@@ -53,17 +50,19 @@ public class VNpayController extends HttpServlet {
         double amount = 0;
         // Tính tiền đặt cọc 20%
         if (paid == 0.0){
-            amount =  Math.round(total*0.2);
+            amount = Math.round(total * 0.2);
         }
-//        else {
-//            amount =  total-paid;
-//        }
 
         long vnpAmount = (long)(amount * 100); // VNPay yêu cầu nhân 100
 
-        //Tạo mã giao dịch UNIQUE
+        // Tạo mã giao dịch UNIQUE
         String vnp_TxnRef = invoice.getInvoiceID() + "_" + System.currentTimeMillis();
-        String vnp_IpAddr = request.getRemoteAddr();
+        
+        // Lấy IP chuẩn khi deploy trên Cloud Azure (X-Forwarded-For)
+        String vnp_IpAddr = request.getHeader("X-FORWARDED-FOR");
+        if (vnp_IpAddr == null || vnp_IpAddr.isEmpty() || "unknown".equalsIgnoreCase(vnp_IpAddr)) {
+            vnp_IpAddr = request.getRemoteAddr();
+        }
 
         Map<String, String> vnp_Params = new HashMap<>();
 
@@ -79,18 +78,20 @@ public class VNpayController extends HttpServlet {
         vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_ReturnUrl);
         vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
-        // Thời gian Việt Nam
-        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
+        // ✅ THỜI GIAN VIỆT NAM (ĐÃ SỬA: ÉP MÚI GIỜ CHO CẢ FORMATTER)
+        TimeZone tz = TimeZone.getTimeZone("Asia/Ho_Chi_Minh");
+        Calendar cld = Calendar.getInstance(tz);
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+        formatter.setTimeZone(tz); // <-- BỔ SUNG DÒNG QUAN TRỌNG NÀY
 
         String createDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_CreateDate", createDate); // tg giao dịch
 
-        cld.add(Calendar.MINUTE, 5); // hết hạn sau 5p
+        cld.add(Calendar.MINUTE, 15); // Tăng lên 15p đúng chuẩn khuyến nghị VNPay
         String expireDate = formatter.format(cld.getTime());
         vnp_Params.put("vnp_ExpireDate", expireDate); // tg het han
 
-        //  Sắp xếp key
+        // Sắp xếp key
         List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
 
@@ -98,17 +99,14 @@ public class VNpayController extends HttpServlet {
         StringBuilder query = new StringBuilder();
 
         for (int i = 0; i < fieldNames.size(); i++) {
-
             String fieldName = fieldNames.get(i);
             String value = vnp_Params.get(fieldName);
 
             if (value != null && !value.isEmpty()) {
-
                 String encodedValue = URLEncoder.encode(value, StandardCharsets.UTF_8);
 
                 hashData.append(fieldName).append("=").append(encodedValue);
-
-                query.append(fieldName).append("=").append(encodedValue); // url den trang thanh toan
+                query.append(fieldName).append("=").append(encodedValue);
                 if (i < fieldNames.size() - 1) {
                     hashData.append("&");
                     query.append("&");
@@ -116,7 +114,7 @@ public class VNpayController extends HttpServlet {
             }
         }
 
-        //  Tạo chữ ký
+        // Tạo chữ ký
         String secureHash = VNPayConfig.hmacSHA512(VNPayConfig.vnp_HashSecret, hashData.toString());
         query.append("&vnp_SecureHash=").append(secureHash);
         String paymentUrl = VNPayConfig.vnp_PayUrl + "?" + query;
