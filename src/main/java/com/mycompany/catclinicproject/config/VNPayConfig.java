@@ -13,7 +13,7 @@ public class VNPayConfig {
     public static final String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 
     public static final String vnp_ReturnUrl =
-            "https://catclinic-project.onrender.com/CatClinicProject/vnpay-return";
+            "https://catclinic-project.onrender.com/vnpay-return";
 //public static final String vnp_ReturnUrl =
 //        " https://zaria-untrimmed-yuette.ngrok-free.dev/CatClinicProject/vnpay-return";
 
